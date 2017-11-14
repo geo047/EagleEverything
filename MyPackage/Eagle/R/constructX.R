@@ -1,4 +1,4 @@
-constructX <- function(fnameM=NULL, currentX=NULL, loci_indx=NULL,
+constructX <- function(Zmat=NULL, fnameM=NULL, currentX=NULL, loci_indx=NULL,
                        availmemGb=8, dim_of_ascii_M=NULL,
                         map=NULL)
   {
@@ -14,7 +14,11 @@ constructX <- function(fnameM=NULL, currentX=NULL, loci_indx=NULL,
    } else {
        genodat <- extract_geno(fnameM=fnameM, colnum=loci_indx,
                            availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M)
-      newX <- cbind(currentX, genodat)
+      if(is.null(Zmat)){
+         newX <- cbind(currentX, genodat)
+      } else {
+         newX <- cbind(currentX, Zmat %*% genodat)
+      }
       colnames(newX) <- c(colnames(currentX), as.character(map[[1]][loci_indx])) ## adding col names to new X  
       return(newX)
    }

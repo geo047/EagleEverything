@@ -30,8 +30,6 @@ calculate_reduced_vara <- function(Zmat=NULL, X=NULL, varE=NULL, varG=NULL, invM
   } else {
      Ze <- MMtsqrt
      A <- (1/varE) * crossprod(X)      
-     print (dim(t(X) ))
-     print(dim(Ze))
      B <- (1/varE) * t(X) %*% Zmat %*% Ze 
      C <- (1/varE) * t(Ze) %*% t(Zmat) %*%  X       
      D <- (1/varE) * t(Ze) %*% t(Zmat) %*% Zmat %*% Ze + (1/varG) * diag(nrow(invMMt))     

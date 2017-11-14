@@ -400,7 +400,7 @@ if(length(indxNA)>0){
  while(continue){
   message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
    ## based on selected_locus, form model matrix X
-  currentX <- constructX(fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
+  currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
 
@@ -429,8 +429,6 @@ if(length(indxNA)>0){
     gc()
     best_ve <- vc[["ve"]]
     best_vg <- vc[["vg"]]
-    print(best_vg)
-    print(best_ve)
 
 
 
