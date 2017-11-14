@@ -7,7 +7,7 @@ returns the 'best' set of snp loci in strongest association with a trait as its 
 Eagle can handle data collected from populations of arbitrary structure. The populations can contain inbred or outbred individuals. 
 br()
 An analysis is performed by reading in the marker data (Read Genotypes), reading in the phenotypic data (Read Phenotypes), reading in the 
-marker map if known (Read Map), and performing the genome-wide analysis (Analyse).  
+marker map if known (Read Map), reading in the Z matrix if needed, and performing the genome-wide analysis (Analyse).  
 br()
 Help is available by hovering over the widgets or by clicking on the help tab at the top of the screen.  "
     return(txt)
@@ -38,7 +38,7 @@ library(shinyBS)
 library(shinyjs)
 
 
-FullPage <- navbarPage(title="Eagle",  theme = shinytheme("flatly"),
+FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = shinytheme("flatly"),
                 #       theme = shinytheme("slate"),
                 #       theme = shinytheme("united"),
 
@@ -466,6 +466,228 @@ filter: alpha(opacity=50);
 
 
 
+              #-----------------------TESTING ======================================= 
+                                    
+                      tabPanel("Read Phenotypes",  icon=icon("file-o"), 
+                               tags$head(tags$style(HTML('
+                                                         .popover {
+                                                         max-width: 80%;
+                                                         
+                                                         }
+                                                         '))
+                               ),
+
+
+                            fluidPage(
+                              fluidRow(
+                                column(12, {
+                                       tags$div(img(src = "images/pheno_banner.jpg", 
+                                                    style="width: 100% ; height: 100%; "))
+                               
+                                }
+                                       ) ## end column(12, )
+                              ), ## end fluidRow
+                              br(),
+                              fluidRow(column(12, 
+                                             bsButton(inputId="dummy2", label="Hover here for details",
+                                                    style="warning", size="large", type="action", block=TRUE, 
+                                                    icon=icon("question-circle-o")
+                                                    )
+                                           
+                                       ) ## end column
+                              ), ## end fluidRow
+                              
+                              
+                              br(),
+                              fluidRow(
+                                column(5, 
+                                       fluidPage(
+                                         fluidRow(
+                                           column(12,
+                                                  wellPanel(
+                                                  radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
+                                                               choices=c("yes"="yes","no"="no" )),
+                                                  style="padding: 1px",
+                                                  bsTooltip("pheno_header",
+title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
+placement="right", 
+trigger="hover",
+                                                            options=list(container="body")
+                                                      )
+                                                  )  ## wellPanel
+                                           
+                                           
+                                           
+                                             ) ## end column
+                                           
+                                         ), ## end fluidRow choose file type
+
+
+ fluidRow(column(12,
+                                          wellPanel(
+                                            h4("Step 3: Select marker file"),
+
+                                           actionButton(inputId="choose_marker_file", h6("Choose File")), br(),
+                                           textOutput("choose_marker_file"),
+                                           style='padding: 1px',
+                                           bsTooltip("choose_marker_file",
+title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
+placement="right",
+trigger="hover",
+                                                     options=list(container="body"))
+
+
+                                          )
+                                         )
+                                         ) ## end fluidRow
+
+
+
+
+
+                        
+)
+)
+))),
+
+
+
+
+
+                      ##-----------------------------------##
+                      ## Read Z matrix (if needed)         ##
+                      ##-----------------------------------##
+                      
+                       tabPanel("Read Z matrix (if needed)", icon=icon("file-o"), 
+                               tags$head(tags$style(HTML('
+
+                                                         .popover {
+                                                         max-width: 80%;
+                                                         
+                                                         }
+                                                         '))
+                               ),
+
+
+                            fluidPage(
+                              fluidRow(
+                                column(12, {
+                                       tags$div(img(src = "images/Zmat_banner.jpg", 
+                                                    style="width: 100% ; height: 100%"))
+                               
+                                }
+                                       ) ## end column(12, )
+                              ), ## end fluidRow
+                              br(),
+                              fluidRow(column(12, 
+                                          bsButton(inputId="Zmat1", label="Hover here for details",
+                                          style="warning", size="large", type="action", block=TRUE,
+                                          icon=icon("question-circle-o")
+                                          )
+
+  
+                                           
+                                       ) ## end column
+                              ), ## end fluidRow
+                              
+                              
+                              br(),
+                              fluidRow(
+                                column(5, 
+                                       fluidPage(
+                        
+
+
+
+                                         fluidRow(column(12,
+                                          wellPanel(
+                                            h4("Step 1: Select Z matrix file"),
+
+                                           actionButton(inputId="choose_Zmat_file", h6("Choose File")), br(),
+                                           textOutput("choose_Zmat_file"),
+                                           style='padding: 1px',
+                                           bsTooltip("choose_Zmat_file",
+title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
+placement="right",
+trigger="hover",
+                                                     options=list(container="body"))
+
+
+                                          )
+                                         )
+                                         ), ## end fluidRow
+
+
+                                       
+                                         
+                                         fluidRow(column(12, 
+                                                       wellPanel(
+                                                          shinyjs::useShinyjs(),
+                                                          h4("Step 2: Upload file"),
+
+
+
+
+                                                          actionButton(inputId="Zmat_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
+                                                                       icon=icon("upload", lib="glyphicon")),
+
+
+
+                                                          style='padding: 1px',
+                                                          bsTooltip("Zmat_go",
+title='<font size="3" > Upload file.    </font>',
+placement="right", trigger="hover",
+                                                                     options=list(container="body"))
+ 
+                                                        )
+                                                  )
+                                         ) ## end fluidRow
+                                       ) ## end fluidPage -- widgets on left hand side
+                                       
+                                       
+                                       
+                                       
+                                       ), ## end column(6,  )  -- left half of page
+                                          ## for input widgets
+                                column(7, 
+                                        verbatimTextOutput("ReadZmat", placeholder=TRUE),
+                                        conditionalPanel(condition="input.Zmat_go > 0 && $('html').hasClass('shiny-busy')",
+
+                                        tags$div(style="
+position:fixed;
+top: 50%;
+left: 50%;
+margin-top: -100px;
+margin-left: -150px;
+z-index:10000000;
+opacity: 0.9;
+filter: alpha(opacity=50); 
+",
+                                          tags$img(src="loading.gif",height="200px", width="300px"))
+
+) ## end conditionalPanel
+
+
+
+
+
+
+                                       )  ## end column(6, ) -- right half of page
+                                          ## for outputs from ReadPheno function
+                                
+                              ) ## end fluidRow
+                              
+                            ) ## end fluidPage    
+                                
+                                
+                      ),  ## end tabPanel("Read Z matrix")
+
+
+
+
+
+
+
 
 
 
@@ -634,6 +856,12 @@ filter: alpha(opacity=50);
                                 
                                 
                       ),  ## end tabPanel("Read Map")
+
+
+
+
+
+
 
 
                   ##-------------------------------------##
@@ -1168,6 +1396,61 @@ server <- function(input, output, session){
   })  ## end observeEvent
 
 
+
+
+
+  ##------------------------------##
+  ## Read Z matrix                ## 
+  ##------------------------------ss
+
+ map <- NULL
+ ##  Read Z matrix  path and file name
+  ## upload path and file name
+  path_to_Zmat_file <- NULL
+  output$choose_Zmat_file <- renderText(NULL)
+  observeEvent(input$choose_Zmat_file, {
+    if(.Platform$OS.type=="unix"){
+       path_to_Zmat_file <<- tk_choose.files()
+        print(path_to_Zmat_file)
+     } else {
+       path_to_Zmat_file <<- file.choose()
+
+     }
+  })
+
+
+   ## Read Zmat  information
+   ##~~~~~~~~~~~~~~~~~~~~~~~~~
+   Zmat <- NULL
+   observeEvent(input$Zmat_go, {
+
+
+
+
+       withCallingHandlers({
+                 shinyjs::html("ReadZmat", "")
+                 map  <<- ReadZmat(filename = path_to_map_file)
+              },  ## end withCallingHandlers
+              message = function(m) {
+                 shinyjs::html(id = "ReadZmat", html = m$message, add = TRUE)
+       })
+
+
+
+
+
+  })  ## end observeEvent
+
+
+
+
+
+
+
+
+
+
+
   ##-------------------------##
   ## Read Map                ## 
   ##-------------------------ss
@@ -1187,10 +1470,8 @@ server <- function(input, output, session){
      }
 
 #    rChoiceDialogs::rchoose.files()
-    output$choose_map_file <- renderText( path_to_map_file )
+#    output$choose_map_file <- renderText( path_to_map_file )
   })
-
-
 
 
    ## Read map  information
@@ -1220,6 +1501,11 @@ server <- function(input, output, session){
 
 
   })  ## end observeEvent
+
+
+
+
+
 
 
   ##-------------------
@@ -1385,8 +1671,19 @@ Data on multiple traits and fixed effects that may or may not be used in the ana
 Missing values are allowed.  <br> <br>
 Output from reading in the phenotypic file will appear in the right hand-side panel. 
   "), trigger = 'hover')
+
+
+addPopover(session, "Zmat1", "Details", content = HTML("
+The Z matrix contains only zeros and ones. The number of rows must be greater than the number of columns. 
+It is used for those situations where multiple observations of the same trait have been recorded for an individual. 
+"), trigger = "hover") 
+
+
+
+
+
   
-   addPopover(session, "dummy3", "Details", content = HTML("
+addPopover(session, "dummy3", "Details", content = HTML("
     Eagle does not
      require a known marker map in order to analyse the data.  
      If a map file is read into Eagle, then the
