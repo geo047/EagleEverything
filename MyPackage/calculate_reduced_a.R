@@ -1,4 +1,4 @@
-calculate_reduced_a <- function(varG=NULL, P=NULL, MMtsqrt=NULL, y=NULL, quiet=TRUE, message=message)
+calculate_reduced_a <- function(Zmat=NULL, varG=NULL, P=NULL, MMtsqrt=NULL, y=NULL, quiet=TRUE, message=message)
 {
 
   ## internal function to AM
@@ -27,9 +27,12 @@ calculate_reduced_a <- function(varG=NULL, P=NULL, MMtsqrt=NULL, y=NULL, quiet=T
    message(" y must be specified")
    return(NULL)
    }
-
+  
+  if(is.null(Zmat)){
     a <- varG * MMtsqrt %*% P %*% y
-
+  } else {
+    a <- varG * MMtsqrt %*% t(Zmat) %*% P %*% y
+  }
 return(a)
 
 }

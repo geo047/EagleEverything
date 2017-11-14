@@ -16,8 +16,8 @@ emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE)
         eig$vectors <- Re(eig$vectors)
     }
     qr.X <- qr.Q(qr(X))
-    return(list(values = eig$values[1:(t - q)], vectors = qr.Q(qr(cbind(SZ %*%
-        eig$vectors[, 1:(t - q)], qr.X)), complete = TRUE)[,
+    return(list(values = eig$values[1:(t - q)], 
+       vectors = qr.Q(qr(cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)), complete = TRUE)[,
         c(1:(t - q), (t + 1):n)]))
 }
 

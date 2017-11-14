@@ -118,6 +118,18 @@ if(is.null(map)){
     }
  }
 
+ ## make sure Zmat is of the dimension n > n_g
+ if(!is.null(Zmat)){
+   if(dim(Zmat)[1] <= dim(Zmat)[2]){
+      message("Error: the dimensions of the Z matrix are incorrect. ")
+      message("       the number of columns specified in the Z matrix file is ", ncol(Zmat))
+      message("       the number of rows specified in the Z matrix file is ", nrow(Zmat))
+      message("       the number of rows must be greater than the number of columns. ") 
+      return(TRUE)
+   }
+ }
+
+
  ## when Zmat is not null
  if(!is.null(Zmat)){
    ## check that the number of columns in Zmat match the number of rows in geno

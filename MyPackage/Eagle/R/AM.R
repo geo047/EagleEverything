@@ -429,6 +429,8 @@ if(length(indxNA)>0){
     gc()
     best_ve <- vc[["ve"]]
     best_vg <- vc[["vg"]]
+    print(best_vg)
+    print(best_ve)
 
 
 
@@ -447,7 +449,7 @@ if(length(indxNA)>0){
    ## Select new locus if extBIC is still decreasing 
    if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
      ## find QTL
-     ARgs <- list(geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+     ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
       new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 

@@ -1,8 +1,8 @@
-  .find_qtl <- function(geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
+  .find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
                        currentX,  ncpu, quiet, trait, ngpu )
   {
     ##  internal function: use by   AM
-    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, message=message )
+    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
@@ -26,7 +26,7 @@
     if(!quiet ){
       message(" quiet =", quiet, ": beginning calculation of the BLUP estimates for dimension reduced model. \n")
     }
-    hat_a <- calculate_reduced_a(varG=best_vg, P=P,
+    hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=trait, quiet = quiet , message=message)
     if(!quiet)
@@ -40,7 +40,7 @@
       message(" quiet = ", quiet, ": beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. \n")
     }
 
-    var_hat_a    <- calculate_reduced_vara(X=currentX, varE=best_ve, varG=best_vg, invMMt=invMMt,
+    var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX, varE=best_ve, varG=best_vg, invMMt=invMMt,
                                                 MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                                                 quiet = quiet, message=message )
     if(!quiet)

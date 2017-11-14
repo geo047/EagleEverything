@@ -1,4 +1,4 @@
-calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, message=message )
+calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, Zmat=NULL, message=message )
 {
   ## internal function to AM
   ## R function for calculating the H variance matrix 
@@ -33,8 +33,12 @@ calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, message=message )
     message("MMt cannot be null.")
     return(NULL)
     }
+  if(is.null(Zmat)){
   return( varE * diag(nrow(MMt)) + varG * MMt)
+  } else {
+  return( varE * diag(nrow(Zmat)) + varG * (Zmat %*% MMt %*% t(Zmat)) )
 
+  }
 
 }
 
