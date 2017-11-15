@@ -466,90 +466,90 @@ filter: alpha(opacity=50);
 
 
 
-              #-----------------------TESTING ======================================= 
-                                    
-                      tabPanel("Read Phenotypes",  icon=icon("file-o"), 
-                               tags$head(tags$style(HTML('
-                                                         .popover {
-                                                         max-width: 80%;
-                                                         
-                                                         }
-                                                         '))
-                               ),
-
-
-                            fluidPage(
-                              fluidRow(
-                                column(12, {
-                                       tags$div(img(src = "images/pheno_banner.jpg", 
-                                                    style="width: 100% ; height: 100%; "))
-                               
-                                }
-                                       ) ## end column(12, )
-                              ), ## end fluidRow
-                              br(),
-                              fluidRow(column(12, 
-                                             bsButton(inputId="dummy2", label="Hover here for details",
-                                                    style="warning", size="large", type="action", block=TRUE, 
-                                                    icon=icon("question-circle-o")
-                                                    )
-                                           
-                                       ) ## end column
-                              ), ## end fluidRow
-                              
-                              
-                              br(),
-                              fluidRow(
-                                column(5, 
-                                       fluidPage(
-                                         fluidRow(
-                                           column(12,
-                                                  wellPanel(
-                                                  radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
-                                                               choices=c("yes"="yes","no"="no" )),
-                                                  style="padding: 1px",
-                                                  bsTooltip("pheno_header",
-title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
-placement="right", 
-trigger="hover",
-                                                            options=list(container="body")
-                                                      )
-                                                  )  ## wellPanel
-                                           
-                                           
-                                           
-                                             ) ## end column
-                                           
-                                         ), ## end fluidRow choose file type
-
-
- fluidRow(column(12,
-                                          wellPanel(
-                                            h4("Step 3: Select marker file"),
-
-                                           actionButton(inputId="choose_marker_file", h6("Choose File")), br(),
-                                           textOutput("choose_marker_file"),
-                                           style='padding: 1px',
-                                           bsTooltip("choose_marker_file",
-title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
-placement="right",
-trigger="hover",
-                                                     options=list(container="body"))
-
-
-                                          )
-                                         )
-                                         ) ## end fluidRow
-
-
-
-
-
-                        
-)
-)
-))),
-
+#              #-----------------------TESTING ======================================= 
+#                                    
+#                     tabPanel("Read Phenotypes",  icon=icon("file-o"), 
+#                               tags$head(tags$style(HTML('
+#                                                         .popover {
+#                                                         max-width: 80%;
+#                                                         
+#                                                         }
+#                                                         '))
+#                               ),
+#
+#
+#                            fluidPage(
+#                              fluidRow(
+#                                column(12, {
+#                                       tags$div(img(src = "images/pheno_banner.jpg", 
+#                                                    style="width: 100% ; height: 100%; "))
+#                               
+#                                }
+#                                       ) ## end column(12, )
+#                              ), ## end fluidRow
+#                              br(),
+#                              fluidRow(column(12, 
+#                                             bsButton(inputId="dummy2", label="Hover here for details",
+#                                                    style="warning", size="large", type="action", block=TRUE, 
+#                                                    icon=icon("question-circle-o")
+#                                                    )
+#                                           
+#                                       ) ## end column
+#                              ), ## end fluidRow
+#                              
+#                              
+#                              br(),
+#                              fluidRow(
+#                                column(5, 
+#                                       fluidPage(
+#                                         fluidRow(
+#                                           column(12,
+#                                                  wellPanel(
+#                                                  radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
+#                                                               choices=c("yes"="yes","no"="no" )),
+#                                                  style="padding: 1px",
+#                                                  bsTooltip("pheno_header",
+#title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
+#placement="right", 
+#trigger="hover",
+#                                                            options=list(container="body")
+#                                                      )
+#                                                  )  ## wellPanel
+#                                           
+#                                           
+#                                           
+#                                             ) ## end column
+#                                           
+#                                         ), ## end fluidRow choose file type
+#
+#
+# fluidRow(column(12,
+#                                          wellPanel(
+#                                            h4("Step 3: Select marker file"),
+#
+#                                           actionButton(inputId="choose_marker_file", h6("Choose File")), br(),
+#                                           textOutput("choose_marker_file"),
+#                                           style='padding: 1px',
+#                                           bsTooltip("choose_marker_file",
+#title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
+#placement="right",
+#trigger="hover",
+#                                                     options=list(container="body"))
+#
+#
+#                                          )
+#                                         )
+#                                         ) ## end fluidRow
+#
+#
+#
+#
+#
+#                        
+#)
+#)
+#))),
+#
 
 
 
@@ -1429,7 +1429,7 @@ server <- function(input, output, session){
 
        withCallingHandlers({
                  shinyjs::html("ReadZmat", "")
-                 map  <<- ReadZmat(filename = path_to_map_file)
+                 Zmat  <<- ReadZmat(filename = path_to_Zmat_file)
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadZmat", html = m$message, add = TRUE)

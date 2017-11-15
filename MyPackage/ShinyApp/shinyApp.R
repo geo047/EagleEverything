@@ -572,7 +572,7 @@ filter: alpha(opacity=50);
                             fluidPage(
                               fluidRow(
                                 column(12, {
-                                       tags$div(img(src = "images/map_banner.jpg", 
+                                       tags$div(img(src = "images/Zmat_banner.jpg", 
                                                     style="width: 100% ; height: 100%"))
                                
                                 }

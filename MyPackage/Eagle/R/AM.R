@@ -84,6 +84,61 @@
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
 #'
+
+
+
+
+#' \subsection{How to perform an analysis where individuals have multiple observations}{
+#'
+#' Suppose, 
+#' \itemize{
+#' \item{}{the snp data are contained in the file geno.ped which is a 'PLINK' ped file. See
+#' \code{\link{ReadMarker}} for details. The file is located in /my/dir. Let's assume 
+#' the file is large, say 50 gigabytes,   and our computer only has 32 gigabytes of RAM.}
+#' \item{}{the phenotype data is contained in the file pheno.txt which is a plain space
+#' separated text file with  six columns. The first row of the file contains the column headings. 
+#' The first column is a trait and is labeled y1.
+#' The second column is another trait and is labeled y2. The third and fourth columns 
+#' are nuisance variables and are labeled cov1 and cov2. The fifth and sixth columns
+#' are the first two principal components to account for population substructure and are 
+#' labeled pc1 and pc2. The file contains missing data that are coded as 99. 
+#' The file is located in /my/dir.}
+#' \item{}{the Z matrix data are contained in the file Zmatrix.txt. The file is located in /my/dir.This file is
+#' a design matrix that only contains zeros and ones where each row must contain only a single one in the column that matches 
+#' the individual's trait value to their corresponding genotype.}
+#' \item{}{the map data is contained in the file map.txt, is also located in 
+#'  /my/dir, and the first row has the column headings.}
+#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
+#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
+#' and the available memory is set to 32 gigabytes.}
+#' } 
+#'
+#'  To analyse these data, we would run the following:
+#' \preformatted{
+#'   geno_obj <-  ReadMarker(filename='/my/dir/geno.ped', type='PLINK', availmemGb=32)
+#'   
+#'   pheno_obj <- ReadPheno(filename='/my/dir/pheno.txt', missing=99)
+#'
+#'   map_obj   <- ReadMap(filename='/my/dir/map.txt')
+#'
+#'   Zmat_obj  <- ReadZmat(filename='/my/dir/Zmatrix.txt')
+#'
+#'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat=Zmat_obj, availmemGb=32)
+#' }
+#' A table of results is printed to the screen and saved in the R object \code{res}. 
+#'}
+#'
+
+
+
+
+
+
+
+
+
+
 #' \subsection{Dealing with missing marker data}{
 #'
 #' \code{AM} can tolerate some missing marker data. However, ideally, 
