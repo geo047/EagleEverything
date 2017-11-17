@@ -8,7 +8,6 @@
 #endif
 
 
-const size_t bits_in_int = std::numeric_limits<int>::digits;
 
 
 
