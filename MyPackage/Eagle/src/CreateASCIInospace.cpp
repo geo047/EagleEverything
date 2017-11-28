@@ -136,6 +136,8 @@ while(getline(fileIN, line ))
     if(dims[1] < 12)
     ncolsp = dims[1];
 
+    message(" ");
+    message(" ");
     message(" First ", nrowsp, " lines and ", ncolsp, " columns of the marker text  file. ");
 
     std::string rowline;

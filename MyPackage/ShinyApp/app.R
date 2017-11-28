@@ -1416,6 +1416,7 @@ server <- function(input, output, session){
        path_to_Zmat_file <<- file.choose()
 
      }
+  output$choose_Zmat_file <- renderText( path_to_Zmat_file )
   })
 
 
@@ -1470,7 +1471,7 @@ server <- function(input, output, session){
      }
 
 #    rChoiceDialogs::rchoose.files()
-#    output$choose_map_file <- renderText( path_to_map_file )
+    output$choose_map_file <- renderText( path_to_map_file )
   })
 
 

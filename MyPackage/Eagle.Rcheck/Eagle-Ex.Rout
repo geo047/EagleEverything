@@ -248,7 +248,9 @@ rs67161561 1 0.503
 >   geno_obj <- ReadMarker(filename=complete.name, type='text', AA=0, AB=1, BB=2, availmemGb=4) 
  Getting number of individuals and snp from file ... 
  Beginning creation of reformatted file ... 
-0% read of text file.       0.666667% read of text file.       1.33333% read of text file.       2% read of text file.       2.66667% read of text file.       3.33333% read of text file.       4% read of text file.       4.66667% read of text file.       5.33333% read of text file.       6% read of text file.       6.66667% read of text file.       7.33333% read of text file.       8% read of text file.       8.66667% read of text file.       9.33333% read of text file.       10% read of text file.       10.6667% read of text file.       11.3333% read of text file.       12% read of text file.       12.6667% read of text file.       13.3333% read of text file.       14% read of text file.       14.6667% read of text file.       15.3333% read of text file.       16% read of text file.       16.6667% read of text file.       17.3333% read of text file.       18% read of text file.       18.6667% read of text file.       19.3333% read of text file.       20% read of text file.       20.6667% read of text file.       21.3333% read of text file.       22% read of text file.       22.6667% read of text file.       23.3333% read of text file.       24% read of text file.       24.6667% read of text file.       25.3333% read of text file.       26% read of text file.       26.6667% read of text file.       27.3333% read of text file.       28% read of text file.       28.6667% read of text file.       29.3333% read of text file.       30% read of text file.       30.6667% read of text file.       31.3333% read of text file.       32% read of text file.       32.6667% read of text file.       33.3333% read of text file.       34% read of text file.       34.6667% read of text file.       35.3333% read of text file.       36% read of text file.       36.6667% read of text file.       37.3333% read of text file.       38% read of text file.       38.6667% read of text file.       39.3333% read of text file.       40% read of text file.       40.6667% read of text file.       41.3333% read of text file.       42% read of text file.       42.6667% read of text file.       43.3333% read of text file.       44% read of text file.       44.6667% read of text file.       45.3333% read of text file.       46% read of text file.       46.6667% read of text file.       47.3333% read of text file.       48% read of text file.       48.6667% read of text file.       49.3333% read of text file.       50% read of text file.       50.6667% read of text file.       51.3333% read of text file.       52% read of text file.       52.6667% read of text file.       53.3333% read of text file.       54% read of text file.       54.6667% read of text file.       55.3333% read of text file.       56% read of text file.       56.6667% read of text file.       57.3333% read of text file.       58% read of text file.       58.6667% read of text file.       59.3333% read of text file.       60% read of text file.       60.6667% read of text file.       61.3333% read of text file.       62% read of text file.       62.6667% read of text file.       63.3333% read of text file.       64% read of text file.       64.6667% read of text file.       65.3333% read of text file.       66% read of text file.       66.6667% read of text file.       67.3333% read of text file.       68% read of text file.       68.6667% read of text file.       69.3333% read of text file.       70% read of text file.       70.6667% read of text file.       71.3333% read of text file.       72% read of text file.       72.6667% read of text file.       73.3333% read of text file.       74% read of text file.       74.6667% read of text file.       75.3333% read of text file.       76% read of text file.       76.6667% read of text file.       77.3333% read of text file.       78% read of text file.       78.6667% read of text file.       79.3333% read of text file.       80% read of text file.       80.6667% read of text file.       81.3333% read of text file.       82% read of text file.       82.6667% read of text file.       83.3333% read of text file.       84% read of text file.       84.6667% read of text file.       85.3333% read of text file.       86% read of text file.       86.6667% read of text file.       87.3333% read of text file.       88% read of text file.       88.6667% read of text file.       89.3333% read of text file.       90% read of text file.       90.6667% read of text file.       91.3333% read of text file.       92% read of text file.       92.6667% read of text file.       93.3333% read of text file.       94% read of text file.       94.6667% read of text file.       95.3333% read of text file.       96% read of text file.       96.6667% read of text file.       97.3333% read of text file.       98% read of text file.       98.6667% read of text file.       99.3333% read of text file.        First 5 lines and 12 columns of the marker text  file. 
+0% read of text file.       0.666667% read of text file.       1.33333% read of text file.       2% read of text file.       2.66667% read of text file.       3.33333% read of text file.       4% read of text file.       4.66667% read of text file.       5.33333% read of text file.       6% read of text file.       6.66667% read of text file.       7.33333% read of text file.       8% read of text file.       8.66667% read of text file.       9.33333% read of text file.       10% read of text file.       10.6667% read of text file.       11.3333% read of text file.       12% read of text file.       12.6667% read of text file.       13.3333% read of text file.       14% read of text file.       14.6667% read of text file.       15.3333% read of text file.       16% read of text file.       16.6667% read of text file.       17.3333% read of text file.       18% read of text file.       18.6667% read of text file.       19.3333% read of text file.       20% read of text file.       20.6667% read of text file.       21.3333% read of text file.       22% read of text file.       22.6667% read of text file.       23.3333% read of text file.       24% read of text file.       24.6667% read of text file.       25.3333% read of text file.       26% read of text file.       26.6667% read of text file.       27.3333% read of text file.       28% read of text file.       28.6667% read of text file.       29.3333% read of text file.       30% read of text file.       30.6667% read of text file.       31.3333% read of text file.       32% read of text file.       32.6667% read of text file.       33.3333% read of text file.       34% read of text file.       34.6667% read of text file.       35.3333% read of text file.       36% read of text file.       36.6667% read of text file.       37.3333% read of text file.       38% read of text file.       38.6667% read of text file.       39.3333% read of text file.       40% read of text file.       40.6667% read of text file.       41.3333% read of text file.       42% read of text file.       42.6667% read of text file.       43.3333% read of text file.       44% read of text file.       44.6667% read of text file.       45.3333% read of text file.       46% read of text file.       46.6667% read of text file.       47.3333% read of text file.       48% read of text file.       48.6667% read of text file.       49.3333% read of text file.       50% read of text file.       50.6667% read of text file.       51.3333% read of text file.       52% read of text file.       52.6667% read of text file.       53.3333% read of text file.       54% read of text file.       54.6667% read of text file.       55.3333% read of text file.       56% read of text file.       56.6667% read of text file.       57.3333% read of text file.       58% read of text file.       58.6667% read of text file.       59.3333% read of text file.       60% read of text file.       60.6667% read of text file.       61.3333% read of text file.       62% read of text file.       62.6667% read of text file.       63.3333% read of text file.       64% read of text file.       64.6667% read of text file.       65.3333% read of text file.       66% read of text file.       66.6667% read of text file.       67.3333% read of text file.       68% read of text file.       68.6667% read of text file.       69.3333% read of text file.       70% read of text file.       70.6667% read of text file.       71.3333% read of text file.       72% read of text file.       72.6667% read of text file.       73.3333% read of text file.       74% read of text file.       74.6667% read of text file.       75.3333% read of text file.       76% read of text file.       76.6667% read of text file.       77.3333% read of text file.       78% read of text file.       78.6667% read of text file.       79.3333% read of text file.       80% read of text file.       80.6667% read of text file.       81.3333% read of text file.       82% read of text file.       82.6667% read of text file.       83.3333% read of text file.       84% read of text file.       84.6667% read of text file.       85.3333% read of text file.       86% read of text file.       86.6667% read of text file.       87.3333% read of text file.       88% read of text file.       88.6667% read of text file.       89.3333% read of text file.       90% read of text file.       90.6667% read of text file.       91.3333% read of text file.       92% read of text file.       92.6667% read of text file.       93.3333% read of text file.       94% read of text file.       94.6667% read of text file.       95.3333% read of text file.       96% read of text file.       96.6667% read of text file.       97.3333% read of text file.       98% read of text file.       98.6667% read of text file.       99.3333% read of text file.        
+ 
+ First 5 lines and 12 columns of the marker text  file. 
 1 0 0 1 0 0 1 1 2 1 2 2 
 1 0 0 0 1 0 1 1 2 1 0 2 
 1 0 0 1 1 0 1 1 2 0 2 2 
@@ -259,7 +261,7 @@ rs67161561 1 0.503
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   text
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpWxlRGn/M.ascii
+ Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpD5iqxA/M.ascii
  Number of individuals:        150
  Number of loci:               100
  File size (gigabytes):       0.0001575
@@ -272,10 +274,10 @@ rs67161561 1 0.503
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $asciifileM
-[1] "/tmp/geo047.vnc/RtmpWxlRGn/M.ascii"
+[1] "/tmp/geo047.vnc/RtmpD5iqxA/M.ascii"
 
 $asciifileMt
-[1] "/tmp/geo047.vnc/RtmpWxlRGn/Mt.ascii"
+[1] "/tmp/geo047.vnc/RtmpD5iqxA/Mt.ascii"
 
 $dim_of_ascii_M
 [1] 150 100
@@ -312,7 +314,7 @@ $dim_of_ascii_M
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   PLINK
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpWxlRGn/M.ascii
+ Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpD5iqxA/M.ascii
  Number of individuals:        150
  Number of loci:               100
  File size (gigabytes):       0.0001575
@@ -325,10 +327,10 @@ $dim_of_ascii_M
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $asciifileM
-[1] "/tmp/geo047.vnc/RtmpWxlRGn/M.ascii"
+[1] "/tmp/geo047.vnc/RtmpD5iqxA/M.ascii"
 
 $asciifileMt
-[1] "/tmp/geo047.vnc/RtmpWxlRGn/Mt.ascii"
+[1] "/tmp/geo047.vnc/RtmpD5iqxA/Mt.ascii"
 
 $dim_of_ascii_M
 [1] 150 100
@@ -550,7 +552,7 @@ The phenotype file has been Uploaded.
 > ###
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  0.451 0.048 0.521 0.001 0.001 
+Time elapsed:  0.502 0.025 0.577 0.001 0.001 
 > grDevices::dev.off()
 null device 
           1 
