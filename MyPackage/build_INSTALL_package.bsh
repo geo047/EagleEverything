@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 echo "UNCOMMENT SOME  OF THIS FIRST TIME IT IS RUN to set up PATHS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 module purge
 
