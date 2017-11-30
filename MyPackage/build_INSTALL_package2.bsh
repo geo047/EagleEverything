@@ -93,6 +93,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
             \"packagedesc.R\", 
             \"ReadMarker.R\",
+            \"ReadZmat.R\",
             \"ReadMap.R\",
             \"ReadPheno.R\",
             \"AM.R\", 
