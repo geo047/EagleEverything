@@ -33,7 +33,7 @@
    }
 
  if (!quiet ){
-   message("Dimension of design matrix, before addition of marker fixed effects is ", nrow(Xmat), "rows and ", ncol(Xmat), "columns.\n")
+   message("Dimension of design matrix, before addition of marker fixed effects is ", nrow(Xmat), " rows and ", ncol(Xmat), " columns.\n")
  }
 
 if(!is.matrix(Xmat))

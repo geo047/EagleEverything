@@ -1241,6 +1241,29 @@ FullPage[[3]][[1]]$children[[1]]$children[[1]]$children[[1]] <-
   tags$img(src = 'images/logo.jpg', width = 80, height = 60)
 ui <- FullPage
 
+get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat") {
+            path_to_file_res <- tryCatch({
+                if(.Platform$OS.type=="unix"){
+                    path_to_file_res <- tk_choose.files()
+                    #print(path_to_file_res)
+                } else {
+                    path_to_file_res <- file.choose()                   
+                }                
+                }, warning = function(war) {
+                    print(paste("Eagle::get_path() Warning: ",war))
+                    path_to_file_res<-defaultpath
+                    return (path_to_file_res)
+                }, error = function(err) {
+                    print(paste("Eagle::get_path() Error: ",err))
+                    path_to_file_res<-defaultpath
+                    return (path_to_file_res)
+                }, finally = {
+                   # path_to_file_res<-"/R/library/Eagle/shiny_app/shinydata/genoDemo.dat"
+                  #  return (path_to_file_res)
+                }) # END tryCatch
+    
+            return (path_to_file_res)
+      }
 
 
 server <- function(input, output, session){
@@ -1264,18 +1287,13 @@ server <- function(input, output, session){
   ##  Read marker path and file name
   ##---------------------------------------- 
   ## upload path and file name
-  path_to_file <- NULL
-  output$choose_marker_file <- renderText(NULL)
+ output$choose_marker_file <- renderText(NULL)
+  path_to_file <- "/R/library/Eagle/shiny_app/shinydata/genoDemo.dat"
   observeEvent(input$choose_marker_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_file <<- tk_choose.files()
-  print(path_to_file)
-     } else {
-       path_to_file <<- file.choose()
-
-     }
+   
+       path_to_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat")
  
-    output$choose_marker_file <- renderText( path_to_file )
+       output$choose_marker_file <- renderText( path_to_file )
   })
   
 
@@ -1291,14 +1309,15 @@ server <- function(input, output, session){
 
      if(input$filetype == "plink"){
 
-        withCallingHandlers({
+       withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
+                 if (file.exists(path_to_file) == TRUE) {
                  geno <<- ReadMarker(filename = path_to_file, type = "PLINK", availmemGb = input$memsize, quiet = FALSE)
+                 }
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
         })
-
 
 
      }
@@ -1322,8 +1341,12 @@ server <- function(input, output, session){
                      missing <- NULL
  
 
+                 if (file.exists(path_to_file) == TRUE) {
                  geno <<- ReadMarker(filename = path_to_file, type = "text", AA = aa, 
                             AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = FALSE , missing=missing) 
+                } else {
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "File does not exist:", path_to_file))
+                 }
 
               },  ## end withCallingHandlers
               message = function(m) {
@@ -1344,20 +1367,15 @@ server <- function(input, output, session){
 
  ##  Read phenotypic  path and file name
   ## upload path and file name
-  path_to_pheno_file <- NULL
+  path_to_pheno_file <- "/R/library/Eagle/shiny_app/shinydata/phenoDemo.dat"
   output$choose_pheno_file <- renderText(NULL)
   observeEvent(input$choose_pheno_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_pheno_file <<- tk_choose.files()
-  print(path_to_pheno_file)
-     } else {
-       path_to_pheno_file <<- file.choose()
 
-     }
-
-
+       path_to_pheno_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/phenoDemo.dat")
+      
     output$choose_pheno_file <- renderText( path_to_pheno_file )
   })
+
 
 
 
@@ -1382,8 +1400,12 @@ server <- function(input, output, session){
 
 
    withCallingHandlers({
-                 shinyjs::html("ReadPheno", "")
+                shinyjs::html("ReadPheno", "")
+                 if (file.exists(path_to_pheno_file) == TRUE) {
                  pheno  <<- ReadPheno(filename = path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
+                 } else {
+                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", path_to_pheno_file))
+                 }
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadPheno", html = m$message, add = TRUE)
@@ -1403,21 +1425,31 @@ server <- function(input, output, session){
   ## Read Z matrix                ## 
   ##------------------------------ss
 
- map <- NULL
+ # map <- NULL
  ##  Read Z matrix  path and file name
   ## upload path and file name
-  path_to_Zmat_file <- NULL
+#  path_to_Zmat_file <- NULL
+#  output$choose_Zmat_file <- renderText(NULL)
+#  observeEvent(input$choose_Zmat_file, {
+#    if(.Platform$OS.type=="unix"){
+#       path_to_Zmat_file <<- tk_choose.files()
+#       print(path_to_Zmat_file)
+#    } else {
+#       path_to_Zmat_file <<- file.choose()
+#
+#     }
+#   output$choose_Zmat_file <- renderText( path_to_Zmat_file )
+#  })
+  
+  path_to_Zmat_file <- "/R/library/Eagle/shiny_app/shinydata/zmatDemo.dat"
   output$choose_Zmat_file <- renderText(NULL)
   observeEvent(input$choose_Zmat_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_Zmat_file <<- tk_choose.files()
-        print(path_to_Zmat_file)
-     } else {
-       path_to_Zmat_file <<- file.choose()
 
-     }
-  output$choose_Zmat_file <- renderText( path_to_Zmat_file )
+       path_to_Zmat_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/zmatDemo.dat")
+      
+    output$choose_Zmat_file <- renderText( path_to_Zmat_file )
   })
+
 
 
    ## Read Zmat  information
@@ -1430,7 +1462,14 @@ server <- function(input, output, session){
 
        withCallingHandlers({
                  shinyjs::html("ReadZmat", "")
+         
+                 if (file.exists(path_to_Zmat_file) == TRUE) {
                  Zmat  <<- ReadZmat(filename = path_to_Zmat_file)
+                 } else {
+                    shinyjs::html(id = "ReadZmat", html = paste0("ReadZmat", "File does not exist:", path_to_Zmat_file))
+                 }
+         
+                 # Zmat  <<- ReadZmat(filename = path_to_Zmat_file
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadZmat", html = m$message, add = TRUE)
@@ -1456,21 +1495,28 @@ server <- function(input, output, session){
   ## Read Map                ## 
   ##-------------------------ss
 
- map <- NULL
+# map <- NULL
  ##  Read map  path and file name
   ## upload path and file name
-  path_to_map_file <- NULL
+#  path_to_map_file <- NULL
+#  output$choose_map_file <- renderText(NULL)
+#  observeEvent(input$choose_map_file, {
+#    if(.Platform$OS.type=="unix"){
+#       path_to_map_file <<- tk_choose.files()
+#        print(path_to_map_file)
+#     } else {
+#       path_to_map_file <<- file.choose()
+#
+#     }
+##    rChoiceDialogs::rchoose.files()
+#    output$choose_map_file <- renderText( path_to_map_file )
+#  })
+  path_to_map_file <- "/R/library/Eagle/shiny_app/shinydata/mapDemo.dat"
   output$choose_map_file <- renderText(NULL)
   observeEvent(input$choose_map_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_map_file <<- tk_choose.files()
-        print(path_to_map_file)
-     } else {
-       path_to_map_file <<- file.choose()
+  
+    path_to_map_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/mapDemo.dat")
 
-     }
-
-#    rChoiceDialogs::rchoose.files()
     output$choose_map_file <- renderText( path_to_map_file )
   })
 
@@ -1491,7 +1537,15 @@ server <- function(input, output, session){
 
        withCallingHandlers({
                  shinyjs::html("ReadMap", "")
-                 map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+         
+                 if (file.exists(path_to_map_file) == TRUE) {
+                    map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+                 }  else {
+                    shinyjs::html(id = "ReadMap", html = paste0("ReadMap", "File does not exist:", path_to_map_file))
+                 }
+         
+               #   map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+         
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadMap", html = m$message, add = TRUE)
