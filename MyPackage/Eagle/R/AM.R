@@ -452,7 +452,9 @@ if(length(indxNA)>0){
  itnum <- 1
 
 
+ looptime <- fasttimer() ;
  while(continue){
+  
   message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
    ## based on selected_locus, form model matrix X
   currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
@@ -526,7 +528,10 @@ if(length(indxNA)>0){
          sigres <- .form_results(trait, selected_loci[-length(selected_loci)], map,  fformula, 
                      indxNA, ncpu, availmemGb, quiet,  extBIC )   
     }
- 
+  looptime <- fasttimer() ;
+  if(!quiet){
+  message(" Time: ", looptime)
+  }
   }  ## end while continue
 
 if( itnum > maxit){
