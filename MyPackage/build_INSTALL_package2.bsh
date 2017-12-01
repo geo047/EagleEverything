@@ -81,7 +81,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"calculate_reduced_a_rcpp.cpp\"  ,
             \"removeRow.cpp\"  ,
             \"removeColumn.cpp\"  ,
-
+            \"fasttimer.cpp\"  ,
             \"calculate_a_and_vara_rcpp.cpp\"  ,
             \"createM_ASCII_rcpp.cpp\"  ,
             \"extract_geno_rcpp.cpp\"  ,
