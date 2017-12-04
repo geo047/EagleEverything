@@ -7,11 +7,11 @@ importFrom(tcltk, tk_choose.files)
 import(shiny,  shinythemes, shinyBS, stats, utils )
 
 export(
+   fasttimer,
    ReadPheno,
    ReadMarker,
    ReadMap,
    ReadZmat,
    AM,
    OpenGUI,
-   SummaryAM,
-   fasttimer)
+   SummaryAM)
