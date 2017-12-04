@@ -13,4 +13,5 @@ export(
    ReadZmat,
    AM,
    OpenGUI,
-   SummaryAM)
+   SummaryAM,
+   fasttimer)
