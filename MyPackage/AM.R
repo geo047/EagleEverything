@@ -466,7 +466,7 @@ if(length(indxNA)>0){
  looptime <- fasttimer() ;
  while(continue){
   profile_str <- ""
-  message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
+  message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
   
   if (profile_time==TRUE) { looptime <- fasttimer() }
    ## based on selected_locus, form model matrix X

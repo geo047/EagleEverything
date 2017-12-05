@@ -454,14 +454,19 @@ if(length(indxNA)>0){
  profile_time <- FALSE
  if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
    profile_time <- TRUE 
+   message(" EAGLE_PROFILE_STR was set! \n")
+ } else {
+   message(" EAGLE_PROFILE_STR was not set! \n")
  }
- profile_str <- ""
+ 
+  
+
  
  
  looptime <- fasttimer() ;
  while(continue){
-  
-  message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
+  profile_str <- ""
+  message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
   
   if (profile_time==TRUE) { looptime <- fasttimer() }
    ## based on selected_locus, form model matrix X
@@ -557,7 +562,7 @@ if(length(indxNA)>0){
    }  ## end if else
 
    
-   if(!quiet){
+   if(profile_time==TRUE){
      message("iteration: ", profile_str)
    }
   
