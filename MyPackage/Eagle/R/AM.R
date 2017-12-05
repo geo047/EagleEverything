@@ -20,6 +20,8 @@
 #' @param  quiet      a logical value. If set to \code{TRUE}, additional runtime output is printed. 
 #' This is useful for error checking and monitoring the progress of a large analysis. 
 #' @param maxit     an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting. 
+#' @param fixit     a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
+#' then the model building process is stopped when extBIC increases in value. 
 #' @details
 #'
 #' \subsection{How to perform a basic AM analysis}{
@@ -84,10 +86,6 @@
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
 #'
-
-
-
-
 #' \subsection{How to perform an analysis where individuals have multiple observations}{
 #'
 #' Suppose, 
@@ -129,16 +127,6 @@
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
 #'
-
-
-
-
-
-
-
-
-
-
 #' \subsection{Dealing with missing marker data}{
 #'
 #' \code{AM} can tolerate some missing marker data. However, ideally, 
@@ -247,7 +235,8 @@ AM <- function(trait=NULL,
                ncpu=detectCores(),
                ngpu=0,
                quiet=TRUE,
-               maxit=20
+               maxit=20,
+               fixit=FALSE
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -453,68 +442,81 @@ if(length(indxNA)>0){
 
 
  while(continue){
-  message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
-   ## based on selected_locus, form model matrix X
-  currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
+     message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
+     ## based on selected_locus, form model matrix X
+     currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
 
 
 
-    ## calculate Ve and Vg
-    Args <- list(geno=geno,availmemGb=availmemGb,
+     ## calculate Ve and Vg
+     Args <- list(geno=geno,availmemGb=availmemGb,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
-    if(itnum==1){
+     if(itnum==1){
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
-         MMt <- do.call(.calcMMt, Args)  
+        MMt <- do.call(.calcMMt, Args)  
 
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
         gc()
-    } 
-    if(!quiet){
-      message(" Calculating variance components for multiple-locus model. \n")
-    }
-    vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
-    gc()
-    best_ve <- vc[["ve"]]
-    best_vg <- vc[["vg"]]
+     }  
+     if(!quiet){
+        message(" Calculating variance components for multiple-locus model. \n")
+     }
+     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
+     gc()
+     best_ve <- vc[["ve"]]
+     best_vg <- vc[["vg"]]
+
+     ## Calculate extBIC
+     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
+     gc()
+
+     ## set vector extBIC
+     extBIC <- c(extBIC, new_extBIC)
 
 
+     ## Print findings to screen
+    .print_results(itnum, selected_loci, map,  extBIC)
+  
 
-    ## Calculate extBIC
-    new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
-    gc()
-
-    ## set vector extBIC
-    extBIC <- c(extBIC, new_extBIC)
-
-
-    ## Print findings to screen
-   .print_results(itnum, selected_loci, map,  extBIC)
-   
-
-   ## Select new locus if extBIC is still decreasing 
-   if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
-     ## find QTL
-     ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+    ## select new locus if fixit 
+    if (fixit){
+       if (itnum <= maxit){
+           ## find QTL
+           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
-      new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-     gc()
-     selected_loci <- c(selected_loci, new_selected_locus)
+          new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+          gc()
+          selected_loci <- c(selected_loci, new_selected_locus)
+       } else {
+         continue <- FALSE
+       }
+    } else {
 
-   }  else {
-     ## terminate while loop, 
-     continue <- FALSE
-   }  ## end if else
+        ## Select new locus if extBIC is still decreasing 
+        if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
+           ## find QTL
+           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+                     MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
+                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
+          new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+          gc()
+          selected_loci <- c(selected_loci, new_selected_locus)
 
+       }  else {
+            ## terminate while loop, 
+            continue <- FALSE
+       }  ## end if else
 
+   } ## end if fixit
    itnum <- itnum + 1
    ## alternate stopping rule - if maxit has been exceeded.
     if(itnum > maxit){

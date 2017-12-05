@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+
+
 echo "UNCOMMENT SOME  OF THIS FIRST TIME IT IS RUN to set up PATHS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 module purge
 
@@ -246,7 +248,7 @@ R CMD build Eagle
 #exit -1 
 
 
- R CMD check --as-cran Eagle_1.1.0.tar.gz 
+R CMD check --as-cran Eagle_1.1.0.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs
