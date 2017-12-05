@@ -312,14 +312,9 @@ echo "Remember to commit the changes to the github :-)"
 
 
 rm tmp.R  tmp.Rout 
-if 
+
 
 if [ -d $DIR/Eagle.Rcheck ] ; then
     rm -rf $DIR/Eagle.Rcheck
 fi
-
-
-
-
-
 

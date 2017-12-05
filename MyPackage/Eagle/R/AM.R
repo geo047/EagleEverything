@@ -463,7 +463,7 @@ if(length(indxNA)>0){
   
   message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
   
-  if (profile_time==TRUE)  looptime <- fasttimer() ;
+  if (profile_time==TRUE) { looptime <- fasttimer() }
    ## based on selected_locus, form model matrix X
   currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
@@ -479,18 +479,20 @@ if(length(indxNA)>0){
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
-    if (profile_time==TRUE)  looptime <- fasttimer() ;                
     if(itnum==1){
-        if(!quiet)
+        if(!quiet) {
            message(" quiet=FALSE: calculating M %*% M^t. \n")
+         }
+         if (profile_time==TRUE) { looptime <- fasttimer() }   
          MMt <- do.call(.calcMMt, Args)  
-        if (profile_time==TRUE) {
+         if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","MMt:",looptime)
           }
 
-         if(!quiet)
+         if(!quiet) {
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
+         }
          invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
          if (profile_time==TRUE) {
             looptime <- fasttimer() ;
@@ -504,8 +506,8 @@ if(length(indxNA)>0){
     if(!quiet){
       message(" Calculating variance components for multiple-locus model. \n")
     }
+    if (profile_time==TRUE) { looptime <- fasttimer() }   
     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
-    
     if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","calcVC:",looptime)
@@ -517,6 +519,7 @@ if(length(indxNA)>0){
 
     
     ## Calculate extBIC
+   if (profile_time==TRUE) { looptime <- fasttimer() }   
     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
     if (profile_time==TRUE) {
             looptime <- fasttimer() ;
@@ -534,18 +537,19 @@ if(length(indxNA)>0){
 
    ## Select new locus if extBIC is still decreasing 
    if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
-     ## find QTL
-     ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+      ## find QTL
+      ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
                  
+      if (profile_time==TRUE) { looptime <- fasttimer() }       
       new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-       if (profile_time==TRUE) {
+      if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","find_qtl:",looptime)
-    }
-     gc()
-     selected_loci <- c(selected_loci, new_selected_locus)
+      }
+      gc()
+      selected_loci <- c(selected_loci, new_selected_locus)
 
    }  else {
      ## terminate while loop, 
