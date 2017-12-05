@@ -451,8 +451,9 @@ if(length(indxNA)>0){
  continue <- TRUE
  itnum <- 1
 
+ profile_time <- FALSE
  if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
-   prifle_time <- TRUE 
+   profile_time <- TRUE 
  }
  profile_str <- ""
  
@@ -462,13 +463,13 @@ if(length(indxNA)>0){
   
   message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
   
-  if (prifle_time==TRUE)  looptime <- fasttimer() ;
+  if (profile_time==TRUE)  looptime <- fasttimer() ;
    ## based on selected_locus, form model matrix X
   currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
 
-  if (prifle_time==TRUE) {
+  if (profile_time==TRUE) {
     looptime <- fasttimer() ;
     profile_str <- paste0("constructX:",looptime)
   }
@@ -478,12 +479,12 @@ if(length(indxNA)>0){
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
-    if (prifle_time==TRUE)  looptime <- fasttimer() ;                
+    if (profile_time==TRUE)  looptime <- fasttimer() ;                
     if(itnum==1){
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
          MMt <- do.call(.calcMMt, Args)  
-        if (prifle_time==TRUE) {
+        if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","MMt:",looptime)
           }
@@ -491,7 +492,7 @@ if(length(indxNA)>0){
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
          invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-         if (prifle_time==TRUE) {
+         if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","invMMt:",looptime)
           }
@@ -505,7 +506,7 @@ if(length(indxNA)>0){
     }
     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
     
-    if (prifle_time==TRUE) {
+    if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","calcVC:",looptime)
     }
@@ -517,7 +518,7 @@ if(length(indxNA)>0){
     
     ## Calculate extBIC
     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
-    if (prifle_time==TRUE) {
+    if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","calc_extBIC:",looptime)
     }
@@ -539,7 +540,7 @@ if(length(indxNA)>0){
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
                  
       new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-       if (prifle_time==TRUE) {
+       if (profile_time==TRUE) {
             looptime <- fasttimer() ;
             profile_str <- paste0(profile_str,",","find_qtl:",looptime)
     }
