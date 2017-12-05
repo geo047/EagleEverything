@@ -64,7 +64,13 @@ DIR=$PWD
 EAGLEVERSION=`grep "[Vv]ersion:" DESCRIPTION.OLD | awk '{print $2}' | sed 's/[[:space:]]//g'`
 echo "The version being created is: ${EAGLEVERSION}"
 
-
+ 
+if [ -f tmp.Rout ] ; then 
+    rm tmp.Rout  
+fi
+if [ -f tmp.R ] ; then 
+    rm tmp.R
+fi
 
 
 ## removing Eagle and Eagle.Rcheck
@@ -142,11 +148,13 @@ echo  "    example_code=FALSE, code_files=c(
             \"extract_geno.R\", 
             \"constructX.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
+echo  "Rcpp::compileAttributes(pkgdir = \"Eagle\", verbose = TRUE)" >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
 echo  " library(roxygen2) " >> ./tmp.R
 echo  " setwd(\"./Eagle\")  " >> ./tmp.R
 echo  "  roxygenise() " >> ./tmp.R
 echo "  " >> tmp.R
+
 
 # run tmp.R in batch mode of R
 echo "Running R CMD BATCH ./tmp.R"  
@@ -266,8 +274,6 @@ rm ./Eagle/.RData
  
  
 
-##exit -1 
-
 ## 20/07/2017
 ## Decided to create an R-forge site for Eagle so that I can have my own web page and mailing list
 ## copying files onto mac from which to subversion onto R-forge
@@ -277,9 +283,13 @@ rm ./Eagle/.RData
 ### scp -rp ./Eagle/*  geo047@140.253.151.16:~/R-forge/Eagle/eagle/pkg/.
 ## scp -rp ./Eagle/*  geo047@140.253.151.117:~/R-forge/Eagle/eagle/pkg/.
 
-##exit -1
+
 
 cd $DIR
+# compileAttributees alows us to add/remove c++ functions that use Rcpp to create their own header/R interface code
+# Note that if you build your package using RStudio or devtools then the compileAttributes step occurs automatically.
+# R -e "Rcpp::compileAttributes(pkgdir = \"Eagle\", verbose = TRUE)"
+
 if [ $CHECKBUILD -eq 1 ] ; then
     R CMD build Eagle 
     # Comment this as it is slow and will probably fail when I add GPU based code
@@ -289,8 +299,7 @@ fi
 
 NPROCS=`getconf _NPROCESSORS_ONLN`
 
-# Note that if you build your package using RStudio or devtools then the compileAttributes step occurs automatically.
-R -e "Rcpp::compileAttributes(pkgdir = \"Eagle\", verbose = TRUE)"
+
 
 
 if [ ! -z $EAGLE_INSTALL_LIB ] ; then
@@ -303,7 +312,11 @@ echo "Remember to commit the changes to the github :-)"
 
 
 rm tmp.R  tmp.Rout 
+if 
 
+if [ -d $DIR/Eagle.Rcheck ] ; then
+    rm -rf $DIR/Eagle.Rcheck
+fi
 
 
 

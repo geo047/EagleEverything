@@ -451,46 +451,76 @@ if(length(indxNA)>0){
  continue <- TRUE
  itnum <- 1
 
-
+ if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
+   prifle_time <- TRUE 
+ }
+ profile_str <- ""
+ 
+ 
  looptime <- fasttimer() ;
  while(continue){
   
   message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
+  
+  if (prifle_time==TRUE)  looptime <- fasttimer() ;
    ## based on selected_locus, form model matrix X
   currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
 
-
+  if (prifle_time==TRUE) {
+    looptime <- fasttimer() ;
+    profile_str <- paste0("constructX:",looptime)
+  }
 
     ## calculate Ve and Vg
     Args <- list(geno=geno,availmemGb=availmemGb,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
+    if (prifle_time==TRUE)  looptime <- fasttimer() ;                
     if(itnum==1){
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
          MMt <- do.call(.calcMMt, Args)  
-
+        if (prifle_time==TRUE) {
+            looptime <- fasttimer() ;
+            profile_str <- paste0(profile_str,",","MMt:",looptime)
+          }
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-        invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+         if (prifle_time==TRUE) {
+            looptime <- fasttimer() ;
+            profile_str <- paste0(profile_str,",","invMMt:",looptime)
+          }
         gc()
     } 
+   
+    
+    
     if(!quiet){
       message(" Calculating variance components for multiple-locus model. \n")
     }
     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
+    
+    if (prifle_time==TRUE) {
+            looptime <- fasttimer() ;
+            profile_str <- paste0(profile_str,",","calcVC:",looptime)
+    }
     gc()
     best_ve <- vc[["ve"]]
     best_vg <- vc[["vg"]]
 
 
-
+    
     ## Calculate extBIC
     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
+    if (prifle_time==TRUE) {
+            looptime <- fasttimer() ;
+            profile_str <- paste0(profile_str,",","calc_extBIC:",looptime)
+    }
     gc()
 
     ## set vector extBIC
@@ -507,7 +537,12 @@ if(length(indxNA)>0){
      ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
+                 
       new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+       if (prifle_time==TRUE) {
+            looptime <- fasttimer() ;
+            profile_str <- paste0(profile_str,",","find_qtl:",looptime)
+    }
      gc()
      selected_loci <- c(selected_loci, new_selected_locus)
 
@@ -516,10 +551,16 @@ if(length(indxNA)>0){
      continue <- FALSE
    }  ## end if else
 
-
+   
+   if(!quiet){
+     message("iteration: ", profile_str)
+   }
+  
    itnum <- itnum + 1
+   
+   
    ## alternate stopping rule - if maxit has been exceeded.
-    if(itnum > maxit){
+   if(itnum > maxit){
          continue <- FALSE 
          .print_header()
          ## need to remove the last selected locus since we don't go on and calculate its H and extBIC 
@@ -528,10 +569,7 @@ if(length(indxNA)>0){
          sigres <- .form_results(trait, selected_loci[-length(selected_loci)], map,  fformula, 
                      indxNA, ncpu, availmemGb, quiet,  extBIC )   
     }
-  looptime <- fasttimer() ;
-  if(!quiet){
-  message(" Time: ", looptime)
-  }
+  
   }  ## end while continue
 
 if( itnum > maxit){

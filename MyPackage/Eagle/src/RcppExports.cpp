@@ -3,8 +3,7 @@
 
 #include <RcppEigen.h>
 #include <Rcpp.h>
-
-using namespace Rcpp;
+using namespace Rcpp ; 
 
 // calculate_a_and_vara_rcpp
 Rcpp::List calculate_a_and_vara_rcpp(Rcpp::CharacterVector f_name_ascii, Rcpp::NumericVector selected_loci, Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt, Eigen::Map<Eigen::MatrixXd> dim_reduced_vara, double max_memory_in_Gbytes, std::vector <long> dims, Eigen::VectorXd a, bool quiet, Rcpp::Function message);

@@ -12,7 +12,10 @@ extern "C" {
 }
 #endif
 
-// [[Rcpp::export]]
+
+//' Provides access the gettimeofday POSIX function from the sys/time.h header.
+//' @return Returns the time since it was last called in milliseconds (ms), or 0 on the first call.
+//[[Rcpp::export]]
 double fasttimer(  ){
     static int lastcall = 0 ;
     
