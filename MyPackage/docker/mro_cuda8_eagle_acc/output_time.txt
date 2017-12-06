@@ -1,0 +1,734 @@
+
+R version 3.4.2 (2017-09-28) -- "Short Summer"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+Microsoft R Open 3.4.2
+The enhanced R distribution from Microsoft
+Microsoft packages Copyright (C) 2017 Microsoft Corporation
+
+Using the Intel MKL for parallel mathematical computing (using 2 cores).
+
+Default CRAN mirror snapshot taken on 2017-10-15.
+See: https://mran.microsoft.com/.
+
+> Eagle::OpenGUI()
+Loading required package: shiny
+
+Attaching package: ‘shinyjs’
+
+The following object is masked from ‘package:shiny’:
+
+    runExample
+
+The following objects are masked from ‘package:methods’:
+
+    removeClass, show
+
+
+Listening on http://0.0.0.0:3838
+[1] "Eagle::get_path() Error:  Error in structure(.External(.C_dotTclObjv, objv), class = \"tclObj\"): [tcl] invalid command name \"tk_getOpenFile\".\n\n"
+ Getting number of individuals and snp from file ... 
+ Beginning creation of reformatted file ... 
+ A text file is being assumed as the input data file type. 
+
+ Reading text File  
+
+ Loading file 
+0% read of text file.       0.666667% read of text file.       1.33333% read of text file.       2% read of text file.       2.66667% read of text file.       3.33333% read of text file.       4% read of text file.       4.66667% read of text file.       5.33333% read of text file.       6% read of text file.       6.66667% read of text file.       7.33333% read of text file.       8% read of text file.       8.66667% read of text file.       9.33333% read of text file.       10% read of text file.       10.6667% read of text file.       11.3333% read of text file.       12% read of text file.       12.6667% read of text file.       13.3333% read of text file.       14% read of text file.       14.6667% read of text file.       15.3333% read of text file.       16% read of text file.       16.6667% read of text file.       17.3333% read of text file.       18% read of text file.       18.6667% read of text file.       19.3333% read of text file.       20% read of text file.       20.6667% read of text file.       21.3333% read of text file.       22% read of text file.       22.6667% read of text file.       23.3333% read of text file.       24% read of text file.       24.6667% read of text file.       25.3333% read of text file.       26% read of text file.       26.6667% read of text file.       27.3333% read of text file.       28% read of text file.       28.6667% read of text file.       29.3333% read of text file.       30% read of text file.       30.6667% read of text file.       31.3333% read of text file.       32% read of text file.       32.6667% read of text file.       33.3333% read of text file.       34% read of text file.       34.6667% read of text file.       35.3333% read of text file.       36% read of text file.       36.6667% read of text file.       37.3333% read of text file.       38% read of text file.       38.6667% read of text file.       39.3333% read of text file.       40% read of text file.       40.6667% read of text file.       41.3333% read of text file.       42% read of text file.       42.6667% read of text file.       43.3333% read of text file.       44% read of text file.       44.6667% read of text file.       45.3333% read of text file.       46% read of text file.       46.6667% read of text file.       47.3333% read of text file.       48% read of text file.       48.6667% read of text file.       49.3333% read of text file.       50% read of text file.       50.6667% read of text file.       51.3333% read of text file.       52% read of text file.       52.6667% read of text file.       53.3333% read of text file.       54% read of text file.       54.6667% read of text file.       55.3333% read of text file.       56% read of text file.       56.6667% read of text file.       57.3333% read of text file.       58% read of text file.       58.6667% read of text file.       59.3333% read of text file.       60% read of text file.       60.6667% read of text file.       61.3333% read of text file.       62% read of text file.       62.6667% read of text file.       63.3333% read of text file.       64% read of text file.       64.6667% read of text file.       65.3333% read of text file.       66% read of text file.       66.6667% read of text file.       67.3333% read of text file.       68% read of text file.       68.6667% read of text file.       69.3333% read of text file.       70% read of text file.       70.6667% read of text file.       71.3333% read of text file.       72% read of text file.       72.6667% read of text file.       73.3333% read of text file.       74% read of text file.       74.6667% read of text file.       75.3333% read of text file.       76% read of text file.       76.6667% read of text file.       77.3333% read of text file.       78% read of text file.       78.6667% read of text file.       79.3333% read of text file.       80% read of text file.       80.6667% read of text file.       81.3333% read of text file.       82% read of text file.       82.6667% read of text file.       83.3333% read of text file.       84% read of text file.       84.6667% read of text file.       85.3333% read of text file.       86% read of text file.       86.6667% read of text file.       87.3333% read of text file.       88% read of text file.       88.6667% read of text file.       89.3333% read of text file.       90% read of text file.       90.6667% read of text file.       91.3333% read of text file.       92% read of text file.       92.6667% read of text file.       93.3333% read of text file.       94% read of text file.       94.6667% read of text file.       95.3333% read of text file.       96% read of text file.       96.6667% read of text file.       97.3333% read of text file.       98% read of text file.       98.6667% read of text file.       99.3333% read of text file.        
+ 
+ First 5 lines and 12 columns of the marker text  file. 
+1 0 0 1 0 0 1 1 2 1 2 2 
+1 0 0 0 1 0 1 1 2 1 0 2 
+1 0 0 1 1 0 1 1 2 0 2 2 
+1 0 2 1 1 0 1 2 2 1 2 2 
+1 0 0 1 1 0 1 0 0 1 0 1 
+
+
+                    Summary of Marker File  
+                   ~~~~~~~~~~~~~~~~~~~~~~~~   
+ File type:                   text
+ Reformatted ASCII file name:  /tmp/Rtmpu3Y96v/M.ascii
+ Number of individuals:        150
+ Number of loci:               4998
+ File size (gigabytes):       0.00787185
+ Available memory (gigabytes): 8
+
+
+
+ The marker file has been Uploaded
+
+
+ Loading Phenotype file ... 
+
+
+               Summary of Phenotype File  
+
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   /R/library/Eagle/shiny_app/shinydata/phenoDemo.dat
+
+ Number of individuals:       150
+
+ Number of columns:           6
+
+
+ First 5 rows of the phenotype file are 
+
+23.1142863322389 -0.082271 -0.064875 19 9.08161236093003 4
+8.30074276066739 -0.079114 -0.068167 40 3.51477482977412 4
+20.0855313237688 -0.081068 -0.056846 21 10.4064453968186 4
+10.075239046444 -0.082542 -0.063059 27 10.3809801451631 4
+13.2050016517253 -0.0786 -0.064641 37 8.63669697290398 4
+
+ Column classes are  
+
+              trait1           numeric
+
+                 pc1           numeric
+
+                 pc2           numeric
+
+                 age           integer
+
+              trait2           numeric
+
+           eyecolour            factor
+
+
+ WARNING: if the column classes are incorrect, these will need to be changed by the user.
+
+
+
+The phenotype file has been Uploaded.
+[1] FALSE
+
+
+
+
+                    Multiple-Locus Association Mapping
+                            Version 1.1 
+
+ 
+   . ,-"-.   ,-"-. ,-"-.   ,-"-. ,-"-. ,-"-. ,-"-.   ,-"-. ,-"-.    
+    X | | \ / | | X | | \ / | | X | | \ / | | X | | \ / | | X | | \ /   
+   / \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X|   
+      `-!-' `-!-"   `-!-' `-!-'   `-!-' `-!-"   `-!-' `-!-'   `-!-' `-     
+
+
+WARNING: no map object has been specified. A generic map 
+         will be assumed.                                
+ Map file has not been supplied. An artificial map is being created but this map is not used in the analysis. 
+
+ It is only used for the reporting of results. 
+
+Dimension of design matrix, before addition of marker fixed effects is 150 rows and 1 columns.
+
+
+
+ Iteration1: Searching for most significant marker-trait association
+
+
+ quiet=FALSE: calculating M %*% M^t. 
+
+ Number of cores being used for calculation is .. 1
+ Dimension of M%*%M^t is 150 by 150 
+
+ First few rows and 5 columns of M%*%M^t are: 
+
+ 1.904915  0.616252  0.625426  0.606553  0.607602 
+ 0.616252  1.909633  0.618873  0.605767  0.578768 
+ 0.625426  0.618873  1.916710  0.605242  0.604718 
+ 0.606553  0.605767  0.605242  1.909109  0.593185 
+ 0.607602  0.578768  0.604718  0.593185  1.894954 
+
+
+
+ Calculating variance components for multiple-locus model. 
+
+ Significant marker-trait association found. 
+
+ New results after iteration 1are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         925.74   
+
+
+
+
+ Dimension of H is 150 by 150 
+
+ First few rows and 5 columns of H are: 
+
+ 37.517366  12.136809  12.317493  11.945800  11.966450 
+ 12.136809  37.610289  12.188433  11.930313  11.398585 
+ 12.317493  12.188433  37.749674  11.919988  11.909663 
+ 11.945800  11.930313  11.919988  37.599964  11.682517 
+ 11.966450  11.398585  11.909663  11.682517  37.321194 
+
+
+
+ Dimension of P is 150 by 150 
+
+ First few rows and 5 columns of P are: 
+
+ 0.039145  -0.000837  -0.000900  -0.000224  -0.000706 
+ -0.000837  0.038295  -0.001100  -0.000533  -0.000203 
+ -0.000900  -0.001100  0.038401  -0.000401  -0.000819 
+ -0.000224  -0.000533  -0.000401  0.038956  -0.000314 
+ -0.000706  -0.000203  -0.000819  -0.000314  0.038385 
+
+
+
+ 
+
+
+WARNING: these results may be unstable.
+
+ The sum of the diagonal elements of the square root of M %*% t(M) and its inverse is 150 where 
+
+  it should have been 150
+
+  This can occur if the genotype file contains near identical rows and/or columns.  Please check.
+
+
+ Dimension of sqrt(M %*% M^t) is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t) are: 
+
+ 1.197426  0.067409  0.068918  0.059030  0.065001 
+ 0.067409  1.208064  0.070519  0.062949  0.056618 
+ 0.068918  0.070519  1.206617  0.060561  0.065736 
+ 0.059030  0.062949  0.060561  1.199674  0.058928 
+ 0.065001  0.056618  0.065736  0.058928  1.204701 
+
+
+
+ Dimension of sqrt(M %*% M^t)^-1 is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t)^-1 are: 
+
+ 0.874572  -0.012212  -0.013002  -0.005295  -0.010704 
+ -0.012212  0.865178  -0.015079  -0.008803  -0.004901 
+ -0.013002  -0.015079  0.866409  -0.007139  -0.011839 
+ -0.005295  -0.008803  -0.007139  0.872557  -0.006227 
+ -0.010704  -0.004901  -0.011839  -0.006227  0.866548 
+
+
+
+ quiet =FALSE: beginning calculation of the BLUP estimates for dimension reduced model. 
+
+ Length of BLUPs is 150
+
+ The first 5 elements of the vector are BLUPs
+
+ 11.410566  -1.166438  8.974547  0.608299  3.046620 
+
+
+
+ quiet = FALSE: beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. 
+
+ Dimension of SE of BLUPs is 150 by 150 
+
+ First few rows and 5 columns of SE of BLUPs are: 
+
+ 19.573283  -0.142072  -0.127611  -0.121811  -0.145588 
+ -0.142072  19.526482  -0.150353  -0.143515  -0.171546 
+ -0.127611  -0.150353  19.558821  -0.128911  -0.154077 
+ -0.121811  -0.143515  -0.128911  19.570833  -0.147068 
+ -0.145588  -0.171546  -0.154077  -0.147068  19.518099 
+
+
+
+ quiet = FALSE: beginning calculation of BLUPS and their standard errors for full model. 
+
+Inside internal function calculate_a_and_vara_rcpp: Need memory (gigabytes)  0
+ Length of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are BLUPs for full model
+
+ 28.805871  -12.322749  -40.341301  8.069615  -59.121740 
+
+
+
+ Length of SE of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are SE of BLUPs for full model
+
+ 277.032960  89.085531  2076.352088  548.507458  515.132491 
+
+
+
+ quiet = FALSE: beginning calculation of outlier test statistics. 
+
+ Length of outlier test statistic is 4998
+
+ The first 5 elements of the vector are outlier test statistic
+
+ 2.995233  1.704543  0.783788  0.118720  6.785400 
+
+
+
+ Time: 1295.73
+
+
+ Iteration2: Searching for most significant marker-trait association
+
+
+ Calculating variance components for multiple-locus model. 
+
+ Significant marker-trait association found. 
+
+ New results after iteration 2are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         925.74   
+          M2207           1              2207           2207            887.80   
+
+
+
+
+ Dimension of H is 150 by 150 
+
+ First few rows and 5 columns of H are: 
+
+ 25.328072  8.193592  8.315572  8.064641  8.078582 
+ 8.193592  25.390805  8.228443  8.054186  7.695215 
+ 8.315572  8.228443  25.484904  8.047215  8.040245 
+ 8.064641  8.054186  8.047215  25.383835  7.886898 
+ 8.078582  7.695215  8.040245  7.886898  25.195637 
+
+
+
+ Dimension of P is 150 by 150 
+
+ First few rows and 5 columns of P are: 
+
+ 0.056103  -0.001930  -0.003331  0.000410  -0.001728 
+ -0.001930  0.056471  -0.002362  -0.000517  -0.000551 
+ -0.003331  -0.002362  0.054759  0.000194  -0.001938 
+ 0.000410  -0.000517  0.000194  0.057412  -0.000197 
+ -0.001728  -0.000551  -0.001938  -0.000197  0.056611 
+
+
+
+ 
+
+
+WARNING: these results may be unstable.
+
+ The sum of the diagonal elements of the square root of M %*% t(M) and its inverse is 150 where 
+
+  it should have been 150
+
+  This can occur if the genotype file contains near identical rows and/or columns.  Please check.
+
+
+ Dimension of sqrt(M %*% M^t) is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t) are: 
+
+ 1.197426  0.067409  0.068918  0.059030  0.065001 
+ 0.067409  1.208064  0.070519  0.062949  0.056618 
+ 0.068918  0.070519  1.206617  0.060561  0.065736 
+ 0.059030  0.062949  0.060561  1.199674  0.058928 
+ 0.065001  0.056618  0.065736  0.058928  1.204701 
+
+
+
+ Dimension of sqrt(M %*% M^t)^-1 is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t)^-1 are: 
+
+ 0.874572  -0.012212  -0.013002  -0.005295  -0.010704 
+ -0.012212  0.865178  -0.015079  -0.008803  -0.004901 
+ -0.013002  -0.015079  0.866409  -0.007139  -0.011839 
+ -0.005295  -0.008803  -0.007139  0.872557  -0.006227 
+ -0.010704  -0.004901  -0.011839  -0.006227  0.866548 
+
+
+
+ quiet =FALSE: beginning calculation of the BLUP estimates for dimension reduced model. 
+
+ Length of BLUPs is 150
+
+ The first 5 elements of the vector are BLUPs
+
+ 5.548274  -3.161589  2.936698  2.841518  1.066251 
+
+
+
+ quiet = FALSE: beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. 
+
+ Dimension of SE of BLUPs is 150 by 150 
+
+ First few rows and 5 columns of SE of BLUPs are: 
+
+ 12.741306  -0.256780  -0.572975  0.097827  -0.257962 
+ -0.256780  13.127630  -0.267188  -0.035606  -0.170155 
+ -0.572975  -0.267188  12.702808  0.098426  -0.268474 
+ 0.097827  -0.035606  0.098426  13.143727  -0.038459 
+ -0.257962  -0.170155  -0.268474  -0.038459  13.122779 
+
+
+
+ quiet = FALSE: beginning calculation of BLUPS and their standard errors for full model. 
+
+Inside internal function calculate_a_and_vara_rcpp: Need memory (gigabytes)  0
+ Length of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are BLUPs for full model
+
+ 18.107557  -14.946006  -33.642695  -5.761802  -39.561469 
+
+
+
+ Length of SE of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are SE of BLUPs for full model
+
+ 185.451504  60.047230  1401.133613  367.667616  342.505040 
+
+
+
+ quiet = FALSE: beginning calculation of outlier test statistics. 
+
+ Length of outlier test statistic is 4998
+
+ The first 5 elements of the vector are outlier test statistic
+
+ 1.768029  3.720123  0.807797  0.090294  4.569597 
+
+
+
+ Time: 983.533
+
+
+ Iteration3: Searching for most significant marker-trait association
+
+
+ Calculating variance components for multiple-locus model. 
+
+ Significant marker-trait association found. 
+
+ New results after iteration 3are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         925.74   
+          M2207           1              2207           2207            887.80   
+          M4503           1              4503           4503            886.76   
+
+
+
+
+ Dimension of H is 150 by 150 
+
+ First few rows and 5 columns of H are: 
+
+ 22.060118  7.136414  7.242655  7.024101  7.036243 
+ 7.136414  22.114757  7.166768  7.014994  6.702340 
+ 7.242655  7.166768  22.196715  7.008923  7.002853 
+ 7.024101  7.014994  7.008923  22.108686  6.869291 
+ 7.036243  6.702340  7.002853  6.869291  21.944770 
+
+
+
+ Dimension of P is 150 by 150 
+
+ First few rows and 5 columns of P are: 
+
+ 0.064336  -0.002320  -0.003897  0.000368  -0.002065 
+ -0.002320  0.064697  -0.002809  -0.000733  -0.000743 
+ -0.003897  -0.002809  0.062804  0.000127  -0.002301 
+ 0.000368  -0.000733  0.000127  0.065779  -0.000336 
+ -0.002065  -0.000743  -0.002301  -0.000336  0.064911 
+
+
+
+ 
+
+
+WARNING: these results may be unstable.
+
+ The sum of the diagonal elements of the square root of M %*% t(M) and its inverse is 150 where 
+
+  it should have been 150
+
+  This can occur if the genotype file contains near identical rows and/or columns.  Please check.
+
+
+ Dimension of sqrt(M %*% M^t) is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t) are: 
+
+ 1.197426  0.067409  0.068918  0.059030  0.065001 
+ 0.067409  1.208064  0.070519  0.062949  0.056618 
+ 0.068918  0.070519  1.206617  0.060561  0.065736 
+ 0.059030  0.062949  0.060561  1.199674  0.058928 
+ 0.065001  0.056618  0.065736  0.058928  1.204701 
+
+
+
+ Dimension of sqrt(M %*% M^t)^-1 is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t)^-1 are: 
+
+ 0.874572  -0.012212  -0.013002  -0.005295  -0.010704 
+ -0.012212  0.865178  -0.015079  -0.008803  -0.004901 
+ -0.013002  -0.015079  0.866409  -0.007139  -0.011839 
+ -0.005295  -0.008803  -0.007139  0.872557  -0.006227 
+ -0.010704  -0.004901  -0.011839  -0.006227  0.866548 
+
+
+
+ quiet =FALSE: beginning calculation of the BLUP estimates for dimension reduced model. 
+
+ Length of BLUPs is 150
+
+ The first 5 elements of the vector are BLUPs
+
+ 4.970864  -3.884367  2.379632  2.070285  0.422459 
+
+
+
+ quiet = FALSE: beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. 
+
+ Dimension of SE of BLUPs is 150 by 150 
+
+ First few rows and 5 columns of SE of BLUPs are: 
+
+ 11.082815  -0.241854  -0.513078  0.065780  -0.240894 
+ -0.241854  11.411050  -0.250278  -0.055328  -0.168498 
+ -0.513078  -0.250278  11.050292  0.066985  -0.249478 
+ 0.065780  -0.055328  0.066985  11.421912  -0.055155 
+ -0.240894  -0.168498  -0.249478  -0.055155  11.411533 
+
+
+
+ quiet = FALSE: beginning calculation of BLUPS and their standard errors for full model. 
+
+Inside internal function calculate_a_and_vara_rcpp: Need memory (gigabytes)  0
+ Length of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are BLUPs for full model
+
+ 18.081609  -13.386619  -20.366118  -10.818755  -41.886034 
+
+
+
+ Length of SE of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are SE of BLUPs for full model
+
+ 161.523598  52.193564  1212.663332  319.113788  298.077621 
+
+
+
+ quiet = FALSE: beginning calculation of outlier test statistics. 
+
+ Length of outlier test statistic is 4998
+
+ The first 5 elements of the vector are outlier test statistic
+
+ 2.024129  3.433404  0.342039  0.366783  5.885849 
+
+
+
+ Time: 993.672
+
+
+ Iteration4: Searching for most significant marker-trait association
+
+
+ Calculating variance components for multiple-locus model. 
+
+ Significant marker-trait association found. 
+
+ New results after iteration 4are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         925.74   
+          M2207           1              2207           2207            887.80   
+          M4503           1              4503           4503            886.76   
+           M873           1               873            873            885.10   
+
+
+
+
+ Dimension of H is 150 by 150 
+
+ First few rows and 5 columns of H are: 
+
+ 17.204470  4.104105  4.165204  4.039515  4.046497 
+ 4.104105  17.235892  4.121562  4.034278  3.854472 
+ 4.165204  4.121562  17.283026  4.030786  4.027295 
+ 4.039515  4.034278  4.030786  17.232401  3.950485 
+ 4.046497  3.854472  4.027295  3.950485  17.138134 
+
+
+
+ Dimension of P is 150 by 150 
+
+ First few rows and 5 columns of P are: 
+
+ 0.072919  -0.002479  -0.004262  0.000429  -0.002004 
+ -0.002479  0.073806  -0.002858  -0.000575  -0.000647 
+ -0.004262  -0.002858  0.071766  0.000272  -0.002157 
+ 0.000429  -0.000575  0.000272  0.074791  -0.000622 
+ -0.002004  -0.000647  -0.002157  -0.000622  0.073954 
+
+
+
+ 
+
+
+WARNING: these results may be unstable.
+
+ The sum of the diagonal elements of the square root of M %*% t(M) and its inverse is 150 where 
+
+  it should have been 150
+
+  This can occur if the genotype file contains near identical rows and/or columns.  Please check.
+
+
+ Dimension of sqrt(M %*% M^t) is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t) are: 
+
+ 1.197426  0.067409  0.068918  0.059030  0.065001 
+ 0.067409  1.208064  0.070519  0.062949  0.056618 
+ 0.068918  0.070519  1.206617  0.060561  0.065736 
+ 0.059030  0.062949  0.060561  1.199674  0.058928 
+ 0.065001  0.056618  0.065736  0.058928  1.204701 
+
+
+
+ Dimension of sqrt(M %*% M^t)^-1 is 150 by 150 
+
+ First few rows and 5 columns of sqrt(M %*% M^t)^-1 are: 
+
+ 0.874572  -0.012212  -0.013002  -0.005295  -0.010704 
+ -0.012212  0.865178  -0.015079  -0.008803  -0.004901 
+ -0.013002  -0.015079  0.866409  -0.007139  -0.011839 
+ -0.005295  -0.008803  -0.007139  0.872557  -0.006227 
+ -0.010704  -0.004901  -0.011839  -0.006227  0.866548 
+
+
+
+ quiet =FALSE: beginning calculation of the BLUP estimates for dimension reduced model. 
+
+ Length of BLUPs is 150
+
+ The first 5 elements of the vector are BLUPs
+
+ 2.946669  -3.154199  1.221184  1.618970  0.929636 
+
+
+
+ quiet = FALSE: beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. 
+
+ Dimension of SE of BLUPs is 150 by 150 
+
+ First few rows and 5 columns of SE of BLUPs are: 
+
+ 4.163889  -0.079494  -0.179999  0.032385  -0.061772 
+ -0.079494  4.318363  -0.072054  0.001082  -0.045913 
+ -0.179999  -0.072054  4.185401  0.037958  -0.059699 
+ 0.032385  0.001082  0.037958  4.309608  -0.026383 
+ -0.061772  -0.045913  -0.059699  -0.026383  4.317475 
+
+
+
+ quiet = FALSE: beginning calculation of BLUPS and their standard errors for full model. 
+
+Inside internal function calculate_a_and_vara_rcpp: Need memory (gigabytes)  0
+ Length of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are BLUPs for full model
+
+ 11.772934  -9.638443  -9.395667  -7.018249  -23.020938 
+
+
+
+ Length of SE of BLUPs for full model is 4998
+
+ The first 5 elements of the vector are SE of BLUPs for full model
+
+ 60.832230  19.519720  460.267289  120.732963  111.012361 
+
+
+
+ quiet = FALSE: beginning calculation of outlier test statistics. 
+
+ Length of outlier test statistic is 4998
+
+ The first 5 elements of the vector are outlier test statistic
+
+ 2.278430  4.759268  0.191798  0.407973  4.773915 
+
+
+
+ Time: 968.602
+
+
+ Iteration5: Searching for most significant marker-trait association
+
+
+ Calculating variance components for multiple-locus model. 
+
+ Significant marker-trait association found. 
+
+ New results after iteration 5are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         925.74   
+          M2207           1              2207           2207            887.80   
+          M4503           1              4503           4503            886.76   
+           M873           1               873            873            885.10   
+          M2874           1              2874           2874            889.44   
+
+
+
+
+ Time: 350.733
+
+
+
+                           Final  Results  
+
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         925.74   
+          M2207           1              2207           2207            887.80   
+          M4503           1              4503           4503            886.76   
+           M873           1               873            873            885.10   
+
+
+
+
+
+
+
+^C
+Execution halted
