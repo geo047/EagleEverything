@@ -36,14 +36,16 @@ docker pull imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2:latest
 ```
  sudo docker login imtsc-cont-reg.it.csiro.au
  # build an image
- sudo docker build -t mro_cuda8_eagle_master .
- sudo docker tag bow355/mro_eagle_cran  imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_master
- sudo docker push imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_master
+ sudo docker build --no-cache -t mro_shiny_base .
+ sudo docker tag bow355/mro_eagle_cran  imtsc-cont-reg.it.csiro.au/eagle/mro_shiny_base
+ sudo docker push imtsc-cont-reg.it.csiro.au/eagle/mro_shiny_base
 ```
 
-### Running docker on Linux - pass through the DISPAY variable to the container so the tcltk file.chooser works
+### Running docker on Linux 
+Pass through the DISPAY variable to the container so the tcltk file.chooser works
+```
  sudo docker run --rm  -p 3838:3838 --network=host -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro  mro_eagle_master
-
+```
  
 ###  Use singularity to launch the container
 ```
