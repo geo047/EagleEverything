@@ -1,0 +1,237 @@
+# Author: Josh Bowden
+# Company: CSIRO
+# Date: 15/02/2017  
+ 
+# N.B. Make sure singularity is compiled with larger string buffers capacity
+# See: https://github.com/singularityware/singularity/issues/456
+# "The flaw is in src/util/util.c. Just change the line:
+# int len = strlength(str1, 2048) + strlength(str2, 2048) + 1;
+# replace the 2048s with something larger"
+
+BootStrap: docker
+From: ubuntu:xenial
+
+# --vanilla implies: --no-environ --no-site-file --no-init-file
+%runscript
+   R --vanilla 
+
+%post
+	# commands to be executed inside container during bootstrap
+	sed -i 's#archive.ubuntu.com/ubuntu#lips.csiro.au/ubuntu#g' /etc/apt/sources.list
+	echo "deb http://cran.rstudio.com/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list
+	echo "deb-src http://cran.rstudio.com/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list
+	echo "deb-src http://au.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list 
+	echo "deb-src http://au.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list 
+	echo "deb-src http://au.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe" >> /etc/apt/sources.list 
+	echo "deb-src http://au.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe" >> /etc/apt/sources.list
+	echo "deb http://au.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list 
+	echo "deb http://au.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list 
+	echo "deb http://au.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe" >> /etc/apt/sources.list 
+	echo "deb http://au.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe" >> /etc/apt/sources.list	
+	apt-get -y update
+	apt-get install -y build-essential curl wget apt-utils apt-transport-https texinfo-doc-nonfree install-info info xvfb mpack 
+	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9  	
+	
+	apt-get -y install gcc g++ gfortran libblas-dev liblapack-dev 
+	apt-get -y install tcl8.6-dev tk8.6-dev 
+	apt-get -y install bison groff-base libncurses5-dev 
+	apt-get -y install libreadline-dev debhelper libbz2-dev 
+	apt-get -y install liblzma-dev libpcre3-dev libcurl4-openssl-dev xdg-utils zlib1g-dev 	
+	apt-get -y --allow-unauthenticated install default-jdk bash-completion libjpeg-dev nano wget git 
+	apt-get -y install clinfo
+	#rm -rf /var/lib/apt/lists/*
+	apt-get -y update
+	apt-get -y upgrade
+	apt-get -y clean
+	rm -rf /var/lib/apt/lists/*
+    
+    
+	mkdir /data /flush1 /flush2 /memdir /R /R/library /datastore /opt/csiro
+	R_PACKAGE_DIR=/R/library
+	chmod -R 777 ${R_PACKAGE_DIR} 
+	
+	# defaults write org.R-project.R force.LANG en_US.UTF-8
+	# localedef -f UTF-8 -i en_US en_US.UTF-8
+	# locale en_AU.UTF-8
+	
+	###################################
+	# get and make openblas
+	cd /tmp
+	git clone https://github.com/xianyi/OpenBLAS
+	cd OpenBLAS
+	sed -i 's/# NO_AFFINITY = 1/NO_AFFINITY = 1/' Makefile.rule
+	make FC=gfortran NUM_THREADS=20 USE_OPENMP=1 USE_THREAD=1 DYNAMIC_ARCH=1
+	OBLIBPREFIX=/opt/openblas
+	make PREFIX=$OBLIBPREFIX install 
+	echo "$OBLIBPREFIX/lib" >> /etc/ld.so.conf	
+	ldconfig
+	LD_LIBRARY_PATH=$OBLIBPREFIX/lib:$LD_LIBRARY_PATH
+	###################################
+	
+	##################################
+	# get and make R - can't just do sudo apt-get install r-base-core as we need to hack the source for HiPLARb to work
+	OBLIBPREFIX=/opt/openblas
+	RVERSION=3.2.5
+	RZIPVERSION=$RVERSION
+	RLIBPREFIX=/opt/R/${RVERSION}
+	# mkdir $RLIBPREFIX
+	cd /tmp
+	wget -O R-$RZIPVERSION.tar.gz http://cran.csiro.au/src/base/R-3/R-$RZIPVERSION.tar.gz
+	tar -xf R-$RZIPVERSION.tar.gz
+	
+	echo "About to patch the do_matprod() functions so that it can be relinked into R when HiPLARb is unloaded"
+	sed -i 's/SEXP attribute_hidden do_matprod(SEXP call/SEXP do_matprod(SEXP call/' ./R-$RVERSION/src/main/array.c
+
+	echo "About to patch the R_possible_dispatch() functions so that they can be relinked into R when HiPLARb is unloaded"
+	sed -i '$!N;s/^.*\nR_possible_dispatch(SEXP call/SEXP R_possible_dispatch(SEXP call/;P;D' ./R-$RVERSION/src/main/objects.c
+	
+	echo "About to remove attribute_hidden so that the R_has_methods() function can be linked into by HiPLARb"
+	sed -i '$!N;s/^.*attribute_hidden\nRboolean R_has_methods/Rboolean R_has_methods/;P;D' ./R-$RVERSION/src/main/objects.c
+	
+	cd R-$RVERSION
+	make distclean
+	# export CXXFLAGS="-O2 -p -g -openmp -march=nehalem -mtune=sandybridge"
+	# export CFLAGS="-O2 -p -g -openmp -march=nehalem -mtune=sandybridge"
+	export LDFLAGS="-L$OBLIBPREFIX/lib -lopenblas"
+	# nehalem sandybridge haswell silvermont - N.B. R will not start if the architecture specified is not present on the current VM hardware
+
+	BLAS_LIBS="-L$OBLIBPREFIX/lib -lopenblas"
+	./configure  --prefix=$RLIBPREFIX --with-blas="${BLAS_LIBS}" --with-lapack --with-pic --enable-R-shlib  --enable-BLAS-shlib --disable-R-profiling
+	
+	sed -i 's/\$rm -f/@-rm -f/' ./src/extra/xz/Makefile
+
+	# make the library and testing code:
+	make -j 2
+	touch doc/NEWS.pdf
+	make install
+	ln -s $RLIBPREFIX/bin/R /usr/bin/R
+	#########################################
+	
+	########################################
+	# setup openblas libs with R
+	cd $RLIBPREFIX/lib/R/lib
+	# mv libRblas.so libRblas.so.keep
+	# ln -s  ${OBLIBPREFIX}/lib/libopenblas.so libRblas.so
+	# mv libRlapack.so libRlapack.so.keep
+	# ln -s  ${OBLIBPREFIX}/lib/libopenblas.so libRlapack.so
+	########################################
+	
+	########################################
+	# download and run NIH HPC cuda for singularity installer
+    # wget https://hpc.nih.gov/nih/CUDA/cuda4singularity
+	########################################
+	cd /tmp
+	# NVID_VER=361.93.03
+	NVID_VER=375.20
+	CUDA_VER=8.0.44
+	wget -O NVIDIA-Linux-x86_64-${NVID_VER}.run http://localhost/nvidia/NVIDIA-Linux-x86_64-${NVID_VER}.run	
+	chmod 755 NVIDIA-Linux-x86_64-${NVID_VER}.run
+	./NVIDIA-Linux-x86_64-${NVID_VER}.run --extract-only
+	cd NVIDIA-Linux-x86_64-${NVID_VER}
+	ln -s libEGL_nvidia.so.${NVID_VER}         libEGL_nvidia.so.0
+	ln -s libGLESv1_CM_nvidia.so.${NVID_VER}   libGLESv1_CM_nvidia.so.1
+	ln -s libGLESv2_nvidia.so.${NVID_VER}      libGLESv2_nvidia.so.2
+	ln -s libGLX_nvidia.so.${NVID_VER}         libGLX_indirect.so.0
+	ln -s libGLX_nvidia.so.${NVID_VER}         libGLX_nvidia.so.0
+	ln -s libnvidia-cfg.so.1                   libnvidia-cfg.so
+	ln -s libnvidia-cfg.so.${NVID_VER}         libnvidia-cfg.so.1
+	ln -s libnvidia-encode.so.1                libnvidia-encode.so
+	ln -s libnvidia-encode.so.${NVID_VER}      libnvidia-encode.so.1
+	ln -s libnvidia-fbc.so.1                   libnvidia-fbc.so
+	ln -s libnvidia-fbc.so.${NVID_VER}         libnvidia-fbc.so.1
+	ln -s libnvidia-ifr.so.1                   libnvidia-ifr.so
+	ln -s libnvidia-ifr.so.${NVID_VER}         libnvidia-ifr.so.1
+	ln -s libnvidia-ml.so.1                    libnvidia-ml.so
+	ln -s libnvidia-ml.so.${NVID_VER}          libnvidia-ml.so.1
+	ln -s libnvidia-opencl.so.${NVID_VER}      libnvidia-opencl.so.1
+	ln -s vdpau/libvdpau_nvidia.so.${NVID_VER} libvdpau_nvidia.so
+	ln -s libcuda.so.${NVID_VER}               libcuda.so
+	ln -s libcuda.so.${NVID_VER}               libcuda.so.1
+	cd ..
+	mkdir /usr/local/nvidia
+	chmod -R 777 /usr/local/nvidia
+	mv NVIDIA-Linux-x86_64-${NVID_VER}/* /usr/local/nvidia
+	# set up opencl
+	if [ ! -d /etc/OpenCL/vendors ] ; then
+		mkdir -p /etc/OpenCL/vendors
+	fi
+	cp /usr/local/nvidia/nvidia.icd /etc/OpenCL/vendors	
+	find /etc/OpenCL \( -type d -exec chmod u+rwx,g+rwx,o+rwx {} \; -o -type f -exec chmod u+rw,g+rw,o+rw {} \; \)
+	
+	# export LD_LIBRARY_PATH=/usr/local/nvidia:$LD_LIBRARY_PATH
+	echo "/usr/local/nvidia" >> /etc/ld.so.conf.d/cudadriver.conf
+	ldconfig
+	find /usr/local/nvidia \( -type d -exec chmod u+rwx,g+rwx,o+rwx {} \; -o -type f -exec chmod u+rw,g+rw,o+rw {} \; \)
+	
+	wget -O cuda_${CUDA_VER}_linux.run http://localhost/nvidia/cuda_${CUDA_VER}_linux.run
+	chmod 755 cuda_${CUDA_VER}_linux.run
+	./cuda_${CUDA_VER}_linux.run --silent --toolkit --no-opengl-libs --verbose --override
+	#  PATH includes /usr/local/cuda-8.0/bin
+    # LD_LIBRARY_PATH includes /usr/local/cuda-8.0/lib64, or, do this:
+	echo "/usr/local/cuda-8.0/lib64" >> /etc/ld.so.conf
+	ldconfig
+	# /usr/local/cuda is created as a soft link to /usr/local/cuda-8.0/
+	# chmod -R 777 /usr/local/cuda
+	 find /usr/local/cuda-8.0 \( -type d -exec chmod u+rwx,g+rwx,o+rwx {} \; -o -type f -exec chmod u+rw,g+rw,o+rw {} \; \)
+	
+	# this is a helper file so users can reinstall a driver
+	
+	wget -O /opt/csiro/install_driver_getopt.sh http://localhost/nvidia/install_driver_getopt.sh
+	chmod 777 -R /opt/csiro
+	# chmod 777 /opt/install_driver_getopt.sh
+	
+	####################################
+	# Get the magma library and modified makefiles 
+	cd /tmp
+	wget http://localhost/magma/make.inc.openblas.gcc
+	wget http://localhost/magma/Makefile.internal_gcc
+	wget http://localhost/magma/wget_magma.sh
+	
+	chmod +x wget_magma.sh
+	./wget_magma.sh
+	MAGMA_HOME=/opt/magma/1.7.0
+	echo "$MAGMA_HOME/lib" >> /etc/ld.so.conf.d/magma.conf
+	ldconfig
+	####################################
+
+	cd /tmp
+	R_HOME=/opt/R
+	export PATH=$R_HOME/bin:$PATH
+	wget -O HiPLARb_0.1.4.tar.gz http://localhost/magma/HiPLARb_0.1.4.tar.gz
+	tar -xf  HiPLARb_0.1.4.tar.gz
+	mkdir /hiplarb
+	cp HiPLARb_0.1.4.tar.gz /hiplarb/
+	OPENBLAS_HOME=/opt/openblas
+	# --with-plasma-lib=$LIBDIR  --with-lapack=-L${OPENBLAS_HOME}/lib/libopenblas.so
+	# MAGMA_HOME=/opt/magma/1.7.0
+	# R_PACKAGE_DIR=/R/library
+	LD_LIBRARY_PATH=/usr/local/nvidia:/usr/local/cuda-8.0/lib64:/opt/magma/1.7.0/lib:/opt/openblas/lib
+	R CMD INSTALL --no-multiarch --with-keep.source --configure-args="--with-lapack=-lopenblas  --with-cuda-home=$CUDADIR --with-magma-lib=$MAGMA_HOME " -l ${R_PACKAGE_DIR} HiPLARb
+	find ${R_PACKAGE_DIR} \( -type d -exec chmod u+rwx,g+rwx,o+rwx {} \; -o -type f -exec chmod u+rw,g+rw,o+rw {} \; \)
+	
+	# R -e "install.packages(c('ggplot2'), repos='http://cran.rstudio.com/')"
+	
+%environment
+# To get nvidia-smi running we need the following LD_LIBRARY_PATH and PATH additions:
+export LD_LIBRARY_PATH=/usr/local/nvidia:/usr/local/cuda-8.0/lib64:/opt/magma/1.7.0/lib:/opt/openblas/lib:$LD_LIBRARY_PATH
+export PATH=/usr/local/cuda-8.0/bin:/usr/local/nvidia:/opt/csiro:$PATH
+export RVERSION=3.2.5
+export RLIBPREFIX=/opt/R/${RVERSION}
+export MAGMA_HOME=/opt/magma/1.7.0
+export CUDADIR=/usr/local/cuda
+export R_HOME=/bin/R 
+export DATADIR=/data 
+export FLUSHDIR=/flush1 
+export FLUSH1DIR=/flush1 
+export FLUSH2DIR=/flush2 
+export MEMDIR=/memdir 
+export STOREDIR=/datastore
+export SHELL=/bin/bash 
+# N.B. R_LIBS_USER may be overridden when R starts by a users (host side) ~/.Renviron file
+# to change the R library path back to the contaier path specify .libPaths("/R/library")
+export R_LIBS_USER=/R/library
+export OPENBLAS_HOME=/opt/openblas
+export R_ENVIRON_USER=
+export R_ENVIRON=
+PKG_CONFIG_PATH=${RLIBPREFIX}/lib/pkgconfig:${MAGMA_HOME}/lib/pkgconfig
+
