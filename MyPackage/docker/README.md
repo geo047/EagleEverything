@@ -6,29 +6,25 @@ Date: 06/12/2017
 
 ### CSIRO IMT Docker registry  
 
-Available: [https://imtsc-cont-reg.it.csiro.au/harbor/projects/21/repository](https://imtsc-cont-reg.it.csiro.au/harbor/eagle)
+Available: [https://imtsc-cont-reg.it.csiro.au/harbor/eagle](https://imtsc-cont-reg.it.csiro.au/harbor/projects/21/repository)
 
 The docker images have the follwing hierachy:
 
-mro_shiny_base
-        N.B. This image requires MRO to be available for download via wget:
-        wget -O  microsoft-r-open-$MRO_VERSION.tar.gz http://$LOCALIP/mro/microsoft-r-open-$MRO_VERSION.tar.gz
-   |
-   --- mro_eagle_cran
-   |
-   --- mro_eagle_master
-   |
-   --- mro_eagle_acc2
-   |
-   --- mro_cuda8_base 
-            N.B. Currently the GPU driver installation file and CUDA installation 
-            files need to be available at:
-            http://${LOCALIP}/nvidia/NVIDIA-Linux-x86_64-${NVID_VER}.run
-            http://${LOCALIP}/nvidia/cuda_${CUDA_VER}_linux.run
-        |
-        --- mro_cuda8_eagle_master
-        |
-        --- mro_cuda8_eagle_acc2
+* mro_shiny_base       
+   * mro_eagle_cran
+   * mro_eagle_master
+   * mro_eagle_acc2
+   * mro_cuda8_base            
+        * mro_cuda8_eagle_master
+        * mro_cuda8_eagle_acc2
+ 
+ N.B. 
+ mro_shiny_base image requires MRO to be available for download via wgetat:
+      http://$LOCALIP/mro/microsoft-r-open-$MRO_VERSION.tar.gz
+ mro_cuda8_base image requires the GPU driver installation file and CUDA installation files need to be available at:
+      http://${LOCALIP}/nvidia/NVIDIA-Linux-x86_64-${NVID_VER}.run
+      http://${LOCALIP}/nvidia/cuda_${CUDA_VER}_linux.run
+ 
  
 ### To get the images from the registry
 ```
