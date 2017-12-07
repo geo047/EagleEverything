@@ -1,5 +1,8 @@
-#include <Rcpp.h>
-// using namespace Rcpp;
+// [[Rcpp::depends(RcppEigen)]]
+#define EIGEN_USE_BLAS
+#include <RcppEigen.h>
+//#include <Rcpp.h>
+using namespace Rcpp;
 
 #include <cstddef>
 #ifdef __cplusplus
@@ -46,6 +49,23 @@ double fasttimer(  ){
     if (elapsedTime < 0.0)
         elapsedTime = 0.0 ;
     return elapsedTime ;
+}
+
+
+
+
+
+// [[Rcpp::export]]
+Eigen::MatrixXd matmatt_eigen(Eigen::MatrixXd  x){
+  Eigen::MatrixXd res = x * x.transpose() ;
+  return res;
+}
+
+
+// [[Rcpp::export]]
+Eigen::MatrixXd matmatmatt_eigen(Eigen::MatrixXd  x){
+  Eigen::MatrixXd res = x * x * x.transpose() ;
+  return res;
 }
 
 

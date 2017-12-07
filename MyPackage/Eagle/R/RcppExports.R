@@ -31,6 +31,14 @@ fasttimer <- function() {
     .Call('_Eagle_fasttimer')
 }
 
+matmatt_eigen <- function(x) {
+    .Call('_Eagle_matmatt_eigen', x)
+}
+
+matmatmatt_eigen <- function(x) {
+    .Call('_Eagle_matmatmatt_eigen', x)
+}
+
 getRowColumn <- function(fname) {
     .Call('_Eagle_getRowColumn', fname)
 }

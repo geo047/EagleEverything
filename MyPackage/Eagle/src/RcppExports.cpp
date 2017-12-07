@@ -121,6 +121,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// matmatt_eigen
+Eigen::MatrixXd matmatt_eigen(Eigen::MatrixXd x);
+RcppExport SEXP _Eagle_matmatt_eigen(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(matmatt_eigen(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// matmatmatt_eigen
+Eigen::MatrixXd matmatmatt_eigen(Eigen::MatrixXd x);
+RcppExport SEXP _Eagle_matmatmatt_eigen(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(matmatmatt_eigen(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // getRowColumn
 std::vector<long> getRowColumn(std::string fname);
 RcppExport SEXP _Eagle_getRowColumn(SEXP fnameSEXP) {
@@ -169,6 +191,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Eagle_createMt_ASCII_rcpp", (DL_FUNC) &_Eagle_createMt_ASCII_rcpp, 7},
     {"_Eagle_extract_geno_rcpp", (DL_FUNC) &_Eagle_extract_geno_rcpp, 4},
     {"_Eagle_fasttimer", (DL_FUNC) &_Eagle_fasttimer, 0},
+    {"_Eagle_matmatt_eigen", (DL_FUNC) &_Eagle_matmatt_eigen, 1},
+    {"_Eagle_matmatmatt_eigen", (DL_FUNC) &_Eagle_matmatmatt_eigen, 1},
     {"_Eagle_getRowColumn", (DL_FUNC) &_Eagle_getRowColumn, 1},
     {"_Eagle_ReadBlock", (DL_FUNC) &_Eagle_ReadBlock, 4},
     {"_Eagle_ReshapeM_rcpp", (DL_FUNC) &_Eagle_ReshapeM_rcpp, 4},
