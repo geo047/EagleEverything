@@ -1,5 +1,5 @@
 // [[Rcpp::depends(RcppEigen)]]
-#define EIGEN_USE_BLAS
+// #define EIGEN_USE_BLAS
 #include <RcppEigen.h>
 //#include <Rcpp.h>
 using namespace Rcpp;
