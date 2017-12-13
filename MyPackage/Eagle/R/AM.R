@@ -465,7 +465,7 @@ if(length(indxNA)>0){
  if (profile_time==TRUE)  message("profile,itnum,ncpu,ngpu,function,time_ms")
  looptime <- fasttimer() ;
  while(continue){
-  profile_str <- paste0("profile,"itnum, ",",ncpu,",",ngpu,",")
+  profile_str <- paste0("profile,",itnum, ",",ncpu,",",ngpu,",")
   if (profile_time==FALSE)  message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
   
   if (profile_time==TRUE) { looptime <- fasttimer() }
