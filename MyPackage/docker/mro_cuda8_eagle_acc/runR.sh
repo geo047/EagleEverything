@@ -23,7 +23,7 @@ fi
 
 export EAGLE_PROFILE_STR=1 
 export OMP_NUM_THREADS=$OMP_NUM_THREADS
-
+unset CUDA_VISIBLE_DEVICES
 
 echo "We will be using the following version of R:"
 which R
