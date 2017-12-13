@@ -266,7 +266,7 @@ AM <- function(trait=NULL,
  ## print tile
  .print_title()
 
- ngpu <- 0  ### NEED TO CHANGE THIS WHEN gpu implemented. 
+ # ngpu <- 0  ### NEED TO CHANGE THIS WHEN gpu implemented. 
 
 
  error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait, 
@@ -465,8 +465,8 @@ if(length(indxNA)>0){
  
  looptime <- fasttimer() ;
  while(continue){
-  profile_str <- ""
-  message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
+  profile_str <- paste0(itnum, ",",ncpu,",",ngpu,",")
+  if (profile_time==FALSE)  message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
   
   if (profile_time==TRUE) { looptime <- fasttimer() }
    ## based on selected_locus, form model matrix X
@@ -476,7 +476,7 @@ if(length(indxNA)>0){
 
   if (profile_time==TRUE) {
     looptime <- fasttimer() ;
-    profile_str <- paste0("constructX:",looptime)
+    message(profile_str,"constructX:",looptime)
   }
 
     ## calculate Ve and Vg
@@ -492,7 +492,7 @@ if(length(indxNA)>0){
          MMt <- do.call(.calcMMt, Args)  
          if (profile_time==TRUE) {
             looptime <- fasttimer() ;
-            profile_str <- paste0(profile_str,",","MMt:",looptime)
+            message(profile_str,"MMt:",looptime)
           }
 
          if(!quiet) {
@@ -501,7 +501,7 @@ if(length(indxNA)>0){
          invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
          if (profile_time==TRUE) {
             looptime <- fasttimer() ;
-            profile_str <- paste0(profile_str,",","invMMt:",looptime)
+            message(profile_str,"invMMt:",looptime)
           }
         gc()
     } 
@@ -515,7 +515,7 @@ if(length(indxNA)>0){
     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
     if (profile_time==TRUE) {
             looptime <- fasttimer() ;
-            profile_str <- paste0(profile_str,",","calcVC:",looptime)
+            message(profile_str,"calcVC:",looptime)
     }
     gc()
     best_ve <- vc[["ve"]]
@@ -528,7 +528,7 @@ if(length(indxNA)>0){
     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
     if (profile_time==TRUE) {
             looptime <- fasttimer() ;
-            profile_str <- paste0(profile_str,",","calc_extBIC:",looptime)
+            message(profile_str,"calc_extBIC:",looptime)
     }
     gc()
 
@@ -551,7 +551,7 @@ if(length(indxNA)>0){
       new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
       if (profile_time==TRUE) {
             looptime <- fasttimer() ;
-            profile_str <- paste0(profile_str,",","find_qtl:",looptime)
+            message(profile_str,"find_qtl:",looptime)
       }
       gc()
       selected_loci <- c(selected_loci, new_selected_locus)
@@ -562,9 +562,9 @@ if(length(indxNA)>0){
    }  ## end if else
 
    
-   if(profile_time==TRUE){
-     message("iteration: ", profile_str)
-   }
+   #if(profile_time==TRUE){
+   #  message("iteration: ", profile_str)
+   #}
   
    itnum <- itnum + 1
    
