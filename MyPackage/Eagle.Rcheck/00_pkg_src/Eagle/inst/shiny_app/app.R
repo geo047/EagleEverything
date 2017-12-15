@@ -76,6 +76,8 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = 
                                ),
 
 
+
+
                             fluidPage(
                               fluidRow(
                                 column(12,  {
@@ -1084,7 +1086,7 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 server <- function(input, output, session){
   library("Eagle")
   roots = getVolumes()
-        #roots = c(wd="..")
+  #roots = c(wd="..")
 
   ##------------------------------------------
   ## Intros to pages
@@ -1300,12 +1302,12 @@ server <- function(input, output, session){
 
 
   ##----------------------------------------
-  ##  Read marker path and file name
+  ##  Read map path and file name
   ##---------------------------------------- 
   ## upload path and file name
         shinyFileChoose(input=input, id='choose_map_file', session=session, roots=roots)
 
-        observeEvent(input$choose_marker_file, {
+        observeEvent(input$choose_map_file, {
            inFile <- parseFilePaths(roots=roots, input$choose_map_file)
            updateTextInput(session, "choose_map_file_text", value =  as.character(inFile$datapath))
            path_to_map_file  <- as.character(inFile$datapath)
