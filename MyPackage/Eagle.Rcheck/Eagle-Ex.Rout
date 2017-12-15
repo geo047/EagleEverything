@@ -33,6 +33,7 @@ Type 'q()' to quit R.
 > 
 > ### * </HEADER>
 > library('Eagle')
+Loading required package: shinyFiles
 > 
 > base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 > cleanEx()
@@ -177,7 +178,7 @@ Type 'q()' to quit R.
 
                    ~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   /home/geo047/gitHUB_WMAM/MyPackage/Eagle.Rcheck/Eagle/extdata/map.txt
+ File name:                   /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/map.txt
 
  Number of marker loci:       100
 
@@ -237,7 +238,7 @@ rs67161561 1 0.503
 >   # 
 >   # The full path and name of the file is
 >   print(complete.name)
-[1] "/home/geo047/gitHUB_WMAM/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.txt"
+[1] "/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.txt"
 >   
 >   # Here, 0 values are being treated as genotype AA,
 >   # 1 values are being treated as genotype AB, 
@@ -261,7 +262,7 @@ rs67161561 1 0.503
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   text
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpsKGxAg/M.ascii
+ Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpyeaZUW/M.ascii
  Number of individuals:        150
  Number of loci:               100
  File size (gigabytes):       0.0001575
@@ -274,10 +275,10 @@ rs67161561 1 0.503
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $asciifileM
-[1] "/tmp/geo047.vnc/RtmpsKGxAg/M.ascii"
+[1] "/tmp/geo047.vnc/RtmpyeaZUW/M.ascii"
 
 $asciifileMt
-[1] "/tmp/geo047.vnc/RtmpsKGxAg/Mt.ascii"
+[1] "/tmp/geo047.vnc/RtmpyeaZUW/Mt.ascii"
 
 $dim_of_ascii_M
 [1] 150 100
@@ -295,7 +296,7 @@ $dim_of_ascii_M
 >   # 
 >   # The full path and name of the file is
 >   print(complete.name)
-[1] "/home/geo047/gitHUB_WMAM/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.ped"
+[1] "/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.ped"
 >   
 >   # Here,  the first 6 columns are being ignored and the allelic 
 >   # information in columns 7 -  10002 is being converted into a reformatted file. 
@@ -314,7 +315,7 @@ $dim_of_ascii_M
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   PLINK
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpsKGxAg/M.ascii
+ Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpyeaZUW/M.ascii
  Number of individuals:        150
  Number of loci:               100
  File size (gigabytes):       0.0001575
@@ -327,10 +328,10 @@ $dim_of_ascii_M
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $asciifileM
-[1] "/tmp/geo047.vnc/RtmpsKGxAg/M.ascii"
+[1] "/tmp/geo047.vnc/RtmpyeaZUW/M.ascii"
 
 $asciifileMt
-[1] "/tmp/geo047.vnc/RtmpsKGxAg/Mt.ascii"
+[1] "/tmp/geo047.vnc/RtmpyeaZUW/Mt.ascii"
 
 $dim_of_ascii_M
 [1] 150 100
@@ -370,7 +371,7 @@ $dim_of_ascii_M
 
               ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   /home/geo047/gitHUB_WMAM/MyPackage/Eagle.Rcheck/Eagle/extdata/pheno.txt
+ File name:                   /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/pheno.txt
 
  Number of individuals:       150
 
@@ -444,7 +445,7 @@ The phenotype file has been Uploaded.
 
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   /home/geo047/gitHUB_WMAM/MyPackage/Eagle.Rcheck/Eagle/extdata/Z.txt
+ File name:                   /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/Z.txt
 
  Number of rows:              4
 
@@ -552,7 +553,7 @@ The phenotype file has been Uploaded.
 > ###
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  0.444 0.05 0.524 0.001 0.001 
+Time elapsed:  0.477 0.042 0.541 0.003 0 
 > grDevices::dev.off()
 null device 
           1 

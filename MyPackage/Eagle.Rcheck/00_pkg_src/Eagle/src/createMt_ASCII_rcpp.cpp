@@ -144,7 +144,7 @@ if(mem_bytes < max_mem_in_bytes){
     // ASCII input file which could be slow if file is large and memory low
     for(long b=0; b < n_blocks; b++){
          if (!quiet )
-              message( " Processing block ... " , b , " of a total number of blocks of " , n_blocks );
+              message( " Processing block " , b+1 , " of a total number of blocks of " , n_blocks );
 
 
          long

@@ -32,7 +32,7 @@ be assumed.}
 \item{ngpu}{a integer value for the number of gpu available for computation.  The default
 is to assume there are no gpu available.  This option has not yet been implemented.}
 
-\item{quiet}{a logical value. If set to \code{TRUE}, additional runtime output is printed. 
+\item{quiet}{a logical value. If set to \code{FALSE}, additional runtime output is printed. 
 This is useful for error checking and monitoring the progress of a large analysis.}
 
 \item{maxit}{an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting.}
@@ -189,7 +189,7 @@ These individuals are removed from the analysis and a warning message is generat
 
 \subsection{Error Checking}{
 
-Most errors occur when reading in the data. However, as an extra precaution, if \code{quiet=TRUE}, then additional 
+Most errors occur when reading in the data. However, as an extra precaution, if \code{quiet=FALSE}, then additional 
 output is printed during the running of \code{AM}. If \code{AM} is failing, then this output can be useful for diagnosing 
 the problem. 
 }

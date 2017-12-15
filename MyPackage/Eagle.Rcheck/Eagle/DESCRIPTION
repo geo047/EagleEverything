@@ -26,7 +26,7 @@ Author: Andrew George [aut, cre],
         Eleazar Eskin [ctb]
 Description: An implementation of multiple-locus association mapping on a genome-wide scale. 'Eagle' can handle inbred or outbred study populations, populations of arbitrary unknown complexity, and data larger than the memory capacity of the computer. Since 'Eagle' is based on linear mixed models, it is best suited to the analysis of data on continuous traits. However, it can tolerate non-normal data. 'Eagle' reports, as its findings, the best set of snp in strongest association with a trait. To perform an analysis, run 'OpenGUI()'. This  opens a web browser to the menu-driven user interface for the input of data, and for performing genome-wide analysis.
 License: GPL-3
-Depends: R (>= 3.4)
+Depends: R (>= 3.4), shinyFiles
 Imports: matrixcalc, shiny, shinythemes, shinyBS, shinyjs, stats,
         utils, parallel, data.table, tcltk
 LinkingTo: RcppEigen, Rcpp
@@ -36,5 +36,5 @@ ByteCompile: TRUE
 NeedsCompilation: yes
 URL: http://eagle.r-forge.r-project.org
 Contact: eaglehelp@csiro.au
-Packaged: 2017-12-05 20:31:03 UTC; geo047
-Built: R 3.4.0; x86_64-pc-linux-gnu; 2017-12-05 20:31:40 UTC; unix
+Packaged: 2017-12-15 02:12:46 UTC; geo047
+Built: R 3.4.0; x86_64-pc-linux-gnu; 2017-12-15 02:13:25 UTC; unix

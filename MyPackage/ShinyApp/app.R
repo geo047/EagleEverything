@@ -167,26 +167,15 @@ placement="right", trigger="hover",
                                            
                                          ), ## end fluidRow specify amout of memory
                                         
-
-
-
- 
                                          
-                                         fluidRow(column(12, 
-                                          wellPanel(
-                                            h4("Step 3: Select marker file"),
+                                      fluidRow(column(12, 
+                                        wellPanel(
+                                        h4("Step 3: Select marker file"),
+                                        shinyFilesButton('choose_marker_file', 'Select File', 'Please select file', FALSE),
+                                        textInput("choose_marker_file_text", label = h5("or enter file name (including full path)"))
                                          
-                                           actionButton(inputId="choose_marker_file", h6("Choose File")), br(), 
-                                           textOutput("choose_marker_file"),
-                                           style='padding: 1px',
-                                           bsTooltip("choose_marker_file", 
-title='<font size="3" >WARNING! File browser window may open behind web browser  </font>', 
-placement="right", 
-trigger="hover",
-                                                     options=list(container="body"))
                                            
-                                           
-                                          )
+                                          )  ## end wellPannel
                                          )
                                          ), ## end fluidRow
 
@@ -237,28 +226,9 @@ placement="right", trigger="hover",
                                        ), ## end column(6,  )  -- left half of page
                                           ## for input widgets
                                 column(7, 
-                                        verbatimTextOutput("ReadMarker", placeholder=TRUE),
-                                        conditionalPanel(condition="input.marker_go > 0 && $('html').hasClass('shiny-busy')",
-                                        tags$div(style="
-position:fixed;
-top: 50%;
-left: 50%;
-margin-top: -100px;
-margin-left: -150px;
-z-index:10000000;
-opacity: 0.9;
-filter: alpha(opacity=50); 
-",
-                                          tags$img(src="loading.gif",height="200px", width="300px"))
-                                      )
-
-
-
-
-
-
-                                       )  ## end column(6, ) -- right half of page
-                                          ## for outputs from ReadMarker function
+                                        verbatimTextOutput("ReadMarker", placeholder=TRUE)
+                                )  ## end column(6, ) -- right half of page
+                                   ## for outputs from ReadMarker function
                                 
                               ) ## end fluidRow
                               
@@ -364,27 +334,18 @@ placement="right", trigger="hover",
 
                                          ), ## end fluidRow specify amout of memory
 
-
-
- 
-                                         fluidRow(column(12, 
-                                          wellPanel(
-                                            h4("Step 4: Select phenotypic file"),
-                                         
-                                           actionButton(inputId="choose_pheno_file", h6("Choose File")), br(), 
-                                           textOutput("choose_pheno_file"),
-                                           style='padding: 1px',
-                                           bsTooltip("choose_pheno_file",
-title='<font size="3" >WARNING! File browser window may open behind web browser  </font>', 
-placement="right", trigger="hover",
-                                                     options=list(container="body"))
- 
-                                           
-                                          )
+                                      fluidRow(column(12,
+                                        wellPanel(
+                                        h4("Step 4: Select phenotypic file"),
+                                        shinyFilesButton('choose_pheno_file', 'Select File', 'Please select file', FALSE),
+                                        textInput("choose_pheno_file_text", label = h5("or enter file name (including full path)"))
+                                          )  ## end wellPannel
                                          )
                                          ), ## end fluidRow
-                                       
-                                         
+
+
+
+
                                          fluidRow(column(12, 
                                                        wellPanel(
                                                           shinyjs::useShinyjs(),
@@ -420,34 +381,11 @@ placement="right", trigger="hover",
                                        
                                        ), ## end column(6,  )  -- left half of page
                                           ## for input widgets
-                                column(7, 
-                                        verbatimTextOutput("ReadPheno", placeholder=TRUE),
-                                        conditionalPanel(condition="input.pheno_go > 0 && $('html').hasClass('shiny-busy')",
-                                        tags$div(style="
-position:fixed;
-top: 50%;
-left: 50%;
-margin-top: -100px;
-margin-left: -150px;
-z-index:10000000;
-opacity: 0.9;
-filter: alpha(opacity=50); 
-",
-                                          tags$img(src="loading.gif",height="200px", width="300px"))
 
-
-                                    
-
-  )  ## conditionalPanel
-
-
-
-
-
-
-                                       )  ## end column(6, ) -- right half of page
-                                          ## for outputs from ReadPheno function
-                                
+                               column(7,
+                                        verbatimTextOutput("ReadPheno", placeholder=TRUE)
+                                )  ## end column(6, ) -- right half of page
+                                   ## for outputs from ReadMarker function
                               ) ## end fluidRow
                               
                               
@@ -599,26 +537,26 @@ filter: alpha(opacity=50);
 
 
 
-                                         fluidRow(column(12,
-                                          wellPanel(
-                                            h4("Step 1: Select Z matrix file"),
-
-                                           actionButton(inputId="choose_Zmat_file", h6("Choose File")), br(),
-                                           textOutput("choose_Zmat_file"),
-                                           style='padding: 1px',
-                                           bsTooltip("choose_Zmat_file",
-title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
-placement="right",
-trigger="hover",
-                                                     options=list(container="body"))
+                                      fluidRow(column(12,
+                                        wellPanel(
+                                        h4("Step 1: Select Z matrix file"),
+                                        shinyFilesButton('choose_Zmat_file', 'Select File', 'Please select file', FALSE),
+                                        textInput("choose_Zmat_file_text", label = h5("or enter file name (including full path)"))
 
 
-                                          )
+                                          )  ## end wellPannel
                                          )
                                          ), ## end fluidRow
 
 
-                                       
+
+
+
+
+
+
+
+ 
                                          
                                          fluidRow(column(12, 
                                                        wellPanel(
@@ -649,31 +587,12 @@ placement="right", trigger="hover",
                                        
                                        ), ## end column(6,  )  -- left half of page
                                           ## for input widgets
-                                column(7, 
-                                        verbatimTextOutput("ReadZmat", placeholder=TRUE),
-                                        conditionalPanel(condition="input.Zmat_go > 0 && $('html').hasClass('shiny-busy')",
 
-                                        tags$div(style="
-position:fixed;
-top: 50%;
-left: 50%;
-margin-top: -100px;
-margin-left: -150px;
-z-index:10000000;
-opacity: 0.9;
-filter: alpha(opacity=50); 
-",
-                                          tags$img(src="loading.gif",height="200px", width="300px"))
+                               column(7,
+                                        verbatimTextOutput("ReadZmat", placeholder=TRUE)
+                                )  ## end column(6, ) -- right half of page
+                                   ## for outputs from ReadMarker function
 
-) ## end conditionalPanel
-
-
-
-
-
-
-                                       )  ## end column(6, ) -- right half of page
-                                          ## for outputs from ReadPheno function
                                 
                               ) ## end fluidRow
                               
@@ -772,25 +691,15 @@ placement="right", trigger="hover",
                                         
 
 
-
-
-                                         fluidRow(column(12,
-                                          wellPanel(
-                                            h4("Step 3: Select map file"),
-
-                                           actionButton(inputId="choose_map_file", h6("Choose File")), br(),
-                                           textOutput("choose_map_file"),
-                                           style='padding: 1px',
-                                           bsTooltip("choose_map_file",
-title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
-placement="right",
-trigger="hover",
-                                                     options=list(container="body"))
-
-
-                                          )
+                                      fluidRow(column(12,
+                                        wellPanel(
+                                        h4("Step 3: Select map file"),
+                                        shinyFilesButton('choose_map_file', 'Select File', 'Please select file', FALSE),
+                                        textInput("choose_map_file_text", label = h5("or enter file name (including full path)"))
+                                          )  ## end wellPannel
                                          )
                                          ), ## end fluidRow
+
 
 
                                        
@@ -824,31 +733,13 @@ placement="right", trigger="hover",
                                        
                                        ), ## end column(6,  )  -- left half of page
                                           ## for input widgets
-                                column(7, 
-                                        verbatimTextOutput("ReadMap", placeholder=TRUE),
-                                        conditionalPanel(condition="input.map_go > 0 && $('html').hasClass('shiny-busy')",
 
-                                        tags$div(style="
-position:fixed;
-top: 50%;
-left: 50%;
-margin-top: -100px;
-margin-left: -150px;
-z-index:10000000;
-opacity: 0.9;
-filter: alpha(opacity=50); 
-",
-                                          tags$img(src="loading.gif",height="200px", width="300px"))
-
-) ## end conditionalPanel
+                               column(7,
+                                        verbatimTextOutput("ReadMap", placeholder=TRUE)
+                                )  ## end column(6, ) -- right half of page
+                                   ## for outputs from ReadMarker function
 
 
-
-
-
-
-                                       )  ## end column(6, ) -- right half of page
-                                          ## for outputs from ReadPheno function
                                 
                               ) ## end fluidRow
                               
@@ -1027,23 +918,11 @@ placement="right", trigger="hover",
                                 ),  ## end column
 
                                column(6,
-                                        verbatimTextOutput("AM", placeholder=TRUE),
-                                        conditionalPanel(condition="input.analyse_go > 0 && $('html').hasClass('shiny-busy')",
-                                        tags$div(style="
-position:fixed;
-top: 50%;
-left: 50%;
-margin-top: -100px;
-margin-left: -150px;
-z-index:10000000;
-opacity: 0.9;
-filter: alpha(opacity=50); 
-",
-                                          tags$img(src="loading.gif",height="200px", width="300px"))
+                                        verbatimTextOutput("AM", placeholder=TRUE)
+                                )  ## end column(6, ) -- right half of page
+                                   ## for outputs from ReadMarker function
 
 
-                                      )  ## end conditionalPanel
-                               ) ## end column
                    ) ## end fluidRow 
                               
                             ) ## end fluidPage    
@@ -1116,21 +995,7 @@ placement="right", trigger="hover",
                                    column(12, 
 tags$div(
          HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Marker-trait Associations"), sep = ""))),
-                                       tableOutput("findings"),
-                                        conditionalPanel(condition="input.pvalue_go > 0 && $('html').hasClass('shiny-busy')",
-                                        tags$div(style="
-position:fixed;
-top: 50%;
-left: 50%;
-margin-top: -100px;
-margin-left: -150px;
-z-index:10000000;
-opacity: 0.9;
-filter: alpha(opacity=50); 
-",
-                                          tags$img(src="loading.gif",height="200px", width="300px"))
-
-                                      )  ## end conditionalPanel
+                                       tableOutput("findings")
                                   ) ## end column
                                ), ## end fluidRow
                              fluidRow(
@@ -1139,7 +1004,8 @@ filter: alpha(opacity=50);
 tags$div(
          HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Size and Significance of Effects"), sep = ""))),
                                     tableOutput("size")
-                                    )
+
+                                    ) ## end conditionalPanel
                                ) ## end column
                            ), ## end fluidRow
 
@@ -1147,17 +1013,13 @@ tags$div(
 
                             fluidRow(
                                 column(12, 
-                                    conditionalPanel(condition="input.pvalue_go", 
+                                    conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
          HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Proportion of Variance Explained as Markers Added to Model"), sep = ""))),
                                     tableOutput("R")
                                     )
                                ) ## end column
                            ) ## end fluidRow
-
-
-
-
 
 
                          ) ## ene fluidPage 
@@ -1186,53 +1048,6 @@ tags$div(
 
 
 
-##                       navbarMenu("Help", icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
-##                       tabPanel("About", 
-##                          fluidPage(
-##                           fluidRow(
-##p(HTML("<pre> <font size=3> 
-##<strong>Package name:</strong> Eagle 
-##<strong>Version:</strong>      1.0
-##<strong>Authors:</strong>      Shiny App      - Andrew George
-##              R/Rcpp package - Andrew George,  Joshua Bowden, and Ryan Stephenson 
-##<strong>Purpose:</strong>      To make association mapping via multiple-locus models practical 
-##              on a genome-wide scale.
-##<strong>Details:</strong>
-##Eagle is a software package for genome-wide association mapping.  It differs from most other 
-##association mapping packages in that it fits all marker-trait associations simultaneously,  
-##returning the best set of snp loci in strongest association with a trait as its findings. It 
-##also differs from most other packages in that it does not  require the setting of significance 
-##thresholds.
-##
-##Eagle can handle data collected from populations of arbitrary structure. The populations can 
-##contain inbred or outbred individuals. It can also tolerate missing genotypic and phenotypic data. 
-##
-##To perform an analysis, read in your marker data via Read Genotypes, read in your phenotypic 
-##data via Read Phenotypes, read in your map if known via Read Map, and perform a multi-locus 
-##genome-wide analysis via Analyse. The results of the analyses are in Findings.  
-##
-##Help is available by hovering over the input widgets or by clicking on the help tab at the 
-##top of the screen.
-##
-##
-##</font>
-##</pre> "))
-##
-##
-##                           ) ## end fluidRow
-##                         ) ## end fluidPage
-##),  # end tabPanel About
-##tabPanel("FAQ", 
-##
-##       fluidRow(
-##          column(12, 
-##             uiOutput("faq", inline=TRUE)
-##          ) ## end column 
-##       )  ## end fluidRow
-##
-##)  ## end tabPanel FAQ
-##
-##)  ##  navbarMenu                 
                        ) ## end navbarPage
 
 
@@ -1241,16 +1056,37 @@ FullPage[[3]][[1]]$children[[1]]$children[[1]]$children[[1]] <-
   tags$img(src = 'images/logo.jpg', width = 80, height = 60)
 ui <- FullPage
 
+get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat") {
+            path_to_file_res <- tryCatch({
+                if(.Platform$OS.type=="unix"){
+                    path_to_file_res <- tk_choose.files()
+                    #print(path_to_file_res)
+                } else {
+                    path_to_file_res <- file.choose()                   
+                }                
+                }, warning = function(war) {
+                    print(paste("Eagle::get_path() Warning: ",war))
+                    path_to_file_res<-defaultpath
+                    return (path_to_file_res)
+                }, error = function(err) {
+                    print(paste("Eagle::get_path() Error: ",err))
+                    path_to_file_res<-defaultpath
+                    return (path_to_file_res)
+                }, finally = {
+                   # path_to_file_res<-"/R/library/Eagle/shiny_app/shinydata/genoDemo.dat"
+                  #  return (path_to_file_res)
+                }) # END tryCatch
+    
+            return (path_to_file_res)
+      }
 
 
 server <- function(input, output, session){
   library("Eagle")
   library("tcltk")
-#  library("markdown")
-#  library("knitr")
-
-#rmdfiles <- c("faq.rmd")
-#sapply(rmdfiles, knit, quiet = T)
+        #roots = getVolumes()
+        #roots = c(wd="..")
+        roots = "/"
 
   ##------------------------------------------
   ## Intros to pages
@@ -1264,20 +1100,20 @@ server <- function(input, output, session){
   ##  Read marker path and file name
   ##---------------------------------------- 
   ## upload path and file name
-  path_to_file <- NULL
-  output$choose_marker_file <- renderText(NULL)
-  observeEvent(input$choose_marker_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_file <<- tk_choose.files()
-  print(path_to_file)
-     } else {
-       path_to_file <<- file.choose()
+    shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=roots)
+        
+    observeEvent(input$choose_marker_file, {
+           inFile <- parseFilePaths(roots=roots, input$choose_marker_file)
+           updateTextInput(session, "choose_marker_file_text", value =  as.character(inFile$datapath))
+           path_to_marker_file  <<- as.character(inFile$datapath)
+           print(path_to_marker_file)
+    })
 
-     }
+    observeEvent(input$choose_marker_file_text, {
+           path_to_marker_file  <<- as.character(input$choose_marker_file_text)
+    })
+
  
-    output$choose_marker_file <- renderText( path_to_file )
-  })
-  
 
 
 
@@ -1285,27 +1121,25 @@ server <- function(input, output, session){
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
    geno <- NULL
    observeEvent(input$marker_go, {
-
-
-
-
+   withProgress(message = 'Loading marker data', value = 1, {
+    
      if(input$filetype == "plink"){
-
-        withCallingHandlers({
+       withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
-                 geno <<- ReadMarker(filename = path_to_file, type = "PLINK", availmemGb = input$memsize, quiet = FALSE)
-              },  ## end withCallingHandlers
+                 print("in here")
+                 if (file.exists(path_to_marker_file) == TRUE) {
+                   geno <<- ReadMarker(filename = path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
+                 } else {
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", path_to_marker_file))
+              }
+          }, ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
-        })
-
-
+             })
 
      }
 
-
      if(input$filetype == "text"){
-        
              withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
                  aa <- input$AA
@@ -1320,10 +1154,12 @@ server <- function(input, output, session){
                      bb <- NULL
                  if(input$missing=="")
                      missing <- NULL
- 
-
-                 geno <<- ReadMarker(filename = path_to_file, type = "text", AA = aa, 
-                            AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = FALSE , missing=missing) 
+                 if (file.exists(path_to_marker_file) == TRUE) {
+                 geno <<- ReadMarker(filename = path_to_marker_file, type = "text", AA = aa, 
+                            AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = TRUE , missing=missing) 
+                } else {
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", path_to_marker_file))
+                 }
 
               },  ## end withCallingHandlers
               message = function(m) {
@@ -1333,32 +1169,31 @@ server <- function(input, output, session){
 
      }  ## end if(input$filetype == "text")
 
+
+  })  ## withProgress
+
   })  ## end observeEvent
 
 
 
 
-  ##-------------------------
-  ## Read phenotypic data
-  ##--------------------------
 
- ##  Read phenotypic  path and file name
+
+  ##----------------------------------------
+  ##  Read phenotypic path and file name
+  ##---------------------------------------- 
   ## upload path and file name
-  path_to_pheno_file <- NULL
-  output$choose_pheno_file <- renderText(NULL)
-  observeEvent(input$choose_pheno_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_pheno_file <<- tk_choose.files()
-  print(path_to_pheno_file)
-     } else {
-       path_to_pheno_file <<- file.choose()
+        shinyFileChoose(input=input, id='choose_pheno_file', session=session, roots=roots)
 
-     }
+        observeEvent(input$choose_pheno_file, {
+           inFile <- parseFilePaths(roots=roots, input$choose_pheno_file)
+           updateTextInput(session, "choose_pheno_file_text", value =  as.character(inFile$datapath))
+           path_to_pheno_file  <- as.character(inFile$datapath)
+       })
 
-
-    output$choose_pheno_file <- renderText( path_to_pheno_file )
-  })
-
+        observeEvent(input$choose_pheno_file_text, {
+           path_to_pheno_file  <<- as.character(input$choose_pheno_file_text)
+         })
 
 
 
@@ -1366,6 +1201,7 @@ server <- function(input, output, session){
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
    pheno <- NULL
    observeEvent(input$pheno_go, {
+   withProgress(message = 'Loading phenotypic data', value = 1, {
 
    header_flag <- FALSE
    if(input$pheno_header == "yes")
@@ -1382,8 +1218,12 @@ server <- function(input, output, session){
 
 
    withCallingHandlers({
-                 shinyjs::html("ReadPheno", "")
+                shinyjs::html("ReadPheno", "")
+                 if (file.exists(path_to_pheno_file) == TRUE) {
                  pheno  <<- ReadPheno(filename = path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
+                 } else {
+                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", path_to_pheno_file))
+                 }
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadPheno", html = m$message, add = TRUE)
@@ -1391,7 +1231,7 @@ server <- function(input, output, session){
 
 
 
-
+  })  ## end withProgress
 
   })  ## end observeEvent
 
@@ -1403,41 +1243,50 @@ server <- function(input, output, session){
   ## Read Z matrix                ## 
   ##------------------------------ss
 
- map <- NULL
- ##  Read Z matrix  path and file name
-  ## upload path and file name
-  path_to_Zmat_file <- NULL
-  output$choose_Zmat_file <- renderText(NULL)
-  observeEvent(input$choose_Zmat_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_Zmat_file <<- tk_choose.files()
-        print(path_to_Zmat_file)
-     } else {
-       path_to_Zmat_file <<- file.choose()
 
-     }
-  output$choose_Zmat_file <- renderText( path_to_Zmat_file )
-  })
+  ##----------------------------------------
+  ##  Read Z matrix path and file name
+  ##---------------------------------------- 
+  ## upload path and file name
+        shinyFileChoose(input=input, id='choose_Zmat_file', session=session, roots=roots)
+
+        observeEvent(input$choose_Zmat_file, {
+           inFile <- parseFilePaths(roots=roots, input$choose_Zmat_file)
+           updateTextInput(session, "choose_Zmat_file_text", value =  as.character(inFile$datapath))
+           path_to_Zmat_file  <- as.character(inFile$datapath)
+       })
+        observeEvent(input$choose_Zmat_file_text, {
+           path_to_Zmat_file  <<- as.character(input$choose_Zmat_file_text)
+         })
+
 
 
    ## Read Zmat  information
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
    Zmat <- NULL
    observeEvent(input$Zmat_go, {
+     withProgress(message = 'Loading Z matrix file', value = 1, {
 
 
 
 
        withCallingHandlers({
                  shinyjs::html("ReadZmat", "")
+         
+                 if (file.exists(path_to_Zmat_file) == TRUE) {
                  Zmat  <<- ReadZmat(filename = path_to_Zmat_file)
+                 } else {
+                    shinyjs::html(id = "ReadZmat", html = paste0("ReadZmat", "File does not exist:", path_to_Zmat_file))
+                 }
+         
+                 # Zmat  <<- ReadZmat(filename = path_to_Zmat_file
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadZmat", html = m$message, add = TRUE)
        })
 
 
-
+  })
 
 
   })  ## end observeEvent
@@ -1452,33 +1301,33 @@ server <- function(input, output, session){
 
 
 
-  ##-------------------------##
-  ## Read Map                ## 
-  ##-------------------------ss
-
- map <- NULL
- ##  Read map  path and file name
+  ##----------------------------------------
+  ##  Read marker path and file name
+  ##---------------------------------------- 
   ## upload path and file name
-  path_to_map_file <- NULL
-  output$choose_map_file <- renderText(NULL)
-  observeEvent(input$choose_map_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_map_file <<- tk_choose.files()
-        print(path_to_map_file)
-     } else {
-       path_to_map_file <<- file.choose()
+        shinyFileChoose(input=input, id='choose_map_file', session=session, roots=roots)
 
-     }
+        observeEvent(input$choose_marker_file, {
+           inFile <- parseFilePaths(roots=roots, input$choose_map_file)
+           updateTextInput(session, "choose_map_file_text", value =  as.character(inFile$datapath))
+           path_to_map_file  <- as.character(inFile$datapath)
+       })
 
-#    rChoiceDialogs::rchoose.files()
-    output$choose_map_file <- renderText( path_to_map_file )
-  })
+        observeEvent(input$choose_map_file_text, {
+           path_to_map_file  <<- as.character(input$choose_map_file_text)
+         })
+   
+
+
+
 
 
    ## Read map  information
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
    map <- NULL
    observeEvent(input$map_go, {
+    withProgress(message = 'Loading marker map file', value = 1, {
+
 
      csv_flag <- FALSE
      if(input$map_csv == "yes")
@@ -1491,7 +1340,15 @@ server <- function(input, output, session){
 
        withCallingHandlers({
                  shinyjs::html("ReadMap", "")
-                 map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+         
+                 if (file.exists(path_to_map_file) == TRUE) {
+                    map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+                 }  else {
+                    shinyjs::html(id = "ReadMap", html = paste0("ReadMap", "File does not exist:", path_to_map_file))
+                 }
+         
+               #   map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+         
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadMap", html = m$message, add = TRUE)
@@ -1500,7 +1357,7 @@ server <- function(input, output, session){
 
 
 
-
+  })
   })  ## end observeEvent
 
 
@@ -1551,6 +1408,9 @@ server <- function(input, output, session){
 
  res <- NULL
    observeEvent(input$analyse_go, {
+   withProgress(message = 'Analysing data', value = 1, {
+
+
 
        
        withCallingHandlers({
@@ -1567,7 +1427,7 @@ server <- function(input, output, session){
               message = function(m) {
                  shinyjs::html(id = "AM", html = m$message, add = TRUE)
        })
-
+  })
   })  ## end observeEvent
 
 
@@ -1592,6 +1452,9 @@ server <- function(input, output, session){
   }
 
      observeEvent(input$pvalue_go, {
+   withProgress(message = ' Calculating additional summary measures', value = 1, {
+
+
 
       withCallingHandlers({
                  shinyjs::html("summary", "")
@@ -1608,7 +1471,7 @@ server <- function(input, output, session){
 
 
 
-
+  })
 
   })  ## end observeEvent
 
