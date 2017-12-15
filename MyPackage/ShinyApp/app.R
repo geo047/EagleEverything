@@ -1083,10 +1083,8 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 
 server <- function(input, output, session){
   library("Eagle")
-  library("tcltk")
-        #roots = getVolumes()
+  roots = getVolumes()
         #roots = c(wd="..")
-        roots = "/"
 
   ##------------------------------------------
   ## Intros to pages

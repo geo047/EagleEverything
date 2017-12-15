@@ -37,8 +37,7 @@ Imports:
    stats,
    utils,
    parallel,
-   data.table,
-   tcltk
+   data.table
 LinkingTo: 
    RcppEigen, Rcpp
 Roxygen: 

@@ -28,7 +28,7 @@ Description: An implementation of multiple-locus association mapping on a genome
 License: GPL-3
 Depends: R (>= 3.4), shinyFiles
 Imports: matrixcalc, shiny, shinythemes, shinyBS, shinyjs, stats,
-        utils, parallel, data.table, tcltk
+        utils, parallel, data.table
 LinkingTo: RcppEigen, Rcpp
 Roxygen: list(wrap=FALSE)
 LazyData: true
@@ -36,5 +36,5 @@ ByteCompile: TRUE
 NeedsCompilation: yes
 URL: http://eagle.r-forge.r-project.org
 Contact: eaglehelp@csiro.au
-Packaged: 2017-12-15 02:12:46 UTC; geo047
-Built: R 3.4.0; x86_64-pc-linux-gnu; 2017-12-15 02:13:25 UTC; unix
+Packaged: 2017-12-15 02:36:59 UTC; geo047
+Built: R 3.4.0; x86_64-pc-linux-gnu; 2017-12-15 02:37:38 UTC; unix
