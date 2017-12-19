@@ -27,6 +27,7 @@ USER root
 
 ENV EAGLEDIR /R/library/Eagle/shiny_app
 
+RUN  R  -e "install.packages(c('shinyFiles'),  lib='/R/library', dependencies=TRUE)" 
 
 # Install dependencies and Download and install shiny server
 RUN  mkdir shinybuild \
@@ -39,7 +40,8 @@ RUN  mkdir shinybuild \
     &&  cd ../..  \
     &&  rm -rf shinybuild  \
     &&  mkdir -p $EAGLEDIR\shinydata \
-    &&  echo "local({ options(shiny.port = 3838, shiny.host = \"0.0.0.0\") })" >> $WHEREISMAKECONF/Rprofile.site 
+    &&  echo "local({ options(shiny.port = 3838, shiny.host = \"0.0.0.0\") })" >> $WHEREISMAKECONF/Rprofile.site  \
+    &&  echo "library(shinyFiles)" >> $WHEREISMAKECONF/Rprofile.site 
     # &&  echo "export R_LIBS_USER=/R/library" >> /home/docker/.bashrc 
 
 

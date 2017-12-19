@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n# This is the user-interface definition of a Shiny web application.\n# You can find out more about building applications with Shiny here:\n#\n# http://shiny.rstudio.com\n#\n\nlibrary(shiny)\nlibrary(shinyFiles)\nlibrary(rbokeh)\n\nshinyUI(fluidPage(\n  \n  \n  fileInput(\"fi_file\", \"Select a file\"),\n  \n  # Application title\n  titlePanel(\"Read timing file\"),\n  sidebarPanel(\n\n  \n  shinyFilesButton('files', label='Load Dataset', title='Please select a dataset', multiple=FALSE)\n  # shinyFilesButton('file', 'File select', 'Please select a file', FALSE)\n  # Sidebar with a slider input for number of bins\n  ),\n \n  mainPanel(\n      rbokehOutput(\"rbokeh\", width = 500, height = 540),\n      textOutput('filepaths'),\n      verbatimTextOutput('fi_text')\n    )\n  \n))\n",
+    "created" : 1513047530053.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4081116557",
+    "id" : "C1F9B400",
+    "lastKnownWriteTime" : 1513135556,
+    "last_content_update" : 1513135556211,
+    "path" : "/flush1/bow355/AMplus_new_code/Mid_docker_tests/benchmark/Eagle_beanchmark/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

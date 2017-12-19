@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "profile,itnum,ncpu,ngpu,function,time_ms\nprofile,4,7,0,constructX,2691.933\nprofile,4,7,0,calc_extBIC,136.963\nprofile,4,7,0,calcVC,165.145\nprofile,4,28,0,constructX,1970.373\nprofile,4,28,0,calc_extBIC,129.38\nprofile,4,28,0,calcVC,141.648\nprofile,4,21,0,constructX,2189.519\nprofile,4,21,0,calc_extBIC,111.803\nprofile,4,21,0,calcVC,103.023\nprofile,4,14,0,constructX,2707.787\nprofile,4,14,0,calc_extBIC,182.074\nprofile,4,14,0,calcVC,196.985\nprofile,4,1,1,constructX,1964.843\nprofile,4,1,1,calc_extBIC,143.233\nprofile,4,1,1,calcVC,141.915\nprofile,4,1,0,constructX,2452.321\nprofile,4,1,0,calc_extBIC,144.592\nprofile,4,1,0,calcVC,147.112\nprofile,3,7,0,find_qtl,5136.115\nprofile,3,7,0,constructX,2536.727\nprofile,3,7,0,calc_extBIC,144.628\nprofile,3,7,0,calcVC,140.07\nprofile,3,28,0,find_qtl,4173.687\nprofile,3,28,0,constructX,1975.841\nprofile,3,28,0,calc_extBIC,163.39\nprofile,3,28,0,calcVC,172.605\nprofile,3,21,0,find_qtl,4621.814\nprofile,3,21,0,constructX,2472.006\nprofile,3,21,0,calc_extBIC,173.794\nprofile,3,21,0,calcVC,214.066\nprofile,3,14,0,find_qtl,4864.798\nprofile,3,14,0,constructX,2809.952\nprofile,3,14,0,calc_extBIC,150.419\nprofile,3,14,0,calcVC,159.45\nprofile,3,1,1,find_qtl,5148.875\nprofile,3,1,1,constructX,1959.439\nprofile,3,1,1,calc_extBIC,143.226\nprofile,3,1,1,calcVC,142.257\nprofile,3,1,0,find_qtl,8055.708\nprofile,3,1,0,constructX,2796.129\nprofile,3,1,0,calc_extBIC,143.996\nprofile,3,1,0,calcVC,170.502\nprofile,2,7,0,find_qtl,5176.637\nprofile,2,7,0,constructX,2474.464\nprofile,2,7,0,calc_extBIC,159.919\nprofile,2,7,0,calcVC,164.866\nprofile,2,28,0,find_qtl,4218.473\nprofile,2,28,0,constructX,1985.543\nprofile,2,28,0,calc_extBIC,155.527\nprofile,2,28,0,calcVC,171.855\nprofile,2,21,0,find_qtl,5545.864\nprofile,2,21,0,constructX,2469.947\nprofile,2,21,0,calc_extBIC,203.96\nprofile,2,21,0,calcVC,158.141\nprofile,2,14,0,find_qtl,5057.569\nprofile,2,14,0,constructX,2736.403\nprofile,2,14,0,calc_extBIC,116.474\nprofile,2,14,0,calcVC,148.283\nprofile,2,1,1,find_qtl,5269.273\nprofile,2,1,1,constructX,1967.733\nprofile,2,1,1,calc_extBIC,137.13\nprofile,2,1,1,calcVC,148.734\nprofile,2,1,0,find_qtl,8373.389\nprofile,2,1,0,constructX,2696.587\nprofile,2,1,0,calc_extBIC,125.863\nprofile,2,1,0,calcVC,141.159\nprofile,1,7,0,invMMt,39.067\nprofile,1,7,0,find_qtl,5666.912\nprofile,1,7,0,constructX,0.142\nprofile,1,7,0,calc_extBIC,172.905\nprofile,1,7,0,calcVC,130.015\nprofile,1,7,0,MMt,3286.402\nprofile,1,28,0,invMMt,31.011\nprofile,1,28,0,find_qtl,4459.138\nprofile,1,28,0,constructX,0.133\nprofile,1,28,0,calc_extBIC,152.934\nprofile,1,28,0,calcVC,129.46\nprofile,1,28,0,MMt,2217.633\nprofile,1,21,0,invMMt,78.782\nprofile,1,21,0,find_qtl,5112.398\nprofile,1,21,0,constructX,0.4\nprofile,1,21,0,calc_extBIC,167.825\nprofile,1,21,0,calcVC,148.314\nprofile,1,21,0,MMt,3113.961\nprofile,1,14,0,invMMt,21.305\nprofile,1,14,0,find_qtl,5268.516\nprofile,1,14,0,constructX,0.116\nprofile,1,14,0,calc_extBIC,204.577\nprofile,1,14,0,calcVC,173.407\nprofile,1,14,0,MMt,3011.832\nprofile,1,1,1,invMMt,27.988\nprofile,1,1,1,find_qtl,5768.053\nprofile,1,1,1,constructX,0.142\nprofile,1,1,1,calc_extBIC,150.908\nprofile,1,1,1,calcVC,132.035\nprofile,1,1,1,MMt,2404.439\nprofile,1,1,0,invMMt,22.149\nprofile,1,1,0,find_qtl,8571.349\nprofile,1,1,0,constructX,0.153\nprofile,1,1,0,calc_extBIC,176.454\nprofile,1,1,0,calcVC,132.553\nprofile,1,1,0,MMt,5799.68\n",
+    "created" : 1513245533254.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2080519614",
+    "id" : "6C210701",
+    "lastKnownWriteTime" : 1513245090,
+    "last_content_update" : 1513245090,
+    "path" : "/flush1/bow355/AMplus_new_code/Mid_docker_tests/benchmark/new_timing.out",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

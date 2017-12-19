@@ -62,10 +62,4 @@ Eigen::MatrixXd matmatt_eigen(Eigen::MatrixXd  x){
 }
 
 
-// [[Rcpp::export]]
-Eigen::MatrixXd matmatmatt_eigen(Eigen::MatrixXd  x){
-  Eigen::MatrixXd res = x * x * x.transpose() ;
-  return res;
-}
-
 

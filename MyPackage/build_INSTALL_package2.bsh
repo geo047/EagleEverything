@@ -87,6 +87,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"CreateASCIInospace_PLINK.cpp\"  ,
             \"CreateASCIInospace.cpp\"  ,
             \"ReadBlock.cpp\"  ,
+            \"CHDF5File.h\"  
             \"createMt_ASCII_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"calculate_reduced_a_rcpp.cpp\"  ,

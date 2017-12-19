@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n# This is the server logic for a Shiny web application.\n# You can find out more about building applications with Shiny here:\n#\n# cat am.R | OMP_NUM_THREADS=1 singularity exec mro_cuda8_eagle_acc2.img /usr/bin/runR.sh 1 > new_1_thread_0_gpu_v2.out 2>&1\n# cat new*.out | grep -e \"profile,:\" -e \" is ..\" > times.txt\n# cat times.txt | sort  -h -r  | tail -n +6 > times2.out\n\n\nlibrary(shiny)\nlibrary(shinyFiles)\nlibrary(rbokeh)\n\nshinyServer(function(input, output, session) {\n  flush1    <- Sys.getenv(\"FLUSH1DIR\")\n  flush1 <- \"..\"\n  output$fi_text <- renderText({\n    filePath <- input$fi_file$datapath\n    # fileText <- paste(readLines(filePath), collapse = \"\\n\")\n    # fileText\n    filePath\n  })\n  \n  # volumes <- c('Home directory'='/flush1/bow355')\n  volumes <- c('Home directory'=flush1)\n  shinyFileChoose(input, 'files', root=volumes, session=session, filetypes=c('', 'txt')) \n  \n  output$filepaths  <- renderPrint({\n    testfile <-  parseFilePaths(volumes,input$files)[[\"datapath\"]]\n    fileText <- \"\"\n\n    if (file.exists(as.character(testfile[1]))) {\n       fileText <- paste(readLines(as.character(testfile[1])), collapse = \" \")\n    }\n    fileText\n  }) \n  \n  output$rbokeh <- renderRbokeh({\n    figure() %>% ly_points(1:10) %>%\n      x_range(callback = shiny_callback(\"x_range\"))\n  })\n  \n})\n\n",
+    "created" : 1513047530198.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "105205420",
+    "id" : "AA63CC7E",
+    "lastKnownWriteTime" : 1513245491,
+    "last_content_update" : 1513245491034,
+    "path" : "/flush1/bow355/AMplus_new_code/Mid_docker_tests/benchmark/Eagle_beanchmark/server.R",
+    "project_path" : "server.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

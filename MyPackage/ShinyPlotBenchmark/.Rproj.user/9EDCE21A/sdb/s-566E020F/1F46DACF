@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "df <- read.csv(file=\"../new_timing.out\")\ndf[ order(df$function., df$ncpu, df$ngpu), ]\n\nlibrary(rbokeh)\nfigure() %>%\n  ly_bar(function. , time_ms,\n    data = df, position = \"fill\", width = 10) %>%\n  theme_axis(\"x\", major_label_orientation = 90) %>%\n  set_palette(discrete_color = pal_color(c(\"red\", \"blue\")))",
+    "created" : 1513245541512.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "1860943098",
+    "id" : "1F46DACF",
+    "lastKnownWriteTime" : 8102082521357186848,
+    "last_content_update" : 1513248113983,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
