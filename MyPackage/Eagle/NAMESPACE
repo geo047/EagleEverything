@@ -8,8 +8,6 @@ import(shiny,  shinythemes, shinyBS, stats, utils )
 
 export(
    fasttimer,
-   matmatt_eigen,
-   matmatmatt_eigen,
    ReadPheno,
    ReadMarker,
    ReadMap,

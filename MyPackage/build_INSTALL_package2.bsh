@@ -5,9 +5,9 @@
 # Usage function:
 function usage() {
     echo "Usage:"
-    echo "$\t0 [-c] [-l dir] "
-    echo "\t-c Check the built package using R CMD check --as-cran "
-    echo "\t-l dir  installs the package in the library directory specified"
+    echo "$0 [-c] [-l dir] "
+    echo "  -c Check the built package using R CMD check --as-cran "
+    echo "  -l dir  installs the package in the library directory specified"
     exit 0
 }
 CHECKBUILD=0
@@ -87,7 +87,8 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"CreateASCIInospace_PLINK.cpp\"  ,
             \"CreateASCIInospace.cpp\"  ,
             \"ReadBlock.cpp\"  ,
-            \"CHDF5File.h\"  
+            \"CHDF5File.h\"  ,
+            \"ReadASCIIWriteHDF_rcpp.cpp\"  ,
             \"createMt_ASCII_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"calculate_reduced_a_rcpp.cpp\"  ,

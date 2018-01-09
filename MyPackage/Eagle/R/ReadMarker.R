@@ -312,8 +312,9 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
        RDatafile <- paste( tempdir() , "\\", "M.RData", sep="")
   }
 
-
-
+  
+  ReadASCIIWriteHDF_rcpp(asciifileM, dim_of_ascii_M, F) ;
+  ReadASCIIWriteHDF_rcpp(asciifileMt, dim_of_ascii_M, T) ;
 
   save(geno, file=RDatafile)
   ## create M.Rdata file in current directory

@@ -1,0 +1,9 @@
+* using log directory ‘/home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle.Rcheck’
+* using R version 3.4.3 (2017-11-30)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* using session charset: UTF-8
+* using option ‘--as-cran’
+* checking for file ‘Eagle/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘Eagle’ version ‘1.2.0’
+* checking CRAN incoming feasibility ...

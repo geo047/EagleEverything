@@ -25,13 +25,8 @@ bool  createM_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_n
                   Rcpp::Function message, 
                   std::string missing)
 {
-  // Rcpp function to create space-removed ASCII file from ASCII and PLINK input files
-
-
-
-
+// Rcpp function to create space-removed ASCII file from ASCII and PLINK input files
 // size_t found;
-
 
 std::string
    line;
