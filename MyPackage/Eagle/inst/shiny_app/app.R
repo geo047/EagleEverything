@@ -1085,9 +1085,17 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 
 server <- function(input, output, session){
   library("Eagle")
-  roots = getVolumes()
-  #roots = c(wd="..")
 
+rootdir <-  c('Home' = Sys.getenv("HOME"))
+#rootdir <-  c('rootdir'="C:\\", 'Home' = Sys.getenv("HOME"))
+#rootdir <- c('roodir'=c(wd="."))
+#if(.Platform$OS.type == "windows") {
+#     print(" in the window part of root")
+#     rootdir <<-  c('rootdir'="C:/", 'Home' = Sys.getenv("HOME"))
+#     print(rootdir)
+#  } else {
+#     rootdir <<- c(rootdir="/", home=Sys.getenv("HOME"))
+#  }
   ##------------------------------------------
   ## Intros to pages
   ##-------------------------------------------
@@ -1100,13 +1108,12 @@ server <- function(input, output, session){
   ##  Read marker path and file name
   ##---------------------------------------- 
   ## upload path and file name
-    shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=roots)
-        
+    shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=rootdir)
+    # path_to_marker_file <- NULL    
     observeEvent(input$choose_marker_file, {
-           inFile <- parseFilePaths(roots=roots, input$choose_marker_file)
+           inFile <- parseFilePaths(roots=rootdir, input$choose_marker_file)
            updateTextInput(session, "choose_marker_file_text", value =  as.character(inFile$datapath))
            path_to_marker_file  <<- as.character(inFile$datapath)
-           print(path_to_marker_file)
     })
 
     observeEvent(input$choose_marker_file_text, {
@@ -1126,7 +1133,6 @@ server <- function(input, output, session){
      if(input$filetype == "plink"){
        withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
-                 print("in here")
                  if (file.exists(path_to_marker_file) == TRUE) {
                    geno <<- ReadMarker(filename = path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
                  } else {
@@ -1183,10 +1189,20 @@ server <- function(input, output, session){
   ##  Read phenotypic path and file name
   ##---------------------------------------- 
   ## upload path and file name
-        shinyFileChoose(input=input, id='choose_pheno_file', session=session, roots=roots)
+
+#  This doesn't work - don't know why - the new rootdir is not used by shinyFileChoose
+#  observeEvent(input$marker_go, {
+#      
+#        rootdir <<-  c(rootdir="/", rootdir2="/flush1/geo047/")
+#        print(" in here ")
+#        print(rootdir)
+#})
+
+
+        shinyFileChoose(input=input, id='choose_pheno_file', session=session, roots=rootdir )
 
         observeEvent(input$choose_pheno_file, {
-           inFile <- parseFilePaths(roots=roots, input$choose_pheno_file)
+           inFile <- parseFilePaths(roots=rootdir, input$choose_pheno_file)
            updateTextInput(session, "choose_pheno_file_text", value =  as.character(inFile$datapath))
            path_to_pheno_file  <- as.character(inFile$datapath)
        })
@@ -1248,10 +1264,10 @@ server <- function(input, output, session){
   ##  Read Z matrix path and file name
   ##---------------------------------------- 
   ## upload path and file name
-        shinyFileChoose(input=input, id='choose_Zmat_file', session=session, roots=roots)
+        shinyFileChoose(input=input, id='choose_Zmat_file', session=session, roots=rootdir )
 
         observeEvent(input$choose_Zmat_file, {
-           inFile <- parseFilePaths(roots=roots, input$choose_Zmat_file)
+           inFile <- parseFilePaths(roots=rootdir, input$choose_Zmat_file)
            updateTextInput(session, "choose_Zmat_file_text", value =  as.character(inFile$datapath))
            path_to_Zmat_file  <- as.character(inFile$datapath)
        })
@@ -1305,10 +1321,10 @@ server <- function(input, output, session){
   ##  Read map path and file name
   ##---------------------------------------- 
   ## upload path and file name
-        shinyFileChoose(input=input, id='choose_map_file', session=session, roots=roots)
+        shinyFileChoose(input=input, id='choose_map_file', session=session, roots=rootdir )
 
         observeEvent(input$choose_map_file, {
-           inFile <- parseFilePaths(roots=roots, input$choose_map_file)
+           inFile <- parseFilePaths(roots=rootdir, input$choose_map_file)
            updateTextInput(session, "choose_map_file_text", value =  as.character(inFile$datapath))
            path_to_map_file  <- as.character(inFile$datapath)
        })
@@ -1418,7 +1434,6 @@ server <- function(input, output, session){
                  quietvalue <-  TRUE
                  if(input$analyse_quiet == "yes")
                     quietvalue <- FALSE
-                print(quietvalue) 
                  res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
                             quiet = quietvalue,
                             ncpu = input$analyse_cpu, maxit = input$analyse_maxits , pheno = pheno, geno=geno, map=map) 

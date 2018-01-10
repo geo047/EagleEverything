@@ -475,7 +475,8 @@ if(length(indxNA)>0){
      best_vg <- vc[["vg"]]
 
      ## Calculate extBIC
-     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
+     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
+                       numberSNPselected=(itnum-1), quiet) 
      gc()
 
      ## set vector extBIC
