@@ -20,11 +20,8 @@
 
   delete tempHDF5File ;
  *
- *
- *
- *
- *
  */
+ 
 #ifndef CHDF5File_
 #define CHDF5File_
 
@@ -87,10 +84,7 @@ extern "C"
 
 // Remember to define _HDF5USEDLL_
 
-
 typedef enum ROWSORCOLS {rows, cols} ROWSORCOLS ;
-
-
 
 struct FilenameAndDataset
 {
@@ -101,11 +95,7 @@ struct FilenameAndDataset
     size_t RangeStart ;
     size_t RangeEnd   ;
 } ;
-  
 
-
-
-//#include "CBasicFunctions.h"
 
 #if !defined ALIGNMENT_START_BYTES_
 #define ALIGNMENT_START_BYTES_ (4096)
@@ -257,8 +247,7 @@ void * CHDF5File<T>::MyMallocAligned(  long long int  size_in, long long int ali
         exit(-1) ;
     }
 }
- 
- 
+
 
 // input:
 // fileName     "c:\path\hdffilename.h5"
@@ -294,18 +283,13 @@ CHDF5File<T>::CHDF5File( string fileName, unsigned int access)
             cerr << "CHDF5File() constructor error: failed to create/open file: " << fileName << endl ;
         }
 
-        
         sHDFfilename = fileName ;
-       
         pDatasetData = NULL ;  // dataset data
         iDatasetRank = 0 ;
         pDatasetDims = NULL;
         pDatasetMaxDims = NULL ;
         this->hid_t_MemAttr = 0 ;
-
 }
-
-
 
 
 //  hsize_t * pDatasetDims  ;    // dimension size of array dimensions. filled using GetFullDataset(), SetMemDatatype(), CreateDataset() and ExtendExistingDataset() and  and freed using FreeDatasetData() 
@@ -321,8 +305,9 @@ hsize_t CHDF5File<T>::GetDatasetDimension(int dimension_wanted)
     {
       return 0 ; // indicates the dimension does not exist (size is zero)
     }
-  
 }
+
+
 template <class T>
 hsize_t CHDF5File<T>::GetDatasetDimension( ROWSORCOLS dimension_wanted) 
 {
@@ -339,8 +324,6 @@ hsize_t CHDF5File<T>::GetDatasetDimension( ROWSORCOLS dimension_wanted)
       return 0 ; // indicates the dimension does not exist (size is zero)
     }
 }
-
-
 
 
 // destructor
@@ -390,7 +373,6 @@ bool CHDF5File<T>::CreateFullHDFGroupPath(  string datasetPathAndNameIn, bool Is
     int t_pos = 0 ;
     hid_t t_group ;
 
-
     t_sRemainingDatasetPath = datasetPathAndNameIn ;
     if (IsPathOnlyIn == false)  // remove the dataset name
     {
@@ -408,7 +390,6 @@ bool CHDF5File<T>::CreateFullHDFGroupPath(  string datasetPathAndNameIn, bool Is
             t_sRemainingDatasetPath = t_sRemainingDatasetPath + "/" ;
         }
     }
-
 
     t_pos = pos((string)"/", t_sRemainingDatasetPath) ;
     if (t_pos == 1)// remove "/" if it is in the first position
@@ -451,7 +432,6 @@ bool CHDF5File<T>::CreateFullHDFGroupPath(  string datasetPathAndNameIn, bool Is
             cerr << "Error: CHDF5File<T>::CreateFullHDFGroupPath(): H5Gcreate2: could not create group " <<  t_sCurrentGroupFullPath << endl;
     }
     H5Gclose(t_group) ;
-
 
     return true ;
 }
@@ -504,7 +484,6 @@ bool CHDF5File<T>::SetMemDatatype( string datasetNameIn )
         }
         else
             return false ;
-
 }
 
 
@@ -558,17 +537,12 @@ bool CHDF5File<T>::CreateDataset( string datasetNameIn, void * dataBuf, size_t n
 // Could also use sizeof(dataBuf) / H5TGet_size( hid_tDataTypeIn ) to get the number of elements
 // dataTypeIn should probably be equal to hid_t_MemAttr
 {
-
     herr_t err = 0   ;
     herr_t status   ;
     hid_t  t_dataspace_id ;
-// hsize_t * dims   ;
-// hsize_t * maxdims  ;
     hsize_t * chunk_size ;
     hid_t t_dataset_id ;
-// hid_t t_datatype  ;
     hid_t   t_plist = 0  ;
-
 
     if (numRows == 0)
     {
@@ -614,10 +588,7 @@ bool CHDF5File<T>::CreateDataset( string datasetNameIn, void * dataBuf, size_t n
         this->pDatasetMaxDims[1] = numValsIn /numRows ; // max size of array
 
         t_dataspace_id = H5Screate_simple(2, this->pDatasetDims,  this->pDatasetMaxDims ) ;
-
-
         t_plist  = H5Pcreate(H5P_DATASET_CREATE);
-
 
         //if ( (this->pDatasetDims[0] != 1) && (this->pDatasetDims[1] != 1)  )
         {
@@ -676,7 +647,6 @@ bool CHDF5File<T>::CreateDataset( string datasetNameIn, void * dataBuf, size_t n
     {
         if (t_dataspace_id > 0) err = H5Sclose(t_dataspace_id) ;
         if (t_dataset_id > 0) err = H5Dclose(t_dataset_id) ;
-//  if (t_datatype > 0)  err = H5Dclose(t_datatype) ;
         if (t_plist > 0)   err = H5Pclose(t_plist) ;
 
         cerr << "Error: CHDF5File<T>::CreateDataset() could not write dataset (" << datasetNameIn << ")" << endl;
@@ -694,7 +664,6 @@ bool CHDF5File<T>::CreateDataset( string datasetNameIn, void * dataBuf, size_t n
 
     if (t_dataspace_id > 0) err += H5Sclose(t_dataspace_id) ;
     if (t_dataset_id > 0)   err += H5Dclose(t_dataset_id) ;
-// if (t_datatype > 0)  err += H5Tclose(t_datatype) ;
     if (t_plist > 0)  err += H5Pclose(t_plist) ;
 
 
@@ -828,8 +797,6 @@ bool CHDF5File<T>::CreateDatasetNoCompression( string datasetNameIn, void * data
 
 
 
-
-
 // This only works for 2D datasets
 template <class T>
 bool CHDF5File<T>::WriteRowsToExistingDataset(  string datasetNameIn, void * dataBuf, size_t numRows, size_t  numValsIn, size_t startRow, hid_t memTypeIn )
@@ -933,7 +900,6 @@ bool CHDF5File<T>::WriteRowsToExistingDataset(  string datasetNameIn, void * dat
 
 
 
-
 template <class T>
 size_t CHDF5File<T>::ReturnDatasetDimensionSize( int dimensionIN )
 {
@@ -950,12 +916,10 @@ size_t CHDF5File<T>::ReturnDatasetDimensionSize( int dimensionIN )
 }
 
 
-
 // returns dataset size in bytes and sets arrays iDatasetRank and pDatasetDims[]
 template <class T>
 size_t CHDF5File<T>::SetDatasetDimensionSizesOnly( string datasetNameIn)
 {
-
         string sDatasetPathAndName ;
         string sDatasetWantedVal   ;
 
@@ -990,11 +954,10 @@ size_t CHDF5File<T>::SetDatasetDimensionSizesOnly( string datasetNameIn)
                 t_iNumberofElementsInDataset *= this->pDatasetDims[t1] ;  // calculate how many elements in the array
             }
 
-
             /* Discover datatype in the file */
             t_file_attr     =  H5Dget_type( t_dataset ) ;
             t_iSizeOfDiskElementBytes =  H5Tget_size( t_file_attr ) ;
-        /// data_size_inbytes   *= datatype_size_inbytes ;  // = number of elements * size of element
+
             /* Find corresponding memory datatype */
             this->hid_t_MemAttr   =  H5Tget_native_type( t_file_attr, H5T_DIR_DEFAULT );
             dataset_class    =  H5Tget_class( this->hid_t_MemAttr ) ;
@@ -1004,14 +967,11 @@ size_t CHDF5File<T>::SetDatasetDimensionSizesOnly( string datasetNameIn)
             t_iReturnDataSizeInBytes  =  t_iNumberofElementsInDataset * t_iSizeOfMemoryElementInBytes ;  // = number of elements * size of element
 
             ret =  H5Tclose(t_file_attr) ;
-            //ret =  H5Tclose(mem_attr_t) ;
+ 
         }
 
         if (t_dataset > 0 )  ret =  H5Dclose(t_dataset) ;
         if (t_dataspace > 0 ) ret =  H5Sclose(t_dataspace) ;
-
-//  delete pDims ;
-//  delete pMaxDims ;
 
         return t_iReturnDataSizeInBytes ;
 
@@ -1024,11 +984,9 @@ size_t CHDF5File<T>::SetDatasetDimensionSizesOnly( string datasetNameIn)
 template <class T>
 size_t CHDF5File<T>::GetFullDataset( string datasetNameIn)
 {
-
         string sDatasetPathAndName ;
         string sDatasetWantedVal   ;
 
-        // if: attributNameAndWantedValueIn = "/wood_diff/DiffStepSize = >= 0.2"
         sDatasetPathAndName      =  datasetNameIn; 
 
         hid_t  t_dataset = -1 ;
@@ -1055,7 +1013,6 @@ size_t CHDF5File<T>::GetFullDataset( string datasetNameIn)
         this->pDatasetMaxDims =  new hsize_t[this->iDatasetRank] ;
         H5Sget_simple_extent_dims( t_dataspace, this->pDatasetDims , this->pDatasetMaxDims ) ; // returns the number of dimensions (i.e. the rank) which we already have
 
-
         if ( (t_dataset > 0) && (t_dataspace > 0) )  // dataset exists and is a single value
         {
             for (int t1 = 0 ; t1 < this->iDatasetRank; t1++)
@@ -1063,20 +1020,17 @@ size_t CHDF5File<T>::GetFullDataset( string datasetNameIn)
                 t_iNumberofElementsInDataset *= this->pDatasetDims[t1] ;  // calculate how many elements in the array
             }
 
-
             /* Discover datatype in the file */
             t_file_attr     =  H5Dget_type( t_dataset ) ;
             t_iSizeOfDiskElementBytes =  H5Tget_size( t_file_attr ) ;
-        /// data_size_inbytes   *= datatype_size_inbytes ;  // = number of elements * size of element
+            // data_size_inbytes   *= datatype_size_inbytes ;  // = number of elements * size of element
             /* Find corresponding memory datatype */
             this->hid_t_MemAttr   =  H5Tget_native_type( t_file_attr, H5T_DIR_DEFAULT );
-        // this->hid_t_MemAttr   =  this->ReturnTemplateVarType() ;  // returns the datatype of the template class == <T> and data will be converted on the fly to from disk to this datatype
             dataset_class    =  H5Tget_class( this->hid_t_MemAttr ) ;
 
             /// determine size in memory
             t_iSizeOfMemoryElementInBytes =  H5Tget_size( this->hid_t_MemAttr ) ;
             t_iReturnDataSizeInBytes  =  t_iNumberofElementsInDataset * t_iSizeOfMemoryElementInBytes ;  // = number of elements * size of element
-
 
             // Save attribute data into a char array for the moment.
             // Cast it to correct data type when we have more information, or keep it as string data if that is the case
@@ -1092,17 +1046,12 @@ size_t CHDF5File<T>::GetFullDataset( string datasetNameIn)
                 t_iReturnDataSizeInBytes = 0 ;  // retruns 0 if problem with allocation
             }
 
-
             ret =  H5Tclose(t_file_attr) ;
-            //ret =  H5Tclose(mem_attr_t) ;
 
         }
 
         if (t_dataset > 0 )  ret =  H5Dclose(t_dataset) ;
         if (t_dataspace > 0 ) ret =  H5Sclose(t_dataspace) ;
-
-//  delete pDims ;
-//  delete pMaxDims ;
 
         return t_iReturnDataSizeInBytes ;
 
@@ -1120,7 +1069,6 @@ size_t CHDF5File<T>::GetFullDatasetReturnInPtr( string datasetNameIn, T *& memSt
         string sDatasetPathAndName ;
         string sDatasetWantedVal   ;
 
-        // if: attributNameAndWantedValueIn = "/wood_diff/DiffStepSize = >= 0.2"
         sDatasetPathAndName      = datasetNameIn ; 
 
         hid_t  t_dataset = -1 ;
@@ -1161,11 +1109,10 @@ size_t CHDF5File<T>::GetFullDatasetReturnInPtr( string datasetNameIn, T *& memSt
                 t_iNumberofElementsInDataset *= this->pDatasetDims[t1] ;  // calculate how many elements in the array
             }
 
-
             /* Discover datatype in the file */
             t_file_attr     =  H5Dget_type( t_dataset ) ;
             t_iSizeOfDiskElementBytes =  H5Tget_size( t_file_attr ) ;
-        /// data_size_inbytes   *= datatype_size_inbytes ;  // = number of elements * size of element
+        
             /* Find corresponding memory datatype */
             if (hid_t_DataTypeWantedIn == 0)
                 this->hid_t_MemAttr   =  H5Tget_native_type( t_file_attr, H5T_DIR_DEFAULT );
@@ -1174,15 +1121,9 @@ size_t CHDF5File<T>::GetFullDatasetReturnInPtr( string datasetNameIn, T *& memSt
 
             dataset_class    =  H5Tget_class( this->hid_t_MemAttr ) ;
 
-            /// determine size in memory
+            // determine size in memory
             t_iSizeOfMemoryElementInBytes =  H5Tget_size( this->hid_t_MemAttr ) ;
             t_iReturnDataSizeInBytes  =  t_iNumberofElementsInDataset * t_iSizeOfMemoryElementInBytes ;  // = number of elements * size of element
-
-
-            // Save attribute data into a char array for the moment.
-            // Cast it to correct data type when we have more information, or keep it as string data if that is the case
-            //returnDatasetPointerInOut = (char  *) malloc( data_size_inbytes ) ;
-            //this->FreeDatasetData() ; have to do this at start of method as it deletes this->hid_t_MemAttr
 
             // memStreamIn.SetSize(t_iReturnDataSizeInBytes) ; // allocate the memory required in bytes
             memStreamIn = (T*) this->MyMallocAligned(t_iNumberofElementsInDataset  *  sizeof(T), ALIGNMENT_START_BYTES_ ) ;
@@ -1196,9 +1137,6 @@ size_t CHDF5File<T>::GetFullDatasetReturnInPtr( string datasetNameIn, T *& memSt
 
         if (t_dataset > 0 )  ret =  H5Dclose(t_dataset) ;
         if (t_dataspace > 0 ) ret =  H5Sclose(t_dataspace) ;
-
-//  delete pDims ;
-//  delete pMaxDims ;
 
         return t_iReturnDataSizeInBytes ;
 
@@ -1215,14 +1153,12 @@ size_t CHDF5File<T>::GetSectionOfDatasetReturnInPtr( string datasetNameIn, T *& 
         string sDatasetPathAndName ;
         string sDatasetWantedVal   ;
 
-        // if: attributNameAndWantedValueIn = "/wood_diff/DiffStepSize = >= 0.2"
-        sDatasetPathAndName      = datasetNameIn ;  //  
+        sDatasetPathAndName      = datasetNameIn ;  
 
         hid_t  t_dataset = -1 ;
         hid_t  t_dataspace = -1 ;
         herr_t  ret;
         hid_t  t_file_attr  ;
-//  H5T_class_t dataset_class ;
         size_t  t_iSizeOfDiskElementBytes ;
         size_t  t_iSizeOfMemoryElementInBytes ;
         size_t  t_iNumberofElementsInDataset  ;
@@ -1242,8 +1178,6 @@ size_t CHDF5File<T>::GetSectionOfDatasetReturnInPtr( string datasetNameIn, T *& 
         this->pDatasetMaxDims =  new hsize_t[this->iDatasetRank] ;
         H5Sget_simple_extent_dims( t_dataspace, this->pDatasetDims , this->pDatasetMaxDims ) ; // returns the number of dimensions (i.e. the rank) which we already have
 
-
-
         if ( (t_dataset > 0) && (this->iDatasetRank == 2) )  // data set exists and is a standard 2D data set
         {
 
@@ -1257,7 +1191,6 @@ size_t CHDF5File<T>::GetSectionOfDatasetReturnInPtr( string datasetNameIn, T *& 
             else
                 this->hid_t_MemAttr   =  hid_t_DataTypeWantedIn ;  // convert the file datatype to the desired memory datatype on the fly by HDF library
 
-    //  dataset_class     =  H5Tget_class( this->hid_t_MemAttr ) ;
 
             // create the memory data space - only the size of the final data needed
             hid_t memSpace_id = H5Screate(H5S_SIMPLE) ;
@@ -1278,9 +1211,11 @@ size_t CHDF5File<T>::GetSectionOfDatasetReturnInPtr( string datasetNameIn, T *& 
             offset[0] = rowStartIn - 1;
             offset[1] = 0 ;
 
-            H5Sselect_hyperslab(fileSpace_id, H5S_SELECT_SET, offset, NULL, currentsize, NULL);
-        // ret   = H5Sset_extent_simple(fileSpace_id, 2,currentsize,currentsize ) ;
-        // ret   = H5Soffset_simple(fileSpace_id, offset) ;
+            //    H5Sselect_hyperslab(fileSpace_id, H5S_SELECT_SET, offset, NULL, currentsize, NULL);
+            ret   = H5Sset_extent_simple(fileSpace_id, 2,currentsize,currentsize ) ;
+            if (ret < 0) Rcpp::Rcout << "Error: HDF5file::GetSectionOfDatasetReturnInPreallocatedPtr(): H5Sset_extent_simple" << std::endl ;
+            ret   = H5Soffset_simple(fileSpace_id, (const hssize_t*) offset) ;
+            if (ret < 0) Rcpp::Rcout << "Error: HDF5file::GetSectionOfDatasetReturnInPreallocatedPtr(): H5Sset_extent_simple" << std::endl ;
 
             this->pDatasetDims[0] = currentsize[0] ;
             this->pDatasetDims[1] = currentsize[1] ;
