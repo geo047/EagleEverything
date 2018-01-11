@@ -39,6 +39,8 @@ df_bc <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\
 df_fact <- cbind(df_fact,rep('native_c',nrow(df_bc)))
 
 
+df_new <- read.csv(file="F:\\Docker\\Eagle_profiling_data\\bracewellr_12099468.txt")
+
 df_all  <- rbind(df_ss,df_sc,df_bs,df_bc)
 df_fact <- factor(as.vector(df_fact) )
 df_all  <- cbind(df_all,df_fact)
@@ -117,12 +119,31 @@ df_sub_calc_extBIC <- subset(df, function.=="calc_extBIC" , c(ncpu,time_ms))
 
 ### Plot the individual function results using "df"
 library(rbokeh)
-df <- subset(df, (itnum==1),c(itnum,ncpu,ngpu,time_ms,function.) )
-figure(title="Eagle time by function (4 interations, dataset size = 2000 x 499829)") %>%
-    ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum)) %>%
-    y_axis(label = "Time/s", log=F) %>%
-    y_range(c(-10, max(df$time_ms/1000)+0.1*max(df$time_ms/1000)  )) %>%
-    x_axis(label = "Number of CPU cores") 
+
+plot_by_function <- function(df,itter=1)
+{
+  df <- subset(df, (itnum==itter),c(itnum,ncpu,ngpu,time_ms,function.) )
+  figure(title="Eagle time by function (4 interations, dataset size = 2000 x 499829)") %>%
+      ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum)) %>%
+      y_axis(label = "Time/s", log=F) %>%
+      y_range(c(-10, max(df$time_ms/1000)+0.1*max(df$time_ms/1000)  )) %>%
+      x_axis(label = "Number of CPU cores") 
+}
+
+plot_by_function(df_ss, itter=3)
+fig <- plot_by_function(df_new, itter=1)
+
+
+plot_by_function <- function(df,itter=1)
+{
+  df <- subset(df, (itnum==itter),c(itnum,ncpu,ngpu,time_ms,function.) )
+  return (figure(title="Eagle time by function (4 interations, dataset size = 2000 x 499829)") %>%
+            ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum)) %>%
+            y_axis(label = "Time/s", log=F) %>%
+            y_range(c(-10, max(df$time_ms/1000)+0.1*max(df$time_ms/1000)  )) %>%
+            x_axis(label = "Number of CPU cores") 
+  )
+}
     
 
 # plot by GPU    

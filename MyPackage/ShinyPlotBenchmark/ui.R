@@ -8,11 +8,12 @@
 library(shiny)
 library(shinyFiles)
 library(rbokeh)
+library(htmlwidgets)
 
 shinyUI(fluidPage(
   
   
-  fileInput("fi_file", "Select a file"),
+ #  fileInput("fi_file", "Select a file"),
   
   # Application title
   titlePanel("Read timing file"),
@@ -25,9 +26,10 @@ shinyUI(fluidPage(
   ),
  
   mainPanel(
-      rbokehOutput("rbokeh", width = 500, height = 540),
-      textOutput('filepaths'),
-      verbatimTextOutput('fi_text')
-    )
+    textInput(inputId="dataset_path", label="dataset:",  value = "../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt", width="1000px"),
+    rbokehOutput("rbokeh", width = 500, height = 540),
+    verbatimTextOutput('filepaths')
+      # verbatimTextOutput('fi_text')
+  )
   
 ))

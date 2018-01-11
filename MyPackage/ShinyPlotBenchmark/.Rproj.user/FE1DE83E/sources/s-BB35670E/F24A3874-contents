@@ -1,0 +1,138 @@
+---
+title: "Plot Eagle Timing Data"
+author: "Josh Bowden"
+affiliation: "CSIRO"
+date: 10/01/2018
+runtime: shiny
+output: 
+  html_document:
+          toc: true
+          toc_float: true
+          toc_depth: 3
+          keep_md: true
+         # css: `if (.Platform$OS.type == "windows") paste("//braggdata")`/data/bow355/A_HiPLARb_2016/R/3.2.4_dbgO3/lib64/R/library/knitr/themes/tcsoft.css
+---
+<style type="text/css">
+
+body, td {
+   font-size: 12px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r, preload_packages, echo=FALSE, include=FALSE}
+
+hr()
+
+
+
+repo <- "http://cran.us.r-project.org"
+if (!require(knitr)) {
+  install.packages("knitr", repos=repo)
+  library(knitr)
+}
+
+
+if (!require(rglwidget)){
+  install.packages("rglwidget", repos=repo)
+  library(rglwidget)
+}
+# For 2D interactive graphics:
+if (!require(rbokeh)) {
+    install.packages("httr", repos=repo, dependencies=T)  # requires openssl - so makes sure libopenssl is on LD_LIBRARY_PATH
+    install.packages("rbokeh", repos=repo, dependencies=T)
+    library(rbokeh)
+}
+if (!require(htmlwidgets)){
+  install.packages("htmlwidgets", repos=repo)
+  library(htmlwidgets)
+}
+
+
+REFNUM <- 1
+INDEXNUM <- 1
+```
+
+
+```{r, shiny_load_initialisation_times, echo=FALSE}
+# http://hafen.github.io/rbokeh/
+#library(HiPLARb)   
+
+library(rbokeh)
+library(shinyFiles)
+
+ shinyFilesButton('files', label='Load Dataset', title='Please select a dataset', multiple=FALSE)
+# textInput(inputId="initdata_path_slot", label="data directory:",  value = makefullpath("/srv/shiny-data/new5_test_swapover"), width="1000px")
+textInput(inputId="initdata_path_slot", label="data directory:",  value = "../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt", width="1000px")
+
+	
+# make these reactive so that changes to the test will update the file path and wildcard variables
+# init_data_path <- reactive({input$initdata_path_slot})
+
+
+# this checks if we select a new function from the available list and
+# adds the function to the textInput area named "selected_functions"
+# the selected functions are then used to subset the data for display in the bokeh graph below
+# observe({
+#     originaltext  <-  req(input$selected_functions)
+#     newtext       <-  paste0(req(input$function_select_init)," ")
+#     if (! grepl(newtext, originaltext)) # only update if function text is not already present
+#     {
+#         if ( !grepl("blank", newtext) ) {
+#           updateTextInput(session, inputId="selected_functions", value = paste( originaltext, " ", newtext ))
+#         }
+#     }
+#     updateSelectInput(session, inputId="function_select_init", selected=1 )
+#   })
+init_data_path <- reactive({input$initdata_path_slot})
+
+ flush1 <- "F:/Docker/Eagle_profiling_data"
+  # volumes <- c('Home directory'='/flush1/bow355')
+  volumes <- c('Home directory'=flush1)
+  shinyFileChoose(input, 'files', root=volumes, session=session, filetypes=c('', 'txt')) 
+
+  renderPrint({
+    testfile <-  parseFilePaths(volumes,input$files)[["datapath"]]
+    filename_in <-as.character(testfile[1]) # init_data_path() # initdata_path_slot
+   # fileText <- ""
+
+    if (file.exists(filename_in)) {
+      # fileText <- paste(readLines(as.character(testfile[1])), collapse = " ")
+      # testfile <-  as.character(testfile[1])
+      # init_data_path <- reactive({input$initdata_path_slot})
+     # filename_in
+       filename_in
+    }
+    # fileText
+    
+  }) 
+  
+  dfbool <- F
+  
+ renderRbokeh({
+    
+   #    figure() %>% ly_points(1:10)
+   # %>%
+    #     x_range(callback = shiny_callback("x_range"))
+   # plot_by_function(filename_in,2)
+    
+    df <- read.csv(file=init_data_path())
+    # df <- read.csv(file="../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt")
+    # # df <- subset(df, (itnum==1),c(itnum,ncpu,ngpu,time_ms,function.) )
+     figure(title="trying again") %>%
+      ly_points(x=ncpu, y=time_ms/1000, data=df, color = function., hover = list(time_ms/1000,function.,ncpu,itnum)) %>%
+        y_axis(label = "Time/s", log=F) %>%
+        x_axis(label = "Number of CPU cores") 
+
+    #
+    
+  })
+
+
+hr()
+```

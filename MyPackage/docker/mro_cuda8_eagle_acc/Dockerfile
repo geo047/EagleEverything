@@ -8,14 +8,23 @@
 
 #### How did the image get there:
 # sudo docker login imtsc-cont-reg.it.csiro.au
-# sudo docker build -t mro_cuda8_eagle_acc2 .
+# sudo docker build -t mro_cuda8_eagle_acc2_hdf .
+# sudo docker tag mro_cuda8_eagle_acc2_hdf  imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2_hdf
+# sudo docker push imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2_hdf
+# Get image on cluster - https://confluence.csiro.au/display/eagleaccel/Run+Eagle+using+Singularity+on+a+Cluster
+# 
+# disable the cache as it is stored in your home directory which has limited space
+# export SINGULARITY_DISABLE_CACHE=yes
+# give your repository credentials (only needed if the image is not public)
+# export SINGULARITY_DOCKER_USERNAME=<ident>
+# Yes this is not the best thing to be doing
+# export SINGULARITY_DOCKER_PASSWORD=<psswd>
+# singularity pull docker://imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2_hdf:latest
+
 # sudo docker ps -a
 # get the CONTAINER_ID for the image that was built (requires user to run the image first)
 # export DPS=8aa27af3a63c
 # sudo docker commit $DPS bow355/mro_cuda8_eagle_acc2
-# sudo docker tag bow355/mro_cuda8_eagle_acc2  imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2
-# sudo docker push imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2
-
 
 FROM imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_base
 MAINTAINER Josh Bowden "josh.bowden@csiro.au"
@@ -25,7 +34,13 @@ USER root
 
 ENV EAGLEDIR /R/library/Eagle/shiny_app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libhdf5-serial-dev \
+     && apt-get clean \
+     && rm -rf /var/lib/apt/lists/*
 
+     
 #     # R -e "install.packages(c('Eagle'), repos='http://cran.rstudio.com/' , lib='/R/library')" 
 # Install dependencies and Download and install shiny server
 RUN  mkdir shinybuild \

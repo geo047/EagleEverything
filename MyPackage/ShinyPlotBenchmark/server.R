@@ -11,35 +11,75 @@
 library(shiny)
 library(shinyFiles)
 library(rbokeh)
+library(htmlwidgets)
+
+
+
+plot_by_function <- function(filename, itter=1)
+{
+  
+ if (file.exists(as.character(filename)))
+ {
+     df <- NULL
+     if (file.exists(as.character(filename))) {
+       df <- read.csv(file=filename)
+       df <- subset(df, (itnum==itter),c(itnum,ncpu,ngpu,time_ms,function.) )
+     }
+     if (df != NULL) 
+     {
+       return (
+        figure(title="Eagle time by function (4 interations, dataset size = 2000 x 499829)") %>%
+         ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum)) %>%
+         y_axis(label = "Time/s", log=F) %>%
+         x_axis(label = "Number of CPU cores")
+      )
+    }
+       
+}
+
 
 shinyServer(function(input, output, session) {
-  flush1    <- Sys.getenv("FLUSH1DIR")
-  flush1 <- ".."
-  output$fi_text <- renderText({
-    filePath <- input$fi_file$datapath
-    # fileText <- paste(readLines(filePath), collapse = "\n")
-    # fileText
-    filePath
-  })
-  
-  # volumes <- c('Home directory'='/flush1/bow355')
+
+  flush1 <- "../../../.."
+  testfile <- ""
   volumes <- c('Home directory'=flush1)
   shinyFileChoose(input, 'files', root=volumes, session=session, filetypes=c('', 'txt')) 
+  filename_in <- ""
+  df <- NULL
   
+  reactive_data_path <- reactive({input$dataset_path})
+  
+ 
   output$filepaths  <- renderPrint({
     testfile <-  parseFilePaths(volumes,input$files)[["datapath"]]
-    fileText <- ""
+    filename_in <- as.character(testfile[1])
 
-    if (file.exists(as.character(testfile[1]))) {
-       fileText <- paste(readLines(as.character(testfile[1])), collapse = " ")
+    if (file.exists(filename_in)) {
+      updateTextInput(session, "dataset_path", value = paste(filename_in))
     }
-    fileText
+
   }) 
   
+  
+  # df <- read.csv(file="../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt")
   output$rbokeh <- renderRbokeh({
-    figure() %>% ly_points(1:10) %>%
-      x_range(callback = shiny_callback("x_range"))
+    
+    if (file.exists(reactive_data_path())) {
+      df <- read.csv(file=reactive_data_path())
+      df <- subset(df, (itnum<3),c(itnum,ncpu,ngpu,time_ms,function.) )
+      figure(title="Eagle benchmarking - Time per function vs Number of CPUs") %>%
+        ly_points(x=ncpu, y=time_ms/1000, data=df, color = function., hover = list(time_ms/1000,function.,ncpu,itnum)) %>%
+        y_axis(label = "Time/s", log=F) %>%
+        x_axis(label = "Number of CPU cores") 
+    # 
+    }
   })
   
 })
+
+# showModal(modalDialog(
+ # title = "Important message",
+# as.character(filename)
+# ))
+
 
