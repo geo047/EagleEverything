@@ -210,81 +210,122 @@ figure(title="Eagle Total Time (4 interations, dataset size = 2000 x 499829, bra
 
 
 ###################
+
+
+
 ### Repeats singularity scatter boxplot + hover of average total time
 # N.B. The eagle_REPEATS_ss_slurm_id.txt data was created via a shell script "repeat_processing.sh" 
+# likewise with:  eagle_HDF5_cs_eigenblas_slurm_id.txt
 # This script added the SLURM_ID value from the .res output data filename
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEATS_ss_slurm_id.txt") # eagle_REPEATS_ss.txt
-df_fact <- NULL
-# df_fact <- rep('singularity_s',nrow(df_rep_ss))
-# df_rep_ss <- add_factor_col(df_rep_ss,df_fact)
+df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEATS_HDF5_ss_slurm_id.txt")
+df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_HDF5_cs_eigenblas_slurm_id.txt") # eagle_REPEATS_ss.txt
 
-df_fact <- as.factor(df_rep_ss$slurm_id2)  # distingush items by SLURM run so we can sum the total time for each run and then plot by numcpus
-df_rep <- add_factor_col(df_rep_ss,df_fact)
+roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
+  if(length(x) != 1) stop("'x' must be of length 1")
+  10^floor(log10(x)) * nice[[which(x <= 10^floor(log10(x)) * nice)[[1]]]]
+}
 
-lev_sid <- levels(df_rep$df_fact)
-num_sid_levels <- length( levels(df_rep$df_fact))
-str(df_rep_ss)
+total_time_df <- get_total_times_for_repeats(df_rep_ss) 
+ave_time_df <- get_average_times_for_repeats(total_time_df)
+# ave_time_df$jitwhich <- paste0(ave_time_df$ncpu, ":", ave_time_df$average_time)
 
-# initialised results vectors
-total_t_vect   <- vector("numeric",  length(lev_sid))
-ncpu_vect      <- vector("numeric", length(lev_sid))
-sid_group_vect <- vector("numeric",  length(lev_sid))
-factlev        <- vector('character',length(lev_sid))
+# The following dataframe is the 1 GPU results with added number of cores:
+# tlist <- list(as.character(ncps_gpu_1),rep(1,length(ncps_gpu_1)), total_time_gpu_1)
+# names(tlist) <- c("ncpu","ngpu","average_time")
+# gpu_time_df <- as.data.frame(tlist,stringsAsFactors=T)
 
-fact_itter <- 1
+maxrange <- roundUpNice(max(total_time_df$total_time/1000))
 
-for (fact in lev_sid) {
+# Plot Repeat measures for CPU resu lts as boxplot display of total times
+library(rbokeh) # title="Singularity, Singulatity+HDF, R native CRAN, R + eigen_use_blas",
+fig <- figure( ylab = "Total Time (s)", width = 600, legend_location = "top_right") %>%
+  ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "blue", legend="singularity") %>%
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "blue") %>% 
+  y_range(c(0,maxrange ))                                                                                     # legend="singularity"
+
+
+fig <- fig %>% 
+  ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "red", legend="singularity_hdf") %>%
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "red") # legend="singularity & HDF"
+
+
+fig <- fig %>% 
+  ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "green", legend="R native + eigen_use_blas") %>%
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "green") #  legend="R & eigen_use_blas & hdf"
+
+
+fig <- fig %>% 
+  ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "orange",  legend="R native CRAN") %>%
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "orange") # legend="R & CRAN equiv"
+
+  ly_points(ncpu, average_time/1000, data = gpu_time_df, hover = list(total_time_gpu_1/1000, ngpu))
   
+  
+get_total_times_for_repeats <- function(df_rep_ss)
+{
+  df_fact <- NULL
+  # df_fact <- rep('singularity_s',nrow(df_rep_ss))
+  # df_rep_ss <- add_factor_col(df_rep_ss,df_fact)
+  
+  df_fact <- as.factor(df_rep_ss$slurm_id2)  # distingush items by SLURM run so we can sum the total time for each run and then plot by numcpus
+  
+  lev_sid <- levels(df_fact)
+  #num_sid_levels <- length(lev_sid)
+  
+  # initialised results vectors
+  total_t_vect   <- vector("numeric",  length(lev_sid))
+  ncpu_vect      <- vector("numeric", length(lev_sid))
+  sid_group_vect <- vector("numeric",  length(lev_sid))
+  factlev        <- vector('character',length(lev_sid))
+  
+  fact_itter <- 1
+  
+  for (fact in lev_sid) {
+    
     vect_ref <-  fact_itter
-    sub_df <- subset(df_rep, df_fact==fact, c(function.,ncpu,time_ms))
+    sub_df <- subset(df_rep_ss, df_fact==fact, c(function.,ncpu,time_ms))
     ncpu_vect[vect_ref]    <- unique(sub_df$ncpu)
     total_t_vect[vect_ref] <- sum((sub_df)$time_ms)
     factlev[vect_ref] <- fact
     
+    
+    fact_itter <- fact_itter + 1 ;
+  }
   
-  fact_itter <- fact_itter + 1 ;
+  # Convert vectors to a list, add names and convert list to df
+  tlist <- list(ncpu_vect,total_t_vect,factlev)
+  names(tlist) <- c("ncpu","total_time","system")
+  total_time_df <- as.data.frame(tlist,stringsAsFactors=T)
+  # str(ave_time_df$ncpu)
 }
 
-# Convert vectors to a list, add names and convert list to df
-tlist <- list(ncpu_vect,total_t_vect,factlev)
-names(tlist) <- c("ncpu","total_time","system")
-total_time_df <- as.data.frame(tlist,stringsAsFactors=T)
-
-
-## compute the average value to be used for hover overlay
-num_cpu_vals <- length(unique(total_time_df$ncpu))
-ave_by_cpu   <- vector('numeric',num_cpu_vals)
-cpu_by_cpu   <- vector('numeric',num_cpu_vals)
-cpu_order <- order(as.numeric(unique(total_time_df$ncpu))) 
-itter <- 2
-str(cpunum)
-for (itter in 1:num_cpu_vals) {
-  cpunum <- unique(as.numeric(total_time_df$ncpu))[cpu_order[itter]]
-  #message(cpunum)
-  ave_by_cpu[itter]  <- ave(subset(total_time_df, ncpu==cpunum, c(ncpu,total_time))$total_time)[1]
-  cpu_by_cpu[itter] <- as.numeric(cpunum)
+# this function requires the output from get_total_times_for_repeats() to 
+# compute the total_time averages
+get_average_times_for_repeats <- function(total_time_df)
+{
+  ## compute the average value to be used for hover overlay
+  num_cpu_vals <- length(unique(total_time_df$ncpu))
+  ave_by_cpu   <- vector('numeric',num_cpu_vals)
+  cpu_by_cpu   <- vector('numeric',num_cpu_vals)
+  cpu_order <- order(as.numeric(unique(total_time_df$ncpu))) 
+  itter <- 2
+  # str(cpunum)
+  for (itter in 1:num_cpu_vals) {
+    cpunum <- unique(as.numeric(total_time_df$ncpu))[cpu_order[itter]]
+    #message(cpunum)
+    ave_by_cpu[itter]  <- ave(subset(total_time_df, ncpu==cpunum, c(ncpu,total_time))$total_time)[1]
+    cpu_by_cpu[itter] <- as.numeric(cpunum)
+  }
+  tlist <- list(as.character(cpu_by_cpu),ave_by_cpu)
+  names(tlist) <- c("ncpu","average_time")
+  ave_time_df <- as.data.frame(tlist,stringsAsFactors=T)
 }
-tlist <- list(as.character(cpu_by_cpu),ave_by_cpu)
-names(tlist) <- c("ncpu","average_time")
-ave_time_df <- as.data.frame(tlist,stringsAsFactors=T)
-str(ave_time_df$ncpu)
 
-# ave_time_df$jitwhich <- paste0(ave_time_df$ncpu, ":", ave_time_df$average_time)
 
-# The following dataframe is the 1 GPU results with added number of cores:
-tlist <- list(as.character(ncps_gpu_1),rep(1,length(ncps_gpu_1)), total_time_gpu_1)
-names(tlist) <- c("ncpu","ngpu","average_time")
-gpu_time_df <- as.data.frame(tlist,stringsAsFactors=T)
-
-# Plot Repeat measures for CPU results as boxplot display of total times
-library(rbokeh)
-figure(ylab = "Total Time (s)", width = 600) %>%
-  ly_boxplot(ncpu, total_time/1000,  data = total_time_df ) %>%
-  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000)) %>%
-  ly_points(ncpu, average_time/1000, data = gpu_time_df, hover = list(total_time_gpu_1/1000, ngpu))
+  
 
 ####################
-
 
 
 

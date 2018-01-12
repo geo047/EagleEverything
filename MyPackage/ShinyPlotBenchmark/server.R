@@ -15,27 +15,148 @@ library(htmlwidgets)
 
 
 
-plot_by_function <- function(filename, itter=1)
+get_total_times_for_repeats <- function(df_rep_ss)
+{
+  df_fact <- NULL
+  # df_fact <- rep('singularity_s',nrow(df_rep_ss))
+  # df_rep_ss <- add_factor_col(df_rep_ss,df_fact)
+  
+  df_fact <- as.factor(df_rep_ss$slurm_id2)  # distingush items by SLURM run so we can sum the total time for each run and then plot by numcpus
+  
+  lev_sid <- levels(df_fact)
+  #num_sid_levels <- length(lev_sid)
+  
+  # initialised results vectors
+  total_t_vect   <- vector("numeric",  length(lev_sid))
+  ncpu_vect      <- vector("numeric", length(lev_sid))
+  sid_group_vect <- vector("numeric",  length(lev_sid))
+  factlev        <- vector('character',length(lev_sid))
+  
+  fact_itter <- 1
+  
+  for (fact in lev_sid) {
+    
+    vect_ref <-  fact_itter
+    sub_df <- subset(df_rep_ss, df_fact==fact, c(function.,ncpu,time_ms))
+    ncpu_vect[vect_ref]    <- unique(sub_df$ncpu)
+    total_t_vect[vect_ref] <- sum((sub_df)$time_ms)
+    factlev[vect_ref] <- fact
+    
+    
+    fact_itter <- fact_itter + 1 ;
+  }
+  
+  # Convert vectors to a list, add names and convert list to df
+  tlist <- list(ncpu_vect,total_t_vect,factlev)
+  names(tlist) <- c("ncpu","total_time","system")
+  total_time_df <- as.data.frame(tlist,stringsAsFactors=T)
+  # str(ave_time_df$ncpu)
+}
+
+# this function requires the output from get_total_times_for_repeats() to 
+# compute the total_time averages
+get_average_times_for_repeats <- function(total_time_df)
+{
+  ## compute the average value to be used for hover overlay
+  num_cpu_vals <- length(unique(total_time_df$ncpu))
+  ave_by_cpu   <- vector('numeric',num_cpu_vals)
+  cpu_by_cpu   <- vector('numeric',num_cpu_vals)
+  cpu_order <- order(as.numeric(unique(total_time_df$ncpu))) 
+  itter <- 2
+  # str(cpunum)
+  for (itter in 1:num_cpu_vals) {
+    cpunum <- unique(as.numeric(total_time_df$ncpu))[cpu_order[itter]]
+    #message(cpunum)
+    ave_by_cpu[itter]  <- ave(subset(total_time_df, ncpu==cpunum, c(ncpu,total_time))$total_time)[1]
+    cpu_by_cpu[itter] <- as.numeric(cpunum)
+  }
+  tlist <- list(as.character(cpu_by_cpu),ave_by_cpu)
+  names(tlist) <- c("ncpu","average_time")
+  ave_time_df <- as.data.frame(tlist,stringsAsFactors=T)
+}
+
+
+plot_by_totaltime <- function(filename, itter=1, fig=NULL)
+{
+  if (file.exists(as.character(filename)))
+  {
+    df <- NULL
+    df <- tryCatch({
+      read.csv(file=filename)              
+    }, warning = function(war) {
+      print(paste("plot_by_function() read.csv() Warning: ",war))
+      return (NULL)
+    }, error = function(err) {
+      print(paste("plot_by_function() read.csv() Error: ",err))
+      return (NULL)
+    }, finally = {
+    }) # END tryCatch
+    
+    if (!is.null(df)) 
+    {
+    
+    total_time_df <- get_total_times_for_repeats(df) 
+    ave_time_df <- get_average_times_for_repeats(total_time_df)
+    maxrange <- roundUpNice(max(total_time_df$total_time/1000))
+    
+    # Plot Repeat measures for CPU resu lts as boxplot display of total times
+   # title="Singularity, Singulatity+HDF, R native CRAN, R + eigen_use_blas",
+    fig <- figure( ylab = "Total Time (s)", width = 600, legend_location = "top_right") %>%
+      ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "blue", legend="singularity") %>%
+      ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "blue") %>% 
+      y_range(c(0,maxrange )) 
+    
+    } # legend="singularity"
+  }
+}
+
+
+
+#filename <- "../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt"
+# itter=2
+plot_by_function <- function(filename, itter=1, fig=NULL)
 {
   
  if (file.exists(as.character(filename)))
  {
      df <- NULL
-     if (file.exists(as.character(filename))) {
-       df <- read.csv(file=filename)
-       df <- subset(df, (itnum==itter),c(itnum,ncpu,ngpu,time_ms,function.) )
-     }
-     if (df != NULL) 
+     df <- tryCatch({
+       read.csv(file=filename)              
+     }, warning = function(war) {
+       print(paste("plot_by_function() read.csv() Warning: ",war))
+       return (NULL)
+     }, error = function(err) {
+       print(paste("plot_by_function() read.csv() Error: ",err))
+       return (NULL)
+     }, finally = {
+     }) # END tryCatch
+     
+     if (!is.null(df)) 
      {
+       
+       df <- subset(df, (itnum==itter),c(itnum,ncpu,ngpu,time_ms,function.) )
        return (
-        figure(title="Eagle time by function (4 interations, dataset size = 2000 x 499829)") %>%
-         ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum)) %>%
-         y_axis(label = "Time/s", log=F) %>%
-         x_axis(label = "Number of CPU cores")
+         if (is.null(fig)) {
+            figure(title="Eagle time by function (4 interations, dataset size = 2000 x 499829)") %>%
+             ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum)) %>%
+             y_axis(label = "Time/s", log=F) %>%
+             x_axis(label = "Number of CPU cores")
+         } else {
+            fig <- fig %>%
+             ly_points(x=ncpu, y=time_ms/1000, data = df, color = function., hover = list(time_ms,function.,ncpu,itnum))
+         }
       )
     }
        
+ }
+}  
+  
+  
+roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
+    if(length(x) != 1) stop("'x' must be of length 1")
+    10^floor(log10(x)) * nice[[which(x <= 10^floor(log10(x)) * nice)[[1]]]]
 }
+  
 
 
 shinyServer(function(input, output, session) {
@@ -48,7 +169,8 @@ shinyServer(function(input, output, session) {
   df <- NULL
   
   reactive_data_path <- reactive({input$dataset_path})
-  
+  reactive_itnum <- reactive({ input$itnum })
+  reactive_plottype_rb <- reactive({ input$plottype_rb })
  
   output$filepaths  <- renderPrint({
     testfile <-  parseFilePaths(volumes,input$files)[["datapath"]]
@@ -63,16 +185,14 @@ shinyServer(function(input, output, session) {
   
   # df <- read.csv(file="../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt")
   output$rbokeh <- renderRbokeh({
-    
-    if (file.exists(reactive_data_path())) {
-      df <- read.csv(file=reactive_data_path())
-      df <- subset(df, (itnum<3),c(itnum,ncpu,ngpu,time_ms,function.) )
-      figure(title="Eagle benchmarking - Time per function vs Number of CPUs") %>%
-        ly_points(x=ncpu, y=time_ms/1000, data=df, color = function., hover = list(time_ms/1000,function.,ncpu,itnum)) %>%
-        y_axis(label = "Time/s", log=F) %>%
-        x_axis(label = "Number of CPU cores") 
-    # 
+    if (reactive_plottype_rb() == 1) {
+      fig <- plot_by_function (reactive_data_path(), reactive_itnum(), fig=NULL)
     }
+    else {
+      fig <- plot_by_totaltime(reactive_data_path(), reactive_itnum(), fig=NULL)
+    }
+    
+    fig 
   })
   
 })

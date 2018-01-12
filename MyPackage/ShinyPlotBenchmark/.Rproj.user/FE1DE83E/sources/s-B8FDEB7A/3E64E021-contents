@@ -18,12 +18,12 @@ shinyUI(fluidPage(
   # Application title
   titlePanel("Read timing file"),
   sidebarPanel(
-
-  
-  shinyFilesButton('files', label='Load Dataset', title='Please select a dataset', multiple=FALSE)
-  # shinyFilesButton('file', 'File select', 'Please select a file', FALSE)
-  # Sidebar with a slider input for number of bins
+    shinyFilesButton('files', label='Load Dataset', title='Please select a dataset', multiple=FALSE),
+    numericInput("itnum", label = h3("iteration number"), value = 2, min = 1),
+    #checkboxInput("funct_or_box_cb", label = "Plot total time box", value = FALSE)
+    radioButtons("plottype_rb", label = h3("Plot type"), choices = list("function time" = 1, "total time" = 2),  selected = 1)
   ),
+  
  
   mainPanel(
     textInput(inputId="dataset_path", label="dataset:",  value = "../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt", width="1000px"),

@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "2FFA5643",
-    "lastKnownWriteTime" : 1515556644,
-    "last_content_update" : 1515556644700,
+    "lastKnownWriteTime" : 1515725051,
+    "last_content_update" : 1515725051617,
     "path" : "F:/Docker/Eagle_master_git/EagleEverything/MyPackage/ShinyPlotBenchmark/subset_by_function.R",
     "project_path" : "subset_by_function.R",
     "properties" : {
-        "cursorPosition" : "56,27",
-        "scrollLine" : "0"
+        "cursorPosition" : "229,59",
+        "scrollLine" : "215"
     },
     "relative_order" : 2,
     "source_on_save" : false,
