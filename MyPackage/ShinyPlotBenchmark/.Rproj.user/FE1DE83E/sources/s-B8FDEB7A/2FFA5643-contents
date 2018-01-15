@@ -53,7 +53,7 @@ df      <-  df_bs
 #'      and to add to char vector:  cbind(df_fact,rep('native_c',nrow(df_bc)))
 
 
-### GPU results - total times:
+### GPU results - total times - no HDF file i/o:
 df_gpu_01 <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_compact_gpu_1_2_3_4_ncpu_01_v2.txt")  
 df_gpu_02 <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_compact_gpu_1_2_3_4_ncpu_02_v2.txt")
 df_gpu_04 <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_compact_gpu_1_2_3_ncpu_04.txt")
@@ -64,11 +64,13 @@ total_time_gpu_1[1] <- sum((subset(df_gpu_01, ngpu==1, c(function.,ncpu,ngpu,tim
 total_time_gpu_1[2] <- sum((subset(df_gpu_02, ngpu==1, c(function.,ncpu,ngpu,time_ms)))$time_ms)
 total_time_gpu_1[3] <- sum((subset(df_gpu_04, ngpu==1, c(function.,ncpu,ngpu,time_ms)))$time_ms)
 total_time_gpu_1[4] <- sum((subset(df_gpu_14, ngpu==1, c(function.,ncpu,ngpu,time_ms)))$time_ms)
-ncps_gpu_1 <- c(1,2,4,14)
+ncps_gpu_1 <- as.integer(c(1,2,4,14))
+str(ncps_gpu_1)
+
 # Plot the 1 GPU data, x axis is number of cores
 library(rbokeh)
 figure(title="Eagle Total Time (4 interations, dataset size = 2000 x 499829, 1 x P100 GPU LD_PRELOAD)") %>%
-  ly_points(x=ncps_gpu_1, y=total_time_gpu_1/1000, hover = list(total_time_gpu_1)) %>%
+  ly_points(x=ncps_gpu_1, y=total_time_gpu_1/1000, hover = list(total_time_gpu_1/1000)) %>%
   y_axis(label = "Time/s", log=F) %>%
   y_range(c(-100, 1750 )) %>%
   x_range(c(0, 29 )) %>%
@@ -217,9 +219,12 @@ figure(title="Eagle Total Time (4 interations, dataset size = 2000 x 499829, bra
 # N.B. The eagle_REPEATS_ss_slurm_id.txt data was created via a shell script "repeat_processing.sh" 
 # likewise with:  eagle_HDF5_cs_eigenblas_slurm_id.txt
 # This script added the SLURM_ID value from the .res output data filename
+df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEAT_cs_CRAN_slurm_id.txt") # original CRAN timing
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEATS_ss_slurm_id.txt") # eagle_REPEATS_ss.txt
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEATS_HDF5_ss_slurm_id.txt")
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_HDF5_cs_eigenblas_slurm_id.txt") # eagle_REPEATS_ss.txt
+
+
 
 roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
   if(length(x) != 1) stop("'x' must be of length 1")
@@ -258,6 +263,14 @@ fig <- fig %>%
 fig <- fig %>% 
   ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "orange",  legend="R native CRAN") %>%
   ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "orange") # legend="R & CRAN equiv"
+
+
+# to view the plot use this:
+fig
+
+
+# Add the GPU timing data: ncps_gpu_1
+fig <- fig %>%  ly_points(x=ncps_gpu_1, y=total_time_gpu_1/1000, hover = list(total_time_gpu_1)) 
 
   ly_points(ncpu, average_time/1000, data = gpu_time_df, hover = list(total_time_gpu_1/1000, ngpu))
   

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo ${EAGLE_HDF5_HOME}
+HDF5LIBS=""
+HDF5INC="-DEIGEN_DEFAULT_TO_ROW_MAJOR"
+if [[ -n ${EAGLE_HDF5_HOME} ]] ; then
+    if [ -d ${EAGLE_HDF5_HOME} ] ; then
+        HDF5LIBS="-L ${EAGLE_HDF5_HOME}/lib -lhdf5 "
+        HDF5INC="-I ${EAGLE_HDF5_HOME}/include -D_HASHDF5 -DEIGEN_DEFAULT_TO_ROW_MAJOR"
+        echo "EAGLE_HDF5_HOME is set HDF5 code will be used"
+    fi
+else
+  echo "EAGLE_HDF5_HOME is not set so HDF5 will not be used"
+fi
+
+sed -e "s|@HDF5LIBS@|${HDF5LIBS}|"  -e "s|@HDF5INC@|${HDF5INC}|"  src/Makevars.in > src/Makevars
+
+
+

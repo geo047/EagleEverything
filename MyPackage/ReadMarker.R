@@ -312,7 +312,7 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
        RDatafile <- paste( tempdir() , "\\", "M.RData", sep="")
   }
 
-  
+  # These functions do nothing if HDF5 header has not been set using HDF5_HOME environment variable
   ReadASCIIWriteHDF_rcpp(asciifileM, dim_of_ascii_M, F) ;
   ReadASCIIWriteHDF_rcpp(asciifileMt, dim_of_ascii_M, T) ;
 

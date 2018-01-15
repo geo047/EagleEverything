@@ -163,12 +163,17 @@ echo "Running R CMD BATCH ./tmp.R"
 R CMD BATCH ./tmp.R
 
 
+# Copy configure script
+cp $DIR/configure $DIR/Eagle/configure
+chmod 744 $DIR/Eagle/configure
 
 # copy Makevars to Eagle
 echo " Copy my own Makevars and Makevars.win to Eagle directory "
-cp $DIR/Makevars $DIR/Eagle/src
+# cp $DIR/Makevars $DIR/Eagle/src
 cp $DIR/Makevars.win $DIR/Eagle/src
+cp $DIR/Makevars.in $DIR/Eagle/src
 #cp $DIR/Makevars.gpu $DIR/Eagle/src/Makevars
+
 
 
 

@@ -14,18 +14,13 @@ library(rbokeh)
 library(htmlwidgets)
 
 
-
+# This function computes the total time for each idividual run
+# as determined by the 'slurm_id2' factor 
 get_total_times_for_repeats <- function(df_rep_ss)
 {
   df_fact <- NULL
-  # df_fact <- rep('singularity_s',nrow(df_rep_ss))
-  # df_rep_ss <- add_factor_col(df_rep_ss,df_fact)
-  
   df_fact <- as.factor(df_rep_ss$slurm_id2)  # distingush items by SLURM run so we can sum the total time for each run and then plot by numcpus
-  
   lev_sid <- levels(df_fact)
-  #num_sid_levels <- length(lev_sid)
-  
   # initialised results vectors
   total_t_vect   <- vector("numeric",  length(lev_sid))
   ncpu_vect      <- vector("numeric", length(lev_sid))
@@ -35,23 +30,22 @@ get_total_times_for_repeats <- function(df_rep_ss)
   fact_itter <- 1
   
   for (fact in lev_sid) {
-    
     vect_ref <-  fact_itter
     sub_df <- subset(df_rep_ss, df_fact==fact, c(function.,ncpu,time_ms))
     ncpu_vect[vect_ref]    <- unique(sub_df$ncpu)
     total_t_vect[vect_ref] <- sum((sub_df)$time_ms)
     factlev[vect_ref] <- fact
     
-    
     fact_itter <- fact_itter + 1 ;
   }
   
-  # Convert vectors to a list, add names and convert list to df
+  # Convert vectors to a list, adds names and convert list to dataframe
   tlist <- list(ncpu_vect,total_t_vect,factlev)
   names(tlist) <- c("ncpu","total_time","system")
   total_time_df <- as.data.frame(tlist,stringsAsFactors=T)
   # str(ave_time_df$ncpu)
 }
+
 
 # this function requires the output from get_total_times_for_repeats() to 
 # compute the total_time averages
@@ -162,6 +156,10 @@ roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
 shinyServer(function(input, output, session) {
 
   flush1 <- "../../../.."
+ # if (.Platform$OS.type == "windows") {
+#    flush1 <- paste0(Sys.getenv("HOME"),"/..")
+ # }
+  
   testfile <- ""
   volumes <- c('Home directory'=flush1)
   shinyFileChoose(input, 'files', root=volumes, session=session, filetypes=c('', 'txt')) 

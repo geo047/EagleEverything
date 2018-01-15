@@ -452,35 +452,46 @@ if(length(indxNA)>0){
  itnum <- 1
 
  profile_time <- FALSE
+ run_id <- 0
  if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
    profile_time <- TRUE 
    message(" EAGLE_PROFILE_STR was set! \n")
+   # create a unigue number for this run of the code - used for display of timing info
+   # Use the SLURM Job ID if available otherwise just create a random number (and risk value collison)
+   if (nchar(Sys.getenv("SLURM_JOB_ID")) > 0) {
+       run_id <- Sys.getenv("SLURM_JOB_ID") 
+       message(" SLURM_JOB_ID was set! \n")
+   } else {
+      run_id <- floor(runif(1, 1,100000000)) 
+      run_id <- sprintf("name_%08d", run_id)
+      message(" SLURM_JOB_ID was not set so a random run id was created: ", run_id)
+   } 
  } else {
    message(" EAGLE_PROFILE_STR was not set! \n")
  }
  
-  
+
 
  
- if (profile_time==TRUE)  message("profile,itnum,ncpu,ngpu,function,time_ms")
+ if (profile_time==TRUE)  message("profile,run_id,itnum,ncpu,ngpu,function,time_ms")
  looptime <- fasttimer() ;
  while(continue){
-  profile_str <- paste0("profile,",itnum, ",",ncpu,",",ngpu,",")
+  profile_str <- paste0("profile,",run_id,",",,itnum, ",",ncpu,",",ngpu,",")
   if (profile_time==FALSE)  message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
   
   if (profile_time==TRUE) { looptime <- fasttimer() }
    ## based on selected_locus, form model matrix X
-  currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
+   currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
 
-  if (profile_time==TRUE) {
-    looptime <- fasttimer() ;
-    message(profile_str,"constructX,",looptime)
-  }
+   if (profile_time==TRUE) {
+     looptime <- fasttimer() ;
+     message(profile_str,"constructX,",looptime)
+   }
 
-    ## calculate Ve and Vg
-    Args <- list(geno=geno,availmemGb=availmemGb,
+   ## calculate Ve and Vg
+   Args <- list(geno=geno,availmemGb=availmemGb,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
@@ -506,8 +517,7 @@ if(length(indxNA)>0){
         gc()
     } 
    
-    
-    
+
     if(!quiet){
       message(" Calculating variance components for multiple-locus model. \n")
     }
@@ -522,7 +532,6 @@ if(length(indxNA)>0){
     best_vg <- vc[["vg"]]
 
 
-    
     ## Calculate extBIC
    if (profile_time==TRUE) { looptime <- fasttimer() }   
     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, quiet) 
@@ -534,7 +543,6 @@ if(length(indxNA)>0){
 
     ## set vector extBIC
     extBIC <- c(extBIC, new_extBIC)
-
 
     ## Print findings to screen
    .print_results(itnum, selected_loci, map,  extBIC)

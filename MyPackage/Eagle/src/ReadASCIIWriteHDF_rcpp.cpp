@@ -1,19 +1,24 @@
 // [[Rcpp::depends(RcppEigen)]]
+
+
 #include <RcppEigen.h>
+#if defined (_HASHDF5)
 #include  "CHDF5File.h"
+#endif
 #ifdef _OPENMP
 #include <omp.h>
 //   [[Rcpp::plugins(openmp)]]
 #endif
 
 
-// This function is called from ReadMarker() twise, once for M and again for Mt
+// This function is called from ReadMarker() twice, once for M and again for Mt
 // [[Rcpp::export]]
 bool  ReadASCIIWriteHDF_rcpp(std::string asciifname,
                   std::vector <long> dims,
                   bool transpose                 )
 
 {
+#if defined (_HASHDF5)
     int numrows, numcols ;
     if (transpose == false) {
          numcols = dims[1] ;
@@ -69,7 +74,7 @@ bool  ReadASCIIWriteHDF_rcpp(std::string asciifname,
     // Close the hdf5 file
     delete tempHDF5File ;
     delete [] char_line ;
-
+#endif // defined (_HASHDF5)
     return true;
 
 }
