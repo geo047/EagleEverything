@@ -61,7 +61,7 @@ Eigen::MatrixXd
 
 
    // Calculate memory footprint for Mt %*% inv(sqrt(MMt)) %*% var(a) %*% inv(sqrt(MMt)%*%M)
- double mem_bytes_needed =   ( 4   *dims[1]  *  dims[0] * sizeof(double))/1000000000;
+ double mem_bytes_needed =   ( 4.0   * (double) dims[1]  *   (double) dims[0] * sizeof(double))/1000000000.0;
 
 if (!quiet){
 //   Rprintf("Total memory (Gbytes) needed for a calculation is: %f \n",  mem_bytes_needed);
@@ -125,8 +125,8 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
       // calculate the maximum number of rows in Mt that can be contained in the
       // block multiplication. This involves a bit of algebra but it is comes to the following
       // Strictly, 2 should be used here but I want some extra memory to play with 
-      long num_rows_in_block =  max_memory_in_Gbytes * ( 1000000000) /
-                             ( 4  *dims[1] *  sizeof(double) ) ;
+      long num_rows_in_block =  max_memory_in_Gbytes * ( 1000000000.0) /
+                             ( 4.0  * (double) dims[1] *  sizeof(double) ) ;
 
 
       if (num_rows_in_block < 0){

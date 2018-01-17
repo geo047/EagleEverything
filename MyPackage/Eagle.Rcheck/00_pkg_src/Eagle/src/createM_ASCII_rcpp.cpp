@@ -58,10 +58,10 @@ double
   if (ftype == "PLINK"  ){
   // this is a PLINK ped file. Hence, we need to adjust the dims[1] to get the 
   // size of the genotype file in R land. 
-    memory_needed_in_Gb =  (dims[0] *  (dims[1]-6.0)/2.0  *   sizeof(double) )/( (double) 1000000000) ;
+    memory_needed_in_Gb =  ( (double) dims[0] *  ( (double) dims[1]-6.0)/2.0  *   sizeof(double) )/( (double) 1000000000.0) ;
   } else {
     // text file
-    memory_needed_in_Gb =  (dims[0] *  dims[1] *   sizeof(double) )/( (double) 1000000000) ;
+    memory_needed_in_Gb =  ((double) dims[0] *  (double) dims[1] *   sizeof(double) )/( (double) 1000000000.0) ;
   }
   if ( ftype == "PLINK"  ){
      //------------------------------------

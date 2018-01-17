@@ -72,7 +72,7 @@ Eigen::MatrixXd
 // genoMat transpose num_rows_in_block * dims[1] * sizeof(double) 
 
 double
-  memory_needed_in_Gb =  (dims[0]*dims[0]* sizeof(double)  + 2*(dims[0] *  dims[1] *   sizeof(double) ))/( (double) 1000000000) ;
+  memory_needed_in_Gb =  ( (double) dims[0]* (double) dims[0]* sizeof(double)  + 2.0 *( (double) dims[0] *   (double) dims[1] *   sizeof(double) ))/( (double) 1000000000.0) ;
 
 
 
@@ -100,7 +100,7 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
     // long num_rows_in_block = (max_memory_in_Gbytes  * (double) 1000000000 )/(sizeof(double)  * dims[1]);
  //   long num_rows_in_block = (max_memory_in_Gbytes  * 1000000000 - dims[0] * dims[0] * sizeof(double) )/( 2* sizeof(double)  * dims[1]);
     double part1 = -2 *  dims[1];
-    double part2 = 4*dims[1] * dims[1] +  4 * max_memory_in_Gbytes  * 1000000000.0/sizeof(double);
+    double part2 = 4.0 * (double) dims[1] *  (double) dims[1] +  4.0 * (double) max_memory_in_Gbytes  * 1000000000.0/sizeof(double);
     part2 = sqrt(part2);
     long num_rows_in_block = (part1 + part2)/2.2;
     message( "number of rows in block is " , num_rows_in_block);
@@ -108,7 +108,6 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
            // blockwise multiplication
 
           // find out the number of blocks needed
-        message( " 1 ");
           long num_blocks = dims[0]/num_rows_in_block;
 
 
@@ -123,9 +122,9 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
               if ((start_row1 + num_rows_in_block1) > dims[0])
                      num_rows_in_block1 = dims[0] - start_row1;
 
-
                 Eigen::MatrixXd
                      genoMat_block1 ( ReadBlock(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
+
               Eigen::MatrixXd
                    MMtsub(Eigen::MatrixXd(num_rows_in_block1, num_rows_in_block1).setZero());
 
@@ -149,13 +148,13 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
 
 
-
                    Eigen::MatrixXd    MMtsub(Eigen::MatrixXd(num_rows_in_block1, num_rows_in_block2).setZero());
 
                   if(!R_IsNA(selected_loci(0) )){
                    // setting columns to 0
                    for(long jj=0; jj < selected_loci.size() ; jj++)
                       genoMat_block2.col(selected_loci(jj)).setZero();
+                    
                    }
                    MMtsub.noalias() = genoMat_block1 * genoMat_block2.transpose();
                    //          i,        j,     num rows,              num cols

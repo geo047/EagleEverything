@@ -1,3 +1,10 @@
+rootdir <-  c('Home' = Sys.getenv("HOME"))
+if(.Platform$OS.type == "windows") {
+     rootdir <-  c('Home' = paste0(rootdir, "\\..\\"))
+}
+
+
+
 
 home_intro <- function(){
   txt <- "
@@ -1086,7 +1093,7 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 server <- function(input, output, session){
   library("Eagle")
 
-rootdir <-  c('Home' = Sys.getenv("HOME"))
+#rootdir <-  c('Home' = Sys.getenv("HOME"))
 #rootdir <-  c('rootdir'="C:\\", 'Home' = Sys.getenv("HOME"))
 #rootdir <- c('roodir'=c(wd="."))
 #if(.Platform$OS.type == "windows") {

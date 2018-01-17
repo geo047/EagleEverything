@@ -52,7 +52,7 @@ Eigen::MatrixXd
 
 
    // Calculate memory footprint for Mt %*% inv(sqrt(MMt)) %*% var(a) %*% inv(sqrt(MMt))
-double mem_bytes_needed =   ( dims[0]*dims[1] + dims[0]*dims[0] + dims[0] ) *  ( sizeof(double)/( 1000000000));
+double mem_bytes_needed =   ( (double) dims[0]* (double) dims[1] + (double) dims[0]* (double) dims[0] +  (double) dims[0] ) *  ( sizeof(double)/( 1000000000.0));
 
 if (!quiet){
     message("Inside internal function calculate_reduced_a_rcpp. Memory needed (gigabytes): ", mem_bytes_needed);
@@ -88,7 +88,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
       // calculate the maximum number of rows in Mt that can be contained in the
       // block multiplication. This involves a bit of algrebra but it is comes to the following
-      long num_rows_in_block = (max_memory_in_Gbytes * 1000000000.0/sizeof(double) - dims[0] * dims[0] - dims[0])/dims[0] ;
+      long num_rows_in_block = (max_memory_in_Gbytes * 1000000000.0/sizeof(double) - (double) dims[0] * (double) dims[0] - (double) dims[0])/( (double) dims[0] ) ;
 
     if (num_rows_in_block < 0){
         message("\n");

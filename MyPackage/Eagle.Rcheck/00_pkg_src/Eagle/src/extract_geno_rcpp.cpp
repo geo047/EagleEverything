@@ -32,7 +32,7 @@ Eigen::VectorXi  extract_geno_rcpp(Rcpp::CharacterVector f_name_ascii,
 // Calculate amount of memory needed
 //-----------------------------------
 double
-  memory_needed_in_Gb =  (dims[0] *  dims[1] *   sizeof(double) )/( (double) 1000000000) ;
+  memory_needed_in_Gb =  ( (double) dims[0] *   (double) dims[1] *   sizeof(double) )/( (double) 1000000000.0) ;
 
 
 Eigen::VectorXi
@@ -49,7 +49,7 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
 
 }  else {
-    long num_rows_in_block = (max_memory_in_Gbytes  * (double) 1000000000 )/(sizeof(double) * dims[1]);
+    long num_rows_in_block = ((double) max_memory_in_Gbytes  * (double) 1000000000.0 )/(sizeof(double) * (double) dims[1]);
 
          long num_blocks = dims[0]/num_rows_in_block;
           if (dims[0] % num_rows_in_block)
