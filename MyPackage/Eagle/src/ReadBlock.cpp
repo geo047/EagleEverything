@@ -1,8 +1,5 @@
 // [[Rcpp::depends(RcppEigen)]]
 #include <RcppEigen.h>
-#if defined (_HASHDF5)
-#include  "CHDF5File.h"
-#endif  // defined (_HASHDF5)
 #ifdef _OPENMP
 #include <omp.h>
 //   [[Rcpp::plugins(openmp)]]
@@ -11,57 +8,6 @@
 void PrintEigenRowCols(std::string mat_filename, Eigen::MatrixXd Min) ;
 
 
-#if defined (_HASHDF5)
-// [[Rcpp::export]]
-Eigen::MatrixXd  ReadBlock(std::string asciifname,
-                           long start_row,
-                           long numcols,
-                           long numrows_in_block)
-
-{
-    // Use this to get the transposed version so that Eigen matrix class is still Column Major
-    std::size_t dir_index = asciifname.find_last_of(SYSTEMDIRDELIM) ;
-    std::string rawdir = asciifname.substr(0, dir_index); 
-    
-    std::size_t Mt_index =  asciifname.rfind("Mt.ascii");
-    std::size_t M_index =  asciifname.rfind("M.ascii");
-    std::string hdffilename ;
-    if (Mt_index == std::string::npos)
-    {
-        hdffilename = rawdir+std::string(SYSTEMDIRDELIM)+std::string("Mt.h5") ;
-    } else {
-        hdffilename = rawdir+std::string(SYSTEMDIRDELIM)+std::string("M.h5") ;
-    }
-    Rcpp::Rcout << " Mt_index: " << Mt_index << std::endl ;
-    Rcpp::Rcout << " M_index: "  << M_index << std::endl ;
-    Rcpp::Rcout << " start_row: "  << start_row << std::endl ;
-    Rcpp::Rcout << " numrows_in_block: "  << numrows_in_block << std::endl ;
-    Rcpp::Rcout << " numcols: "  << numcols << std::endl ;
-    Rcpp::Rcout << " asciifname  file: " << asciifname << std::endl ;
-    Rcpp::Rcout << " hdffilename  file: " << hdffilename << std::endl ;
-
-    
-    // reads in data from HDF5 file 
-    // to form M Eign double matrix 
-    Eigen::MatrixXd  M(numrows_in_block, numcols) ; // This may need to be row major
-
-    CHDF5File<double>* tempHDF5File = (CHDF5File<double>*) new CHDF5File<double>(hdffilename , H5F_ACC_RDWR ) ;  // H5F_ACC_RDONLY
-    hid_t datatype_mem = H5T_NATIVE_DOUBLE;  //  H5T_NATIVE_DOUBLE ;  // This is the data type we want returned
-    // hid_t datatype_disk = H5T_NATIVE_SCHAR;
-    // double * res_data_ptr = NULL ;
-    double * M_ptr = &M(0) ;
-    size_t num_elements = tempHDF5File->GetSectionOfDatasetReturnInPreallocatedPtr( std::string("/eagle_array"),  M_ptr, start_row, numcols,  datatype_mem) ;    // if we did not swap the M.h5 for the Mt.h5 then numcols would be numrows_in_block
-    
-   // double * M_ptr = &M(0) ;
-    // Close the hdf5 file
-    delete tempHDF5File ; 
-
-   // PrintEigenRowCols( hdffilename,  M) ;
-    
-    return M;
-
-}
-#else
 
 Eigen::MatrixXd  ReadBlock(std::string asciifname,
                            long start_row,
@@ -109,7 +55,6 @@ Eigen::MatrixXd  ReadBlock(std::string asciifname,
 
     return M;
 }
-#endif 
 
 
 /*

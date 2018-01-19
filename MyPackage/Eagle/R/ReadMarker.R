@@ -313,8 +313,8 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
   }
 
   # These functions do nothing if HDF5 header has not been set using HDF5_HOME environment variable
-  ReadASCIIWriteHDF_rcpp(asciifileM, dim_of_ascii_M, F) ;
-  ReadASCIIWriteHDF_rcpp(asciifileMt, dim_of_ascii_M, T) ;
+  # ReadASCIIWriteHDF_rcpp(asciifileM, dim_of_ascii_M, F) ;
+  # ReadASCIIWriteHDF_rcpp(asciifileMt, dim_of_ascii_M, T) ;
 
   save(geno, file=RDatafile)
   ## create M.Rdata file in current directory

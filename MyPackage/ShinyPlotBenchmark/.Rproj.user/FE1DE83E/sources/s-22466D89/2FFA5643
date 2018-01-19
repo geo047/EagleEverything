@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1515240315345.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2FFA5643",
+    "lastKnownWriteTime" : 1516153697,
+    "last_content_update" : 1516153697849,
+    "path" : "F:/Docker/Eagle_master_git/EagleEverything/MyPackage/ShinyPlotBenchmark/subset_by_function.R",
+    "project_path" : "subset_by_function.R",
+    "properties" : {
+        "cursorPosition" : "275,0",
+        "scrollLine" : "209"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -223,7 +223,7 @@ df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\La
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEATS_ss_slurm_id.txt") # eagle_REPEATS_ss.txt
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEATS_HDF5_ss_slurm_id.txt")
 df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_HDF5_cs_eigenblas_slurm_id.txt") # eagle_REPEATS_ss.txt
-
+df_rep_ss <- read.csv(file="\\\\braggflush1\\flush1\\bow355\\AMplus_new_code\\Large\\eagle_REPEAT_cs_ROWMAJOR_run_id.txt") # eagle_REPEATS_ss.txt
 
 
 roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
@@ -232,7 +232,14 @@ roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
 }
 
 total_time_df <- get_total_times_for_repeats(df_rep_ss) 
+
+subset_by_num_GPU=0
+subset_by_num_GPU=1
+total_time_df <- subset(total_time_df, total_time_df$ngpu==subset_by_num_GPU, c(ngpu,ncpu,total_time,system))
+
 ave_time_df <- get_average_times_for_repeats(total_time_df)
+
+
 # ave_time_df$jitwhich <- paste0(ave_time_df$ncpu, ":", ave_time_df$average_time)
 
 # The following dataframe is the 1 GPU results with added number of cores:
@@ -246,23 +253,23 @@ maxrange <- roundUpNice(max(total_time_df$total_time/1000))
 library(rbokeh) # title="Singularity, Singulatity+HDF, R native CRAN, R + eigen_use_blas",
 fig <- figure( ylab = "Total Time (s)", width = 600, legend_location = "top_right") %>%
   ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "blue", legend="singularity") %>%
-  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "blue") %>% 
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ngpu,ncpu,average_time/1000), color = "blue") %>% 
   y_range(c(0,maxrange ))                                                                                     # legend="singularity"
 
 
 fig <- fig %>% 
   ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "red", legend="singularity_hdf") %>%
-  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "red") # legend="singularity & HDF"
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ngpu,ncpu,average_time/1000), color = "red") # legend="singularity & HDF"
 
 
 fig <- fig %>% 
   ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "green", legend="R native + eigen_use_blas") %>%
-  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "green") #  legend="R & eigen_use_blas & hdf"
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ngpu,ncpu,average_time/1000), color = "green") #  legend="R & eigen_use_blas & hdf"
 
 
 fig <- fig %>% 
   ly_boxplot(ncpu, total_time/1000,  data = total_time_df , color = "orange",  legend="R native CRAN") %>%
-  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ncpu,average_time/1000), color = "orange") # legend="R & CRAN equiv"
+  ly_points(ncpu, average_time/1000, data = ave_time_df, hover=list(ngpu,ncpu,average_time/1000), color = "orange") # legend="R & CRAN equiv"
 
 
 # to view the plot use this:
@@ -281,7 +288,7 @@ get_total_times_for_repeats <- function(df_rep_ss)
   # df_fact <- rep('singularity_s',nrow(df_rep_ss))
   # df_rep_ss <- add_factor_col(df_rep_ss,df_fact)
   
-  df_fact <- as.factor(df_rep_ss$slurm_id2)  # distingush items by SLURM run so we can sum the total time for each run and then plot by numcpus
+  df_fact <- as.factor(df_rep_ss$run_id)  # distingush items by SLURM run so we can sum the total time for each run and then plot by numcpus
   
   lev_sid <- levels(df_fact)
   #num_sid_levels <- length(lev_sid)
@@ -289,6 +296,7 @@ get_total_times_for_repeats <- function(df_rep_ss)
   # initialised results vectors
   total_t_vect   <- vector("numeric",  length(lev_sid))
   ncpu_vect      <- vector("numeric", length(lev_sid))
+  ngpu_vect      <- vector("numeric", length(lev_sid))
   sid_group_vect <- vector("numeric",  length(lev_sid))
   factlev        <- vector('character',length(lev_sid))
   
@@ -297,8 +305,9 @@ get_total_times_for_repeats <- function(df_rep_ss)
   for (fact in lev_sid) {
     
     vect_ref <-  fact_itter
-    sub_df <- subset(df_rep_ss, df_fact==fact, c(function.,ncpu,time_ms))
+    sub_df <- subset(df_rep_ss, df_fact==fact, c(function.,ngpu,ncpu,time_ms))
     ncpu_vect[vect_ref]    <- unique(sub_df$ncpu)
+    ngpu_vect[vect_ref]    <- unique(sub_df$ngpu)
     total_t_vect[vect_ref] <- sum((sub_df)$time_ms)
     factlev[vect_ref] <- fact
     
@@ -307,8 +316,8 @@ get_total_times_for_repeats <- function(df_rep_ss)
   }
   
   # Convert vectors to a list, add names and convert list to df
-  tlist <- list(ncpu_vect,total_t_vect,factlev)
-  names(tlist) <- c("ncpu","total_time","system")
+  tlist <- list(ngpu_vect,ncpu_vect,total_t_vect,factlev)
+  names(tlist) <- c("ngpu","ncpu","total_time","system")
   total_time_df <- as.data.frame(tlist,stringsAsFactors=T)
   # str(ave_time_df$ncpu)
 }
@@ -321,17 +330,24 @@ get_average_times_for_repeats <- function(total_time_df)
   num_cpu_vals <- length(unique(total_time_df$ncpu))
   ave_by_cpu   <- vector('numeric',num_cpu_vals)
   cpu_by_cpu   <- vector('numeric',num_cpu_vals)
+  gpu_by_gpu   <- vector('numeric',num_cpu_vals)
   cpu_order <- order(as.numeric(unique(total_time_df$ncpu))) 
+  gpu_num <- as.numeric(unique(total_time_df$ngpu))
   itter <- 2
   # str(cpunum)
   for (itter in 1:num_cpu_vals) {
     cpunum <- unique(as.numeric(total_time_df$ncpu))[cpu_order[itter]]
+   # gpunum <- unique(as.numeric(total_time_df$ngpu))[gpu_order[itter]]
+    
     #message(cpunum)
-    ave_by_cpu[itter]  <- ave(subset(total_time_df, ncpu==cpunum, c(ncpu,total_time))$total_time)[1]
+    ave_by_cpu[itter]  <- ave(subset(total_time_df, ncpu==cpunum, c(total_time))$total_time)[1]
     cpu_by_cpu[itter] <- as.numeric(cpunum)
+    gpu_by_gpu[itter] <- gpu_num
   }
-  tlist <- list(as.character(cpu_by_cpu),ave_by_cpu)
-  names(tlist) <- c("ncpu","average_time")
+ tlist <- list(as.character(gpu_by_gpu),as.character(cpu_by_cpu),ave_by_cpu)
+ names(tlist) <- c("ngpu","ncpu","average_time")
+  #tlist <- list(as.character(cpu_by_cpu),ave_by_cpu)
+  # names(tlist) <- c(ncpu","average_time")
   ave_time_df <- as.data.frame(tlist,stringsAsFactors=T)
 }
 

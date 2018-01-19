@@ -1,0 +1,196 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(Rcpp)
+>     
+>  Rcpp.package.skeleton("Eagle", cpp_files=c(
++             "ReshapeM_rcpp.cpp"  ,
++             "getRowColumn.cpp"  ,
++             "CreateASCIInospace_PLINK.cpp"  ,
++             "CreateASCIInospace.cpp"  ,
++             "ReadBlock.cpp"  ,
++             "CHDF5File.h"  ,
++             "ReadASCIIWriteHDF_rcpp.cpp"  ,
++             "createMt_ASCII_rcpp.cpp"  ,
++             "ReshapeM_rcpp.cpp"  ,
++             "calculate_reduced_a_rcpp.cpp"  ,
++             "removeRow.cpp"  ,
++             "removeColumn.cpp"  ,
++             "fasttimer.cpp"  ,
++             "calculate_a_and_vara_rcpp.cpp"  ,
++             "createM_ASCII_rcpp.cpp"  ,
++             "extract_geno_rcpp.cpp"  ,
++             "calculateMMt_rcpp.cpp"  ,
++             "getNumColumns.cpp"  ,
++             "getNumRows.cpp"  
++              ),    
++     example_code=FALSE, code_files=c(
++             "onAttach.R", 
++             "packagedesc.R", 
++             "ReadMarker.R",
++             "ReadZmat.R",
++             "ReadMap.R",
++             "ReadPheno.R",
++             "AM.R", 
++             "OpenGUI.R", 
++             "GenomicRel.R", 
++             "doquiet.R", 
++             "ReshapeM.R", 
++             "form_results.R", 
++             "print_title.R", 
++             "build_design_matrix.R", 
++             "calcMMt.R", 
++             "calc_extBIC.R", 
++             "calcVC.R", 
++             "print_header.R", 
++             "print_final.R", 
++             "print_results.R", 
++             "find_qtl.R", 
++             "fullpath.R", 
++             "emma_delta_ML_dLL_w_Z.R", 
++             "emma_eigen_L_w_Z.R", 
++             "emma_eigen_R_w_Z.R", 
++             "emma_delta_REML_dLL_w_Z.R", 
++             "emma_delta_REML_LL_w_Z.R", 
++             "emma_MLE.R", 
++             "emma_delta_ML_LL_wo_Z.R", 
++             "emma_eigen_L_wo_Z.R", 
++             "emma_eigen_R_wo_Z.R", 
++             "emma_delta_ML_LL_w_Z.R", 
++             "emma_misc.R", 
++             "check_for_NA_in_trait.R", 
++             "check_inputs_mlam.R", 
++             "calculateMMt.R", 
++             "calculateMMt_sqrt_and_sqrtinv.R", 
++             "calculateH.R", 
++             "calculateP.R", 
++             "calculate_reduced_a.R", 
++             "calculate_a_and_vara.R", 
++             "calculate_reduced_vara.R", 
++             "check_inputs.R", 
++             "create_ascii.R", 
++             "extract_geno.R", 
++             "constructX.R", 
++             "summary_am.R"   ) ) 
+Creating directories ...
+Creating DESCRIPTION ...
+Creating NAMESPACE ...
+Creating Read-and-delete-me ...
+Copying code files ...
+Making help files ...
+Done.
+Further steps are described in './Eagle/Read-and-delete-me'.
+
+Adding Rcpp settings
+ >> added Imports: Rcpp
+ >> added LinkingTo: Rcpp
+ >> added useDynLib directive to NAMESPACE
+ >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
+ >> copied ReshapeM_rcpp.cpp to src directory
+ >> copied getRowColumn.cpp to src directory
+ >> copied CreateASCIInospace_PLINK.cpp to src directory
+ >> copied CreateASCIInospace.cpp to src directory
+ >> copied ReadBlock.cpp to src directory
+ >> copied CHDF5File.h to src directory
+ >> copied ReadASCIIWriteHDF_rcpp.cpp to src directory
+ >> copied createMt_ASCII_rcpp.cpp to src directory
+ >> copied ReshapeM_rcpp.cpp to src directory
+ >> copied calculate_reduced_a_rcpp.cpp to src directory
+ >> copied removeRow.cpp to src directory
+ >> copied removeColumn.cpp to src directory
+ >> copied fasttimer.cpp to src directory
+ >> copied calculate_a_and_vara_rcpp.cpp to src directory
+ >> copied createM_ASCII_rcpp.cpp to src directory
+ >> copied extract_geno_rcpp.cpp to src directory
+ >> copied calculateMMt_rcpp.cpp to src directory
+ >> copied getNumColumns.cpp to src directory
+ >> copied getNumRows.cpp to src directory
+ >> compiled Rcpp attributes 
+Warning messages:
+1: In file.copy(file, src) :
+  problem copying ./ReadASCIIWriteHDF_rcpp.cpp to ./Eagle/src/ReadASCIIWriteHDF_rcpp.cpp: No such file or directory
+2: The following packages are referenced using Rcpp::depends attributes however are not listed in the Depends, Imports or LinkingTo fields of the package DESCRIPTION file: RcppEigen 
+> Rcpp::compileAttributes(pkgdir = "Eagle", verbose = TRUE)
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/calculate_a_and_vara_rcpp.cpp:
+   Rcpp::List calculate_a_and_vara_rcpp(Rcpp::CharacterVector f_name_ascii, Rcpp::NumericVector selected_loci, Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt, Eigen::Map<Eigen::MatrixXd> dim_reduced_vara, double max_memory_in_Gbytes, std::vector <long> dims, Eigen::VectorXd a, bool quiet, Rcpp::Function message)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/calculateMMt_rcpp.cpp:
+   Eigen::MatrixXd calculateMMt_rcpp(Rcpp::CharacterVector f_name_ascii, double max_memory_in_Gbytes, int num_cores, Rcpp::NumericVector selected_loci, std::vector<long> dims, bool quiet, Rcpp::Function message)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/calculate_reduced_a_rcpp.cpp:
+   Eigen::MatrixXd calculate_reduced_a_rcpp(Rcpp::CharacterVector f_name_ascii, double varG, Eigen::Map<Eigen::MatrixXd> P, Eigen::Map<Eigen::MatrixXd> y, double max_memory_in_Gbytes, std::vector <long> dims, Rcpp::NumericVector selected_loci, bool quiet, Rcpp::Function message)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/CreateASCIInospace.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/CreateASCIInospace_PLINK.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/createM_ASCII_rcpp.cpp:
+   bool createM_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_ascii, Rcpp::CharacterVector type, std::string AA, std::string AB, std::string BB, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message, std::string missing)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/createMt_ASCII_rcpp.cpp:
+   void createMt_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_ascii, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/extract_geno_rcpp.cpp:
+   Eigen::VectorXi extract_geno_rcpp(Rcpp::CharacterVector f_name_ascii, double max_memory_in_Gbytes, long selected_locus, std::vector<long> dims)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/fasttimer.cpp:
+   double fasttimer()
+   Eigen::MatrixXd matmatt_eigen(Eigen::MatrixXd x)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/getNumColumns.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/getNumRows.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/getRowColumn.cpp:
+   std::vector<long> getRowColumn(std::string fname)
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/ReadBlock.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/removeColumn.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/removeRow.cpp:
+
+Exports from /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/src/ReshapeM_rcpp.cpp:
+   std::vector <long> ReshapeM_rcpp(Rcpp::CharacterVector fnameM, Rcpp::CharacterVector fnameMt, std::vector <long> indxNA, std::vector <long> dims)
+
+Warning message:
+The following packages are referenced using Rcpp::depends attributes however are not listed in the Depends, Imports or LinkingTo fields of the package DESCRIPTION file: RcppEigen 
+>   ## running roxygen2  
+>  library(roxygen2) 
+>  setwd("./Eagle")  
+>   roxygenise() 
+First time using roxygen2. Upgrading automatically...
+Updating roxygen version in /home/josh/Docker/Eagle_master_git/EagleEverything/MyPackage/Eagle/DESCRIPTION
+Warning: The existing 'NAMESPACE' file was not generated by roxygen2, and will not be overwritten.
+Writing AM.Rd
+Writing OpenGUI.Rd
+Writing fasttimer.Rd
+Writing ReadMap.Rd
+Writing ReadMarker.Rd
+Writing ReadPheno.Rd
+Writing ReadZmat.Rd
+Warning: The existing 'Eagle-package.Rd' file was not generated by roxygen2, and will not be overwritten.
+Writing SummaryAM.Rd
+>   
+> 
+> proc.time()
+   user  system elapsed 
+  1.584   0.488   2.656 

@@ -98,11 +98,20 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 } else {
     // based on user defined memory. Doing MMt via blockwise multiplication
     // long num_rows_in_block = (max_memory_in_Gbytes  * (double) 1000000000 )/(sizeof(double)  * dims[1]);
- //   long num_rows_in_block = (max_memory_in_Gbytes  * 1000000000 - dims[0] * dims[0] * sizeof(double) )/( 2* sizeof(double)  * dims[1]);
+    //   long num_rows_in_block = (max_memory_in_Gbytes  * 1000000000 - dims[0] * dims[0] * sizeof(double) )/( 2* sizeof(double)  * dims[1]);
+  // part2 = 4*dims[1] * dims[1] +  4 * max_memory_in_Gbytes  * 1000000000.0/8; 
     double part1 = -2 *  dims[1];
-    double part2 = 4*dims[1] * dims[1] +  4 * max_memory_in_Gbytes  * 1000000000.0/sizeof(double);
+    // double part2 = 4.0 * (double) dims[1] * (double) dims[1] +  (double) 4.0 * (double) max_memory_in_Gbytes  * 1000000000.0/sizeof(double);
+    double part2 = 4*dims[1] * dims[1] +  4 * max_memory_in_Gbytes  * 1000000000.0/sizeof(double) ; 
     part2 = sqrt(part2);
     long num_rows_in_block = (part1 + part2)/2.2;
+    message( "max_memory_in_Gbytes  " ,max_memory_in_Gbytes,  " memory_needed_in_Gb " , memory_needed_in_Gb);
+    message( "dims[0]  " , dims[0],  " dims[1] " , dims[1]);
+    int sizeoflong = sizeof(long) ;
+    int sizeofint = sizeof(int) ;
+    message( "sizeof(int):  " , sizeofint, "  sizeof(long):  " , sizeoflong);
+    
+    message( "part1  " , part1,  " part2 " , part2);
     message( "number of rows in block is " , num_rows_in_block);
 
            // blockwise multiplication
