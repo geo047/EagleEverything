@@ -3,8 +3,7 @@ importFrom(parallel, detectCores)
 importFrom(data.table, fread)
 importFrom(matrixcalc, is.positive.definite)
 importFrom(shinyjs, useShinyjs)
-importFrom(tcltk, tk_choose.files)
-import(shiny,  shinythemes, shinyBS, stats, utils )
+import(shinyFiles, shiny,  shinythemes, shinyBS, stats, utils )
 
 export(
    ReadPheno,
@@ -13,4 +12,5 @@ export(
    ReadZmat,
    AM,
    OpenGUI,
-   SummaryAM)
+   SummaryAM,
+   fasttimer)

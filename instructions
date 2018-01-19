@@ -1,4 +1,4 @@
-git push gitrep master
+git push -u origin   master
 
 username: geo047
 passwd: old password

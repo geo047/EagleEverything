@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1516343203286.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3532000360",
+    "id" : "C9E3776F",
+    "lastKnownWriteTime" : 1516343228,
+    "last_content_update" : 1516343228876,
+    "path" : "F:/Docker/Eagle_master_git/EagleEverything/MyPackage/ShinyPlotBenchmark/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+        "cursorPosition" : "22,42",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

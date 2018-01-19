@@ -7,7 +7,7 @@ returns the 'best' set of snp loci in strongest association with a trait as its 
 Eagle can handle data collected from populations of arbitrary structure. The populations can contain inbred or outbred individuals. 
 br()
 An analysis is performed by reading in the marker data (Read Genotypes), reading in the phenotypic data (Read Phenotypes), reading in the 
-marker map if known (Read Map), and performing the genome-wide analysis (Analyse).  
+marker map if known (Read Map), reading in the Z matrix if needed, and performing the genome-wide analysis (Analyse).  
 br()
 Help is available by hovering over the widgets or by clicking on the help tab at the top of the screen.  "
     return(txt)
@@ -38,7 +38,7 @@ library(shinyBS)
 library(shinyjs)
 
 
-FullPage <- navbarPage(title="test",  theme = shinytheme("flatly"),
+FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = shinytheme("flatly"),
                 #       theme = shinytheme("slate"),
                 #       theme = shinytheme("united"),
 
@@ -50,39 +50,12 @@ FullPage <- navbarPage(title="test",  theme = shinytheme("flatly"),
                             tags$head(includeCSS("css.css")),
                             fluidPage(
                               fluidRow(
-                                column(8,
-                                tags$div(img(src = "images/home_banner.jpg", 
-                                             style="width: 150% ; height: 150%"))
+                                column(12,
+                                tags$div(img(src = "images/HomeScreen.jpg", 
+                                             style="width: 100% ; height: 100%"))
                                 )
-                              ), ## end fluidRow
-                             br(),
-                              fluidRow(
-                                column(12, 
-
-                              p(  span("Eagle", style = "font-style: italic; color: #80cc36; "),   " is a software package for genome-wide association mapping.
-It differs from most other association mapping packages in that it fits all marker-trait associations simultaneously,  
-returning the 'best' set of snp loci in strongest association with a trait as its findings. It also differs from most other packages in that it 
-does not  require the setting of significance thresholds.", style="color: rpg(0,143,255); font-size: 16px; "),
-
-p(span("Eagle", style="font-style: italic; color: #80cc36; "), " can handle data collected from populations of arbitrary structure. The populations can contain inbred or outbred individuals. ", span("Eagle", style="font-style: italic; color: #80cc36; "), " can also tolerate missing genotypic and phenotypic data.", 
-  style="color: rpg(0,143,255); font-size: 16px; "),
-                               p("To perform an analysis, read in your marker data via Read Genotypes, read in your phenotypic data 
-via Read Phenotypes, read in your map if known via Read Map, and perform a multi-locus genome-wide analysis via Analyse. The results of the 
-analyses are in Findings. ", 
-  style="color: rpg(0,143,255); font-size: 16px; "),  
-p("Help is available by hovering over the input widgets or by clicking on the help tab at the top of the screen.  ",  
-  style="color: rpg(0,143,255); font-size: 16px; ")
-                                ) ## end column(12,)
-                              ),  ## end fluidRow
-                              
-                            tags$p(div(class="intro-divider")), 
+                              ) ## end fluidRow
                             
-                            fluidRow(
-                              column(12,
-                                     tags$div(img(src = "images/pipeline.jpg", 
-                                                  style="width: 100% ; height: 100%"))
-                              ) ## end column(12, )
-                            ) ## end fluidRow
                                 
                               
                             ) ## end fluidPage
@@ -134,7 +107,9 @@ p("Help is available by hovering over the input widgets or by clicking on the he
                                                   radioButtons(inputId="filetype", label=h4("Step 1: Choose file type"), 
                                                                choices=c("PLINK"="plink","Text/ASCII"="text" )),
                                                   style="padding: 1px",
-                                                  bsTooltip("filetype","click on file type", placement="right", trigger="hover",
+                                                  bsTooltip("filetype",
+title='<font size="3" > click on file type </font>',
+placement="right", trigger="hover",
                                                             options=list(container="body")
                                                       )
                                                   ),  ## wellPanel
@@ -146,17 +121,17 @@ p("Help is available by hovering over the input widgets or by clicking on the he
                                                  wellPanel(
                                                    h5("Assign marker genotypes to snp genotypes AA, AB, BB, and missing"),
                                                  fluidRow(
-                                                  column(3, textInput(inputId="AA",label="AA", value="") ),
-                                                  column(3, textInput(inputId="AB",label="AB", value="") ),
-                                                  column(3, textInput(inputId="BB",label="BB", value="") ),
-                                                  column(3, textInput(inputId="missing",label="missing", value="") ) ,
-bsTooltip("AA","Enter genotype code used in file that is to be assigned to  snp homozygote AA", placement="right", trigger="hover",
+                                                  column(4, textInput(inputId="AA",label="AA", value="") ),
+                                                  column(4, textInput(inputId="AB",label="AB", value="") ),
+                                                  column(4, textInput(inputId="BB",label="BB", value="") ),
+                                                  column(4, textInput(inputId="missing",label="missing", value="") ) ,
+bsTooltip("AB", 
+title='<font size="4" > Only a single value can be entered. If inbreds, leave blank  </font>',
+placement="right", trigger="hover",
                                                             options=list(container="body")),
-bsTooltip("AB","Enter genotype code used in file that is to be assigned to  snp heterozygote AB.  Only a single value can be entered. If inbreds, leave blank.", placement="right", trigger="hover",
-                                                            options=list(container="body")),
-bsTooltip("BB","Enter genotype code used in file that is to be assigned to  snp homozygote BB", placement="right", trigger="hover",
-                                                            options=list(container="body")),
-bsTooltip("missing","Enter genotype code used in file that is to be missing. Leave blank if data contains no missing marker genotypes", placement="right", trigger="hover",
+bsTooltip("missing",
+title='<font size="3" > Enter genotype code used in file that is to be missing. Leave blank if data contains no missing marker genotypes </font>' , 
+placement="right", trigger="hover",
                                                             options=list(container="body"))
 
 
@@ -183,13 +158,19 @@ bsTooltip("missing","Enter genotype code used in file that is to be missing. Lea
                                                   numericInput(inputId="memsize", label=h4("Step 2: Specify available memory in Gbytes"), 
                                                                value=8, min = 2, max = NA, step = NA),
                                                   style="padding: 1px",
-                                                  bsTooltip("memsize","set to maximum available memory in Gbytes", placement="right", trigger="hover",
+                                                  bsTooltip("memsize",
+title='<font size="3" > set to maximum available memory in Gbytes  </font>',
+placement="right", trigger="hover",
                                                           options=list(container="body"))
                                                   )) ## end column
                                            
                                            
                                          ), ## end fluidRow specify amout of memory
-                                         
+                                        
+
+
+
+ 
                                          
                                          fluidRow(column(12, 
                                           wellPanel(
@@ -198,13 +179,26 @@ bsTooltip("missing","Enter genotype code used in file that is to be missing. Lea
                                            actionButton(inputId="choose_marker_file", h6("Choose File")), br(), 
                                            textOutput("choose_marker_file"),
                                            style='padding: 1px',
-                                           bsTooltip("choose_marker_file","Browse for file. Double click on file name. Once file is selected, press the Upload button below.", placement="right", trigger="hover",
+                                           bsTooltip("choose_marker_file", 
+title='<font size="3" >WARNING! File browser window may open behind web browser  </font>', 
+placement="right", 
+trigger="hover",
                                                      options=list(container="body"))
+                                           
                                            
                                           )
                                          )
                                          ), ## end fluidRow
-                                       
+
+
+                                      
+
+
+
+
+
+
+ 
                                          
                                          fluidRow(column(12, 
                                                        wellPanel(
@@ -220,7 +214,9 @@ bsTooltip("missing","Enter genotype code used in file that is to be missing. Lea
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("marker_go","Upload file. <br> This may take some time if the file is large.", placement="right", trigger="hover",
+                                                          bsTooltip("marker_go", 
+title='<font size="3" > Upload file. <br> This may take some time if the file is large.  </font>',
+placement="right", trigger="hover",
                                                                      options=list(container="body"))
 
 
@@ -324,7 +320,10 @@ filter: alpha(opacity=50);
                                                   radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
                                                                choices=c("yes"="yes","no"="no" )),
                                                   style="padding: 1px",
-                                                  bsTooltip("pheno_header","click on yes/no for if the first row of the file contains the column names. Generic names will be assigned if no is clicked.", placement="right", trigger="hover",
+                                                  bsTooltip("pheno_header",
+title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
+placement="right", 
+trigger="hover",
                                                             options=list(container="body")
                                                       )
                                                   )  ## wellPanel
@@ -340,24 +339,46 @@ filter: alpha(opacity=50);
                                                   radioButtons(inputId="pheno_csv", label=h4("Step 2: Is the file comma separated"),
                                                                choices=c("yes"="yes","no"="no" )),
                                                   style="padding: 1px",
-                                                  bsTooltip("pheno_csv","click on yes if the file is a csv file.", placement="right", trigger="hover",
+                                                  bsTooltip("pheno_csv",
+title='<font size="3" > click on yes if the file is a csv file. </font>',
+placement="right", trigger="hover",
                                                             options=list(container="body")
                                                       )
                                                   )  ## wellPanel
                                              ) ## end column
                                            
                                          ), ## end fluidRow specify amout of memory
-                                         
-                                         
+                                        
+
+                                         fluidRow(
+                                           column(12, wellPanel(
+                                                   textInput(inputId="pheno_missing", label=h4("Step 3: Code for missing value", value="") ),
+                                                  style="padding: 1px",
+                                                  bsTooltip("pheno_missing",
+title='<font size="3" > Assign value that denotes a missing value. Leave blank if file does not contain missing data. </font>',
+placement="right", trigger="hover",
+                                                            options=list(container="body")
+                                                      )
+                                                  )  ## wellPanel
+                                             ) ## end column
+
+                                         ), ## end fluidRow specify amout of memory
+
+
+
+ 
                                          fluidRow(column(12, 
                                           wellPanel(
-                                            h4("Step 3: Select phenotypic file"),
+                                            h4("Step 4: Select phenotypic file"),
                                          
                                            actionButton(inputId="choose_pheno_file", h6("Choose File")), br(), 
                                            textOutput("choose_pheno_file"),
                                            style='padding: 1px',
-                                           bsTooltip("choose_pheno_file","Browse for file. Double click on file name. Once the file has been selected, press the Upload button below.", placement="right", trigger="hover",
+                                           bsTooltip("choose_pheno_file",
+title='<font size="3" >WARNING! File browser window may open behind web browser  </font>', 
+placement="right", trigger="hover",
                                                      options=list(container="body"))
+ 
                                            
                                           )
                                          )
@@ -367,7 +388,7 @@ filter: alpha(opacity=50);
                                          fluidRow(column(12, 
                                                        wellPanel(
                                                           shinyjs::useShinyjs(),
-                                                          h4("Step 4: Upload file"),
+                                                          h4("Step 5: Upload file"),
 
 
 
@@ -378,7 +399,9 @@ filter: alpha(opacity=50);
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("pheno_go","Upload file. <br> This may take some time if the file is large.", placement="right", trigger="hover",
+                                                          bsTooltip("pheno_go",
+title='<font size="3" > Upload file. <br> This may take some time if the file is large. </font>',
+placement="right", trigger="hover",
                                                                      options=list(container="body"))
 
 
@@ -443,6 +466,232 @@ filter: alpha(opacity=50);
 
 
 
+#              #-----------------------TESTING ======================================= 
+#                                    
+#                     tabPanel("Read Phenotypes",  icon=icon("file-o"), 
+#                               tags$head(tags$style(HTML('
+#                                                         .popover {
+#                                                         max-width: 80%;
+#                                                         
+#                                                         }
+#                                                         '))
+#                               ),
+#
+#
+#                            fluidPage(
+#                              fluidRow(
+#                                column(12, {
+#                                       tags$div(img(src = "images/pheno_banner.jpg", 
+#                                                    style="width: 100% ; height: 100%; "))
+#                               
+#                                }
+#                                       ) ## end column(12, )
+#                              ), ## end fluidRow
+#                              br(),
+#                              fluidRow(column(12, 
+#                                             bsButton(inputId="dummy2", label="Hover here for details",
+#                                                    style="warning", size="large", type="action", block=TRUE, 
+#                                                    icon=icon("question-circle-o")
+#                                                    )
+#                                           
+#                                       ) ## end column
+#                              ), ## end fluidRow
+#                              
+#                              
+#                              br(),
+#                              fluidRow(
+#                                column(5, 
+#                                       fluidPage(
+#                                         fluidRow(
+#                                           column(12,
+#                                                  wellPanel(
+#                                                  radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
+#                                                               choices=c("yes"="yes","no"="no" )),
+#                                                  style="padding: 1px",
+#                                                  bsTooltip("pheno_header",
+#title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
+#placement="right", 
+#trigger="hover",
+#                                                            options=list(container="body")
+#                                                      )
+#                                                  )  ## wellPanel
+#                                           
+#                                           
+#                                           
+#                                             ) ## end column
+#                                           
+#                                         ), ## end fluidRow choose file type
+#
+#
+# fluidRow(column(12,
+#                                          wellPanel(
+#                                            h4("Step 3: Select marker file"),
+#
+#                                           actionButton(inputId="choose_marker_file", h6("Choose File")), br(),
+#                                           textOutput("choose_marker_file"),
+#                                           style='padding: 1px',
+#                                           bsTooltip("choose_marker_file",
+#title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
+#placement="right",
+#trigger="hover",
+#                                                     options=list(container="body"))
+#
+#
+#                                          )
+#                                         )
+#                                         ) ## end fluidRow
+#
+#
+#
+#
+#
+#                        
+#)
+#)
+#))),
+#
+
+
+
+
+                      ##-----------------------------------##
+                      ## Read Z matrix (if needed)         ##
+                      ##-----------------------------------##
+                      
+                       tabPanel("Read Z matrix (if needed)", icon=icon("file-o"), 
+                               tags$head(tags$style(HTML('
+
+                                                         .popover {
+                                                         max-width: 80%;
+                                                         
+                                                         }
+                                                         '))
+                               ),
+
+
+                            fluidPage(
+                              fluidRow(
+                                column(12, {
+                                       tags$div(img(src = "images/Zmat_banner.jpg", 
+                                                    style="width: 100% ; height: 100%"))
+                               
+                                }
+                                       ) ## end column(12, )
+                              ), ## end fluidRow
+                              br(),
+                              fluidRow(column(12, 
+                                          bsButton(inputId="Zmat1", label="Hover here for details",
+                                          style="warning", size="large", type="action", block=TRUE,
+                                          icon=icon("question-circle-o")
+                                          )
+
+  
+                                           
+                                       ) ## end column
+                              ), ## end fluidRow
+                              
+                              
+                              br(),
+                              fluidRow(
+                                column(5, 
+                                       fluidPage(
+                        
+
+
+
+                                         fluidRow(column(12,
+                                          wellPanel(
+                                            h4("Step 1: Select Z matrix file"),
+
+                                           actionButton(inputId="choose_Zmat_file", h6("Choose File")), br(),
+                                           textOutput("choose_Zmat_file"),
+                                           style='padding: 1px',
+                                           bsTooltip("choose_Zmat_file",
+title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
+placement="right",
+trigger="hover",
+                                                     options=list(container="body"))
+
+
+                                          )
+                                         )
+                                         ), ## end fluidRow
+
+
+                                       
+                                         
+                                         fluidRow(column(12, 
+                                                       wellPanel(
+                                                          shinyjs::useShinyjs(),
+                                                          h4("Step 2: Upload file"),
+
+
+
+
+                                                          actionButton(inputId="Zmat_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
+                                                                       icon=icon("upload", lib="glyphicon")),
+
+
+
+                                                          style='padding: 1px',
+                                                          bsTooltip("Zmat_go",
+title='<font size="3" > Upload file.    </font>',
+placement="right", trigger="hover",
+                                                                     options=list(container="body"))
+ 
+                                                        )
+                                                  )
+                                         ) ## end fluidRow
+                                       ) ## end fluidPage -- widgets on left hand side
+                                       
+                                       
+                                       
+                                       
+                                       ), ## end column(6,  )  -- left half of page
+                                          ## for input widgets
+                                column(7, 
+                                        verbatimTextOutput("ReadZmat", placeholder=TRUE),
+                                        conditionalPanel(condition="input.Zmat_go > 0 && $('html').hasClass('shiny-busy')",
+
+                                        tags$div(style="
+position:fixed;
+top: 50%;
+left: 50%;
+margin-top: -100px;
+margin-left: -150px;
+z-index:10000000;
+opacity: 0.9;
+filter: alpha(opacity=50); 
+",
+                                          tags$img(src="loading.gif",height="200px", width="300px"))
+
+) ## end conditionalPanel
+
+
+
+
+
+
+                                       )  ## end column(6, ) -- right half of page
+                                          ## for outputs from ReadPheno function
+                                
+                              ) ## end fluidRow
+                              
+                            ) ## end fluidPage    
+                                
+                                
+                      ),  ## end tabPanel("Read Z matrix")
+
+
+
+
+
+
+
+
+
+
+
                       ##-------------------------##
                       ## Read Marker map         ##
                       ##-------------------------##
@@ -485,39 +734,71 @@ filter: alpha(opacity=50);
                                 column(5, 
                                        fluidPage(
                         
+
                                          fluidRow(
-                                           column(12, wellPanel(
-                                                  radioButtons(inputId="map_csv", label=h4("Step 1: Is the file comma separated"),
+                                           column(12,
+                                                  wellPanel(
+                                                  radioButtons(inputId="map_header", label=h4("Step 1: Select if file contains column names"),
                                                                choices=c("yes"="yes","no"="no" )),
                                                   style="padding: 1px",
-                                                  bsTooltip("map_csv","click on yes/no", placement="right", trigger="hover",
+                                                  bsTooltip("map_header",
+title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked. </font>',
+placement="right", trigger="hover",
+                                                            options=list(container="body")
+                                                      )
+                                                  )  ## wellPanel
+
+
+
+                                             ) ## end column
+
+                                         ), ## end fluidRow choose file type
+
+
+                                         fluidRow(
+                                           column(12, wellPanel(
+                                                  radioButtons(inputId="map_csv", label=h4("Step 2: Is the file comma separated"),
+                                                               choices=c("yes"="yes","no"="no" )),
+                                                  style="padding: 1px",
+                                                  bsTooltip("map_csv",
+title='<font size="3" > click on yes/no  </font>',
+placement="right", trigger="hover",
                                                             options=list(container="body")
                                                       )
                                                   )  ## wellPanel
                                              ) ## end column
                                            
                                          ), ## end fluidRow specify amout of memory
-                                         
-                                         
-                                         fluidRow(column(12, 
+                                        
+
+
+
+
+                                         fluidRow(column(12,
                                           wellPanel(
-                                            h4("Step 2: Select map file"),
-                                         
-                                           actionButton(inputId="choose_map_file", h6("Choose File")), br(), 
+                                            h4("Step 3: Select map file"),
+
+                                           actionButton(inputId="choose_map_file", h6("Choose File")), br(),
                                            textOutput("choose_map_file"),
                                            style='padding: 1px',
-                                           bsTooltip("choose_map_file","Browse for file. Double click on file name. Once the file has been selected, press the Upload button below.", placement="right", trigger="hover",
+                                           bsTooltip("choose_map_file",
+title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
+placement="right",
+trigger="hover",
                                                      options=list(container="body"))
-                                           
+
+
                                           )
                                          )
                                          ), ## end fluidRow
+
+
                                        
                                          
                                          fluidRow(column(12, 
                                                        wellPanel(
                                                           shinyjs::useShinyjs(),
-                                                          h4("Step 3: Upload file"),
+                                                          h4("Step 4: Upload file"),
 
 
 
@@ -528,19 +809,14 @@ filter: alpha(opacity=50);
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("map_go","Upload file. <br> This may take some time if the file is large.", placement="right", trigger="hover",
+                                                          bsTooltip("map_go",
+title='<font size="3" > Upload file. <br> This may take some time if the file is large.   </font>',
+placement="right", trigger="hover",
                                                                      options=list(container="body"))
-
-
-
-
  
                                                         )
                                                   )
                                          ) ## end fluidRow
-                                         
-                                         
-                                         
                                        ) ## end fluidPage -- widgets on left hand side
                                        
                                        
@@ -576,17 +852,16 @@ filter: alpha(opacity=50);
                                 
                               ) ## end fluidRow
                               
-                              
-                              
-                              
-                              
                             ) ## end fluidPage    
                                 
                                 
-                                
-                                
-                                
                       ),  ## end tabPanel("Read Map")
+
+
+
+
+
+
 
 
                   ##-------------------------------------##
@@ -631,8 +906,11 @@ filter: alpha(opacity=50);
                                     fluidRow(column(12,  
                                       wellPanel(
                                             uiOutput("analyse_names"),
-                                           bsTooltip("analyse_names","Select a single variable to be treated as the trait for the analysis", 
+
+                                           bsTooltip("analyse_names",
+title='<font size="5" > Select a single variable to be treated as the trait for the analysis  </font>',
                                          placement="right", trigger="hover", options=list(container="body"))
+
                                       ) ## end wellPanel
                                           ) ## end column
                                     ), ## end fluidRow                             
@@ -640,36 +918,81 @@ filter: alpha(opacity=50);
                                     fluidRow(column(12, 
                                         wellPanel(
                                             uiOutput("analyse_fnames"),
-                               bsTooltip("analyse_fnames","Select the variables, if any,  to be used as fixed effects in the analysis. If no 
-variables are selected, then only an overall mean will be fitted.", placement="right", trigger="hover", options=list(container="body")),
+
+                                           bsTooltip("analyse_fnames",
+title='<font size="5" > Select the variables, if any, to be used as fixed effects in the analysis. If no variables are selected, then only an overall mean will be fitted. </font>',
+                                         placement="right", trigger="hover", options=list(container="body")),
 
                                             textOutput("fmodel")
                                         ) ## end wellPanel
                                      ) ## end column
                                   ), ## end fluidRow
 
-                                   fluidRow(
-                                      column(12, wellPanel(
-                                                  numericInput(inputId="analyse_memsize", label=h4("Step 3: Specify available memory in Gbytes"),
-                                                               value=8, min = 2, max = NA, step = NA),
-                                                  style="padding: 1px",
-                                                  bsTooltip("analyse_memsize","set to maximum available memory in Gbytes", placement="right", trigger="hover",
+
+                                   fluidRow(column(12,  wellPanel(
+                                         numericInput(inputId="analyse_cpu", label=h4("Step 3: Specify number of cpu"), value=1), 
+
+                                         style="padding: 1px",
+                                         bsTooltip("analyse_cpu",
+title='<font size="5" > set to the number of cpu available for distributed computing. </font>',
+placement="right", trigger="hover",
                                                           options=list(container="body"))
-                                      )) ## end column
+                                    ) ## end wellpanel
+                                   )),  ## end column and fluidRow
 
 
-                                    ), ## end fluidRow specify amout of memory
 
                                    fluidRow(
-                                      column(12, wellPanel(
-                                                  sliderInput(inputId="analyse_maxits", label=h4("Step 4: Specify maximum number of iterations"),
+                                      column(12,  wellPanel(
+                                          h4("Step 4: Additional Options"),
+                                          actionButton(inputId="options_go", h6("Click Here")),
+                                          conditionalPanel(
+                                            condition="input.options_go > 0 ",
+                                                 wellPanel( 
+                                                    fluidPage(
+                                                        fluidRow(column(12, 
+
+                                                        sliderInput(inputId="analyse_maxits", label=h4("Specify maximum number of iterations"),
                                                                value=20, min = 1, max = 40, step = NA),
-                                                  style="padding: 1px",
-                                                  bsTooltip("analyse_maxits","set this to the maximum number of detectable marker-trait associations. <br> Very rarely will this need to be adjusted. Its a safety feature to prevent analyses taking too long. ", placement="right", trigger="hover",
+                                                        style="padding: 1px",
+                                                        bsTooltip("analyse_maxits",
+title='<font size="5" > set to the maximum number of detectable marker-trait associations. <br> Very rarely will this need to be adjusted. Its a safety feature to prevent analyses taking too long. </font>',
+placement="right", trigger="hover",
                                                           options=list(container="body"))
-                                      )) ## end column
 
-                                   ), ## end fluidrow
+
+                                                        )), ## end column and fluidRow
+
+                                                        fluidRow(column(12, 
+                                                         
+                                                 radioButtons(inputId="analyse_quiet", label=h4("Verbose mode"),
+                                                               choices=c("No"="no", "Yes"="yes"  )),
+                                                  style="padding: 1px",
+                                                  bsTooltip("analyse_quiet",
+title='<font size="5" > Click yes if detailed output is wanted </font>',
+placement="right", trigger="hover",
+                                                            options=list(container="body")
+                                                      )
+
+                                
+
+                                                         ))  ## end column and fluidRow
+
+                                                    ) ## end fluidPage
+                                                 ) ## end wellPanel
+                                           ) ## end conditionalPanel
+
+                                                           ) ## end wellPanel
+                                      ) ## column
+                                   ),  ## fluidRow
+
+
+
+
+
+
+
+
 
 
                                    fluidRow(column(12,
@@ -686,7 +1009,9 @@ variables are selected, then only an overall mean will be fitted.", placement="r
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("analyse_go","", placement="right", trigger="hover",
+                                                          bsTooltip("analyse_go",
+title='<font size="5" > Click here to find the set of snp in strongest association with the trait  </font>',
+placement="right", trigger="hover",
                                                                      options=list(container="body"))
 
 
@@ -774,7 +1099,9 @@ filter: alpha(opacity=50);
                                                   icon=icon("glyphicon glyphicon-stats", lib="glyphicon")),
 
                                                   style="padding: 1px",
-                                                  bsTooltip("summary","click on yes/no", placement="right", trigger="hover",
+                                                  bsTooltip("summary",
+title='<font size="5" > click on yes/no </font>',
+placement="right", trigger="hover",
                                                             options=list(container="body")
                                                       )
                                                   )  ## wellPanel
@@ -808,7 +1135,7 @@ filter: alpha(opacity=50);
                                ), ## end fluidRow
                              fluidRow(
                                 column(12, 
-                                    conditionalPanel(condition="input.pvalue_go", 
+                                    conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
          HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Size and Significance of Effects"), sep = ""))),
                                     tableOutput("size")
@@ -841,59 +1168,71 @@ tags$div(
 ),  ## end tabPAnel pvalue
 
 
-                       navbarMenu("Help", icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
-                       tabPanel("About", 
-                          fluidPage(
-                           fluidRow(
-p(HTML("<pre> <font size=4> 
-<strong>Package name:</strong> Eagle 
-<strong>Version:</strong>      1.0
-<strong>Authors:</strong>      Shiny App      - Andrew George
-              R/Rcpp package - Andrew George,  Joshua Bowden, and Ryan Stephenson 
-<strong>Purpose:</strong>      To make association mapping via multiple-locus models practical 
-              on a genome-wide scale.
-</font>
-</pre> "))
+   tabPanel("Help",  icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
+                fluidPage(
+                      fluidRow(
+                        column(12, 
+                            includeHTML("help.html")
+                        )  ## end column
+                      ) ## end fluidRow
+                 ) ## end fluidPage
+            ) ## end tabPanel("Help") 
 
 
-                           ) ## end fluidRow
-                         ) ## end fluidPage
-),  # end tabPanel About
-                       tabPanel("FAQ", 
-fluidPage(
-fluidRow(h2("FAQ")),
-fluidRow(
-p(HTML("Where can I get the latest version of Eagle? "))
-), ## end fluidRow
-fluidRow(
-p(HTML("What platforms will Eagle run on?  "))
-), ## end fluidRow
-fluidRow(
-p(HTML("Where can I go for help?   "))
-), ## end fluidRow
-fluidRow(
-p(HTML("Am I restricted to only analysing continuous traits or can I also analyse discrete/disease traits?"))
-),  ## end fluidRow
-fluidRow(
-p(HTML("Can Eagle handle missing marker genotypes? "))
-),
-fluidRow(
-p(HTML("Can Eagle handle missing trait data and/or missing fixed effects data?"))
-) ## fluidRow
 
-) ## end fluidPage
-),  ## end tabPanel FAQ
-                       tabPanel("Documents", 
-fluidRow(
-actionButton(inputId="ref_paper", label="R/Eagle reference manual")
-), ## end fluidRow
-fluidRow(
- tags$iframe(style="height:600px; width:100%",  src="manual.pdf")
 
-# uiOutput("pdfview")
-) ## end fluidRow       
-) ## end tabPanel
-)  ##  navbarMenu                 
+
+
+
+
+
+##                       navbarMenu("Help", icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
+##                       tabPanel("About", 
+##                          fluidPage(
+##                           fluidRow(
+##p(HTML("<pre> <font size=3> 
+##<strong>Package name:</strong> Eagle 
+##<strong>Version:</strong>      1.0
+##<strong>Authors:</strong>      Shiny App      - Andrew George
+##              R/Rcpp package - Andrew George,  Joshua Bowden, and Ryan Stephenson 
+##<strong>Purpose:</strong>      To make association mapping via multiple-locus models practical 
+##              on a genome-wide scale.
+##<strong>Details:</strong>
+##Eagle is a software package for genome-wide association mapping.  It differs from most other 
+##association mapping packages in that it fits all marker-trait associations simultaneously,  
+##returning the best set of snp loci in strongest association with a trait as its findings. It 
+##also differs from most other packages in that it does not  require the setting of significance 
+##thresholds.
+##
+##Eagle can handle data collected from populations of arbitrary structure. The populations can 
+##contain inbred or outbred individuals. It can also tolerate missing genotypic and phenotypic data. 
+##
+##To perform an analysis, read in your marker data via Read Genotypes, read in your phenotypic 
+##data via Read Phenotypes, read in your map if known via Read Map, and perform a multi-locus 
+##genome-wide analysis via Analyse. The results of the analyses are in Findings.  
+##
+##Help is available by hovering over the input widgets or by clicking on the help tab at the 
+##top of the screen.
+##
+##
+##</font>
+##</pre> "))
+##
+##
+##                           ) ## end fluidRow
+##                         ) ## end fluidPage
+##),  # end tabPanel About
+##tabPanel("FAQ", 
+##
+##       fluidRow(
+##          column(12, 
+##             uiOutput("faq", inline=TRUE)
+##          ) ## end column 
+##       )  ## end fluidRow
+##
+##)  ## end tabPanel FAQ
+##
+##)  ##  navbarMenu                 
                        ) ## end navbarPage
 
 
@@ -902,11 +1241,39 @@ FullPage[[3]][[1]]$children[[1]]$children[[1]]$children[[1]] <-
   tags$img(src = 'images/logo.jpg', width = 80, height = 60)
 ui <- FullPage
 
+get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat") {
+            path_to_file_res <- tryCatch({
+                if(.Platform$OS.type=="unix"){
+                    path_to_file_res <- tk_choose.files()
+                    #print(path_to_file_res)
+                } else {
+                    path_to_file_res <- file.choose()                   
+                }                
+                }, warning = function(war) {
+                    print(paste("Eagle::get_path() Warning: ",war))
+                    path_to_file_res<-defaultpath
+                    return (path_to_file_res)
+                }, error = function(err) {
+                    print(paste("Eagle::get_path() Error: ",err))
+                    path_to_file_res<-defaultpath
+                    return (path_to_file_res)
+                }, finally = {
+                   # path_to_file_res<-"/R/library/Eagle/shiny_app/shinydata/genoDemo.dat"
+                  #  return (path_to_file_res)
+                }) # END tryCatch
+    
+            return (path_to_file_res)
+      }
 
 
 server <- function(input, output, session){
   library("Eagle")
   library("tcltk")
+#  library("markdown")
+#  library("knitr")
+
+#rmdfiles <- c("faq.rmd")
+#sapply(rmdfiles, knit, quiet = T)
 
   ##------------------------------------------
   ## Intros to pages
@@ -920,18 +1287,13 @@ server <- function(input, output, session){
   ##  Read marker path and file name
   ##---------------------------------------- 
   ## upload path and file name
-  path_to_file <- NULL
-  output$choose_marker_file <- renderText(NULL)
+ output$choose_marker_file <- renderText(NULL)
+  path_to_file <- "/R/library/Eagle/shiny_app/shinydata/genoDemo.dat"
   observeEvent(input$choose_marker_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_file <<- tk_choose.files()
-  print(path_to_file)
-     } else {
-       path_to_file <<- file.choose()
-
-     }
+   
+       path_to_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat")
  
-    output$choose_marker_file <- renderText( path_to_file )
+       output$choose_marker_file <- renderText( path_to_file )
   })
   
 
@@ -942,16 +1304,20 @@ server <- function(input, output, session){
    geno <- NULL
    observeEvent(input$marker_go, {
 
+
+
+
      if(input$filetype == "plink"){
 
-        withCallingHandlers({
+       withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
-                 geno <<- ReadMarker(filename = path_to_file, type = "PLINK", availmemGb = input$memsize, csv = FALSE, quiet = FALSE)
+                 if (file.exists(path_to_file) == TRUE) {
+                 geno <<- ReadMarker(filename = path_to_file, type = "PLINK", availmemGb = input$memsize, quiet = FALSE)
+                 }
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
         })
-
 
 
      }
@@ -975,8 +1341,12 @@ server <- function(input, output, session){
                      missing <- NULL
  
 
+                 if (file.exists(path_to_file) == TRUE) {
                  geno <<- ReadMarker(filename = path_to_file, type = "text", AA = aa, 
-                            AB = ab  , BB = bb, availmemGb = input$memsize, csv = FALSE, quiet = FALSE, missing=missing) 
+                            AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = FALSE , missing=missing) 
+                } else {
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "File does not exist:", path_to_file))
+                 }
 
               },  ## end withCallingHandlers
               message = function(m) {
@@ -997,20 +1367,15 @@ server <- function(input, output, session){
 
  ##  Read phenotypic  path and file name
   ## upload path and file name
-  path_to_pheno_file <- NULL
+  path_to_pheno_file <- "/R/library/Eagle/shiny_app/shinydata/phenoDemo.dat"
   output$choose_pheno_file <- renderText(NULL)
   observeEvent(input$choose_pheno_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_pheno_file <<- tk_choose.files()
-  print(path_to_pheno_file)
-     } else {
-       path_to_pheno_file <<- file.choose()
 
-     }
-
-
+       path_to_pheno_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/phenoDemo.dat")
+      
     output$choose_pheno_file <- renderText( path_to_pheno_file )
   })
+
 
 
 
@@ -1020,16 +1385,27 @@ server <- function(input, output, session){
    pheno <- NULL
    observeEvent(input$pheno_go, {
 
-     header_flag <- FALSE
-     if(input$pheno_header == "yes")
-        header_flag <- TRUE
-     csv_flag <- FALSE
-     if(input$pheno_csv == "yes")
-        csv_flag <- TRUE
+   header_flag <- FALSE
+   if(input$pheno_header == "yes")
+      header_flag <- TRUE
+   csv_flag <- FALSE
+   if(input$pheno_csv == "yes")
+      csv_flag <- TRUE
 
-       withCallingHandlers({
-                 shinyjs::html("ReadPheno", "")
-                 pheno  <<- ReadPheno(filename = path_to_pheno_file, header=header_flag, csv=csv_flag)
+   pheno_missing <- input$pheno_missing
+   if(input$pheno_missing=="")
+      pheno_missing <- NULL
+
+
+
+
+   withCallingHandlers({
+                shinyjs::html("ReadPheno", "")
+                 if (file.exists(path_to_pheno_file) == TRUE) {
+                 pheno  <<- ReadPheno(filename = path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
+                 } else {
+                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", path_to_pheno_file))
+                 }
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadPheno", html = m$message, add = TRUE)
@@ -1042,29 +1418,107 @@ server <- function(input, output, session){
   })  ## end observeEvent
 
 
+
+
+
+  ##------------------------------##
+  ## Read Z matrix                ## 
+  ##------------------------------ss
+
+ # map <- NULL
+ ##  Read Z matrix  path and file name
+  ## upload path and file name
+#  path_to_Zmat_file <- NULL
+#  output$choose_Zmat_file <- renderText(NULL)
+#  observeEvent(input$choose_Zmat_file, {
+#    if(.Platform$OS.type=="unix"){
+#       path_to_Zmat_file <<- tk_choose.files()
+#       print(path_to_Zmat_file)
+#    } else {
+#       path_to_Zmat_file <<- file.choose()
+#
+#     }
+#   output$choose_Zmat_file <- renderText( path_to_Zmat_file )
+#  })
+  
+  path_to_Zmat_file <- "/R/library/Eagle/shiny_app/shinydata/zmatDemo.dat"
+  output$choose_Zmat_file <- renderText(NULL)
+  observeEvent(input$choose_Zmat_file, {
+
+       path_to_Zmat_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/zmatDemo.dat")
+      
+    output$choose_Zmat_file <- renderText( path_to_Zmat_file )
+  })
+
+
+
+   ## Read Zmat  information
+   ##~~~~~~~~~~~~~~~~~~~~~~~~~
+   Zmat <- NULL
+   observeEvent(input$Zmat_go, {
+
+
+
+
+       withCallingHandlers({
+                 shinyjs::html("ReadZmat", "")
+         
+                 if (file.exists(path_to_Zmat_file) == TRUE) {
+                 Zmat  <<- ReadZmat(filename = path_to_Zmat_file)
+                 } else {
+                    shinyjs::html(id = "ReadZmat", html = paste0("ReadZmat", "File does not exist:", path_to_Zmat_file))
+                 }
+         
+                 # Zmat  <<- ReadZmat(filename = path_to_Zmat_file
+              },  ## end withCallingHandlers
+              message = function(m) {
+                 shinyjs::html(id = "ReadZmat", html = m$message, add = TRUE)
+       })
+
+
+
+
+
+  })  ## end observeEvent
+
+
+
+
+
+
+
+
+
+
+
   ##-------------------------##
   ## Read Map                ## 
   ##-------------------------ss
 
- map <- NULL
+# map <- NULL
  ##  Read map  path and file name
   ## upload path and file name
-  path_to_map_file <- NULL
+#  path_to_map_file <- NULL
+#  output$choose_map_file <- renderText(NULL)
+#  observeEvent(input$choose_map_file, {
+#    if(.Platform$OS.type=="unix"){
+#       path_to_map_file <<- tk_choose.files()
+#        print(path_to_map_file)
+#     } else {
+#       path_to_map_file <<- file.choose()
+#
+#     }
+##    rChoiceDialogs::rchoose.files()
+#    output$choose_map_file <- renderText( path_to_map_file )
+#  })
+  path_to_map_file <- "/R/library/Eagle/shiny_app/shinydata/mapDemo.dat"
   output$choose_map_file <- renderText(NULL)
   observeEvent(input$choose_map_file, {
-    if(.Platform$OS.type=="unix"){
-       path_to_map_file <<- tk_choose.files()
-  print(path_to_map_file)
-     } else {
-       path_to_map_file <<- file.choose()
-
-     }
-
+  
+    path_to_map_file <<- get_path(defaultpath="/R/library/Eagle/shiny_app/shinydata/mapDemo.dat")
 
     output$choose_map_file <- renderText( path_to_map_file )
   })
-
-
 
 
    ## Read map  information
@@ -1076,9 +1530,22 @@ server <- function(input, output, session){
      if(input$map_csv == "yes")
         csv_flag <- TRUE
 
+
+   map_header_flag <- FALSE
+   if(input$map_header == "yes")
+      map_header_flag <- TRUE
+
        withCallingHandlers({
                  shinyjs::html("ReadMap", "")
-                 map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag)
+         
+                 if (file.exists(path_to_map_file) == TRUE) {
+                    map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+                 }  else {
+                    shinyjs::html(id = "ReadMap", html = paste0("ReadMap", "File does not exist:", path_to_map_file))
+                 }
+         
+               #   map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+         
               },  ## end withCallingHandlers
               message = function(m) {
                  shinyjs::html(id = "ReadMap", html = m$message, add = TRUE)
@@ -1089,6 +1556,11 @@ server <- function(input, output, session){
 
 
   })  ## end observeEvent
+
+
+
+
+
 
 
   ##-------------------
@@ -1110,15 +1582,16 @@ server <- function(input, output, session){
 
 
   output$analyse_names <- renderUI({
-      radioButtons(inputId="nmst", label="Step 1: Choose trait", 
-               choices=nms(), inline=TRUE, selected=character(0))
+ #     radioButtons(inputId="nmst", label=h4("Step 1: Choose trait"), 
+ #              choices=nms(), inline=TRUE, selected=character(0))
+  checkboxGroupInput("nmst", h4("Step 1: Choose trait"), nms(), inline=TRUE)
        
   })  ## end renderUI
 
 
   output$analyse_fnames <- renderUI({
       #nms <- names(pheno)
-      checkboxGroupInput("nmsf", "Step 2: Choose fixed effects", nms(), inline=TRUE)
+      checkboxGroupInput("nmsf", h4("Step 2: Choose fixed effects"), nms(), inline=TRUE)
     })  ## end renderUI
 
   fform <- NULL
@@ -1136,7 +1609,13 @@ server <- function(input, output, session){
        
        withCallingHandlers({
                  shinyjs::html("AM", "")
-                 res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$analyse_memsize , maxit = input$analyse_maxits , pheno = pheno, geno=geno, map=map) 
+                 quietvalue <-  TRUE
+                 if(input$analyse_quiet == "yes")
+                    quietvalue <- FALSE
+                print(quietvalue) 
+                 res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
+                            quiet = quietvalue,
+                            ncpu = input$analyse_cpu, maxit = input$analyse_maxits , pheno = pheno, geno=geno, map=map) 
 
               },  ## end withCallingHandlers
               message = function(m) {
@@ -1198,15 +1677,16 @@ server <- function(input, output, session){
 ##---------------------
 
 
-observeEvent(input$ref_paper, {
-    output$pdfview <- renderUI({
-      tags$iframe(style="height:600px; width:100%", src="manual.pdf")
-    })
-  })
 
+## FAQ html 
+#   output$faq <- renderUI({
+#        HTML(markdown::markdownToHTML(knit('faq.rmd', 
+#              quiet = TRUE),options=c('toc'), fragment.only=TRUE))
+#    })
 
-
-
+# observeEvent(input$quickstart, {
+#      RShowDoc("QuickStart", package="Eagle")
+#})
 
   ##---------------------------------
   ## Help files   - addPopover
@@ -1215,16 +1695,17 @@ observeEvent(input$ref_paper, {
  
   addPopover(session, "dummy1", "Details", content = HTML("
 Eagle can handle two types of marker genotype file; a space separated plain text file and PLINK
-ped files. These files can contain genotypes on outbreds or inbreds. We assume the marker loci are snps. 
-Ideally, if the marker files contain missing genotypes, these genotypes will have been imputed prior to analysis. 
-This can be done with programs like BEAGLE. However, Eagle can tolerate missing marker genotypes if the probability of a 
-genotype being missing is low. 
+ped file. We assume the marker loci are snps. 
+Missing marker genotypes are allowed but the 
+proportion of missing genotypes is assumed to be low. 
 <br><br>
-The marker genotype file should not contain column names. We also assume that each row of data in the file corresponds to data on a different 
+The marker genotype file should not contain column names. 
+We also assume that each row of data in the file corresponds to data on a different 
 individual. The ordering of the rows, by individual, must be the same for the marker genotype file and phenotypic file.<br><br> 
 
 
-If the file is a plain text file, then character or numeric genotypes can be used to denote the snp genotypes. However, Eagle needs 
+If the file is a plain text file, then character or numeric genotypes can be used to 
+denote the snp genotypes. However, Eagle needs 
 to map these genotypes to its internal snp genotypes. We do this by asking the user to assign their snp genotype codes to our AA, 
 AB and BB codes. If data are collected on inbred individuals, only AA and BB need be specified. 
 <br> <br>
@@ -1242,20 +1723,30 @@ Output from reading in the marker genotype file will appear in the right hand-si
   Also, Eagle assumes the phenotypic data is row ordered by individual in the same way as the marker genotype data. 
  <br> <br>
 Data on multiple traits and fixed effects that may or may not be used in the analysis can be included in this file.  <br> <br>
-Missing values are allowed but must be coded as NA. <br> <br>
+Missing values are allowed.  <br> <br>
 Output from reading in the phenotypic file will appear in the right hand-side panel. 
   "), trigger = 'hover')
+
+
+addPopover(session, "Zmat1", "Details", content = HTML("
+The Z matrix contains only zeros and ones. The number of rows must be greater than the number of columns. 
+It is used for those situations where multiple observations of the same trait have been recorded for an individual. 
+"), trigger = "hover") 
+
+
+
+
+
   
-   addPopover(session, "dummy3", "Details", content = HTML("
-    Unlike classical linkage mapping, association mapping does not
-     require a map in order to analyse the data.  So, reading in a map
-     file is optional. If a map file is read into our package, then the
+addPopover(session, "dummy3", "Details", content = HTML("
+    Eagle does not
+     require a known marker map in order to analyse the data.  
+     If a map file is read into Eagle, then the
      marker names are used when results are reported in  'Findings'. If a
-     map file is not supplied, then generic names M1, M2, ..., are
-     given to the marker loci in columns 1, 2, ...
+     map file is not supplied, generic names M1, M2, ..., are
+     given to the marker loci. 
       <br> <br>
-     A space separated text file with column headings is assumed as the
-     default input. The map file can have three or four columns. If the
+     The map file can have three or four columns. If the
      map file has three columns, then it is assmed that the three
      columns are the marker locus names, the chromosome number, and the
      map position (in any units). If the map file has four columns as
@@ -1266,22 +1757,37 @@ Output from reading in the phenotypic file will appear in the right hand-side pa
      Missing values are not allowed.
       <br> <br>
     The order of the marker loci in this file is assumed to be in the
-     same order as the loci in the marker data file.
+     same order as the loci (or columns) in the marker data file.
   "), trigger = "hover") 
 
 
 
 addPopover(session, "dummy4", "Details", content = HTML(paste("
-    Here,  multiple locus association mapping is performed. The analysis
-     simultaneously accounts for population stratification, familial
-     relatedness, and nuisance fixed effects while detecting and
-     mapping multiple marker-trait associations. Unlike most other association mapping methods, 
+    Here,  multiple_locus association mapping is performed. The analysis
+     simultaneously accounts for  familial
+     relatedness and nuisance fixed effects while detecting 
+     multiple marker-trait associations. Unlike other association mapping methods, 
      there are no regularization parameters to be tuned, nor significance thresholds to be set. 
      <br><br>
      Output from performing the analysis is printed to the right hand panel. A table of results is printed in 'Findings'. 
      <br><br>", tags$span(style="color:red",
      "Once an analysis has been completed, a new analysis can be performed  
      by selecting a new trait in 'Step1' or different fixed effects in 'Step2' and clicking the 'Perform genome-wide analysis' button.", sep=""))
+
+
+), trigger = "hover")
+
+
+
+addPopover(session, "dummy5", "Details", content = HTML(paste("
+By default, the 'best' set of snp in strongest association with the trait are reported. 
+These results are given in table form. 
+<br><br>
+By clicking the 'Additional Summary' button on the left, two additional tables of results are shown; a table on the size and significance of the snp 
+in the model and a table for the amount of phenotypic variance explained as they are added one at a time to the model.
+<br><br>
+There is additional computation needed to produce these extra tables. It may take a few minutes before these tables appear. 
+     ", sep="")
 
 
 ), trigger = "hover")

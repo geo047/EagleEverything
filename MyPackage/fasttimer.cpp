@@ -1,4 +1,5 @@
-
+// [[Rcpp::depends(RcppEigen)]]
+#include <RcppEigen.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,8 +11,10 @@ extern "C" {
 }
 #endif
 
+#include <cstddef>
+
 // [[Rcpp::export]]
-double fasttimer( void ){
+double fasttimer(  ){
     static int lastcall = 0 ;
     
     // alternates difference in time between these two variables (=> first call will return -ve value)
