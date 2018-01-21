@@ -1,21 +1,21 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1516343190944.000,
+    "created" : 1516508005766.000,
     "dirty" : false,
-    "encoding" : "UTF-8",
+    "encoding" : "ISO8859-1",
     "folds" : "",
-    "hash" : "1964973291",
-    "id" : "B8D57B07",
-    "lastKnownWriteTime" : 1516344510,
-    "last_content_update" : 1516344510423,
+    "hash" : "4258888260",
+    "id" : "35F87172",
+    "lastKnownWriteTime" : 1516511897,
+    "last_content_update" : 1516511897560,
     "path" : "F:/Docker/Eagle_master_git/EagleEverything/MyPackage/ShinyPlotBenchmark/server.R",
     "project_path" : "server.R",
     "properties" : {
-        "cursorPosition" : "56,1",
-        "scrollLine" : "33"
+        "cursorPosition" : "172,14",
+        "scrollLine" : "154"
     },
-    "relative_order" : 2,
+    "relative_order" : 1,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

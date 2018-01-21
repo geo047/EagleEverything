@@ -170,7 +170,7 @@ roundUpNice <- function(x, nice=c(1,2,4,5,6,8,10)) {
 
 shinyServer(function(input, output, session) {
 
-  flush1 <- "../../../.."
+  flush1 <- "."
  # if (.Platform$OS.type == "windows") {
 #    flush1 <- paste0(Sys.getenv("HOME"),"/..")
  # }
