@@ -25,7 +25,7 @@ MAINTAINER Josh Bowden "josh.bowden@csiro.au"
 # ENV R_LIBS_USER /R/library
 USER root
 
-ENV EAGLEDIR /R/library/Eagle/shiny_app
+# ENV EAGLEDIR /R/library/Eagle/shiny_app
 
 # RUN  R  -e "install.packages(c('shinyFiles'),  lib='/R/library', dependencies=TRUE)"  # this is done in mro_shiny_base image
 
@@ -39,7 +39,7 @@ RUN  mkdir shinybuild \
     # R -e "install.packages(c('Eagle'), repos='http://cran.rstudio.com/' , lib='/R/library')" 
     &&  cd ../..  \
     &&  rm -rf shinybuild  \
-    &&  mkdir -p $EAGLEDIR\shinydata \
+    &&  mkdir -p /home/docker/shinydata \
     &&  echo "local({ options(shiny.port = 3838, shiny.host = \"0.0.0.0\") })" >> $WHEREISMAKECONF/Rprofile.site  \
     &&  echo "library(shinyFiles, lib.loc=\"/R/library\")" >> $WHEREISMAKECONF/Rprofile.site 
     # &&  echo "export R_LIBS_USER=/R/library" >> /home/docker/.bashrc 
@@ -63,11 +63,11 @@ RUN chmod 666 $NVBLAS_CONFIG_FILE \
 
 USER docker
 
-WORKDIR $EAGLEDIR/shinydata
+WORKDIR /home/docker/shinydata
 
 VOLUME  /data /flush1 /flush1 /flush2
 # add data files from local filesytem into the container
-ADD shinydata/*.dat   $EAGLEDIR/shinydata/
+ADD shinydata/*.dat  /home/docker/shinydata/
 
 CMD ["R", "-e shiny::runApp('/R/library/Eagle/shiny_app')"]
 
