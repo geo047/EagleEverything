@@ -25,7 +25,7 @@ shinyUI(fluidPage(
   
  
   mainPanel(
-    textInput(inputId="dataset_path", label="dataset:",  value = "../../../../Eagle_profiling_data/bracewellr_scatter_12099907.txt", width="1000px"),
+    textInput(inputId="dataset_path", label="dataset:",  value = "", width="1000px"),
     rbokehOutput("rbokeh", width = 800, height = 600),
     verbatimTextOutput('filepaths')
   )
