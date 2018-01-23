@@ -140,7 +140,7 @@ RUN   mkdir -p /data /shinydata /flush1 /flush2 /memdir /R /R/library /datastore
 USER docker 
 
 ENV  MAKE='make -j2'
-RUN  R  -e "install.packages(c('devtools', 'httpuv', 'shiny', 'shinythemes', 'shinyBS', 'shinyjs', 'rmarkdown') , lib='/R/library' , dependencies=TRUE)" 
+RUN  R  -e "install.packages(c('devtools', 'httpuv', 'shiny', 'shinythemes', 'shinyBS', 'shinyjs', 'rmarkdown', 'shinyFiles') , lib='/R/library' , dependencies=TRUE)" 
 RUN  R  -e "install.packages(c('matrixcalc', 'data.table', 'RcppEigen', 'Rcpp'),  lib='/R/library', dependencies=TRUE)" 
 
 
