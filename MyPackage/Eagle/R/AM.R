@@ -255,7 +255,8 @@ AM <- function(trait=NULL,
  ## print tile
  .print_title()
 
- ngpu <- 0  ### NEED TO CHANGE THIS WHEN gpu implemented. 
+ # ngpu input paramater is used for profiling - stores the number of GPUs being used for nvBLAS LD_PRELOAD  
+ # ngpu <- 0  ### NEED TO CHANGE THIS WHEN gpu implemented.
 
 
  error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait, 
