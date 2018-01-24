@@ -44,7 +44,7 @@ docker pull imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_eagle_acc2:latest
 ### Running docker on Linux 
 Pass through the DISPAY variable to the container so the tcltk file.chooser works
 ```
- sudo docker run --rm  -p 3838:3838 --network=host -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro  mro_eagle_master
+ sudo docker run --rm  -p 3838:3838 -it  mro_eagle_master
 ```
  
 ###  Use singularity to launch the container
@@ -53,18 +53,19 @@ module load singularity
 
 SINGULARITY_DOCKER_USERNAME=<ident>
 SINGULARITY_DOCKER_PASSWORD=
-singularity pull docker://imtsc-cont-reg.it.csiro.au/eagle/mro_cuda8_base:latest
+singularity build mro_eagle_master.simg docker://imtsc-cont-reg.it.csiro.au/eagle/mro_eagle_master
 
 # export the mount points for the CSIRO clusters:
 export SINGULARITY_BINDPATH="$DATADIR:/data,$FLUSHDIR:/flush1,$FLUSH1DIR:/flush1,$FLUSH2DIR:/flush2,$MEMDIR:/memdir"
  
 # run the image then launch a web browser pointing to: http://localhost:3838
-./mro_cuda8_eagle_acc2.img
-
+./mro_eagle_master.simg
+ N.B. As singularity binds a users home directory, the shiny app will not find the 
+ /home/docker/shinydata directory, so manual entry of the path is needed to run the embedded demo data model
 
 # Or use the image as an R interpreter
 # pipe an R script into the containers R process:
-cat am+GPU.R | OMP_NUM_THREADS=14 singularity exec --nv mro_cuda8_eagle_acc2.img R --vanilla
+cat am+GPU.R | OMP_NUM_THREADS=14 singularity exec --nv mro_eagle_master.simg /usr/bin/runR.sh 0 --vanilla
 
 # N.B. the --nv option should bind the GPU drivers into the container, however there are current issues
 # with this when the drivers are in a non-standard place
