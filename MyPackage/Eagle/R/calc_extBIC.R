@@ -6,14 +6,13 @@
    res_p <- emma.MLE(y=trait, X= currentX , K=MMt, Z=Zmat, llim=-100,ulim=100)
 
 
+   #BIC <- -2 * res_p$ML + (ncol(currentX)+1) * log(length(trait))  ## fixed effects + variance component
    BIC <- -2 * res_p$ML + (ncol(currentX)+1) * log(length(trait))  ## fixed effects + variance component
+   extBIC <- BIC + 2 * 1.0  *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
 
    ## calculate lambda for extended BIC
-   #lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
-   #gamma <- 1-(1/(2*lambda))
-   #extBIC <- BIC + 2 * gamma *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  # anti-conservative
-   #extBIC <- BIC + 2 *  1.0   *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
-   extBIC <- BIC + 2 *  (1 - ( log(geno$dim_of_ascii_M[1])/(4 * log(geno$dim_of_ascii_M[2])) ) )   *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
+   #extBIC <- BIC + 2 *  0.5    *lchoose(geno$dim_of_ascii_M[2], ( ncol(currentX) - 1)   )  
+   cat(" Gamma = ", 1.0, "\n")
     return(extBIC)
  }
 

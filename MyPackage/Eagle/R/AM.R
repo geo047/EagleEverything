@@ -543,7 +543,7 @@ if(length(indxNA)>0){
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
+                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu )
           .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           .printtimestring(profile_time, profile_str,"find_qtl")

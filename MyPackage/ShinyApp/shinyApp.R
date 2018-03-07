@@ -43,7 +43,7 @@ library(shiny)
 library(shinythemes)
 library(shinyBS)
 library(shinyjs)
-
+library(shinyFiles)
 
 FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = shinytheme("flatly"),
                 #       theme = shinytheme("slate"),
@@ -297,7 +297,7 @@ placement="right", trigger="hover",
                                            column(12,
                                                   wellPanel(
                                                   radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
-                                                               choices=c("yes"="yes","no"="no" )),
+                                                               choices=c("yes"="yes","no"="no" ), selected="yes"),
                                                   style="padding: 1px",
                                                   bsTooltip("pheno_header",
 title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
@@ -316,7 +316,7 @@ trigger="hover",
                                          fluidRow(
                                            column(12, wellPanel(
                                                   radioButtons(inputId="pheno_csv", label=h4("Step 2: Is the file comma separated"),
-                                                               choices=c("yes"="yes","no"="no" )),
+                                                               choices=c("yes"="yes","no"="no" ), selected="no" ),
                                                   style="padding: 1px",
                                                   bsTooltip("pheno_csv",
 title='<font size="3" > click on yes if the file is a csv file. </font>',
