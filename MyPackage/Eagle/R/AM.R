@@ -442,10 +442,10 @@ if(length(indxNA)>0){
  continue <- TRUE
  itnum <- 1
 
- profile_time <- FALSE
+# profile_time <- FALSE
  run_id <- 0
  if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
-   profile_time <- TRUE 
+ #   profile_time <- TRUE 
    message(" EAGLE_PROFILE_STR was set\n")
    # create a unigue number for this run of the code - used for display of timing info
    # Use the SLURM Job ID if available otherwise just create a random number (and risk value collison)
@@ -462,17 +462,17 @@ if(length(indxNA)>0){
  }
  
 
- if (profile_time==TRUE)  message("profile,run_id,itnum,ncpu,ngpu,function,time_ms")
+#  if (profile_time==TRUE)  message("profile,run_id,itnum,ncpu,ngpu,function,time_ms")
  while(continue){
      profile_str <- paste0("profile,",run_id,",",itnum, ",",ncpu,",",ngpu,",")
      message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
-     if (profile_time==TRUE) { looptime <- fasttimer() }
+ #    if (profile_time==TRUE) { looptime <- fasttimer() }
      ## based on selected_locus, form model matrix X
-     .printtimestring(FALSE, profile_str,"constructX")
+ #    .printtimestring(FALSE, profile_str,"constructX")
      currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
-    .printtimestring(profile_time, profile_str,"constructX")
+ #   .printtimestring(profile_time, profile_str,"constructX")
 
 
      ## calculate Ve and Vg
@@ -483,34 +483,34 @@ if(length(indxNA)>0){
      if(itnum==1){
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
-        .printtimestring(FALSE, profile_str,"calcMMt")
-        if (profile_time==TRUE) { looptime <- fasttimer() }
+     #   .printtimestring(FALSE, profile_str,"calcMMt")
+     #   if (profile_time==TRUE) { looptime <- fasttimer() }
         MMt <- do.call(.calcMMt, Args)  
-        .printtimestring(profile_time, profile_str,"calcMMt")
+     #   .printtimestring(profile_time, profile_str,"calcMMt")
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-        .printtimestring(FALSE, profile_str,"invMMt")
+     #   .printtimestring(FALSE, profile_str,"invMMt")
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-        .printtimestring(profile_time, profile_str,"invMMt")
+     #   .printtimestring(profile_time, profile_str,"invMMt")
         gc()
      }  
      
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-     .printtimestring(FALSE, profile_str,"calcVC")
+  #   .printtimestring(FALSE, profile_str,"calcVC")
      vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
-     .printtimestring(profile_time, profile_str,"calcVC")
+  #   .printtimestring(profile_time, profile_str,"calcVC")
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
 
      ## Calculate extBIC
-     .printtimestring(FALSE, profile_str,"calc_extBIC")
+  #   .printtimestring(FALSE, profile_str,"calc_extBIC")
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
                        numberSNPselected=(itnum-1), quiet) 
-    .printtimestring(profile_time, profile_str,"calc_extBIC")
+  #  .printtimestring(profile_time, profile_str,"calc_extBIC")
      gc()
 
      ## set vector extBIC
@@ -528,9 +528,9 @@ if(length(indxNA)>0){
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
-          .printtimestring(FALSE, profile_str,"find_qtl")
+      #    .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-          .printtimestring(profile_time, profile_str,"find_qtl")
+      #    .printtimestring(profile_time, profile_str,"find_qtl")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
        } else {
@@ -544,9 +544,9 @@ if(length(indxNA)>0){
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu )
-          .printtimestring(FALSE, profile_str,"find_qtl")
+      #    .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-          .printtimestring(profile_time, profile_str,"find_qtl")
+      #    .printtimestring(profile_time, profile_str,"find_qtl")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
 
@@ -601,13 +601,13 @@ return( sigres )
 
 
 
-.printtimestring <- function(profile_time, profile_str, fucntionstr)
-{
-    looptime <- fasttimer() ;
-    if (profile_time==TRUE) {
-       message(profile_str,fucntionstr,",",looptime)
-   }
-}
+#.printtimestring <- function(profile_time, profile_str, fucntionstr)
+#{
+#    looptime <- fasttimer() ;
+#    if (profile_time==TRUE) {
+#       message(profile_str,fucntionstr,",",looptime)
+#   }
+#}
 
 
 
