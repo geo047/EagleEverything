@@ -120,11 +120,11 @@ message(" Number of columns:           ", ncol(phenos), "\n\n")
 message(" First 5 rows of the phenotype file are \n")
 if(nrow(phenos) > 5){
   for(ii in 1:5){
-  message(cat(paste(phenos[ii,], sep=" ")))
+  message(paste(phenos[ii,], collapse=" "))
   }
 } else {
   for(ii in 1:nrow(phenos) ){
-  message(cat(paste(phenos[ii,], sep=" ")))
+  message(paste(phenos[ii,], collapse=" "))
   }
 }
 

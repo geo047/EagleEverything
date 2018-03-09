@@ -96,17 +96,17 @@ message(" First 5 rows of the Z matrix file are \n")
 if(nrow(Z) > 5){
   for(ii in 1:5){
      if(ncol(Z) > 10){
-        message(cat(paste(Z[ii,1:10], sep=" ")))
+        message(paste(Z[ii,1:10], collapse=" "))
      } else {
-       message(cat(paste(Z[ii,1:ncol(Z) ], sep=" ")))
+       message(paste(Z[ii,1:ncol(Z) ], collapse=" "))
     }
   }
 } else {
   for(ii in 1:nrow(Z) ){
      if(ncol(Z) > 10){
-        message(cat(paste(Z[ii,1:10], sep=" ")))
+        message(paste(Z[ii,1:10], collapse=" "))
      } else {
-       message(cat(paste(Z[ii,1:ncol(Z) ], sep=" ")))
+       message(paste(Z[ii,1:ncol(Z) ], collapse=" "))
     }
   }
 }

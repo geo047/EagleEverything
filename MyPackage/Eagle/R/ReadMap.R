@@ -76,11 +76,11 @@ message(" First 5 markers of the map file are \n")
 
 if(nrow(map) > 5){
   for(ii in 1:5){
-  message(cat(paste(map[ii,], sep=" ")))
+  message(paste(map[ii,], collapse=" "))
   }
 } else {
   for(ii in 1:nrow(map) ){
-  message(cat(paste(map[ii,], sep=" ")))
+  message(paste(map[ii,], collapse=" "))
   }
 }
 
