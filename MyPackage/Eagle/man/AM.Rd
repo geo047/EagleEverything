@@ -6,7 +6,7 @@
 \usage{
 AM(trait = NULL, fformula = NULL, availmemGb = 8, geno = NULL,
   pheno = NULL, map = NULL, Zmat = NULL, ncpu = detectCores(),
-  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE)
+  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}
@@ -39,6 +39,10 @@ This is useful for error checking and monitoring the progress of a large analysi
 
 \item{fixit}{a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 then the model building process is stopped when extBIC increases in value.}
+
+\item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a 
+more conservative test. If this value is left unspecified, a default value based on 
+sample size is assigned automatically.}
 }
 \value{
 A list with the following components:

@@ -22,6 +22,9 @@
 #' @param maxit     an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting. 
 #' @param fixit     a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 #' then the model building process is stopped when extBIC increases in value. 
+#' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a 
+#' more conservative test. If this value is left unspecified, a default value based on 
+#' sample size is assigned automatically. 
 #' @details
 #'
 #' \subsection{How to perform a basic AM analysis}{
@@ -236,7 +239,8 @@ AM <- function(trait=NULL,
                ngpu=0,
                quiet=TRUE,
                maxit=20,
-               fixit=FALSE
+               fixit=FALSE,
+               gamma=NULL
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -307,6 +311,8 @@ AM <- function(trait=NULL,
  extBIC <- vector("numeric", 0)
  ## assign trait 
  trait <-  pheno[[trait]]
+
+
 
 
 
@@ -474,7 +480,6 @@ if(length(indxNA)>0){
                           map=map, availmemGb = availmemGb)  
  #   .printtimestring(profile_time, profile_str,"constructX")
 
-
      ## calculate Ve and Vg
      Args <- list(geno=geno,availmemGb=availmemGb,
                     ncpu=ncpu,selected_loci=selected_loci,
@@ -509,7 +514,7 @@ if(length(indxNA)>0){
      ## Calculate extBIC
   #   .printtimestring(FALSE, profile_str,"calc_extBIC")
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
-                       numberSNPselected=(itnum-1), quiet) 
+                       numberSNPselected=(itnum-1), quiet, gamma) 
   #  .printtimestring(profile_time, profile_str,"calc_extBIC")
      gc()
 
@@ -525,9 +530,12 @@ if(length(indxNA)>0){
     if (fixit){
        if (itnum <= maxit){
            ## find QTL
+           #ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+           #      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
+           #      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, TMP=itnum)
       #    .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
       #    .printtimestring(profile_time, profile_str,"find_qtl")
@@ -543,7 +551,7 @@ if(length(indxNA)>0){
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu )
+                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu , TMP=itnum)
       #    .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
       #    .printtimestring(profile_time, profile_str,"find_qtl")
