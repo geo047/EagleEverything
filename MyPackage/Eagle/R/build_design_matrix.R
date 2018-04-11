@@ -39,10 +39,25 @@
 if(!is.matrix(Xmat))
    Xmat <- matrix(data=Xmat, ncol=1)
 
-## remove column that are 0 sum 
-indx <- which(colSums(Xmat)==0)
-if(length(indx) > 0)
-   Xmat <- Xmat[, -indx]
+## check that matrix doesn't all contain the same value
+indx <- NULL
+if (ncol(Xmat) > 1 ){
+  for(ii in 2:ncol(Xmat)){
+    # first column has intercept
+    u <- length(unique(Xmat[, ii]))
+    if(u == 1){
+      indx <- c(indx, ii)
+    }
+
+  }
+  if(length(indx) > 0)
+     Xmat <- Xmat[, -indx]
+}  
+
+
+
+
+
 
 
   return(Xmat)

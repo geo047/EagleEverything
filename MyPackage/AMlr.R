@@ -240,8 +240,7 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL, 
-               ...
+               gamma=NULL
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -271,8 +270,7 @@ AM <- function(trait=NULL,
    return(NULL)
  }
 
- ## deal with optional argument. Only perm=TRUE is allowed. 
- z <- list(...)
+
 
  ## checking if map is present. If not, generate a fake map. 
  if(is.null(map)){
@@ -450,91 +448,45 @@ if(length(indxNA)>0){
  continue <- TRUE
  itnum <- 1
 
-# profile_time <- FALSE
-# run_id <- 0
-# if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
-# #   profile_time <- TRUE 
-#   message(" EAGLE_PROFILE_STR was set\n")
-#   # create a unigue number for this run of the code - used for display of timing info
-#   # Use the SLURM Job ID if available otherwise just create a random number (and risk value collison)
-#   if (nchar(Sys.getenv("SLURM_JOB_ID")) > 0) {
-#       run_id <- Sys.getenv("SLURM_JOB_ID") 
-#       message(" SLURM_JOB_ID was set as run_id!", run_id)
-#   } else {
-#      run_id <- floor(runif(1, 1,100000000))
-#      run_id <- sprintf("%08d", run_id)
-#      message(" A random run_id was created ", run_id)
-#   } 
-# } else {
-#   message(" EAGLE_PROFILE_STR was not set! \n")
-# }
- 
-
-#  if (profile_time==TRUE)  message("profile,run_id,itnum,ncpu,ngpu,function,time_ms")
  while(continue){
-#     profile_str <- paste0("profile,",run_id,",",itnum, ",",ncpu,",",ngpu,",")
      message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
- #    if (profile_time==TRUE) { looptime <- fasttimer() }
-     ## based on selected_locus, form model matrix X
- #    .printtimestring(FALSE, profile_str,"constructX")
-     currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
-                          dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                          map=map, availmemGb = availmemGb)  
- #   .printtimestring(profile_time, profile_str,"constructX")
 
      ## calculate Ve and Vg
-     Args <- list(geno=geno,availmemGb=availmemGb,
-                    ncpu=ncpu,selected_loci=selected_loci,
-                    quiet=quiet)
 
      if(itnum==1){
+         currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
+                          dim_of_ascii_M=geno[["dim_of_ascii_M"]],
+                          map=map, availmemGb = availmemGb)  
+
+
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
-     #   .printtimestring(FALSE, profile_str,"calcMMt")
-     #   if (profile_time==TRUE) { looptime <- fasttimer() }
-        MMt <- do.call(.calcMMt, Args)  
-     #   .printtimestring(profile_time, profile_str,"calcMMt")
+           Args <- list(geno=geno,availmemGb=availmemGb,
+                    ncpu=ncpu,selected_loci=selected_loci,
+                    quiet=quiet)
+           MMt <- do.call(.calcMMt, Args)  
 
-# AWG permuation not working properly
-#         if(!is.null(z$permute)){
-#             print(" in AM.R ... part of the code permuting MMt ")
-#             if(z$permute){
-#                indxM <- sample(1:nrow(MMt), nrow(MMt), FALSE)
-#                print(indxM[1:5])
-#                MMt <- MMt[indxM, indxM]
-#             }
-#         }
-
-
-         if(!quiet)
-             doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-     #   .printtimestring(FALSE, profile_str,"invMMt")
+          if(!quiet)
+              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-     #   .printtimestring(profile_time, profile_str,"invMMt")
         gc()
      }  
-   
- 
+     
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-  #   .printtimestring(FALSE, profile_str,"calcVC")
      vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
-  #   .printtimestring(profile_time, profile_str,"calcVC")
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
 
-     ## Calculate extBIC
-  #   .printtimestring(FALSE, profile_str,"calc_extBIC")
+   #  ## Calculate extBIC
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
                        numberSNPselected=(itnum-1), quiet, gamma) 
-  #  .printtimestring(profile_time, profile_str,"calc_extBIC")
      gc()
 
      ## set vector extBIC
      extBIC <- c(extBIC, new_extBIC)
-
 
      ## Print findings to screen
     .print_results(itnum, selected_loci, map,  extBIC)
@@ -544,15 +496,10 @@ if(length(indxNA)>0){
     if (fixit){
        if (itnum <= maxit){
            ## find QTL
-           #ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
-           #      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-           #      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu)
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, TMP=itnum)
-      #    .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-      #    .printtimestring(profile_time, profile_str,"find_qtl")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
        } else {
@@ -560,22 +507,47 @@ if(length(indxNA)>0){
        }
     } else {
 
-        ## Select new locus if extBIC is still decreasing 
-        if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
-           ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+         ## Select new locus 
+         ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu , TMP=itnum)
-      #    .printtimestring(FALSE, profile_str,"find_qtl")
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-      #    .printtimestring(profile_time, profile_str,"find_qtl")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
 
-       }  else {
-            ## terminate while loop, 
-            continue <- FALSE
-       }  ## end if else
+         currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
+                          dim_of_ascii_M=geno[["dim_of_ascii_M"]],
+                          map=map, availmemGb = availmemGb)  
+
+          ## perform likelihood ratio test
+           res_p_novc <- emma.MLE(y=trait, X= currentX , K=diag(length(trait)), Z=Zmat, llim=-100,ulim=100)
+           res_p_withvc <- emma.MLE(y=trait, X= currentX , K=MMt, Z=Zmat, llim=-100,ulim=100)
+           cat("LR_null = ", res_p_novc$ML, "\n")
+           library(lme4)
+           lm <- lm(Muscles.Sol.g  ~ 1 , pheno)
+           print(logLik(lm))
+           print(dim(currentX))
+           print(head(currentX))
+
+           likeratio <- 2 * ( res_p_withvc$ML - res_p_novc$ML )
+           lrthreshold <- qchisq(0.90, df=1)  # mixture of two chisq distributions 
+
+ #    n <- 1000000
+ #    x <- rep(NA, n)
+ #    for(ii in 1:n){
+ #      rnd <- runif(1)
+ #      if (rnd > 0.5){
+ #        x[ii] <- 0} else {
+ #        x[ii] <- rchisq(1,  df=1)
+ #      }
+ #     } 
+ #    sort(x)[n*0.95]
+        cat(" LR = ", likeratio, " LR threshold = ", lrthreshold , " \n")
+        if (likeratio <  lrthreshold){
+           ## stop finding new results
+           continue <- FALSE   
+        } 
+
 
    } ## end if fixit
    itnum <- itnum + 1
@@ -592,29 +564,11 @@ if(length(indxNA)>0){
  
   }  ## end while continue
 
-if( itnum > maxit){
     .print_header()
     .print_final(selected_loci, map,  extBIC)
     sigres <- .form_results(trait, selected_loci, map,  fformula, 
                      indxNA, ncpu, availmemGb, quiet,  extBIC )   
 
-} else {
-    ## remove last selected_loci as for this locus, the extBIC went up
-    if(length(selected_loci)>1){
-        .print_header()
-        .print_final(selected_loci[-length(selected_loci)], 
-                     map, 
-                     extBIC[-length(selected_loci)])
-        sigres <- .form_results(trait, selected_loci[-length(selected_loci)], map,  fformula, 
-                         indxNA, ncpu, availmemGb, quiet, 
-                         extBIC[-length(selected_loci)] )   
-    } else {
-        .print_header()
-        .print_final(selected_loci, map, extBIC)
-        sigres <- .form_results(trait, selected_loci, map,  fformula, 
-                         indxNA, ncpu, availmemGb, quiet, extBIC )   
-   }  ## end inner  if(length(selected_locus)>1)
-}  ## end if( itnum > maxit)
 
  
 return( sigres )

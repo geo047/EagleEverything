@@ -6,7 +6,8 @@
 \usage{
 AM(trait = NULL, fformula = NULL, availmemGb = 8, geno = NULL,
   pheno = NULL, map = NULL, Zmat = NULL, ncpu = detectCores(),
-  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL)
+  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL,
+  ...)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}

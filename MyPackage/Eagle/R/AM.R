@@ -240,7 +240,8 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL
+               gamma=NULL, 
+               ...
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -270,7 +271,8 @@ AM <- function(trait=NULL,
    return(NULL)
  }
 
-
+ ## deal with optional argument. Only perm=TRUE is allowed. 
+ z <- list(...)
 
  ## checking if map is present. If not, generate a fake map. 
  if(is.null(map)){
@@ -449,28 +451,28 @@ if(length(indxNA)>0){
  itnum <- 1
 
 # profile_time <- FALSE
- run_id <- 0
- if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
- #   profile_time <- TRUE 
-   message(" EAGLE_PROFILE_STR was set\n")
-   # create a unigue number for this run of the code - used for display of timing info
-   # Use the SLURM Job ID if available otherwise just create a random number (and risk value collison)
-   if (nchar(Sys.getenv("SLURM_JOB_ID")) > 0) {
-       run_id <- Sys.getenv("SLURM_JOB_ID") 
-       message(" SLURM_JOB_ID was set as run_id!", run_id)
-   } else {
-      run_id <- floor(runif(1, 1,100000000))
-      run_id <- sprintf("%08d", run_id)
-      message(" A random run_id was created ", run_id)
-   } 
- } else {
-   message(" EAGLE_PROFILE_STR was not set! \n")
- }
+# run_id <- 0
+# if (nchar(Sys.getenv("EAGLE_PROFILE_STR")) > 0) {
+# #   profile_time <- TRUE 
+#   message(" EAGLE_PROFILE_STR was set\n")
+#   # create a unigue number for this run of the code - used for display of timing info
+#   # Use the SLURM Job ID if available otherwise just create a random number (and risk value collison)
+#   if (nchar(Sys.getenv("SLURM_JOB_ID")) > 0) {
+#       run_id <- Sys.getenv("SLURM_JOB_ID") 
+#       message(" SLURM_JOB_ID was set as run_id!", run_id)
+#   } else {
+#      run_id <- floor(runif(1, 1,100000000))
+#      run_id <- sprintf("%08d", run_id)
+#      message(" A random run_id was created ", run_id)
+#   } 
+# } else {
+#   message(" EAGLE_PROFILE_STR was not set! \n")
+# }
  
 
 #  if (profile_time==TRUE)  message("profile,run_id,itnum,ncpu,ngpu,function,time_ms")
  while(continue){
-     profile_str <- paste0("profile,",run_id,",",itnum, ",",ncpu,",",ngpu,",")
+#     profile_str <- paste0("profile,",run_id,",",itnum, ",",ncpu,",",ngpu,",")
      message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
  #    if (profile_time==TRUE) { looptime <- fasttimer() }
      ## based on selected_locus, form model matrix X
@@ -493,6 +495,17 @@ if(length(indxNA)>0){
         MMt <- do.call(.calcMMt, Args)  
      #   .printtimestring(profile_time, profile_str,"calcMMt")
 
+# AWG permuation not working properly
+#         if(!is.null(z$permute)){
+#             print(" in AM.R ... part of the code permuting MMt ")
+#             if(z$permute){
+#                indxM <- sample(1:nrow(MMt), nrow(MMt), FALSE)
+#                print(indxM[1:5])
+#                MMt <- MMt[indxM, indxM]
+#             }
+#         }
+
+
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
      #   .printtimestring(FALSE, profile_str,"invMMt")
@@ -500,7 +513,8 @@ if(length(indxNA)>0){
      #   .printtimestring(profile_time, profile_str,"invMMt")
         gc()
      }  
-     
+   
+ 
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }

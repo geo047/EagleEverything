@@ -6,6 +6,7 @@ importFrom(shinyjs, useShinyjs)
 import(shinyFiles, shiny,  shinythemes, shinyBS, stats, utils )
 
 export(
+   CalculateFPR,
    ReadPheno,
    ReadMarker,
    ReadMap,
