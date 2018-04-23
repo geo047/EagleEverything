@@ -28,7 +28,8 @@
       gamma <- 0.6
 
   }
-
+lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
+gamma <- 1-(1/(2*lambda))
    extBIC <- BIC + 2 * gamma   *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
 
    cat(" Gamma = ", gamma, "\n")
