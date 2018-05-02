@@ -10,28 +10,12 @@
 
   # calculate gamma
   if(is.null(gamma)){
-    print(" in here")
-    # gamma has not been set
-    if (length(trait) <= 700)
-         gamma <- 1
-    if (length(trait) > 700 & length(trait) <= 1000)
-      gamma <- -0.000333 * length(trait) + 1.233333333
-      # gamma <- -0.001 * length(trait) + 1.7
+     lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
+     gamma <- 1-(1/(2*lambda))
+   }
 
-    if (length(trait) > 1000 & length(trait) <= 1500)
-       gamma <- -0.0002 * length(trait) + 1.1
 
-    if (length(trait) > 1500 & length(trait) <= 2000)
-       gamma <- -0.0004 * length(trait) + 1.4
-
-   if (length(trait) > 2000)
-      gamma <- 0.6
-
-  }
-lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
-gamma <- 1-(1/(2*lambda))
    extBIC <- BIC + 2 * gamma   *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
-
    cat(" Gamma = ", gamma, "\n")
     return(extBIC)
  }

@@ -272,7 +272,7 @@ AM <- function(trait=NULL,
  }
 
  ## deal with optional argument. Only perm=TRUE is allowed. 
- z <- list(...)
+ #z <- list(...)
 
  ## checking if map is present. If not, generate a fake map. 
  if(is.null(map)){
@@ -329,15 +329,14 @@ if(!is.null(fformula)){
       if(length(fformula)==1){
           fformula <- as.formula(paste("~", fformula, sep="") )
       }  else {
-          message(" fformula has ", length(fformula), " separate terms. It should be a single formula. \n") 
+          message(" fformula has ", length(fformula), " separate terms. It should be of the form  x1 + x2 + x3  \n") 
           message("\n AM has terminated with errors.\n")
           return(NULL)
       }
    } else {
     ## problem: formula should not contain ~
-    message(" It looks like fformula contains a formula. \n")
-    message(" If so, only the terms on the right hand side of the formula should be specified. \n")
-    message(" Please remove the ~ from the formula. \n")
+    message(" Only the terms on the right-hand side of the formula should be specified. \n")
+    message(" Please remove the ~ from the formula. The formula should be of the form x1 + x2 + x3 \n")
     message("\n AM has terminated with errors.\n")
     return(NULL)
   }  ## if length grep
@@ -495,15 +494,6 @@ if(length(indxNA)>0){
         MMt <- do.call(.calcMMt, Args)  
      #   .printtimestring(profile_time, profile_str,"calcMMt")
 
-# AWG permuation not working properly
-#         if(!is.null(z$permute)){
-#             print(" in AM.R ... part of the code permuting MMt ")
-#             if(z$permute){
-#                indxM <- sample(1:nrow(MMt), nrow(MMt), FALSE)
-#                print(indxM[1:5])
-#                MMt <- MMt[indxM, indxM]
-#             }
-#         }
 
 
          if(!quiet)

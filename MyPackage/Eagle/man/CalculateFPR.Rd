@@ -18,7 +18,7 @@ less chance of finding a false positive  but also less chance of finding true
 positives.}
 
 \item{numreps}{the number of replicates upon which to base the calculation of the false 
-positive rate.}
+positive rate. We have found 100 replicates to be sufficient.}
 
 \item{fformula}{the right hand side formula for the fixed effects part of the model.}
 
@@ -49,12 +49,20 @@ false positive rate for a given \code{gamma} value can be calculated, empiricall
 This function is of use for setting gamma to its optimal value. 
 
 
-Background: Eagle uses the extended BIC (extBIC) in which to decide if it should keep looking for more 
+Eagle uses the extended BIC (extBIC) in which to decide if it should keep looking for more 
 significant associations or to stop.  The conservativeness of  extBIC is adjusted via the 
-gamma parameter. Values closer to 0 make the extBIC less conservative. Values closer to 1 
-make the extBIC more conservative. 
-If a gamma value is not specified in \code{\link{AM}}, then a default value is assigned 
-based on sample size. This default value is assigned according to a heuristic procedure.
+gamma parameter. Values closer to 0 make the extBIC less conservative (increases the false positive rate but
+increases power). 
+Values closer to 1 
+make the extBIC more conservative (decreases the false positive rate but decreases power).  
+
+The permutation test is as follows. First, the null model is fitted to the trait data. The residuals are then 
+calculated from the fitted model. These residuals are then permuted \code{numreps} times. For each permutation, 
+we treat the residuals as the trait and perform multiple-locus association mapping, conditional on the \code{gamma}
+value that has been specified. Any findings are false positives. Once the \code{numreps} analyses of the permuted 
+residuals have been performed, we sum the total number of false positives across the replicate analyses, and 
+divide by \code{numreps}.  We now have an estimate of the the false positive rate (for the specified trait, 
+fixed effects model \code{fformula} and \code{gamma} value).
 }
 \examples{
 
