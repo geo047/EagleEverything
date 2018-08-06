@@ -10,8 +10,10 @@
 
   # calculate gamma
   if(is.null(gamma)){
-     lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
-     gamma <- 1-(1/(2*lambda))
+   # found this to be anti-conservative when sample size is small
+   #  lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
+   #  gamma <- 1-(1/(4*lambda))
+   gamma <- 1
    }
 
 
