@@ -7,7 +7,8 @@
 ReadZmat(filename = NULL)
 }
 \arguments{
-\item{filename}{contains the name of the Z matrix file. The file name needs to be in quotes.}
+\item{filename}{contains the name of the Z matrix file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
+to the file is required.}
 }
 \value{
 a data matrix is returned of the Z matrix.
@@ -18,11 +19,14 @@ Read in the Z matrix that assigns groups/strains/lines to their trait measuremen
 \details{
 The underlying linear mixed model is of the form
 \deqn{Y = X \beta  + Z u_g + e}
-where Z is a (n x n_g) matrix that contains ones and zeros, n is the number of trait measurements, and n_g 
-is the number of groups/strains/lines. If n and n_g are the same, then there is no need to specify Z.   
+where Z is a (n x \eqn{n_g}) matrix that contains ones and zeros, n is the number of trait measurements, and \eqn{n_g} 
+is the number of groups/strains/lines. If n and \eqn{n_g} are the same, then there is no need to specify Z.   
+However, if a group/strain/line has multiple trait measurements (i.e. \eqn{n > n_g}) then the Z matrix is needed to tell Eagle which 
+trait measurements belong to which groups/strains/lines. 
 
 A space separated text file is assumed.  Each row of the matrix contains multiple zeroes but only a  single one. 
-The file cannot contain column or row headings.
+The file cannot contain column or row headings.  The file also cannot contain a row of only zeroes. Here,  
+n must be larger than \eqn{n_g} otherwise an error will be issued.
 }
 \examples{
 # Read in  example Z matrix from ./extdata/

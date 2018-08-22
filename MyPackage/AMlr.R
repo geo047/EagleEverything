@@ -498,7 +498,7 @@ if(length(indxNA)>0){
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, TMP=itnum)
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu )
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -510,7 +510,7 @@ if(length(indxNA)>0){
          ## Select new locus 
          ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu , TMP=itnum)
+                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu  )
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)

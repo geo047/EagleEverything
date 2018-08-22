@@ -70,66 +70,76 @@ No file Rd2.aux.
 (/apps/texlive/2015/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 (/apps/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd)
 (/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [1{/apps/texlive/2015/t
-exmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
+exmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [3]
 (/apps/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (52.00832pt too wide) in paragraph at lines 162--162
+Overfull \hbox (52.00832pt too wide) in paragraph at lines 206--206
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 geno.txt\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , AA=0, AB=1, BB=2, type="text", 
 missing=\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 X\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )[] 
-[3]
-Overfull \hbox (20.00832pt too wide) in paragraph at lines 201--201
+[4]
+Overfull \hbox (20.00832pt too wide) in paragraph at lines 245--245
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
 T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
 
-Overfull \hbox (20.00832pt too wide) in paragraph at lines 246--246
+Overfull \hbox (20.00832pt too wide) in paragraph at lines 290--290
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
 T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
-[4]
-Overfull \hbox (26.00832pt too wide) in paragraph at lines 255--255
+[5]
+Overfull \hbox (26.00832pt too wide) in paragraph at lines 299--299
  []            \T1/zi4/m/n/10 geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat
 =Zmat_obj, availmemGb=32)[] 
-[5]
-Overfull \hbox (15.181pt too wide) in paragraph at lines 327--327
+
+Overfull \hbox (15.181pt too wide) in paragraph at lines 371--371
  []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
 n, it has been tagged as dontrun.[] 
-
-Overfull \hbox (14.281pt too wide) in paragraph at lines 347--347
+[6]
+Overfull \hbox (14.281pt too wide) in paragraph at lines 391--391
  []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
 ading of the data to 8  gigabytes[] 
 
-Overfull \hbox (31.38089pt too wide) in paragraph at lines 364--364
+Overfull \hbox (31.38089pt too wide) in paragraph at lines 409--409
  [] \T1/zi4/m/n/9 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[] 
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [6] [7]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [8] [9]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [7] [8]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 495--495
+ []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
+n, it has been tagged as dontrun.[] 
+
+Overfull \hbox (14.281pt too wide) in paragraph at lines 515--515
+ []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
+ading of the data to 8  gigabytes[] 
+
+Overfull \hbox (31.38089pt too wide) in paragraph at lines 532--532
+ [] \T1/zi4/m/n/9 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[] 
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [9]
 (/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (75.00832pt too wide) in paragraph at lines 633--633
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [11] [12]
+Overfull \hbox (75.00832pt too wide) in paragraph at lines 732--732
  []\T1/zi4/m/n/10 geno_obj <- ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m/n/
 10 /my/dir/geno.txt\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , AA=0, AB=1, BB=2, type=\TS
 1/zi4/m/n/10 '\T1/zi4/m/n/10 text\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , missing=99) 
 
-[11] [12]
-Overfull \hbox (15.18094pt too wide) in paragraph at lines 751--751
+[13]
+Overfull \hbox (15.18094pt too wide) in paragraph at lines 850--850
  []  \T1/zi4/m/n/9 geno_obj <- ReadMarker(filename=complete.name, type=\TS1/zi4
 /m/n/9 '\T1/zi4/m/n/9 text\TS1/zi4/m/n/9 '\T1/zi4/m/n/9 , AA=0, AB=1, BB=2, ava
 ilmemGb=4)[] 
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [13] [14]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [15]
+[14] (/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [15]
 (/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [16]
-Overfull \hbox (15.181pt too wide) in paragraph at lines 991--991
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [17]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 1095--1095
  []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
 n, it has been tagged as dontrun.[] 
-
-Overfull \hbox (10.681pt too wide) in paragraph at lines 1012--1012
+[18]
+Overfull \hbox (10.681pt too wide) in paragraph at lines 1116--1116
  []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
 ading of the data to 8 gigabytes[] 
-[17]
 No file Rd2.ind.
-[18] (./Rd2.aux)
+[19] (./Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -148,12 +158,12 @@ e/2015/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></apps/texlive/2015/texmf-di
 st/fonts/type1/urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/
 urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri
 8a.pfb>
-Output written on Rd2.pdf (18 pages, 146787 bytes).
+Output written on Rd2.pdf (19 pages, 154959 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (42 entries accepted, 0 rejected).
-Sorting entries....done (234 comparisons).
-Generating output file Rd2.ind....done (46 lines written, 0 warnings).
+Scanning input file Rd2.idx....done (53 entries accepted, 0 rejected).
+Sorting entries....done (310 comparisons).
+Generating output file Rd2.ind....done (50 lines written, 1 warning).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex)
@@ -227,69 +237,80 @@ Writing index file Rd2.idx
 (/apps/texlive/2015/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 (/apps/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd) (./Rd2.toc [1{/apps/t
 exlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2] [3]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [3]
 (/apps/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (52.00832pt too wide) in paragraph at lines 162--162
+Overfull \hbox (52.00832pt too wide) in paragraph at lines 206--206
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 geno.txt\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , AA=0, AB=1, BB=2, type="text", 
 missing=\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 X\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )[] 
-
-Overfull \hbox (20.00832pt too wide) in paragraph at lines 201--201
- []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
-/n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
-T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
 [4]
-Overfull \hbox (20.00832pt too wide) in paragraph at lines 246--246
+Overfull \hbox (20.00832pt too wide) in paragraph at lines 245--245
+ []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
+/n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
+T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
+[5]
+Overfull \hbox (20.00832pt too wide) in paragraph at lines 290--290
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
 T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
 
-Overfull \hbox (26.00832pt too wide) in paragraph at lines 255--255
+Overfull \hbox (26.00832pt too wide) in paragraph at lines 299--299
  []            \T1/zi4/m/n/10 geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat
 =Zmat_obj, availmemGb=32)[] 
-[5]
-Overfull \hbox (15.181pt too wide) in paragraph at lines 327--327
+[6]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 371--371
  []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
 n, it has been tagged as dontrun.[] 
 
-Overfull \hbox (14.281pt too wide) in paragraph at lines 347--347
+Overfull \hbox (14.281pt too wide) in paragraph at lines 391--391
  []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
 ading of the data to 8  gigabytes[] 
-[6]
-Overfull \hbox (31.38089pt too wide) in paragraph at lines 364--364
+
+Overfull \hbox (31.38089pt too wide) in paragraph at lines 409--409
  [] \T1/zi4/m/n/9 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[] 
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [7]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [8]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [9]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (75.00832pt too wide) in paragraph at lines 633--633
+[7] (/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [8]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 495--495
+ []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
+n, it has been tagged as dontrun.[] 
+
+Overfull \hbox (14.281pt too wide) in paragraph at lines 515--515
+ []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
+ading of the data to 8  gigabytes[] 
+[9]
+Overfull \hbox (31.38089pt too wide) in paragraph at lines 532--532
+ [] \T1/zi4/m/n/9 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[] 
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [10] [11]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [12]
+Overfull \hbox (75.00832pt too wide) in paragraph at lines 732--732
  []\T1/zi4/m/n/10 geno_obj <- ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m/n/
 10 /my/dir/geno.txt\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , AA=0, AB=1, BB=2, type=\TS
 1/zi4/m/n/10 '\T1/zi4/m/n/10 text\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , missing=99) 
 
-[11] [12]
-Overfull \hbox (15.18094pt too wide) in paragraph at lines 751--751
+[13] [14]
+Overfull \hbox (15.18094pt too wide) in paragraph at lines 850--850
  []  \T1/zi4/m/n/9 geno_obj <- ReadMarker(filename=complete.name, type=\TS1/zi4
 /m/n/9 '\T1/zi4/m/n/9 text\TS1/zi4/m/n/9 '\T1/zi4/m/n/9 , AA=0, AB=1, BB=2, ava
 ilmemGb=4)[] 
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [13] [14]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [15]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [16]
-Overfull \hbox (15.181pt too wide) in paragraph at lines 991--991
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [15] [16]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [17]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [18]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 1095--1095
  []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
 n, it has been tagged as dontrun.[] 
 
-Overfull \hbox (10.681pt too wide) in paragraph at lines 1012--1012
+Overfull \hbox (10.681pt too wide) in paragraph at lines 1116--1116
  []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
 ading of the data to 8 gigabytes[] 
-[17] (./Rd2.ind [18]
+[19] (./Rd2.ind [20]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 18.
+(Font)              using `T1/zi4/m/n' instead on input line 12.
 
-[19]) (./Rd2.aux)
+[21]) (./Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -306,17 +327,16 @@ ta/i4-t1-0.enc}</apps/texlive/2015/texmf-dist/fonts/type1/public/inconsolata/In
 consolata-zi4r.pfb></apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmmi10.pfb></apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
 7.pfb></apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><
-/apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></apps/
-texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></apps/texlive/2015
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></apps/texlive/2015/texmf-dist/fon
-ts/type1/urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/ti
-mes/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
->
-Output written on Rd2.pdf (19 pages, 160062 bytes).
+/apps/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></apps/texliv
+e/2015/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></apps/texlive/2015/texmf-di
+st/fonts/type1/urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/
+urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri
+8a.pfb>
+Output written on Rd2.pdf (21 pages, 160496 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (42 entries accepted, 0 rejected).
-Sorting entries....done (232 comparisons).
+Scanning input file Rd2.idx....done (53 entries accepted, 0 rejected).
+Sorting entries....done (309 comparisons).
 Generating output file Rd2.ind....done (47 lines written, 1 warning).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
@@ -391,69 +411,80 @@ Writing index file Rd2.idx
 (/apps/texlive/2015/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 (/apps/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd) (./Rd2.toc [1{/apps/t
 exlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2] [3]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [3]
 (/apps/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (52.00832pt too wide) in paragraph at lines 162--162
+Overfull \hbox (52.00832pt too wide) in paragraph at lines 206--206
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 geno.txt\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , AA=0, AB=1, BB=2, type="text", 
 missing=\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 X\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )[] 
-
-Overfull \hbox (20.00832pt too wide) in paragraph at lines 201--201
- []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
-/n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
-T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
 [4]
-Overfull \hbox (20.00832pt too wide) in paragraph at lines 246--246
+Overfull \hbox (20.00832pt too wide) in paragraph at lines 245--245
+ []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
+/n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
+T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
+[5]
+Overfull \hbox (20.00832pt too wide) in paragraph at lines 290--290
  []  \T1/zi4/m/n/10 geno_obj <-  ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m
 /n/10 /my/dir/geno.ped\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , type=\TS1/zi4/m/n/10 '\
 T1/zi4/m/n/10 PLINK\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , availmemGb=32)[] 
 
-Overfull \hbox (26.00832pt too wide) in paragraph at lines 255--255
+Overfull \hbox (26.00832pt too wide) in paragraph at lines 299--299
  []            \T1/zi4/m/n/10 geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat
 =Zmat_obj, availmemGb=32)[] 
-[5]
-Overfull \hbox (15.181pt too wide) in paragraph at lines 327--327
+[6]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 371--371
  []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
 n, it has been tagged as dontrun.[] 
 
-Overfull \hbox (14.281pt too wide) in paragraph at lines 347--347
+Overfull \hbox (14.281pt too wide) in paragraph at lines 391--391
  []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
 ading of the data to 8  gigabytes[] 
-[6]
-Overfull \hbox (31.38089pt too wide) in paragraph at lines 364--364
+
+Overfull \hbox (31.38089pt too wide) in paragraph at lines 409--409
  [] \T1/zi4/m/n/9 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[] 
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [7]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [8]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [9]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [10]
-Overfull \hbox (75.00832pt too wide) in paragraph at lines 633--633
+[7] (/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [8]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 495--495
+ []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
+n, it has been tagged as dontrun.[] 
+
+Overfull \hbox (14.281pt too wide) in paragraph at lines 515--515
+ []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
+ading of the data to 8  gigabytes[] 
+[9]
+Overfull \hbox (31.38089pt too wide) in paragraph at lines 532--532
+ [] \T1/zi4/m/n/9 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[] 
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [10] [11]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [12]
+Overfull \hbox (75.00832pt too wide) in paragraph at lines 732--732
  []\T1/zi4/m/n/10 geno_obj <- ReadMarker(filename=\TS1/zi4/m/n/10 '\T1/zi4/m/n/
 10 /my/dir/geno.txt\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , AA=0, AB=1, BB=2, type=\TS
 1/zi4/m/n/10 '\T1/zi4/m/n/10 text\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , missing=99) 
 
-[11] [12]
-Overfull \hbox (15.18094pt too wide) in paragraph at lines 751--751
+[13] [14]
+Overfull \hbox (15.18094pt too wide) in paragraph at lines 850--850
  []  \T1/zi4/m/n/9 geno_obj <- ReadMarker(filename=complete.name, type=\TS1/zi4
 /m/n/9 '\T1/zi4/m/n/9 text\TS1/zi4/m/n/9 '\T1/zi4/m/n/9 , AA=0, AB=1, BB=2, ava
 ilmemGb=4)[] 
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [13] [14]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [15]
-(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [16]
-Overfull \hbox (15.181pt too wide) in paragraph at lines 991--991
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [15] [16]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [17]
+(/apps/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [18]
+Overfull \hbox (15.181pt too wide) in paragraph at lines 1095--1095
  []  \T1/zi4/m/n/9 # Since the following code takes longer than 5 seconds to ru
 n, it has been tagged as dontrun.[] 
 
-Overfull \hbox (10.681pt too wide) in paragraph at lines 1012--1012
+Overfull \hbox (10.681pt too wide) in paragraph at lines 1116--1116
  []  \T1/zi4/m/n/9 # and setting the available memory on the machine for the re
 ading of the data to 8 gigabytes[] 
-[17] (./Rd2.ind [18]
+[19] (./Rd2.ind [20]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 18.
+(Font)              using `T1/zi4/m/n' instead on input line 11.
 
-[19]) (./Rd2.aux)
+[21]) (./Rd2.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -465,14 +496,13 @@ ta/i4-t1-0.enc}</apps/texlive/2015/texmf-dist/fonts/type1/public/inconsolata/In
 consolata-zi4r.pfb></apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmmi10.pfb></apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
 7.pfb></apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><
-/apps/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></apps/
-texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></apps/texlive/2015
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></apps/texlive/2015/texmf-dist/fon
-ts/type1/urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/ti
-mes/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb
->
-Output written on Rd2.pdf (19 pages, 160484 bytes).
+/apps/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></apps/texliv
+e/2015/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></apps/texlive/2015/texmf-di
+st/fonts/type1/urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/
+urw/times/utmr8a.pfb></apps/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri
+8a.pfb>
+Output written on Rd2.pdf (21 pages, 160657 bytes).
 Transcript written on Rd2.log.
 Saving output to ‘Eagle-manual.pdf’ ...
 Done
-You may want to clean up by 'rm -rf /tmp/geo047.vnc/RtmpiG26Tm/Rd2pdfd8efdfa63a3'
+You may want to clean up by 'rm -rf /tmp/geo047.vnc/Rtmp3Wrfq9/Rd2pdf2fa537a51049'

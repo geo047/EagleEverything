@@ -1,5 +1,6 @@
 
-#' @title multiple-locus association mapping 
+
+#' @title multiple-locus Association Mapping 
 #' @description \code{AM} performs  association mapping within a multiple-locus linear mixed model framework. 
 #' \code{AM}  finds the best set of 
 #' marker loci in strongest association with a trait while simultaneously accounting for any fixed effects and the genetic background.     
@@ -8,7 +9,7 @@
 #'                        If
 #'                        not specified, only an overall mean will be fitted.
 #' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
-#' This should be set to the maximum practical value of available memory for the analysis. 
+#' This should be set to the maximum practical value of available memory for the analysis. If not specified, 8 GBytes is assumed. 
 #' @param geno   the R  object obtained from running \code{\link{ReadMarker}}. This must be specified. 
 #' @param pheno  the R  object  obtained  from running \code{\link{ReadPheno}}. This must be specified.
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
@@ -23,9 +24,21 @@
 #' @param fixit     a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 #' then the model building process is stopped when extBIC increases in value. 
 #' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a 
-#' more conservative test. If this value is left unspecified, a default value based on 
-#' sample size is assigned automatically. 
+#' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach to find the 'best' gamma value. 
 #' @details
+#'
+#' This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
+#' (see below for examples).  \code{AM} builds the linear mixed model iteratively, via forward selection. It is through this model building process that we 
+#' identify the SNP-trait associations.  We use the extended BIC (extBIC) to decide on the 'best' model and when to stop looking for a better model. 
+#' The conservativeness of extBIC can be adjusted.  If the \code{gamma} parameter is left at is default setting, then \code{AM} is run in its most 
+#' conservative state (i.e. false positives are minimized but this also decreases the chance of true positives). 
+#'
+#' When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{FPR4AM}}. This function uses permutation to estimate the 
+#' false positive rate (FPR) for \code{AM} for a specific value of \code{gamma}.  Through repeated use of  \code{\link{FPR4AM}} the 'best' value of 
+#' \code{gamma} can be found. Currently, finding the 'best' value of \code{gamma} needs to be done manually. However, it is on our 'to do list' to 
+#' modify this function so that the 'best' \code{gamma} can  be found automatically via a binary search algorithm. 
+#'
+#' Below are some examples of how to use \code{AM} for genome-wide association mapping of data. 
 #'
 #' \subsection{How to perform a basic AM analysis}{
 #'
@@ -34,15 +47,16 @@
 #' \item{}{the snp data are contained in the file geno.txt which is a plain space separated
 #' text file with no column headings. The file is located in the current working directory. 
 #' It contains numeric genotype values 0, 1, and 2 for snp genotypes
-#' AA, AB, and BB, respectively. It also contains the numeric value X for a missing genotype. }
+#' AA, AB, and BB, respectively. It also contains the  value X for a missing genotype. }
 #' \item{}{the phenotype data is contained in the file pheno.txt which is a plain space
 #' separated text file containing a single column with the trait data. The first row of the file 
-#' has the column heading 'y'. 
+#' has the column heading 'y'. This file does not contain any missing data.  
 #' The file is located in the current working directory.}
 #' \item{}{there is no map data.}
 #' }
 #'
-#'  To analyse these data, we would use the following three functions:
+#'  To analyse these data, we would use the following three functions (the parameters can be specified in any order, as well as the 
+#' functions as long as AM is run last):
 #' \preformatted{
 #'   geno_obj <-  ReadMarker(filename='geno.txt', AA=0, AB=1, BB=2, type="text", missing='X')
 #'   
@@ -133,7 +147,7 @@
 #' \subsection{Dealing with missing marker data}{
 #'
 #' \code{AM} can tolerate some missing marker data. However, ideally, 
-#' a specialized genotype imputation program such as  'BEAGLE', 'MACH', 'fastPHASE', or 'PHASE2', should be 
+#' a specialized genotype imputation program such as  'BEAGLE'  or 'PHASE2', should be 
 #' used to impute the missing marker data before being read into 'Eagle'.  
 #'
 #' }
@@ -166,7 +180,7 @@
 #' A list with the following components:
 #' \describe{
 #'\item{trait}{column name of the trait being used by 'AM'.}
-#'\item{fformula}{Right hand size formula of the fixed effects part of the linear mixed model.}
+#'\item{fformula}{the fixed effects part of the linear mixed model.}
 #'\item{indxNA}{a vector containing the row indexes of those individuals, whose trait and fixed effects data contain
 #' missing values and have been removed from the analysis.}
 #' \item{Mrk}{a vector with the names of the snp in strongest and significant association with the trait.If no loci are found to be 
@@ -218,7 +232,8 @@
 #'            
 #'
 #'  # Performing multiple-locus genome-wide association mapping with a model 
-#'  #    with no fixed effects except for an intercept. 
+#'  #    with fixed effects cov1 and cov2 and an intercept. The intercept 
+#'  #    need not be specified as it is assumed. 
 #'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'  
 #'   res <- AM(trait = 'y',
@@ -240,8 +255,7 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL, 
-               ...
+               gamma=NULL 
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -423,7 +437,7 @@ if(length(indxNA)>0){
  itnum <- 1
 
  while(continue){
-     message("\n\n Iteration" , itnum, ": Searching for most significant marker-trait association\n\n")
+     message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
      currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
@@ -462,8 +476,6 @@ if(length(indxNA)>0){
 
      ## set vector extBIC
      extBIC <- c(extBIC, new_extBIC)
-print("in here ")
-print(extBIC)
 
      ## Print findings to screen
     .print_results(itnum, selected_loci, map,  extBIC)
@@ -475,7 +487,7 @@ print(extBIC)
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, TMP=itnum)
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu )
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -489,7 +501,7 @@ print(extBIC)
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu , TMP=itnum)
+                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu  )
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)

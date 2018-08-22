@@ -2,12 +2,11 @@
 % Please edit documentation in R/AM.R
 \name{AM}
 \alias{AM}
-\title{multiple-locus association mapping}
+\title{multiple-locus Association Mapping}
 \usage{
 AM(trait = NULL, fformula = NULL, availmemGb = 8, geno = NULL,
   pheno = NULL, map = NULL, Zmat = NULL, ncpu = detectCores(),
-  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL,
-  ...)
+  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}
@@ -17,7 +16,7 @@ If
 not specified, only an overall mean will be fitted.}
 
 \item{availmemGb}{a numeric value. It specifies the amount of available memory (in Gigabytes). 
-This should be set to the maximum practical value of available memory for the analysis.}
+This should be set to the maximum practical value of available memory for the analysis. If not specified, 8 GBytes is assumed.}
 
 \item{geno}{the R  object obtained from running \code{\link{ReadMarker}}. This must be specified.}
 
@@ -42,14 +41,13 @@ This is useful for error checking and monitoring the progress of a large analysi
 then the model building process is stopped when extBIC increases in value.}
 
 \item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a 
-more conservative test. If this value is left unspecified, a default value based on 
-sample size is assigned automatically.}
+more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach to find the 'best' gamma value.}
 }
 \value{
 A list with the following components:
 \describe{
 \item{trait}{column name of the trait being used by 'AM'.}
-\item{fformula}{Right hand size formula of the fixed effects part of the linear mixed model.}
+\item{fformula}{the fixed effects part of the linear mixed model.}
 \item{indxNA}{a vector containing the row indexes of those individuals, whose trait and fixed effects data contain
 missing values and have been removed from the analysis.}
 \item{Mrk}{a vector with the names of the snp in strongest and significant association with the trait.If no loci are found to be 
@@ -69,6 +67,19 @@ significant, then this component is \code{NA}.}
 marker loci in strongest association with a trait while simultaneously accounting for any fixed effects and the genetic background.
 }
 \details{
+This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
+(see below for examples).  \code{AM} builds the linear mixed model iteratively, via forward selection. It is through this model building process that we 
+identify the SNP-trait associations.  We use the extended BIC (extBIC) to decide on the 'best' model and when to stop looking for a better model. 
+The conservativeness of extBIC can be adjusted.  If the \code{gamma} parameter is left at is default setting, then \code{AM} is run in its most 
+conservative state (i.e. false positives are minimized but this also decreases the chance of true positives). 
+
+When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{FPR4AM}}. This function uses permutation to estimate the 
+false positive rate (FPR) for \code{AM} for a specific value of \code{gamma}.  Through repeated use of  \code{\link{FPR4AM}} the 'best' value of 
+\code{gamma} can be found. Currently, finding the 'best' value of \code{gamma} needs to be done manually. However, it is on our 'to do list' to 
+modify this function so that the 'best' \code{gamma} can  be found automatically via a binary search algorithm. 
+
+Below are some examples of how to use \code{AM} for genome-wide association mapping of data. 
+
 \subsection{How to perform a basic AM analysis}{
 
 Suppose, 
@@ -76,15 +87,16 @@ Suppose,
 \item{}{the snp data are contained in the file geno.txt which is a plain space separated
 text file with no column headings. The file is located in the current working directory. 
 It contains numeric genotype values 0, 1, and 2 for snp genotypes
-AA, AB, and BB, respectively. It also contains the numeric value X for a missing genotype. }
+AA, AB, and BB, respectively. It also contains the  value X for a missing genotype. }
 \item{}{the phenotype data is contained in the file pheno.txt which is a plain space
 separated text file containing a single column with the trait data. The first row of the file 
-has the column heading 'y'. 
+has the column heading 'y'. This file does not contain any missing data.  
 The file is located in the current working directory.}
 \item{}{there is no map data.}
 }
 
- To analyse these data, we would use the following three functions:
+ To analyse these data, we would use the following three functions (the parameters can be specified in any order, as well as the 
+functions as long as AM is run last):
 \preformatted{
   geno_obj <-  ReadMarker(filename='geno.txt', AA=0, AB=1, BB=2, type="text", missing='X')
   
@@ -175,7 +187,7 @@ A table of results is printed to the screen and saved in the R object \code{res}
 \subsection{Dealing with missing marker data}{
 
 \code{AM} can tolerate some missing marker data. However, ideally, 
-a specialized genotype imputation program such as  'BEAGLE', 'MACH', 'fastPHASE', or 'PHASE2', should be 
+a specialized genotype imputation program such as  'BEAGLE'  or 'PHASE2', should be 
 used to impute the missing marker data before being read into 'Eagle'.  
 
 }
@@ -237,7 +249,8 @@ the problem.
            
 
  # Performing multiple-locus genome-wide association mapping with a model 
- #    with no fixed effects except for an intercept. 
+ #    with fixed effects cov1 and cov2 and an intercept. The intercept 
+ #    need not be specified as it is assumed. 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   res <- AM(trait = 'y',

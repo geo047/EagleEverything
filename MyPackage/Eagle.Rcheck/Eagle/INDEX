@@ -1,7 +1,6 @@
-AM                      multiple-locus association mapping
-CalculateFPR            Calculate false positive rate for extBIC
-Eagle-package           A short title line describing what the package
-                        does
+AM                      multiple-locus Association Mapping
+Eagle-package           Eagle for Genome-wide Association Mapping
+FPR4AM                  Calculate false positive rate (FPR) for AM
 OpenGUI                 Browser-based Graphical User Interface
 ReadMap                 Read map file
 ReadMarker              Read marker data.

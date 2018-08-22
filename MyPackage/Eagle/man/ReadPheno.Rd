@@ -7,7 +7,8 @@
 ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = NULL)
 }
 \arguments{
-\item{filename}{contains the name of the phenotype  file. The file name needs to be in quotes.}
+\item{filename}{contains the name of the phenotype  file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
+to the file is required.}
 
 \item{header}{a logical value. When \code{TRUE}, the first row of the file contains the names of the columns.  Default is \code{TRUE}.}
 

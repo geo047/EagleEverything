@@ -13,8 +13,8 @@
 #' the additive effect size and p-value for each 
 #' fixed effect in the final model.  Second, a table of results is produced with the 
 #' proportion of phenotypes variance explained by  the different multiple-locus models. Each row 
-#' in this table is the proportion of phenotype variance after the marker locus has been added to the 
-#' multiple locus model. Our calculations of variance explained are based on Sun et al. (2010).  
+#' in this table is the proportion of phenotypic variance explained (Sun et al. 2010) after the marker locus has been added to the 
+#' multiple locus model. 
 #' @references  Sun G., Zhu C., Kramer  MH., Yang S-S., et al. 2010. Variation explained in mixed model association 
 #' mapping. Heredity 105, 330-340. 
 #' @examples

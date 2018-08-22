@@ -1,7 +1,7 @@
 Eagle-package	Eagle-package
 AM	AM
-CalculateFPR	CalculateFPR
 Eagle	Eagle-package
+FPR4AM	FPR4AM
 OpenGUI	OpenGUI
 ReadMap	ReadMap
 ReadMarker	ReadMarker

@@ -48,8 +48,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
              ),    " >> ./tmp.R
 echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
-            \"SetGamma.R\",
-            \"packagedesc.R\", 
+            \"FPR4AM.R\",
             \"ReadMarker.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
@@ -207,7 +206,7 @@ cp ./ShinyApp/faq.rmd $DIR/inst/shiny_app/.
 ###-----------------
 ### Testing only
 ###----------------
-cp ./*Demo*  $DIR/Eagle/inst/shiny_app/www/.
+# cp ./*Demo*  $DIR/Eagle/inst/shiny_app/www/.
 
 
 cp  ./ShinyApp/www/loading.gif $DIR/Eagle/inst/shiny_app/www/.
@@ -239,13 +238,17 @@ cd $DIR
 
 
 
+cp ./Eagle-package.Rd  ./Eagle/man/. 
 
 R CMD build Eagle 
+
+
+
 R CMD check --as-cran Eagle_1.1.0.tar.gz 
 R CMD INSTALL Eagle -l ~/RLibs
 
 
-rm tmp.R  tmp.Rout 
+# rm tmp.R  tmp.Rout 
 
 
 

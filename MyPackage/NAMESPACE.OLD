@@ -6,7 +6,7 @@ importFrom(shinyjs, useShinyjs)
 import(shinyFiles, shiny,  shinythemes, shinyBS, stats, utils )
 
 export(
-   CalculateFPR,
+   FPR4AM,
    ReadPheno,
    ReadMarker,
    ReadMap,
@@ -14,4 +14,3 @@ export(
    AM,
    OpenGUI,
    SummaryAM)
-#   fasttimer)

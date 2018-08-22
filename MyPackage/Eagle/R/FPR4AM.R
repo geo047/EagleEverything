@@ -1,14 +1,10 @@
-#' @title Calculate false positive rate for extBIC 
-#' @description Used for fine tuning the gamma value in the extBIC.
+#' @title Calculate false positive rate (FPR) for AM
+#' @description A permutation approach for calculating the false positive rate for \code{\link{AM}} for a given \code{gamma} value. 
 #' 
-#' @param gamma     a value between 0 and 1 for the extBIC. 
-#' Values closer to 0 makes Eagle more prone to finding a false positive but increases the 
-#' chance of finding a true positive. Values closer to 1 makes Eagle more conservative, with 
-#' less chance of finding a false positive  but also less chance of finding true 
-#' positives. 
+#' @param gamma     a value between 0 and 1. Values closer to 1 decrease false positive rate.  This parameter must be specified.  
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
 #'                   positive rate. We have found 100 replicates to be sufficient.  
-#' @param trait  the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file. 
+#' @param trait  the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.  This parameter must be specified. 
 #' @param fformula   the right hand side formula for the fixed effects part of the model. 
 #' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
 #' This should be set to the maximum practical value of available memory for the analysis. 
@@ -21,27 +17,25 @@
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
 #'               is to assume there are no gpu available.  
 #'               This option has not yet been implemented.
+#' @param seed  a integer value for the starting seed for the permutations. 
 #' 
 #' @details
 #'
-#' This function performs  \code{numreps} analyses of permuted data, from which the 
-#' false positive rate for a given \code{gamma} value can be calculated, empirically. 
-#' This function is of use for setting gamma to its optimal value. 
+#' This function is useful for  calculating  the false positive rate  of \code{\link{AM}} for a given value of \code{gamma}. We do this empirically, via permutation. 
+#' This function is also of use when interested in finding the  value of \code{gamma}  corresponding to a certain false positive rate. Ideally, this would be done automatically 
+#' but currently, it is up to the user to implement their own optimisation strategy. It is on our 'to do list' to revise this function so that 
+#'  a binary search is performed to find the 'best' \code{gamma} value. 
 #'
 #'
-#' Eagle uses the extended BIC (extBIC) in which to decide if it should keep looking for more 
-#' significant associations or to stop.  The conservativeness of  extBIC is adjusted via the 
-#' gamma parameter. Values closer to 0 make the extBIC less conservative (increases the false positive rate but
-#' increases power). 
-#' Values closer to 1 
-#' make the extBIC more conservative (decreases the false positive rate but decreases power).  
 #'
-#' The permutation test is as follows. First, the null model is fitted to the trait data. The residuals are then 
-#' calculated from the fitted model. These residuals are then permuted \code{numreps} times. For each permutation, 
+#' Permutation is performed as follows. First, the null model is fitted to the trait data. 
+#' This is the model that contains all the fixed effects and an error. 
+#' Second,  residuals are  obtained 
+#' from the fitted null model. Third, the residuals are permuted \code{numreps} times. Fourth, for each permutation, 
 #' we treat the residuals as the trait and perform multiple-locus association mapping, conditional on the \code{gamma}
-#' value that has been specified. Any findings are false positives. Once the \code{numreps} analyses of the permuted 
+#' value that has been specified. Any findings are false positives. Fifth, once the \code{numreps} analyses of the permuted 
 #' residuals have been performed, we sum the total number of false positives across the replicate analyses, and 
-#' divide by \code{numreps}.  We now have an estimate of the the false positive rate (for the specified trait, 
+#' divide by \code{numreps}.  We now have an estimate of the false positive rate (for the specified trait, 
 #' fixed effects model \code{fformula} and \code{gamma} value). 
 #'
 #'
@@ -54,8 +48,57 @@
 #'\item{falsepos}{the false positive rate, given the gamma value, calculated from 
 #' analyses of the 'numreps'  permutations.}
 #' @examples
+#'   \dontrun{ 
+#'   # Since the following code takes longer than 5 seconds to run, it has been tagged as dontrun. 
+#'   # However, the code can be run by the user. 
+#'   #
 #'
-CalculateFPR <- function(
+#'   #-------------------------
+#'   #  Example  
+#'   #------------------------
+#'
+#'   # read the map 
+#'   #~~~~~~~~~~~~~~
+#'   
+#'   # File is a plain space separated text file with the first row 
+#'   # the column headings
+#'   complete.name <- system.file('extdata', 'map.txt', 
+#'                                    package='Eagle')
+#'   map_obj <- ReadMap(filename=complete.name) 
+#'
+#'   # read marker data
+#'   #~~~~~~~~~~~~~~~~~~~~
+#'   # Reading in a PLINK ped file 
+#'   # and setting the available memory on the machine for the reading of the data to 8  gigabytes
+#'   complete.name <- system.file('extdata', 'geno.ped', 
+#'                                      package='Eagle')
+#'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
+#'  
+#'   # read phenotype data
+#'   #~~~~~~~~~~~~~~~~~~~~~~~
+#'
+#'   # Read in a plain text file with data on a single trait and two covariates
+#'   # The first row of the text file contains the column names y, cov1, and cov2. 
+#'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
+#'   
+#'   pheno_obj <- ReadPheno(filename=complete.name)
+#'            
+#'
+#'  # Find the false positive rate for AM when gamma is set to the
+#'  # value 0.9
+#'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#'  
+#'   falseposrate <- FPR4AM(trait = 'y',
+#'                 gamma= 0.9,
+#'                 fformula=c('cov1+cov2'),
+#'                 map = map_obj,
+#'                 pheno = pheno_obj,
+#'                 geno = geno_obj) 
+#'
+#' }
+#'
+#'
+FPR4AM <- function(
                trait=trait,
                gamma = NULL,
                numreps = 100,
@@ -81,10 +124,8 @@ error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait
 
  ## checking if map is present. If not, generate a fake map. 
  if(is.null(map)){
-   if(!quiet ){
-     message(" Map file has not been supplied. An artificial map is being created but this map is not used in the analysis. \n")
-     message(" It is only used for the reporting of results. \n")
-   }
+   message(" Map file has not been supplied. An artificial map is being created but this map is not used in the analysis. \n")
+   message(" It is only used for the reporting of results. \n")
    ## map has not been supplied. Create own map
    map <- data.frame(SNP=paste("M", 1:geno[["dim_of_ascii_M"]][2], sep=""),
                      Chr=rep(1, geno[["dim_of_ascii_M"]][2]),
@@ -189,8 +230,8 @@ for (ii in 1:numreps){
        falsepos <- sum(numres)/ii
 
        cat(" Iteration ", ii, "\n")
-       cat(" Gamma = ", gamma, "\n")
-       cat(" False positive (FP) rate is ", round( falsepos, 3)   , " with ", sum(numres), "FPs already found \n")
+       #cat(" Gamma = ", gamma, "\n")
+       #cat(" False positive (FP) rate is ", round( falsepos, 3)   , " with ", sum(numres), "FPs already found \n")
 
 
   

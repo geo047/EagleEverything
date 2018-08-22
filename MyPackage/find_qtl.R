@@ -1,7 +1,7 @@
   #.find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
   #                     currentX,  ncpu, quiet, trait, ngpu  )
   .find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-                       currentX,  ncpu, quiet, trait, ngpu, TMP  )
+                       currentX,  ncpu, quiet, trait, ngpu )
   {
     ##  internal function: use by   AM
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
@@ -74,12 +74,10 @@
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")
 
-    save(tsq, file = paste("~/tsq", TMP, ".RData", sep=""))
     indx <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. However, need to account for other loci 
                                          ## already having been removed from M which affects the indexing
 
     ## taking first found qtl
-    cat(" Hang on - this is the actuall length - ", indx, " ..... \n")
     midpoint <- 1
     if (length(indx)>2){
       midpoint <- trunc(length(indx)/2)+1

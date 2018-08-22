@@ -3,7 +3,8 @@
 #' 
 #' @description
 #' A function for reading in marker data. Two types of data can be read. 
-#' @param filename contains the name of the marker  file. The file name needs to be in quotes. 
+#' @param filename contains the name of the marker  file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
+#' to the file is required.
 #' @param type  specify the type of file. Choices are 'text' (the default) and PLINK.
 #' @param missing the number or character for a missing genotype in the text file. There is no need to specify this for a PLINK ped file. Missing 
 #' allele values in a PLINK file must be coded as '0' or '-'.  

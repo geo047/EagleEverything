@@ -2,7 +2,7 @@
  ## internal function: used by AM
  {  if(!is.null(itnum)){
        message(" Significant marker-trait association found. \n")
-       message(" New results after iteration ", itnum, "are \n")
+       message(" New results after iteration ", itnum, " are \n")
     }
     message(sprintf("%15s  %10s        %10s     %10s        %10s ",
                  "SNP", "Chrm", "Map Pos",  "Col Number",       "extBIC"))

@@ -1407,11 +1407,33 @@ server <- function(input, output, session){
      })
 
 
+
+  ## gets column names length of  pheno file
+  sz <- reactive({
+     if(input$pheno_go && input$pheno_header == "yes")
+     {
+        return(length(names(pheno)))
+     }
+     if(input$pheno_go && input$pheno_header == "no")
+     {  ## pheno file is not named
+        nms <- paste("V", 1:ncol(pheno), sep="")
+        return(length(nms))
+     }
+
+
+     })
+
+
+
+  sz <- 0
   output$analyse_names <- renderUI({
- #     radioButtons(inputId="nmst", label=h4("Step 1: Choose trait"), 
- #              choices=nms(), inline=TRUE, selected=character(0))
-  checkboxGroupInput("nmst", h4("Step 1: Choose trait"), nms(), inline=TRUE)
-       
+   if (length(nms) < 5){
+       sz <- length(nms)
+   } else {
+       sz <- 5
+   }
+
+  selectInput(inputId="nmst", label=h4("Step 1: Choose trait"), choices=nms(), size = sz   , selectize=FALSE )     
   })  ## end renderUI
 
 

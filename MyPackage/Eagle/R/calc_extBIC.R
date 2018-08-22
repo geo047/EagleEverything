@@ -18,7 +18,9 @@
 
 
    extBIC <- BIC + 2 * gamma   *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
-   cat(" Gamma = ", gamma, "\n")
+   if(!quiet){
+      cat(" Gamma = ", gamma, "\n")
+   }
     return(extBIC)
  }
 

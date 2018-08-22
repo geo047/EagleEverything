@@ -59,8 +59,9 @@
 #' you can find a quick start guide, instructions on getting the most out of Eagle, 
 #' tutorials, and other useful information. 
 #'}
-#' @keywords Association mapping, multiple-locus models, linear mixed models.
-NULL
+#' @keywords internal
+"_PACKAGE"
+#> [1] "_PACKAGE"
 
 
 
