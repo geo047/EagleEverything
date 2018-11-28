@@ -1,7 +1,7 @@
   #.find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
   #                     currentX,  ncpu, quiet, trait, ngpu  )
   .find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-                       currentX,  ncpu, quiet, trait, ngpu )
+                       currentX,  ncpu, quiet, trait, ngpu, itnum )
   {
     ##  internal function: use by   AM
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
@@ -73,6 +73,22 @@
     tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")
+
+
+   # saving test statistic to disc so that we can plot these results
+   if(.Platform$OS.type == "unix") {
+       tmpfile <- paste(tempdir(), "/", paste("tsq", itnum , ".RData", sep="") , sep="")
+       save(tsq, file=tmpfile)
+     } else {
+       tmpfile <- paste(tempdir()  , "\\", paste("tsq", itnum , ".RData", sep="")     , sep="")
+       save(tsq, file=tmpfile)
+     }
+
+
+
+
+
+
 
     indx <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. However, need to account for other loci 
                                          ## already having been removed from M which affects the indexing

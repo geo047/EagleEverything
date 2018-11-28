@@ -1,6 +1,6 @@
 
 check.inputs.mlam <- function (ncpu, availmemGb, colname.trait, map, pheno,
-                  geno, Zmat )
+                  geno, Zmat, gamma )
 {
   ## internal function for AM
 
@@ -168,6 +168,33 @@ if(is.null(map)){
    message("       The number of marker loci in the two files should be the same." )
    return(TRUE)
  }
+
+
+## check gamma is between 0 and 1 if specified. 
+if(!is.null(gamma)){
+  if(!is.numeric(gamma))
+  { 
+    message("Error: a non-numeric value has been set for the gamma parameter. ")
+    message("       Valid values are between 0 and 1. ")
+    return(TRUE)
+  } else {
+
+     if(gamma < 0)
+     {
+        message("Error: the gamma parameter cannot be negative. ")
+        message("       Valid values are between 0 and 1. ")
+        return(TRUE)
+     } 
+     if(gamma > 1 )
+     {
+        message("Error: the gamma parameter cannot be greater than 1. ")
+        message("       Valid values are between 0 and 1. ")
+        return(TRUE)
+    }
+
+ }  ## end if else
+
+} ## end outer if
 
 
 

@@ -850,6 +850,24 @@ placement="right", trigger="hover",
                                             condition="input.options_go > 0 ",
                                                  wellPanel( 
                                                     fluidPage(
+
+
+                                                        fluidRow(column(12, 
+
+                                                        sliderInput(inputId="analyse_gamma", label=h4("Specify gamma value to adjust model building conservativeness."),
+                                                               value=1, min = 0, max = 1, step = 0.01),
+                                                        style="padding: 1px",
+                                                        bsTooltip("analyse_gamma",
+title='<font size="5" >  Values closer to 1(0)  lead to more (less) conservative model building.  </font>',
+placement="right", trigger="hover",
+                                                          options=list(container="body"))
+
+
+                                                        )), ## end column and fluidRow
+
+
+
+
                                                         fluidRow(column(12, 
 
                                                         sliderInput(inputId="analyse_maxits", label=h4("Specify maximum number of iterations"),
@@ -1000,18 +1018,31 @@ placement="right", trigger="hover",
                          ),  ## end column
                           column(8, 
                               fluidPage(
+
+                               fluidRow(
+                                   column(12,
+tags$div(
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Parameter Settings"), sep = ""))),
+                                       tableOutput("parameters")
+                                  ) ## end column
+                               ), ## end fluidRow
+
+
+
+
                                fluidRow(
                                    column(12, 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Marker-trait Associations"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Marker-trait Associations"), sep = ""))),
                                        tableOutput("findings")
                                   ) ## end column
                                ), ## end fluidRow
+
                              fluidRow(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Size and Significance of Effects"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Size and Significance of Effects"), sep = ""))),
                                     tableOutput("size")
 
                                     ) ## end conditionalPanel
@@ -1024,7 +1055,7 @@ tags$div(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 32px", "Proportion of Variance Explained as Markers Added to Model"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Proportion of Variance Explained as Markers Added to Model"), sep = ""))),
                                     tableOutput("R")
                                     )
                                ) ## end column
@@ -1392,7 +1423,7 @@ server <- function(input, output, session){
   ##-------------------
   ## Analyse Data
   ##-------------------
-  traitn <- NULL
+  #traitn <- NULL
   ## gets column names of pheno file
   nms <- reactive({
      if(input$pheno_go && input$pheno_header == "yes")
@@ -1405,6 +1436,17 @@ server <- function(input, output, session){
 
 
      })
+
+  ## get column names for fixed effects after trait has been selected
+  fnms <- reactive({
+     indx <- NULL
+     fixednames <- NULL
+     indx <- which(nms()==input$nmst)
+      fixednames  <- nms()[-indx]
+      print("in here")
+      return(fixednames )
+
+  })
 
 
 
@@ -1437,19 +1479,20 @@ server <- function(input, output, session){
   })  ## end renderUI
 
 
+
   output$analyse_fnames <- renderUI({
-      #nms <- names(pheno)
-      checkboxGroupInput("nmsf", h4("Step 2: Choose fixed effects"), nms(), inline=TRUE)
+      checkboxGroupInput("nmsf", h4("Step 2: Choose fixed effects"), fnms() , inline=TRUE)
     })  ## end renderUI
 
   fform <- NULL
    output$fmodel <- renderText({
-        fform <<- paste(input$nmsf, collapse="+")
+           fform <<- paste(input$nmsf, collapse="+")
+ 
    })
 
 
    ## how to get traitn and effectsn from UI for later use ??????
-   traitn <- reactive({input$nmst})
+   #traitn <- reactive({input$nmst})
 
  res <- NULL
    observeEvent(input$analyse_go, {
@@ -1464,7 +1507,7 @@ server <- function(input, output, session){
                  if(input$analyse_quiet == "yes")
                     quietvalue <- FALSE
                  res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
-                            quiet = quietvalue,
+                            quiet = quietvalue,  gamma=input$analyse_gamma,
                             ncpu = input$analyse_cpu, maxit = input$analyse_maxits , pheno = pheno, geno=geno, map=map) 
 
               },  ## end withCallingHandlers
@@ -1481,6 +1524,13 @@ server <- function(input, output, session){
 
  ## form data frame of results 
  observeEvent(input$analyse_go, {
+ dfparams <- NULL
+ dfparams <- data.frame(Parameters=c("Trait", "Working memory", "Gamma", "Number CPU"), Settings=c(input$nmst, input$memsize, input$analyse_gamma, 
+                                        input$analyse_maxits))
+ output$parameters <- renderTable(dfparams) 
+
+
+
  dfres <- NULL
  if(length(res$Mrk)>1){
     dfres <- data.frame(snps=res$Mrk[-1], chrm=res$Chr[-1], position=res$Pos[-1])

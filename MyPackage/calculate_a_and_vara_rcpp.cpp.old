@@ -89,7 +89,11 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
     Eigen::MatrixXd  ans_part1 = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
 
-
+   message(" ans \n");
+   message(ans(0));
+   message(ans(1));
+   message(ans(2));
+   message("\n");
 
 
   // calculate untransformed variances of BLUP values
@@ -232,12 +236,12 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 }  //  end if block update
 
-
   return Rcpp::List::create(Rcpp::Named("a")=ans,
                             Rcpp::Named("vara") = var_ans);
 
 
 }
+
 
 
 

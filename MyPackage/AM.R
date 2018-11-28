@@ -23,7 +23,7 @@
 #' @param maxit     an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting. 
 #' @param fixit     a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 #' then the model building process is stopped when extBIC increases in value. 
-#' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a 
+#' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
 #' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach to find the 'best' gamma value. 
 #' @details
 #'
@@ -277,7 +277,7 @@ AM <- function(trait=NULL,
 
 
  error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait, 
-                     map=map, pheno=pheno, geno=geno, Zmat=Zmat )
+                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=gamma )
  if(error.code){
    message("\n The Eagle function AM has terminated with errors.\n")
    return(NULL)
@@ -367,30 +367,39 @@ if(!is.null(fformula)){
  }
 
  ## check for NA's in trait
- indxNA <- check.for.NA.in.trait(trait=trait)
+ indxNA_pheno <- check.for.NA.in.trait(trait=trait)
+ indxNA_geno <- indxNA_pheno  
 
 
-
- ## remove missing observations from trait and 
- ## Z matrix if not null
- if(length(indxNA)>0){
-    trait <- trait[-indxNA]
+ ## remove missing observations from trait  
+ if(length(indxNA_pheno)>0){
+    trait <- trait[-indxNA_pheno]
 
     if(!quiet ){
      message(" The following rows are being removed from pheno due to missing data: \n")
-     message(cat("             ", indxNA, "\n\n"))
+     message(cat("             ", indxNA_pheno, "\n\n"))
     }
 
-    if(!is.null(Zmat)){
-      Zmat <- Zmat[-indxNA,]
-    }
- }
+}
+
+
+## If Z matrix is present, then we may not need to remove genotypes (i.e. indxNA_geno)
+if(!is.null(Zmat)){
+      Zmat <- Zmat[-indxNA_pheno,]
+      # check for columns with 0 sums. 
+      s <- colSums(Zmat)
+      indxNA_geno <- which(s==0) 
+      if (length(indxNA_geno) > 0)
+          Zmat <- Zmat[, -indxNA_geno ]
+}
+
+
 
 
 ## create a new M.ascii and Mt.ascii if length(indxNA) is non-zero 
 ## remove rows in M.ascii and columns in Mt.ascii of those individuals listed in indxNA 
-if(length(indxNA)>0){
-    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA, dims=geno$dim_of_ascii_M)
+if(length(indxNA_geno)>0){
+    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
     message(cat("new dimensions of reshaped M", res, "\n"))
 
      if(.Platform$OS.type == "unix") {
@@ -411,7 +420,7 @@ if(length(indxNA)>0){
 
 
  ## build design matrix currentX
- currentX <- .build_design_matrix(pheno=pheno, indxNA=indxNA, fformula=fformula, quiet=quiet )
+ currentX <- .build_design_matrix(pheno=pheno, indxNA=indxNA_pheno, fformula=fformula, quiet=quiet )
 
  ## check currentX for solve(crossprod(X, X)) singularity
  chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
@@ -487,7 +496,7 @@ if(length(indxNA)>0){
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu )
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -501,7 +510,7 @@ if(length(indxNA)>0){
            ## find QTL
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu  )
+                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
           new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -519,18 +528,18 @@ if(length(indxNA)>0){
          .print_header()
          ## need to remove the last selected locus since we don't go on and calculate its H and extBIC 
          ## under this new model. 
-         .print_final(selected_loci[-length(selected_loci)], map, extBIC)
+         .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
          sigres <- .form_results(trait, selected_loci[-length(selected_loci)], map,  fformula, 
-                     indxNA, ncpu, availmemGb, quiet,  extBIC )   
+                     indxNA_pheno, ncpu, availmemGb, quiet,  extBIC )   
     }
  
   }  ## end while continue
 
 if( itnum > maxit){
     .print_header()
-    .print_final(selected_loci, map,  extBIC)
+    .print_final(selected_loci, map,  extBIC, gamma)
     sigres <- .form_results(trait, selected_loci, map,  fformula, 
-                     indxNA, ncpu, availmemGb, quiet,  extBIC )   
+                     indxNA_pheno, ncpu, availmemGb, quiet,  extBIC )   
 
 } else {
     ## remove last selected_loci as for this locus, the extBIC went up
@@ -538,15 +547,15 @@ if( itnum > maxit){
         .print_header()
         .print_final(selected_loci[-length(selected_loci)], 
                      map, 
-                     extBIC[-length(selected_loci)])
+                     extBIC[-length(selected_loci)], gamma )
         sigres <- .form_results(trait, selected_loci[-length(selected_loci)], map,  fformula, 
-                         indxNA, ncpu, availmemGb, quiet, 
+                         indxNA_pheno, ncpu, availmemGb, quiet, 
                          extBIC[-length(selected_loci)] )   
     } else {
         .print_header()
-        .print_final(selected_loci, map, extBIC)
+        .print_final(selected_loci, map, extBIC, gamma )
         sigres <- .form_results(trait, selected_loci, map,  fformula, 
-                         indxNA, ncpu, availmemGb, quiet, extBIC )   
+                         indxNA_pheno, ncpu, availmemGb, quiet, extBIC )   
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)
 

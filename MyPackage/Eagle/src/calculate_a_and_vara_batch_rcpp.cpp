@@ -18,15 +18,21 @@
 // ------------------------------------------------------
 
 // [[Rcpp::export]]
-Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
+
+
+
+Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps, 
+                                    Rcpp::CharacterVector f_name_ascii,
                                     Rcpp::NumericVector  selected_loci,
                                     Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt,
                                     Eigen::Map<Eigen::MatrixXd> dim_reduced_vara,
                                     double  max_memory_in_Gbytes,
                                     std::vector <long> dims,
-                                    Eigen::VectorXd  a,
+                                    Eigen::Map<Eigen::MatrixXd> a,
                                     bool  quiet,
                                     Rcpp::Function message)
+
+
 {
 // Purpose: to calculate the untransformed BLUP (a) values from the 
 //          dimension reduced BLUP value estimates. 
@@ -37,6 +43,12 @@ Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
 // Note:
 //      1. dims is the row, column dimension of the Mt matrix
 
+//Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>  (a), 
+
+
+
+
+
 
 
 std::ostringstream
@@ -46,7 +58,7 @@ std::string
      fnamebin = Rcpp::as<std::string>(f_name_ascii);
 
  Eigen::MatrixXd
-       ans(dims[0],1);
+       ans(dims[0],numreps);
 
 Eigen::MatrixXd
              ans_tmp,
@@ -88,8 +100,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
     Eigen::MatrixXd  ans_part1 = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
-
-
 
 
   // calculate untransformed variances of BLUP values
@@ -216,12 +226,23 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
             // assign block vector results to final vector (ans) of results
+//           long  counter = 0;
+//            for(long j=start_row1; j < start_row1 + num_rows_in_block1; j++){
+//                 ans(j,0) = ans_tmp(counter,0);
+//                 var_ans(j,0) = var_ans_tmp(counter,0);
+//                 counter++;
+//            }
             long  counter = 0;
             for(long j=start_row1; j < start_row1 + num_rows_in_block1; j++){
-                 ans(j,0) = ans_tmp(counter,0);
+                 ans.row(j)  = ans_tmp.row(counter);
                  var_ans(j,0) = var_ans_tmp(counter,0);
                  counter++;
             }
+
+
+
+
+
 
              if (!quiet  )  message( "block done ... " );
 
@@ -238,6 +259,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 }
+
 
 
 

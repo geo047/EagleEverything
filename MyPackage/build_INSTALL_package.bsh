@@ -40,6 +40,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"removeColumn.cpp\"  ,
  \"fasttimer.cpp\"  ,
             \"calculate_a_and_vara_rcpp.cpp\"  ,
+            \"calculate_a_and_vara_batch_rcpp.cpp\"  ,
             \"createM_ASCII_rcpp.cpp\"  ,
             \"extract_geno_rcpp.cpp\"  ,
             \"calculateMMt_rcpp.cpp\"  ,
@@ -49,6 +50,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
 echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
             \"FPR4AM.R\",
+            \"FPR4AMnew.R\",
             \"ReadMarker.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
@@ -87,8 +89,10 @@ echo  "    example_code=FALSE, code_files=c(
             \"calculateMMt_sqrt_and_sqrtinv.R\", 
             \"calculateH.R\", 
             \"calculateP.R\", 
+            \"calculate_reduced_a_batch.R\", 
             \"calculate_reduced_a.R\", 
             \"calculate_a_and_vara.R\", 
+            \"calculate_a_and_vara_batch.R\", 
             \"calculate_reduced_vara.R\", 
             \"check_inputs.R\", 
             \"create_ascii.R\", 
@@ -244,7 +248,7 @@ R CMD build Eagle
 
 
 
-R CMD check --as-cran Eagle_1.1.0.tar.gz 
+## =>>>>> R CMD check --as-cran Eagle_1.2.0.tar.gz 
 R CMD INSTALL Eagle -l ~/RLibs
 
 

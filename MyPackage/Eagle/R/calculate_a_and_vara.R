@@ -21,6 +21,7 @@ calculate_a_and_vara <- function(geno=NULL, maxmemGb=8,
   dimsMt <- c(geno[["dim_of_ascii_M"]][2], geno[["dim_of_ascii_M"]][1])
 
   if(!any(is.na(selectedloci))) selectedloci <- selectedloci-1
+
   calculate_a_and_vara_rcpp(f_name_ascii=fnameMt,
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,

@@ -40,7 +40,7 @@ This is useful for error checking and monitoring the progress of a large analysi
 \item{fixit}{a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 then the model building process is stopped when extBIC increases in value.}
 
-\item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a 
+\item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a
 more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach to find the 'best' gamma value.}
 }
 \value{

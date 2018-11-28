@@ -19,7 +19,7 @@
              selected_loci[ii], extBIC[ii] ))
      }  ## end if else 
    }
-    message("\n\n\n")
+    message("\n\n")
  }
 
 
