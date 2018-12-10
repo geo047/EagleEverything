@@ -41,9 +41,11 @@
 #' @return
 #' A list with the following components:
 #' \describe{
-#'\item{numreps}{the number of permutations performed.}
-#'\item{gamma}{the vector of gamma values}
-#'\item{falsepos}{the false positive rates for the gamma values. }
+#'\item{numreps:}{the number of permutations performed.}
+#'\item{gamma:}{the vector of gamma values.}
+#'\item{falsepos:}{the false positive rates for the gamma values. }
+#' }
+#'
 #' @examples
 #'   \dontrun{ 
 #'   # Since the following code takes longer than 5 seconds to run, it has been tagged as dontrun. 
@@ -84,18 +86,28 @@
 #'  # Calculate the false positive rate for AM for different gamma values. 
 #'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'  
-#'   falseposrate <- FPR4AMnew(trait = 'y',
+#'   falseposrate <- OptimizeAM(trait = 'y',
 #'                 fformula=c('cov1+cov2'),
 #'                 map = map_obj,
 #'                 pheno = pheno_obj,
 #'                 geno = geno_obj) 
+#'  
+#'  # Suppose we want to perform the AM analysis at a 5% false positive rate. Then using 
+#'  # the table of gamma values and corresponding false postive rates
+#'
+#'  res <- AM(trait =  'y',
+#'                 fformula=c('cov1+cov2'),
+#'                 map = map_obj,
+#'                 pheno = pheno_obj,
+#'                 geno = geno_obj,
+#'                 gamma = 0.8421053)
+#'
 #'
 #' }
 #'
 #'
-FPR4AMnew <- function(
+OptimizeAM <- function(
                trait=trait,
-               falseposrate = NULL,
                numreps = 100,
                fformula  = NULL,
                availmemGb=8,
@@ -106,14 +118,14 @@ FPR4AMnew <- function(
                Zmat = NULL,
                ncpu=detectCores(),
                ngpu=0,
-               seed=101
+               seed=101 
                ){
-  quiet <- TRUE  ## change to FALSE if additional error checking is needed. 
+  quiet <- TRUE   ## change to FALSE if additional error checking is needed. 
 
   set.seed(seed)
  # need some checks in here ... 
 error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
-                     map=map, pheno=pheno, geno=geno, Zmat=Zmat )
+                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL )
  if(error.code){
    message("\n The Eagle function CalculateFDR has terminated with errors.\n")
    return(NULL)
@@ -272,8 +284,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
 
  ## build design matrix currentX
- currentX_null <- .build_design_matrix(pheno=bigpheno, indxNA=NULL , fformula=fformula, quiet=quiet )
-
+ currentX_null <- .build_design_matrix(pheno=bigpheno, indxNA=NULL , fformula=NULL, quiet=quiet )
 
 
  ## check currentX for solve(crossprod(X, X)) singularity
@@ -307,7 +318,6 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
    doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
  invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
  gc()
-
 
 gamma <- seq(0,1,length.out=numgammas)
 
@@ -415,18 +425,7 @@ for(ii in 1:numreps){
 
 
       ## outlier test statistic
-#       print("a_and_vara[[a] ")
-#       print(class(a_and_vara[["a"]]))
-#       print(dim(a_and_vara[["a"]]))
-
-#       print(a_and_vara[["a"]][1:5, ii])
-#       print("a_and_vara[[vara]")
-#       print(a_and_vara[["vara"]])
-#       print("------------")
 ###        tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
-#       print(tsq[1:7])
-     print( a_and_vara[["a"]][1:5 , ii])
-     print(a_and_vara[["vara"]][1:5] )
       tsq <- a_and_vara[["a"]][, ii]**2/a_and_vara[["vara"]]
 
       indx <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. 

@@ -1,5 +1,5 @@
 .form_results <- function(trait, selected_loci, map,  fformula, indxNA,
-                           ncpu, availmemGb, quiet,  extBIC )
+                           ncpu, availmemGb, quiet,  extBIC, gamma )
 {
   ## internal function - used by AM for forming the results object
   if (length(selected_loci) > 1){
@@ -13,7 +13,8 @@
                     ncpu=ncpu,
                     availmemGb=availmemGb,
                     quiet=quiet,
-                    extBIC=extBIC)
+                    extBIC=extBIC,
+                    gamma=gamma)
   } else {
    sigres <- list(trait=trait,
                     fformula = fformula,
@@ -25,7 +26,8 @@
                     ncpu=ncpu,
                     availmemGb=availmemGb,
                     quiet=quiet,
-                    extBIC=extBIC)
+                    extBIC=extBIC,
+                    gamma=gamma)
   }
 return(sigres)
 }

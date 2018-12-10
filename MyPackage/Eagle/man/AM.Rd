@@ -41,24 +41,25 @@ This is useful for error checking and monitoring the progress of a large analysi
 then the model building process is stopped when extBIC increases in value.}
 
 \item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a
-more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach to find the 'best' gamma value.}
+more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{OptimizeAM}} for an empirical approach to find the 'best' gamma value.}
 }
 \value{
 A list with the following components:
 \describe{
-\item{trait}{column name of the trait being used by 'AM'.}
-\item{fformula}{the fixed effects part of the linear mixed model.}
-\item{indxNA}{a vector containing the row indexes of those individuals, whose trait and fixed effects data contain
+\item{trait:}{column name of the trait being used by 'AM'.}
+\item{fformula:}{the fixed effects part of the linear mixed model.}
+\item{indxNA:}{a vector containing the row indexes of those individuals, whose trait and fixed effects data contain
 missing values and have been removed from the analysis.}
-\item{Mrk}{a vector with the names of the snp in strongest and significant association with the trait.If no loci are found to be 
+\item{Mrk:}{a vector with the names of the snp in strongest and significant association with the trait.If no loci are found to be 
 significant, then this component is \code{NA}.}
-\item{Chr}{the chromosomes on which the identified snp lie.}
-\item{Pos}{the map positions for the identified snp.}
-\item{Indx}{the column indexes in the marker file of the identified snp.} 
-\item{ncpu}{number of cpu used for the calculations.}
-\item{availmemGb}{amount of RAM in gigabytes that has been set by the user.}
-\item{quiet}{ boolean value of the parameter.}
-\item{extBIC}{numeric vector with the extended BIC values for the loci  found to be in  significant association with the trait.}
+\item{Chr:}{the chromosomes on which the identified snp lie.}
+\item{Pos:}{the map positions for the identified snp.}
+\item{Indx:}{the column indexes in the marker file of the identified snp.} 
+\item{ncpu:}{number of cpu used for the calculations.}
+\item{availmemGb:}{amount of RAM in gigabytes that has been set by the user.}
+\item{quiet:}{ boolean value of the parameter.}
+\item{extBIC:}{numeric vector with the extended BIC values for the loci  found to be in  significant association with the trait.}
+\item{gamma}{the numeric value of the parameter.}
 }
 }
 \description{
@@ -73,10 +74,8 @@ identify the SNP-trait associations.  We use the extended BIC (extBIC) to decide
 The conservativeness of extBIC can be adjusted.  If the \code{gamma} parameter is left at is default setting, then \code{AM} is run in its most 
 conservative state (i.e. false positives are minimized but this also decreases the chance of true positives). 
 
-When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{FPR4AM}}. This function uses permutation to estimate the 
-false positive rate (FPR) for \code{AM} for a specific value of \code{gamma}.  Through repeated use of  \code{\link{FPR4AM}} the 'best' value of 
-\code{gamma} can be found. Currently, finding the 'best' value of \code{gamma} needs to be done manually. However, it is on our 'to do list' to 
-modify this function so that the 'best' \code{gamma} can  be found automatically via a binary search algorithm. 
+When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{OptimizeAM}}. This function uses permutation to estimate the 
+false positive rate (FPR) for \code{AM} for a range of values of \code{gamma}.  
 
 Below are some examples of how to use \code{AM} for genome-wide association mapping of data. 
 
@@ -262,5 +261,5 @@ the problem.
 
 }
 \seealso{
-\code{\link{ReadMarker}}, \code{\link{ReadPheno}},  \code{\link{ReadZmat}}, and \code{\link{ReadMap}}
+\code{\link{OptimizeAM}} , \code{\link{ReadMarker}}, \code{\link{ReadPheno}},  \code{\link{ReadZmat}}, and \code{\link{ReadMap}}
 }

@@ -15,7 +15,7 @@
       colnames(Xmat) <- "intercept"
    } else {
       ## trait + fixed effects being fitted. 
-     if(length(indxNA)==0)
+     if(length(indxNA)==0 | is.null(indxNA) )
      {
         Xmat <- model.matrix(fformula, data=pheno)
      }  else {
@@ -35,7 +35,6 @@
  if (!quiet ){
    message("Dimension of design matrix, before addition of marker fixed effects is ", nrow(Xmat), " rows and ", ncol(Xmat), " columns.\n")
  }
-
 if(!is.matrix(Xmat))
    Xmat <- matrix(data=Xmat, ncol=1)
 

@@ -49,8 +49,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
              ),    " >> ./tmp.R
 echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
-            \"FPR4AM.R\",
-            \"FPR4AMnew.R\",
+            \"OptimizeAM.R\",
             \"ReadMarker.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
@@ -248,7 +247,7 @@ R CMD build Eagle
 
 
 
-## =>>>>> R CMD check --as-cran Eagle_1.2.0.tar.gz 
+## R CMD check --as-cran Eagle_1.2.0.tar.gz 
 R CMD INSTALL Eagle -l ~/RLibs
 
 
