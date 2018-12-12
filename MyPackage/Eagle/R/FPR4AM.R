@@ -1,8 +1,7 @@
-#' @title Finding best gamma value for \code{AM}
-#' @description The gamma parameter in \code{AM} controls the conservativeness of the model 
-#' building process. This function uses permutation to produce a table of 
-#' gamma and coresponding false positive values. From this table, an optimal gamma can be selected for 
-#' analysis. 
+#' @title Set the false positive rate for \code{AM}
+#' @description The gamma parameter in \code{AM} controls the false positive rate of the model 
+#' building process. This function uses permutation to  find the gamma value for a desired false positive rate. 
+#' @param  falseposrate the desired false positive rate.
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
 #'                   positive rate. We have found 100 replicates to be sufficient.  
 #' @param trait  the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.  This parameter must be specified. 
@@ -14,7 +13,8 @@
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
 #'              be assumed. 
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
-#' @param numgammas the number of equidistant gamma values from 0 to 1 for which to calculate the false positive rate of the model building process. 
+#' @param numgammas the number of equidistant gamma values from 0 to 1 for which to calculate the false positive rate of the model building process. This should not need 
+#' adjusting.  
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
 #'               is to assume there are no gpu available.  
@@ -22,18 +22,16 @@
 #' @param seed  a integer value for the starting seed for the permutations. 
 #' 
 #' @details
+
+#' The false positive rate for \code{\link{AM}} is controlled by its gamma parameter. Values close to 
+#' 1 (0) decreases (increases) the false positive rate of detecting SNP-trait associations. There is no 
+#' analytical way of setting gamma for a specified false positive rate. So we are using permutation to do this empirically. 
+#' 
+#' By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding gamma value for \code{\link{AM}}. 
+#' 
+#' A table of other gamma values for a range of false positive rates is also given. 
 #'
-#' This function calculates, empirically, the false positive rate, for different values of gamma. 
-#' The gamma parameter is used in \code{\link{AM}} to control the conservativeness of the model 
-#' building process. Gamma ranges in value from 0 to 1 with 
-#' values close to 1 making \code{\link{AM}} more conservative.
-#' A table of gamma and false positive rates is generated as the result from running this function. 
-#' From this table,  a suitiable value of gamma can be chosen. 
-#'
-#' To increase the precision of the estimates of false positive rate, increase \code{numreps}. 
-#'
-#' To increase the number of grid points in which gamma is calculate, increase \code{numgammas}. 
-#' There is no additional computational cost by increasing \code{numgammas}.   
+#' To increase the precision of the gamma estimates, increase \code{numreps}. 
 #'
 #'
 #'
@@ -43,7 +41,8 @@
 #' \describe{
 #'\item{numreps:}{the number of permutations performed.}
 #'\item{gamma:}{the vector of gamma values.}
-#'\item{falsepos:}{the false positive rates for the gamma values. }
+#'\item{falsepos:}{the false positive rates for the gamma values.}
+#'\item{setgamma:}{the gamma value that gives a false positive rate of \code{falseposrate} }
 #' }
 #'
 #' @examples
@@ -83,30 +82,30 @@
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
 #'
-#'  # Calculate the false positive rate for AM for different gamma values. 
+#'  #  Suppose we want to perform the AM analysis at a 5% false positive rate. 
 #'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'  
-#'   falseposrate <- OptimizeAM(trait = 'y',
+#'   ans <- FPR4AM(falseposrate = 0.05,
+#'                 trait = 'y',
 #'                 fformula=c('cov1+cov2'),
 #'                 map = map_obj,
 #'                 pheno = pheno_obj,
 #'                 geno = geno_obj) 
 #'  
-#'  # Suppose we want to perform the AM analysis at a 5% false positive rate. Then using 
-#'  # the table of gamma values and corresponding false postive rates
 #'
-#'  res <- AM(trait =  'y',
+#'   res <- AM(trait =  'y',
 #'                 fformula=c('cov1+cov2'),
 #'                 map = map_obj,
 #'                 pheno = pheno_obj,
 #'                 geno = geno_obj,
-#'                 gamma = 0.8421053)
+#'                 gamma = ans$setgamma)
 #'
 #'
 #' }
 #'
 #'
-OptimizeAM <- function(
+FPR4AM <- function(
+               falseposrate = 0.05,
                trait=trait,
                numreps = 100,
                fformula  = NULL,
@@ -125,9 +124,9 @@ OptimizeAM <- function(
   set.seed(seed)
  # need some checks in here ... 
 error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
-                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL )
+                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL, falseposrate=falseposrate )
  if(error.code){
-   message("\n The Eagle function CalculateFDR has terminated with errors.\n")
+   message("\n The Eagle function FDR4AM has terminated with errors.\n")
    return(NULL)
  }
 
@@ -475,8 +474,19 @@ cat( gamma[ii], " | ", round(falsepos[ii], 3), "\n")
 } 
 cat(" ----------------------------- \n")
 
+# find best gamma value 
 
- return(list(numreps=numreps, gamma=gamma, falsepos=falsepos    ))
+d <- abs(falsepos - falseposrate)
+indx <- which(min(d) == d)
+if(length(indx) > 1){
+   indx <- max(indx)   ## picking most conservative value if there are multiple values
+}
+ setgamma <- gamma[indx]
+
+cat(" For a false positive rate of ", falseposrate, " set the gamma parameter in the AM function to ", setgamma, "\n")
+
+
+ return(list(numreps=numreps, gamma=gamma, falsepos=falsepos, setgamma = setgamma    ))
 
 
 

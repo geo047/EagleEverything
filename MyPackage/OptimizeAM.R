@@ -1,8 +1,7 @@
-#' @title Finding best gamma value for \code{AM}
+#' @title Finding gamma value for \code{AM} for a desired level of false positives. 
 #' @description The gamma parameter in \code{AM} controls the conservativeness of the model 
-#' building process. This function uses permutation to produce a table of 
-#' gamma and coresponding false positive values. From this table, an optimal gamma can be selected for 
-#' analysis. 
+#' building process. This function uses permutation to  find the gamma value for a desired false positive rate. 
+#' @param  falseposrate the desired false positive rate.
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
 #'                   positive rate. We have found 100 replicates to be sufficient.  
 #' @param trait  the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.  This parameter must be specified. 
@@ -86,7 +85,7 @@
 #'  # Calculate the false positive rate for AM for different gamma values. 
 #'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'  
-#'   falseposrate <- OptimizeAM(trait = 'y',
+#'   falseposrate <- Gamma4AM(trait = 'y',
 #'                 fformula=c('cov1+cov2'),
 #'                 map = map_obj,
 #'                 pheno = pheno_obj,
@@ -106,7 +105,8 @@
 #' }
 #'
 #'
-OptimizeAM <- function(
+Gamma4AM <- function(
+               falseposrate = 0.05,
                trait=trait,
                numreps = 100,
                fformula  = NULL,

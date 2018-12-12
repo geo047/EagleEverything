@@ -6,7 +6,7 @@ importFrom(shinyjs, useShinyjs)
 import(shinyFiles, shiny,  shinythemes, shinyBS, stats, utils )
 
 export(
-   OptimizeAM,
+   FPR4AM,
    ReadPheno,
    ReadMarker,
    ReadMap,

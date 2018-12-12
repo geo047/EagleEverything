@@ -1,8 +1,21 @@
 
 check.inputs.mlam <- function (ncpu, availmemGb, colname.trait, map, pheno,
-                  geno, Zmat, gamma )
+                  geno, Zmat, gamma, falseposrate=NULL )
 {
   ## internal function for AM
+
+if(!is.null(falseposrate)){
+  if(!is.numeric(falseposrate)){
+    message("Error: the falseposrate parameter must be a value between 0 and 1. \n")
+    return(TRUE)
+  } else {
+   if(falseposrate < 0 | falseposrate > 1){
+    message("Error: the falseposrate parameter must be a value between 0 and 1. \n")
+    return(TRUE)
+   }
+ }
+}
+
 
 
 if(is.null(colname.trait)){

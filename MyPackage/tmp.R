@@ -22,7 +22,7 @@ library(Rcpp)
              ),    
     example_code=FALSE, code_files=c(
             "onAttach.R", 
-            "OptimizeAM.R",
+            "FPR4AM.R",
             "ReadMarker.R",
             "ReadMap.R",
             "ReadZmat.R",

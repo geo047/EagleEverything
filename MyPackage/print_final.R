@@ -9,9 +9,9 @@
      if (is.null(gamma)){
         message("Gamma value for model selection was set to its default value of 1. \n")
      } else {
-        message("Gamma value for model selection was set to  ", gamma, " \n")
+        message("Gamma value for model selection was set to  ", round(gamma,3) , " \n")
      } 
-          message("\n\n")
+     message("\n\n")
   }   ## end if else
 
 
