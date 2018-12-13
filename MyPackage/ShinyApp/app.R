@@ -92,8 +92,11 @@ row4Anal <- function()
 
 page =  fluidRow( column(12, 
          wellPanel(
-          radioButtons(inputId="analyse_gamma", label=h4("Step 4: Specify gamma value"), 
-                            choices=c("Set manually"="manual" ,"Set automatically (via permutation)"="auto" )),
+          radioButtons(inputId="analyse_gamma", label=h4("Step 4: Specify gamma value (controls the false positive rate)"), 
+        choiceNames = list(
+        tags$span(style = "font-size:18px", "Set manually"),
+        tags$span(style = "font-size:18px", "Set automatically (via permutation)")),
+                                                    choiceValues=c("manual","auto")),
                         style="padding: 1px",
  bsTooltip("analyse_gamma", title='<font size="3" > Select the manual option if you want a quick analysis. If you leave the gamma value at 1, its default value, this will be a conservative analysis. Select auto if you want to perform an analysis with a specified false positive rate. This analysis will take about 5 times as long as a permutation step is performed to fine-tune the gamma value for the desired false positive rate.  </font>',
                                placement="right", trigger="hover", options=list(container="body"))
@@ -106,7 +109,7 @@ page =  fluidRow( column(12,
                    condition = "input.analyse_gamma == 'manual'",
                         wellPanel(
                         fluidRow(column(12,
-                           sliderInput(inputId="analyse_setgamma", label=h4("Specify gamma value. Affects false positive rate."),
+                           sliderInput(inputId="analyse_setgamma", label=h4("Specify gamma value. "),
                                value=1, min = 0, max = 1, step = 0.01),
                            style="padding: 1px",
                            bsTooltip("analyse_setgamma", title='<font size="3" >The gamma parameter controls the conservativeness of the model building process. Values closer to 1 (0) decrease (increase) the false positive rate. The default value is 1 - its most conservative setting. </font>',
@@ -295,7 +298,11 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = 
                                            column(12,
                                                   wellPanel(
                                                   radioButtons(inputId="filetype", label=h4("Step 1: Choose file type"), 
-                                                               choices=c("PLINK"="plink","Text/ASCII"="text" )),
+                                                    choiceNames=list(
+        tags$span(style = "font-size:18px", "PLINK"), 
+        tags$span(style = "font-size:18px", "Text/ASCII")), 
+                                                    choiceValues=c("plink","text")),
+                                                      ##         choices=c("PLINK"="plink","Text/ASCII"="text" )),
                                                   style="padding: 1px",
                                                   bsTooltip("filetype",
 title='<font size="3" > click on file type </font>',
@@ -362,12 +369,6 @@ placement="right", trigger="hover",
                                         wellPanel(
                                         h4("Step 3: Select marker file"),
                                         shinyFilesButton('choose_marker_file', 'Select File', 'Please select file', FALSE),
-                                        style="padding: 1px",
-                                        bsTooltip("choose_marker_file",
-title='<font size="3" > If the file cannot be found via the file browser, enter the full path and file name in the dialogue box below. </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body")),
-
                                         textInput("choose_marker_file_text", label = h5("or enter file name (including full path)"))
                                          
                                            
@@ -534,12 +535,6 @@ placement="right", trigger="hover",
                                         wellPanel(
                                         h4("Step 4: Select phenotypic file"),
                                         shinyFilesButton('choose_pheno_file', 'Select File', 'Please select file', FALSE),
-style="padding: 1px",
-                                        bsTooltip("choose_pheno_file",
-title='<font size="3" > If the file cannot be found via the file browser, enter the full path and file name in the dialogue box below. </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body")),
-
                                         textInput("choose_pheno_file_text", label = h5("or enter file name (including full path)"))
                                           )  ## end wellPannel
                                          )
@@ -743,12 +738,6 @@ placement="right", trigger="hover",
                                         wellPanel(
                                         h4("Step 1: Select Z matrix file"),
                                         shinyFilesButton('choose_Zmat_file', 'Select File', 'Please select file', FALSE),
-style="padding: 1px",
-                                        bsTooltip("choose_Zmat_file",
-title='<font size="3" > If the file cannot be found via the file browser, enter the full path and file name in the dialogue box below. </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body")),
-
                                         textInput("choose_Zmat_file_text", label = h5("or enter file name (including full path)"))
 
 
@@ -903,12 +892,6 @@ placement="right", trigger="hover",
                                         wellPanel(
                                         h4("Step 3: Select map file"),
                                         shinyFilesButton('choose_map_file', 'Select File', 'Please select file', FALSE),
-style="padding: 1px",
-                                        bsTooltip("choose_map_file",
-title='<font size="3" > If the file cannot be found via the file browser, enter the full path and file name in the dialogue box below. </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body")),
-
                                         textInput("choose_map_file_text", label = h5("or enter file name (including full path)"))
                                           )  ## end wellPannel
                                          )
@@ -1544,7 +1527,7 @@ server <- function(input, output, session){
 
  ##  AM analysis for calculation of FPR
 # res <- NULL
-#setgamma <- NULL
+setgamma <- 1
    observeEvent(input$analyse_go, {
    withProgress(message = 'Analysing data', value = 1, {
        fform <<- paste(input$nmsf, collapse="+")

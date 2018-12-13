@@ -1,7 +1,189 @@
+## Shiny GUI for Eagle
+## Developer:  Andrew W. George
+## Version: 1.2.0
+
+
+
 rootdir <-  c('Home' = Sys.getenv("HOME"))
 if(.Platform$OS.type == "windows") {
      rootdir <-  c('Home' = paste0(rootdir, "\\..\\"))
 }
+
+
+
+##---------------------------
+## Analyse Page Functions
+##~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+bannerAnal <- function()
+{
+   page =  fluidPage(
+       
+              fluidRow( column(12, {
+                       tags$div(img(src = "images/analyse_banner.jpg", 
+                                 style="width: 100% ; height: 100%"))
+                               
+                                }
+                      ) ## end column(12, )
+              ), ## end fluidRow
+              br(),
+              fluidRow(column(12, 
+                       bsButton(inputId="dummy4", label="Hover here for details",
+                       style="warning", size="large", type="action", block=TRUE,
+                       icon=icon("question-circle-o"))
+                      ) ## end column
+             ) ## end fluidRow
+          ) ## end fluidPage
+   return(page)
+}
+
+row1Anal <- function(){
+
+  page <-  fluidRow(column(12,  
+                    wellPanel(
+                       uiOutput("analyse_names"),
+
+                       bsTooltip("analyse_names",
+                       title='<font size="3" > Select a single variable to be treated as the trait for the analysis  </font>',
+                       placement="right", trigger="hover", options=list(container="body"))
+
+                       ) ## end wellPanel
+                     ) ## end column
+                   ) ## end fluidRow                             
+  return(page)
+}
+
+
+row2Anal <- function()
+{
+   page =   fluidRow(column(12,
+               wellPanel(
+                  uiOutput("analyse_fnames"),
+                       bsTooltip("analyse_fnames",
+                             title='<font size="3" > Select the variables, if any, to be used as fixed effects in the analysis. If no variables are selected, then only an overall mean will be fitted. </font>',
+                              placement="right", trigger="hover", options=list(container="body")),
+                       textOutput("fmodel")
+                         ) ## end wellPanel
+                       ) ## end column
+                   ) ## end fluidRow
+   return(page)
+}
+
+
+
+row3Anal <- function()
+{
+page =  fluidRow(column(12,  wellPanel(
+           numericInput(inputId="analyse_cpu", label=h4("Step 3: Specify number of cpu"), value=1),
+                    style="padding: 1px",
+                    bsTooltip("analyse_cpu",
+           title='<font size="3" > set to the number of cpu available for distributed computing. </font>',
+           placement="right", trigger="hover",
+               options=list(container="body"))
+           ) ## end wellpanel
+        ))  ## end column and fluidRow
+  return(page)
+}
+
+
+row4Anal <- function()
+{
+
+
+page =  fluidRow( column(12, 
+         wellPanel(
+          radioButtons(inputId="analyse_gamma", label=h4("Step 4: Specify gamma value (controls the false positive rate)"), 
+        choiceNames = list(
+        tags$span(style = "font-size:18px", "Set manually"),
+        tags$span(style = "font-size:18px", "Set automatically (via permutation)")),
+                                                    choiceValues=c("manual","auto")),
+                        style="padding: 1px",
+ bsTooltip("analyse_gamma", title='<font size="3" > Select the manual option if you want a quick analysis. If you leave the gamma value at 1, its default value, this will be a conservative analysis. Select auto if you want to perform an analysis with a specified false positive rate. This analysis will take about 5 times as long as a permutation step is performed to fine-tune the gamma value for the desired false positive rate.  </font>',
+                               placement="right", trigger="hover", options=list(container="body"))
+
+                     )  ## column 12
+          ) ,  ## wellPanel 
+                                          
+
+                conditionalPanel(
+                   condition = "input.analyse_gamma == 'manual'",
+                        wellPanel(
+                        fluidRow(column(12,
+                           sliderInput(inputId="analyse_setgamma", label=h4("Specify gamma value. "),
+                               value=1, min = 0, max = 1, step = 0.01),
+                           style="padding: 1px",
+                           bsTooltip("analyse_setgamma", title='<font size="3" >The gamma parameter controls the conservativeness of the model building process. Values closer to 1 (0) decrease (increase) the false positive rate. The default value is 1 - its most conservative setting. </font>',
+                               placement="right", trigger="hover", options=list(container="body"))
+                               ) ## colunn12,
+                           ) ## fluidRow
+                        ) ## wellPanel
+                ), ## conditionalPanel
+
+                conditionalPanel(
+                   condition = "input.analyse_gamma == 'auto'",
+                        wellPanel(
+                       fluidRow(column(12, 
+                           sliderInput(inputId="analyse_fpr", label=h4("Specify desired false positive rate."),
+                               value=0.05, min = 0.01, max = 0.5, step = 0.01),
+                           style="padding: 1px",
+                           bsTooltip("analyse_fpr", title='<font size="3" > Set the slider to the desired false positive rate for the analysis. The default value is 0.05.   </font>',
+                               placement="right", trigger="hover", options=list(container="body"))
+ 
+                       ) ## end column 12
+                       ),  ## end fluidRow
+
+
+
+                        fluidRow(column(12,
+                   sliderInput(inputId="analyse_numreps", label=h4(" Specify number of replicates."),
+                                       value=100, min = 30, max = 1000, step = 5),
+                                        style="padding: 1px",
+                   bsTooltip("analyse_numreps", title='<font size="3" > The more replicates, the better the accuracy but we have found 100 replicates to be reasonable.  </font>',
+                          placement="right", trigger="hover", options=list(container="body"))
+
+
+
+                               ) ## colunn12,
+                           ) ## fluidRow
+                        ) ## wellPanel
+                ) ## conditionalPanel
+
+ 
+                                           
+    )  ## end fluidRow 
+                                           
+                                           
+                                           
+                        
+                                         
+}  ## end function row4Analyse 
+
+
+
+
+
+
+
+row5Anal <- function()
+{
+   page = fluidRow(column(12,
+             wellPanel(
+                shinyjs::useShinyjs(),
+                h4("Step 5: Perform genome-wide analysis"),
+                            actionButton(inputId="analyse_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
+                                         icon=icon("upload", lib="glyphicon")),
+                                          style='padding: 1px',
+                                        bsTooltip("analyse_go",
+                     title='<font size="3" >  Click here to find the set of snp in strongest association with the trait. This may take some time if the gamma value is being found automatically.   </font>',
+                          placement="right", trigger="hover",
+                          options=list(container="body"))
+              ) ## wellPanel
+            )   ## column12
+         ) ## end fluidRow
+  return(page)
+}
+
+
 
 
 
@@ -107,6 +289,8 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = 
                               
                               
                               br(),
+
+
                               fluidRow(
                                 column(5, 
                                        fluidPage(
@@ -114,7 +298,11 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = 
                                            column(12,
                                                   wellPanel(
                                                   radioButtons(inputId="filetype", label=h4("Step 1: Choose file type"), 
-                                                               choices=c("PLINK"="plink","Text/ASCII"="text" )),
+                                                    choiceNames=list(
+        tags$span(style = "font-size:18px", "PLINK"), 
+        tags$span(style = "font-size:18px", "Text/ASCII")), 
+                                                    choiceValues=c("plink","text")),
+                                                      ##         choices=c("PLINK"="plink","Text/ASCII"="text" )),
                                                   style="padding: 1px",
                                                   bsTooltip("filetype",
 title='<font size="3" > click on file type </font>',
@@ -135,7 +323,7 @@ placement="right", trigger="hover",
                                                   column(4, textInput(inputId="BB",label="BB", value="") ),
                                                   column(4, textInput(inputId="missing",label="missing", value="") ) ,
 bsTooltip("AB", 
-title='<font size="4" > Only a single value can be entered. If inbreds, leave blank  </font>',
+title='<font size="3" > Only a single value can be entered. If inbreds, leave blank  </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")),
 bsTooltip("missing",
@@ -757,209 +945,72 @@ placement="right", trigger="hover",
                                 
                       ),  ## end tabPanel("Read Map")
 
-
-
-
-
-
-
-
                   ##-------------------------------------##
-                  ##   Analysis - Genome-wide Analysis   ##
+                  ## Analysis                            ##
                   ##-------------------------------------##
+
                       
-                       tabPanel("Analyse", icon=icon("fa-area-chart", class = "fa fa-area-chart fa-lg", lib = "font-awesome"), 
-                               tags$head(tags$style(HTML('
-
+                  tabPanel("Analyse", icon=icon("fa-area-chart", class = "fa fa-area-chart fa-lg", lib = "font-awesome"), 
+                           tags$head(tags$style(HTML(' 
                                                          .popover {
                                                          max-width: 80%;
                                                          
                                                          }
-                                                         '))
-                               ),
+                                                    '))
+                                   ),
+                           bannerAnal(),
+
+                           br(),
+
+                           fluidRow(
+                               # left half of page
+                               column(6,
+                                   fluidPage(
+
+                                     row1Anal(),
+
+                                     row2Anal(), 
+
+                                     row3Anal(),
 
 
-                            fluidPage(
-                              fluidRow(
-                                column(12, {
-                                       tags$div(img(src = "images/analyse_banner.jpg", 
-                                                    style="width: 100% ; height: 100%"))
-                               
-                                }
-                                       ) ## end column(12, )
-                              ), ## end fluidRow
-                              br(),
-                              fluidRow(column(12, 
-                                          bsButton(inputId="dummy4", label="Hover here for details",
-                                          style="warning", size="large", type="action", block=TRUE,
-                                          icon=icon("question-circle-o")
-                                          )
-                                           
-                                       ) ## end column
-                              ), ## end fluidRow
-                           br(), 
- 
-                            fluidRow(
-                                 column(6, 
-                                 fluidPage(
-                                
-                                    fluidRow(column(12,  
-                                      wellPanel(
-                                            uiOutput("analyse_names"),
-
-                                           bsTooltip("analyse_names",
-title='<font size="5" > Select a single variable to be treated as the trait for the analysis  </font>',
-                                         placement="right", trigger="hover", options=list(container="body"))
-
-                                      ) ## end wellPanel
-                                          ) ## end column
-                                    ), ## end fluidRow                             
-
-                                    fluidRow(column(12, 
-                                        wellPanel(
-                                            uiOutput("analyse_fnames"),
-
-                                           bsTooltip("analyse_fnames",
-title='<font size="5" > Select the variables, if any, to be used as fixed effects in the analysis. If no variables are selected, then only an overall mean will be fitted. </font>',
-                                         placement="right", trigger="hover", options=list(container="body")),
-
-                                            textOutput("fmodel")
-                                        ) ## end wellPanel
-                                     ) ## end column
-                                  ), ## end fluidRow
+                                     row4Anal(),
 
 
-                                   fluidRow(column(12,  wellPanel(
-                                         numericInput(inputId="analyse_cpu", label=h4("Step 3: Specify number of cpu"), value=1), 
+                                     row5Anal()
 
-                                         style="padding: 1px",
-                                         bsTooltip("analyse_cpu",
-title='<font size="5" > set to the number of cpu available for distributed computing. </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body"))
-                                    ) ## end wellpanel
-                                   )),  ## end column and fluidRow
+                    
 
+                                   ) # end fluidPage
+                              ),  ## end column 
 
-
-                                   fluidRow(
-                                      column(12,  wellPanel(
-                                          h4("Step 4: Additional Options"),
-                                          actionButton(inputId="options_go", h6("Click Here")),
-                                          conditionalPanel(
-                                            condition="input.options_go > 0 ",
-                                                 wellPanel( 
-                                                    fluidPage(
-
-
-                                                        fluidRow(column(12, 
-
-                                                        sliderInput(inputId="analyse_gamma", label=h4("Specify gamma value to adjust model building conservativeness."),
-                                                               value=1, min = 0, max = 1, step = 0.01),
-                                                        style="padding: 1px",
-                                                        bsTooltip("analyse_gamma",
-title='<font size="5" >  Values closer to 1(0)  lead to more (less) conservative model building.  </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body"))
-
-
-                                                        )), ## end column and fluidRow
-
-
-
-
-                                                        fluidRow(column(12, 
-
-                                                        sliderInput(inputId="analyse_maxits", label=h4("Specify maximum number of iterations"),
-                                                               value=20, min = 1, max = 40, step = NA),
-                                                        style="padding: 1px",
-                                                        bsTooltip("analyse_maxits",
-title='<font size="5" > set to the maximum number of detectable marker-trait associations. <br> Very rarely will this need to be adjusted. Its a safety feature to prevent analyses taking too long. </font>',
-placement="right", trigger="hover",
-                                                          options=list(container="body"))
-
-
-                                                        )), ## end column and fluidRow
-
-                                                        fluidRow(column(12, 
-                                                         
-                                                 radioButtons(inputId="analyse_quiet", label=h4("Verbose mode"),
-                                                               choices=c("No"="no", "Yes"="yes"  )),
-                                                  style="padding: 1px",
-                                                  bsTooltip("analyse_quiet",
-title='<font size="5" > Click yes if detailed output is wanted </font>',
-placement="right", trigger="hover",
-                                                            options=list(container="body")
-                                                      )
-
-                                
-
-                                                         ))  ## end column and fluidRow
-
-                                                    ) ## end fluidPage
-                                                 ) ## end wellPanel
-                                           ) ## end conditionalPanel
-
-                                                           ) ## end wellPanel
-                                      ) ## column
-                                   ),  ## fluidRow
-
-
-
-
-
-
-
-
-
-
-                                   fluidRow(column(12,
-                                                       wellPanel(
-                                                          shinyjs::useShinyjs(),
-                                                          h4("Step 5: Perform genome-wide analysis"),
-
-
-
-
-                                                          actionButton(inputId="analyse_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
-                                                                       icon=icon("upload", lib="glyphicon")),
-
-
-
-                                                          style='padding: 1px',
-                                                          bsTooltip("analyse_go",
-title='<font size="5" > Click here to find the set of snp in strongest association with the trait  </font>',
-placement="right", trigger="hover",
-                                                                     options=list(container="body"))
-
-
-
-
-
-                                                        )
-                                                  )
-                                         ) ## end fluidRow
-
-                                  ) ## end fluidPage
-                             
-                                ),  ## end column
-
+                               # right half of page
                                column(6,
                                         verbatimTextOutput("AM", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
                                    ## for outputs from ReadMarker function
 
 
-                   ) ## end fluidRow 
-                              
-                            ) ## end fluidPage    
-                                
-                                
-                                
-                                
-                                
-                      ),  ## end tabPanel("Analysis ")
-                      
+
+
+
+                           ) ## end fluidRow
+
+                                      ), ## end tablPanel
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
                        tabPanel("Findings", icon=icon("fa-puzzle-piece", class="fa fa-puzzle-piece fa-lg"), 
                                tags$head(tags$style(HTML('
 
@@ -1124,21 +1175,10 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 server <- function(input, output, session){
   library("Eagle")
 
-#rootdir <-  c('Home' = Sys.getenv("HOME"))
-#rootdir <-  c('rootdir'="C:\\", 'Home' = Sys.getenv("HOME"))
-#rootdir <- c('roodir'=c(wd="."))
-#if(.Platform$OS.type == "windows") {
-#     print(" in the window part of root")
-#     rootdir <<-  c('rootdir'="C:/", 'Home' = Sys.getenv("HOME"))
-#     print(rootdir)
-#  } else {
-#     rootdir <<- c(rootdir="/", home=Sys.getenv("HOME"))
-#  }
   ##------------------------------------------
   ## Intros to pages
   ##-------------------------------------------
  
-#  output$home_intro <- renderText(home_intro())
   output$read_geno_intro <- renderText(read_geno_intro())
   output$read_pheno_intro <- renderText(read_pheno_intro())
   
@@ -1228,13 +1268,6 @@ server <- function(input, output, session){
   ##---------------------------------------- 
   ## upload path and file name
 
-#  This doesn't work - don't know why - the new rootdir is not used by shinyFileChoose
-#  observeEvent(input$marker_go, {
-#      
-#        rootdir <<-  c(rootdir="/", rootdir2="/flush1/geo047/")
-#        print(" in here ")
-#        print(rootdir)
-#})
 
 
         shinyFileChoose(input=input, id='choose_pheno_file', session=session, roots=rootdir )
@@ -1321,9 +1354,6 @@ server <- function(input, output, session){
    observeEvent(input$Zmat_go, {
      withProgress(message = 'Loading Z matrix file', value = 1, {
 
-
-
-
        withCallingHandlers({
                  shinyjs::html("ReadZmat", "")
          
@@ -1339,15 +1369,9 @@ server <- function(input, output, session){
                  shinyjs::html(id = "ReadZmat", html = m$message, add = TRUE)
        })
 
-
   })
 
-
   })  ## end observeEvent
-
-
-
-
 
 
 
@@ -1415,6 +1439,13 @@ server <- function(input, output, session){
   })  ## end observeEvent
 
 
+  ##------------------
+  ## Optimize
+  ##------------------
+
+
+
+
 
 
 
@@ -1443,7 +1474,6 @@ server <- function(input, output, session){
      fixednames <- NULL
      indx <- which(nms()==input$nmst)
       fixednames  <- nms()[-indx]
-      print("in here")
       return(fixednames )
 
   })
@@ -1480,6 +1510,8 @@ server <- function(input, output, session){
 
 
 
+
+
   output$analyse_fnames <- renderUI({
       checkboxGroupInput("nmsf", h4("Step 2: Choose fixed effects"), fnms() , inline=TRUE)
     })  ## end renderUI
@@ -1491,31 +1523,61 @@ server <- function(input, output, session){
    })
 
 
-   ## how to get traitn and effectsn from UI for later use ??????
-   #traitn <- reactive({input$nmst})
 
- res <- NULL
+
+ ##  AM analysis for calculation of FPR
+# res <- NULL
+#setgamma <- NULL
    observeEvent(input$analyse_go, {
    withProgress(message = 'Analysing data', value = 1, {
+       fform <<- paste(input$nmsf, collapse="+")
+
+     if(input$analyse_gamma=="manual"){
+
+        withCallingHandlers({
+                  shinyjs::html("AM", "")
+                  res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
+                             gamma=input$analyse_setgamma,
+                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
+                  setgamma <<- input$analyse_setgamma 
+               },  ## end withCallingHandlers
+               message = function(m) {
+                  shinyjs::html(id = "AM", html = m$message, add = TRUE)
+        })
 
 
 
+     }
+
+
+     if(input$analyse_gamma=="auto"){
        
-       withCallingHandlers({
+           withCallingHandlers({
                  shinyjs::html("AM", "")
-                 quietvalue <-  TRUE
-                 if(input$analyse_quiet == "yes")
-                    quietvalue <- FALSE
-                 res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
-                            quiet = quietvalue,  gamma=input$analyse_gamma,
-                            ncpu = input$analyse_cpu, maxit = input$analyse_maxits , pheno = pheno, geno=geno, map=map) 
+ 
+                 res <<- FPR4AM(numreps = input$analyse_numreps,  falseposrate=input$analyse_fpr,
+                            trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
+                            ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat = Zmat) 
+          
+                 setgamma <<- res$setgamma
+                 
+                 res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
+                             gamma=res$setgamma,
+                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
 
-              },  ## end withCallingHandlers
-              message = function(m) {
-                 shinyjs::html(id = "AM", html = m$message, add = TRUE)
-       })
-  })
+
+                 },  ## end withCallingHandlers
+                    message = function(m) {
+                    shinyjs::html(id = "AM", html = m$message, add = TRUE)
+       })  ## withCallingHandlers
+
+     }
+  })  ## end withProgress
   })  ## end observeEvent
+
+
+
+
 
 
  ##--------------------------
@@ -1524,9 +1586,15 @@ server <- function(input, output, session){
 
  ## form data frame of results 
  observeEvent(input$analyse_go, {
+
  dfparams <- NULL
- dfparams <- data.frame(Parameters=c("Trait", "Working memory", "Gamma", "Number CPU"), Settings=c(input$nmst, input$memsize, input$analyse_gamma, 
-                                        input$analyse_maxits))
+
+ if(!is.null(fform))
+    dfparams <- data.frame(Parameters=c("Trait", "Fixed effects", "Working memory", "Number CPU", "Gamma"), Settings=c(input$nmst, as.character(fform), input$memsize, input$analyse_cpu, round(setgamma,3)))
+
+ if(is.null(fform))
+   dfparams <- data.frame(Parameters=c("Trait", "Fixed effects", "Working memory", "Number CPU", "Gamma"), Settings=c(input$nmst, "overall mean" , input$memsize, input$analyse_cpu, round(setgamma,3)))   
+
  output$parameters <- renderTable(dfparams) 
 
 
@@ -1666,18 +1734,18 @@ addPopover(session, "dummy3", "Details", content = HTML("
 
 
 addPopover(session, "dummy4", "Details", content = HTML(paste("
-    Here,  multiple_locus association mapping is performed. The analysis
-     simultaneously accounts for  familial
-     relatedness and nuisance fixed effects while detecting 
-     multiple marker-trait associations. Unlike other association mapping methods, 
-     there are no regularization parameters to be tuned, nor significance thresholds to be set. 
-     <br><br>
-     Output from performing the analysis is printed to the right hand panel. A table of results is printed in 'Findings'. 
-     <br><br>", tags$span(style="color:red",
-     "Once an analysis has been completed, a new analysis can be performed  
-     by selecting a new trait in 'Step1' or different fixed effects in 'Step2' and clicking the 'Perform genome-wide analysis' button.", sep=""))
-
-
+This page goes through the steps that are needed to analyse the data. 
+In the first step, the column in the phenotype file containing the trait data is specified. 
+In the second step, any fixed effects are specified. If no fixed effects are selected, the fixed effects part of the model only contains an overall mean. 
+In the thrid step, the number of available CPU is set. The default is 1 but if more are available, increasing this number will improve performance significantly. 
+The fourth step is to set the gamma parameter. The gamma parameter controls the conservativeness (or false positive rate) of the model building process. For a quick preliminary analysis of the 
+data, choose the manual option and leave the parameter at its default setting. For a more detailed analysis of the data where the false positive rate is prespecified, 
+choose the auto option. 
+<br><br>
+To perform the analysis, click on the button in step 5.   Output will start appearing in the right hand panel.  A table of results is given in 'Findings'. 
+<br><br>", tags$span(style="color:red",
+"Once an analysis has been completed, a new analysis can be performed  
+by changing any of the choices in steps 1 to 4 and clicking the 'Perform genome-wide analysis' button.", sep=""))
 ), trigger = "hover")
 
 

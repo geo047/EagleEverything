@@ -25,7 +25,7 @@ An implementation of multiple-locus association mapping on a genome-wide scale. 
  \item The marker and phenotype data are in separate files.
  \item  Marker loci are snps. Dominant and multi-allelic loci will need to be converted into biallelic (snp-like) loci. 
  \item The trait is continuous and normally distributed. Eagle can handle non-normally distributed trait data but 
-  there may a loss of power
+  there may be a loss of power
  to detect marker-trait associations. 
  }
 
@@ -34,6 +34,7 @@ An implementation of multiple-locus association mapping on a genome-wide scale. 
  \item \code{\link{ReadMarker}} for reading in the snp data.
  \item \code{\link{ReadPheno}} for reading in the phenotypic data (traits and features/covariates)
  \item \code{\link{ReadMap}} for reading in the marker map.
+ \item \code{\link{FPR4AM}} for calculating the value of the \code{gamma} parameter to be used by \code{\link{AM}} that will give a desired false positive rate for detecting SNP-trait associations. 
  \item \code{\link{AM}} for performing association mapping on the data.
  \item \code{\link{OpenGUI}} which opens the GUI. 
 }

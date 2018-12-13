@@ -24,7 +24,9 @@
 #' @param fixit     a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 #' then the model building process is stopped when extBIC increases in value. 
 #' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
-#' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{OptimizeAM}} for an empirical approach to find the 'best' gamma value. 
+#' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value. 
+#'
+
 #' @details
 #'
 #' This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
@@ -33,12 +35,13 @@
 #' The conservativeness of extBIC can be adjusted.  If the \code{gamma} parameter is left at is default setting, then \code{AM} is run in its most 
 #' conservative state (i.e. false positives are minimized but this also decreases the chance of true positives). 
 #'
-#' When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{OptimizeAM}}. This function uses permutation to estimate the 
-#' false positive rate (FPR) for \code{AM} for a range of values of \code{gamma}.  
+#' When interested in running  \code{AM}  at a certain false positive rate, first run  \code{\link{FPR4AM}} to calculate the corresponding gamma value. 
+#' This function uses permutation to 
+#' find the gamma value for a desired false positive rate for \code{AM}. 
 #'
 #' Below are some examples of how to use \code{AM} for genome-wide association mapping of data. 
 #'
-#' \subsection{How to perform a basic AM analysis}{
+#' \subsection{How to perform an AM analysis when you are in a hurry}{
 #'
 #' Suppose, 
 #' \itemize{
@@ -60,12 +63,14 @@
 #'   
 #'   pheno_obj <- ReadPheno(filename='pheno.txt')
 #'
+#'  # since gamma is not specified, this will run AM conservatively 
+#'  # (where the false positive rate is lowest).
 #'   res <- AM(trait='y', geno=geno_obj, pheno=pheno_obj)
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
 #'
-#' \subsection{How to perform a more complicated AM analysis}{
+#' \subsection{How to perform an AM analysis where the false positive rate is 5\%}{
 #'
 #' Suppose, 
 #' \itemize{
@@ -83,7 +88,7 @@
 #' \item{}{the map data is contained in the file map.txt, is also located in 
 #'  /my/dir, and the first row has the column headings.}
 #' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
+#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, a false positive rate of 5\% is desired,  
 #' and the available memory is set to 32 gigabytes.}
 #' } 
 #'
@@ -95,8 +100,13 @@
 #'
 #'   map_obj   <- ReadMap(filename='/my/dir/map.txt')
 #'
-#'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
+#'   ans <- FPR4AM(falseposrate=0.05, numreps=100, trait='y2', 
+#'             fformula=c('cov1 + cov2 + pc1 + pc2'), 
 #'             geno=geno_obj, pheno=pheno_obj, map=map_obj, availmemGb=32)
+#'
+#'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, availmemGb=32, 
+#'             gamma=ans$setgamma)
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
@@ -123,7 +133,7 @@
 #'  /my/dir, and the first row has the column headings.}
 #' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
 #' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-#' and the available memory is set to 32 gigabytes.}
+#' the available memory is set to 32 gigabytes, and \code{\link{AM}} is being run under its default \code{gamma} value of 1. }
 #' } 
 #'
 #'  To analyse these data, we would run the following:
@@ -172,7 +182,7 @@
 #'
 #'
 #'
-#' @seealso \code{\link{OptimizeAM}} , \code{\link{ReadMarker}}, \code{\link{ReadPheno}},  \code{\link{ReadZmat}}, and \code{\link{ReadMap}}
+#' @seealso \code{\link{FPR4AM}} , \code{\link{ReadMarker}}, \code{\link{ReadPheno}},  \code{\link{ReadZmat}}, and \code{\link{ReadMap}}
 #'
 #' @return
 #' A list with the following components:
@@ -232,7 +242,8 @@
 #'
 #'  # Performing multiple-locus genome-wide association mapping with a model 
 #'  #    with fixed effects cov1 and cov2 and an intercept. The intercept 
-#'  #    need not be specified as it is assumed. 
+#'  #    need not be specified as it is assumed.  
+#'  #    Gamma has been set, by default, at 1 for this analysis. 
 #'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'  
 #'   res <- AM(trait = 'y',
@@ -254,7 +265,7 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL 
+               gamma=1 
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -266,7 +277,7 @@ AM <- function(trait=NULL,
  ##                 is only a response to be fitted. 
  ## geno            if geno is a matrix or data frame, then the user has not ReadMarker and a bin packed file
  ##                 has not been created. If it is a character string, then it is the file location of the binary packed files. 
- ## maxit           maximum number of qtl to include in the model
+ ## maxit           maximum number of SNP-trait associations  to include in the model
  ## ngpu            number of gpu available for computation
 
 
