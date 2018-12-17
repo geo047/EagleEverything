@@ -1,0 +1,18 @@
+#!/bin/bash 
+
+
+for ii in AM.R                   calcMMt.R                        calculate_reduced_vara.R  emma_delta_ML_dLL_w_Z.R    fullpath.R FPR4AM.R               calcVC.R                         check_for_NA_in_trait.R   emma_delta_REML_LL_w_Z.R   onAttach.R GenomicRel.R           calc_extBIC.R                    check_inputs.R            emma_delta_REML_dLL_w_Z.R  print_final.R OpenGUI.R              calculateH.R                     check_inputs_mlam.R       emma_eigen_L_w_Z.R         print_header.R RcppExports.R          calculateMMt.R                   constructX.R              emma_eigen_L_wo_Z.R        print_results.R ReadMap.R              calculateMMt_sqrt_and_sqrtinv.R  create_ascii.R            emma_eigen_R_w_Z.R         print_title.R ReadMarker.R           calculateP.R                     doquiet.R                 emma_eigen_R_wo_Z.R        summary_am.R ReadPheno.R            calculate_a_and_vara.R           emma_MLE.R                emma_misc.R ReadZmat.R             calculate_a_and_vara_batch.R     emma_REMLE.R              extract_geno.R ReshapeM.R             calculate_reduced_a.R            emma_delta_ML_LL_w_Z.R    find_qtl.R build_design_matrix.R  calculate_reduced_a_batch.R      emma_delta_ML_LL_wo_Z.R   form_results.R
+do
+  echo $ii
+ diff $ii /home/geo047/EagleEverything/MyPackage/$ii
+
+  sleep 2
+
+
+done 
+
+
+
+
+
+

@@ -84,7 +84,7 @@
 #'  # Calculate the false positive rate for AM for different gamma values. 
 #'  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'  
-#'   falseposrate <- FPR4AMnew(trait = 'y',
+#'   falseposrate <- FPR4AM(trait = 'y',
 #'                 fformula=c('cov1+cov2'),
 #'                 map = map_obj,
 #'                 pheno = pheno_obj,
@@ -93,7 +93,7 @@
 #' }
 #'
 #'
-FPR4AMnew <- function(
+FPR4AM <- function(
                trait=trait,
                falseposrate = NULL,
                numreps = 100,
@@ -112,12 +112,12 @@ FPR4AMnew <- function(
 
   set.seed(seed)
  # need some checks in here ... 
-error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
-                     map=map, pheno=pheno, geno=geno, Zmat=Zmat )
- if(error.code){
-   message("\n The Eagle function CalculateFDR has terminated with errors.\n")
-   return(NULL)
- }
+#error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
+#                     map=map, pheno=pheno, geno=geno, Zmat=Zmat )
+# if(error.code){
+#   message("\n The Eagle function CalculateFDR has terminated with errors.\n")
+#   return(NULL)
+# }
 
  ## checking if map is present. If not, generate a fake map. 
  if(is.null(map)){
@@ -481,7 +481,7 @@ cat(" ----------------------------- \n")
 
 
 
-} ## end function FPR4AMnew
+} ## end function FPR4AM
 
 
 

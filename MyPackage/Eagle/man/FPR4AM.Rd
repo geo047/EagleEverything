@@ -47,24 +47,24 @@ A list with the following components:
 \describe{
 \item{numreps:}{the number of permutations performed.}
 \item{gamma:}{the vector of gamma values.}
-\item{falsepos:}{the vector of false positive rates corresponding to the vector of gamma values.}
-\item{falseposrate:}{the desired false positive rate. }
+\item{falsepos:}{the false positive rates for the gamma values.}
 \item{setgamma:}{the gamma value that gives a false positive rate of \code{falseposrate} }
 }
 }
 \description{
-This function uses permutation to  find the \code{gamma} value for a desired false positive rate for \code{\link{AM}}.
+The gamma parameter in \code{AM} controls the false positive rate of the model 
+building process. This function uses permutation to  find the gamma value for a desired false positive rate.
 }
 \details{
-The false positive rate for \code{\link{AM}} is controlled by its \code{gamma} parameter. Values close to 
+The false positive rate for \code{\link{AM}} is controlled by its gamma parameter. Values close to 
 1 (0) decreases (increases) the false positive rate of detecting SNP-trait associations. There is no 
-analytical way of setting \code{gamma} for a specified false positive rate so we are using permutation to do this empirically. 
+analytical way of setting gamma for a specified false positive rate. So we are using permutation to do this empirically. 
 
-By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding \code{gamma} value for \code{\link{AM}}. 
+By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding gamma value for \code{\link{AM}}. 
 
-A table of other \code{gamma} values for a range of false positive rates is also given. 
+A table of other gamma values for a range of false positive rates is also given. 
 
-To increase the precision of the \code{gamma} estimates, increase \code{numreps}.
+To increase the precision of the gamma estimates, increase \code{numreps}.
 }
 \examples{
   \dontrun{ 
@@ -114,9 +114,6 @@ To increase the precision of the \code{gamma} estimates, increase \code{numreps}
                 geno = geno_obj) 
  
 
- # Note that we have set the gamma parameter here to 
- #   gamma = ans$setgamma
- # which enables AM to perform an analysis with a 5\% false positive rate
   res <- AM(trait =  'y',
                 fformula=c('cov1+cov2'),
                 map = map_obj,

@@ -1,5 +1,6 @@
 #' @title Set the false positive rate for \code{AM}
-#' @description This function uses permutation to  find the \code{gamma} value for a desired false positive rate for \code{\link{AM}}.  
+#' @description The gamma parameter in \code{AM} controls the false positive rate of the model 
+#' building process. This function uses permutation to  find the gamma value for a desired false positive rate. 
 #' @param  falseposrate the desired false positive rate.
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
 #'                   positive rate. We have found 100 replicates to be sufficient.  
@@ -22,15 +23,15 @@
 #' 
 #' @details
 
-#' The false positive rate for \code{\link{AM}} is controlled by its \code{gamma} parameter. Values close to 
+#' The false positive rate for \code{\link{AM}} is controlled by its gamma parameter. Values close to 
 #' 1 (0) decreases (increases) the false positive rate of detecting SNP-trait associations. There is no 
-#' analytical way of setting \code{gamma} for a specified false positive rate so we are using permutation to do this empirically. 
+#' analytical way of setting gamma for a specified false positive rate. So we are using permutation to do this empirically. 
 #' 
-#' By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding \code{gamma} value for \code{\link{AM}}. 
+#' By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding gamma value for \code{\link{AM}}. 
 #' 
-#' A table of other \code{gamma} values for a range of false positive rates is also given. 
+#' A table of other gamma values for a range of false positive rates is also given. 
 #'
-#' To increase the precision of the \code{gamma} estimates, increase \code{numreps}. 
+#' To increase the precision of the gamma estimates, increase \code{numreps}. 
 #'
 #'
 #'
@@ -40,8 +41,7 @@
 #' \describe{
 #'\item{numreps:}{the number of permutations performed.}
 #'\item{gamma:}{the vector of gamma values.}
-#'\item{falsepos:}{the vector of false positive rates corresponding to the vector of gamma values.}
-#'\item{falseposrate:}{the desired false positive rate. }
+#'\item{falsepos:}{the false positive rates for the gamma values.}
 #'\item{setgamma:}{the gamma value that gives a false positive rate of \code{falseposrate} }
 #' }
 #'
@@ -93,9 +93,6 @@
 #'                 geno = geno_obj) 
 #'  
 #'
-#'  # Note that we have set the gamma parameter here to 
-#'  #   gamma = ans$setgamma
-#'  # which enables AM to perform an analysis with a 5% false positive rate
 #'   res <- AM(trait =  'y',
 #'                 fformula=c('cov1+cov2'),
 #'                 map = map_obj,
@@ -161,14 +158,14 @@ if(!is.null(fformula)){
           fformula <- as.formula(paste("~", fformula, sep="") )
       }  else {
           message(" fformula has ", length(fformula), " separate terms. It should be a single statement eg. x1 + x2 + x3. \n")
-          message("\n FPR4AM  has terminated with errors.\n")
+          message("\n CalculateFPR  has terminated with errors.\n")
           return(NULL)
       }
    } else {
     ## problem: formula should not contain ~
     message(" Only the terms on the right hand side of the formula should be specified. \n")
     message(" Please remove the ~ from the formula. \n")
-    message("\n FPR4AM has terminated with errors.\n")
+    message("\n CalculateFPR has terminated with errors.\n")
     return(NULL)
   }  ## if length grep
  } ## end if(!is.null(fformula))
@@ -187,7 +184,7 @@ if(!is.null(fformula)){
    if(res){
       message(" fformula contains terms that are not column headings in the phenotype file. \n")
       message(" Check spelling and case of terms in fformula. \n")
-      message("\n  FPR4AM has terminated with errors.\n ")
+      message("\n  CalculateFDR has terminated with errors.\n ")
       return(NULL)
    }
   }
@@ -489,7 +486,7 @@ if(length(indx) > 1){
 cat(" For a false positive rate of ", falseposrate, " set the gamma parameter in the AM function to ", setgamma, "\n")
 
 
- return(list(numreps=numreps, gamma=gamma, falsepos=falsepos, setgamma = setgamma, falseposrate = falseposrate   ))
+ return(list(numreps=numreps, gamma=gamma, falsepos=falsepos, setgamma = setgamma    ))
 
 
 

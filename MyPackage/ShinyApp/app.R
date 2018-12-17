@@ -985,8 +985,8 @@ placement="right", trigger="hover",
                               ),  ## end column 
 
                                # right half of page
-                               column(6,
-                                        verbatimTextOutput("AM", placeholder=TRUE)
+                               column(6, 
+                                   verbatimTextOutput("AM", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
                                    ## for outputs from ReadMarker function
 
@@ -1568,7 +1568,7 @@ setgamma <- 1
 
                  },  ## end withCallingHandlers
                     message = function(m) {
-                    shinyjs::html(id = "AM", html = m$message, add = TRUE)
+                    shinyjs::html(id = "AM", html = m$message  , add = TRUE)
        })  ## withCallingHandlers
 
      }
