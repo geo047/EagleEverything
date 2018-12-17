@@ -1,5 +1,3 @@
-
-
 #' @title multiple-locus Association Mapping 
 #' @description \code{AM} performs  association mapping within a multiple-locus linear mixed model framework. 
 #' \code{AM}  finds the best set of 

@@ -394,7 +394,18 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
 
 
 for(ii in 1:numreps){
-      cat(" Performing permutation ", ii, "of ", numreps, "\n") 
+#      message(" Performing permutation ", ii, "of ", numreps, "\r") 
+       if(ii %% 4 == 0 )
+          message("-", appendLF=FALSE)
+       if(ii %% 4 == 1 )
+          message("\\", appendLF=FALSE)
+       if(ii %% 4 == 2 )
+          message("|", appendLF=FALSE)
+       if(ii %% 4 == 3 )
+          message("/", appendLF=FALSE)
+ 
+
+
       # Select new locus : find_qtl function but with calculateMMt_sqrt_and_sqrtinv
       # moved outside the function for computational gain with permuted samples
      
