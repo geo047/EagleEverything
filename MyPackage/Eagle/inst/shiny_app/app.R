@@ -985,8 +985,8 @@ placement="right", trigger="hover",
                               ),  ## end column 
 
                                # right half of page
-                               column(6,
-                                        verbatimTextOutput("AM", placeholder=TRUE)
+                               column(6, 
+                                   verbatimTextOutput("AM", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
                                    ## for outputs from ReadMarker function
 
@@ -1527,7 +1527,7 @@ server <- function(input, output, session){
 
  ##  AM analysis for calculation of FPR
 # res <- NULL
-#setgamma <- NULL
+setgamma <- 1
    observeEvent(input$analyse_go, {
    withProgress(message = 'Analysing data', value = 1, {
        fform <<- paste(input$nmsf, collapse="+")
@@ -1568,7 +1568,7 @@ server <- function(input, output, session){
 
                  },  ## end withCallingHandlers
                     message = function(m) {
-                    shinyjs::html(id = "AM", html = m$message, add = TRUE)
+                    shinyjs::html(id = "AM", html = m$message  , add = TRUE)
        })  ## withCallingHandlers
 
      }
