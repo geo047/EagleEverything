@@ -247,7 +247,9 @@ R CMD build Eagle
 
 
 
-R CMD check --as-cran Eagle_1.2.0.tar.gz 
+##    R CMD check --as-cran Eagle_1.4.0.tar.gz 
+
+
 R CMD INSTALL Eagle -l ~/RLibs
 
 

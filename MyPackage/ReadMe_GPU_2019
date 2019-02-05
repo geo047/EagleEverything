@@ -1,0 +1,26 @@
+09/01/2019
+
+Going back to try and get GPU based Eagle to work
+
+Steps 
+
+module purge
+module load R
+module load cuda/9.2.88
+module load intel-mkl/2017.2.174
+
+# I changed nvblas.conf to 
+NVBLAS_LOGFILE  /data/geo047/nvblas.log
+NVBLAS_CPU_BLAS_LIB /apps/R/3.4.0/lib64/R/lib/libRblas.so
+NVBLAS_GPU_LIST ALL
+NVBLAS_TILE_DIM 2048
+NVBLAS_AUTOPIN_MEM_ENABLED
+
+
+# I viewed intel-mkl/2017.2.174 to get location of blas file
+module show intel-mkl/2017.2.174
+
+export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
+LD_PRELOAD=/cm/shared/apps/cuda92/toolkit/9.2.88/lib64/libnvblas.so.9.2.88  R
+
+

@@ -4,7 +4,8 @@
 \alias{ReadPheno}
 \title{Read phenotype file}
 \usage{
-ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = NULL)
+ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = NULL,
+  ...)
 }
 \arguments{
 \item{filename}{contains the name of the phenotype  file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
@@ -16,6 +17,9 @@ to the file is required.}
 is \code{FALSE}.}
 
 \item{missing}{the number or character for a missing phenotype value.}
+
+\item{...}{arguments to be passed to read.table such as \code{skip}, \code{sep}. See \code{\link{read.table}} so the list 
+of arguments.}
 }
 \value{
 a data frame is returned of the phenotype data. If \code{header} is true, the 

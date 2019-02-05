@@ -1,12 +1,7 @@
 #' @title Summary of multiple locus association mapping results
 #' @description    A summary function that provides additional information on the significant 
 #'     marker-trait associations found by \code{\link{AM}}
-#' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. Must be specified. 
-#' @param  pheno  the (data frame) object  obtained  from running \code{\link{ReadPheno}}. Must be specified. 
-#' @param geno   the (list) object obtained from running \code{\link{ReadMarker}}. Must be specified. 
-#' @param map   the (data frame) object obtained from running \code{\link{ReadMap}}. The default is to assume 
-#'              a map object has not been supplied.   Optional.
-
+#' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. 
 #' @details
 #'
 #' \code{SummaryAM} produces two tables of results. First, a table of results is produced with 
@@ -68,51 +63,24 @@
 #'   # Produce additional summary information 
 #'   #------------------------------------------
 #'
-#'   SummaryAM(AMobj=res, pheno=pheno_obj, geno=geno_obj, map=map_obj)
+#'   SummaryAM(AMobj=res)
 #'  }
 #'
 #' 
 #' 
 #' @seealso \code{\link{AM}}
 #'
-SummaryAM <- function(AMobj=NULL, pheno=NULL, geno=NULL, map=NULL)
+SummaryAM <- function(AMobj=NULL)
 {
 
  if(is.null(AMobj)){
     message(" SummaryAM function requires AMobj object to be specified.")
     return(NULL)
     }
- if(is.null(pheno)){
-    message(" SummaryAM function requires pheno parameter to be specified.")
-    return(NULL)
-    }
- if(is.null(geno)){
-    message(" SummaryAM function requires geno parameter to be specified.")
-    return(NULL)
-    }
  if(!is.list(AMobj)){
     message(" SummaryAM function requires AMobj object to be a list object.")
     return(NULL)
    }
- if(!is.data.frame(pheno)){
-    message(" SummaryAM function requires pheno object to be a data.frame object.")
-    return(NULL)
-    }
- if(!is.list(geno)){
-   message(" SummaryAM function requires geno object to be a list object.")
-    return(NULL)
-   }
-
- if(is.null(map)){
-   if(!AMobj$quiet ){
-     message(" Map file has not been supplied. An artificial map is being created but this map is not used in the analysis. \n")
-     message(" It is only used for the reporting of results. \n")
-   }
-   ## map has not been supplied. Create own map
-   map <- data.frame(SNP=paste("M", 1:geno[["dim_of_ascii_M"]][2], sep=""), 
-                     Chr=rep(1, geno[["dim_of_ascii_M"]][2]), 
-                     Pos=1:geno[["dim_of_ascii_M"]][2])
-  }
 
  ## check to make sure that null model is not being supplied
  if (length(AMobj$Mrk)==1){
@@ -122,22 +90,21 @@ SummaryAM <- function(AMobj=NULL, pheno=NULL, geno=NULL, map=NULL)
  }
 
   ## build environmental effects design matrix
-  baseX <- .build_design_matrix(pheno=pheno,  indxNA=AMobj$indxNA, 
+  baseX <- .build_design_matrix(pheno=AMobj$pheno,  indxNA=AMobj$indxNA_pheno, 
                                     fformula=AMobj$fformula,
                                    quiet=AMobj$quiet)
-
 
   ## add genetic marker effects 
   fullX <- baseX
   for(loc in AMobj$Indx){
-           fullX <- constructX(fnameM=geno[["asciifileM"]], 
+           fullX <- constructX(fnameM=AMobj$geno[["asciifileM"]], 
                               currentX=fullX, loci_indx=loc,
-                               dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                                map=map)
+                               dim_of_ascii_M=AMobj$geno[["dim_of_ascii_M"]],
+                                map=AMobj$map)
   }  ## end for loc
 
   ## calculate MMt
-  MMt <- .calcMMt(geno, AMobj$availmemGb, AMobj$ncpu, AMobj$Indx, AMobj$quiet)
+  MMt <- .calcMMt(AMobj$geno, AMobj$availmemGb, AMobj$ncpu, AMobj$Indx, AMobj$quiet)
 
   ## calculate variance components of LMM
   eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)
@@ -146,36 +113,86 @@ SummaryAM <- function(AMobj=NULL, pheno=NULL, geno=NULL, map=NULL)
  mrks <- AMobj$Mrk[-1]  ## its -1 to remove the NA for the null model 
  pval <- vector("numeric", length(colnames(fullX)) )
 
- H <-  eR$vg * MMt + eR$ve * diag(1, nrow(MMt))
+
+ H <- calculateH(MMt=MMt, varE=eR$ve, varG=eR$vg, Zmat=AMobj$Zmat, message=message )
+
+# H <-  eR$vg * MMt + eR$ve * diag(1, nrow(MMt))
  Hinv <- try(solve(H))
  beta <- try(solve( t(fullX) %*% Hinv %*% fullX) %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   )
- df_pvalue <- NULL
- for(ii in colnames(fullX)  ){
-    indx <- which(colnames(fullX)==ii)
-    L <- matrix(data=rep(0, ncol(fullX)), byrow=TRUE, nrow=1)
-    L[indx] <- 1
-    W <- t(L %*% beta) %*%
+
+# code to work out degrees of freedom and marker names for effects
+# in fformula. 
+if(is.null(AMobj$fformula)){
+  # no fixed effects beside default intercept in model
+  df <- 1
+  varnames <- "(Intercept)"
+} else {
+   df_intercept  <- 1  ## intercept only model
+   ## get variable names but doesn't include intercept
+   nms <-  names(get_all_vars(formula=as.formula(AMobj$fformula), data=AMobj$pheno))
+
+   ## dealing with variables in fformula
+   if(length(nms) > 0){
+      df_effects <- c(rep(NA, length(nms)))  # intercept + other effects
+      # calculate degrees of freedom for variables
+      for(ii in 1:length(nms))
+      {
+  
+          if(is.null(levels(AMobj$pheno[, nms[ii]]))){
+              df_effects[ii] <- 1   ## its a covariate
+          } else {
+            df_effects[ii] <- length(levels(AMobj$pheno[, nms[ii]])) - 1  ## for a factor 
+          }
+      } 
+    } ## end if
+
+   df <- df_intercept
+   if(length(nms) > 0)
+     df <- c(df_intercept, df_effects)
+
+   varnames <- "(Intercept)"
+   if(length(nms) > 0)
+        varnames <- c(varnames, nms)
+} ## end if else
+
+## add markers  to varnames and degrees of freedom
+
+varnames <- c(varnames,  as.character(AMobj$Mrk[!is.na(AMobj$Mrk) ]))
+df <- c(df, rep(1, length( AMobj$Mrk[ !is.na(AMobj$Mrk) ] )))
+
+
+ 
+pval <- rep(NA, length(varnames))
+W <- rep(NA, length(varnames))
+
+for(ii in varnames){
+   indx <- grep(ii, colnames(fullX))
+   L <- matrix(data=rep(0, length(indx)*ncol(fullX)), byrow=TRUE, nrow=length(indx) )  # r x p matrix
+   LL <- diag(length(indx))
+   L[,indx] <- LL
+
+
+
+  W[which(ii==varnames)]  <- t(L %*% beta) %*%
             solve( L %*% solve(t(fullX) %*% Hinv %*% fullX) %*% t(L) ) %*%
             (L %*% beta)
-   pval[which(ii==colnames(fullX)) ] <- 1 - pchisq(W, 1) 
- }  ## end for ii in AMobj$Mrk
-df_pvalue <- data.frame("effects"=colnames(fullX), "p-value"=pval)
- ## print Annova table of results
+ pval[which(ii==varnames)] <- 1 - pchisq(W[which(ii==varnames)], length(indx))  ## its not -1 here because fullX already has 1
+                                                      ## less factor level
+ }
 
+message("\n\n Table 1: Significance of Effects in Final Model \n   ")
 
-  message(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n")
-message("     Size and Significance of Effects in Final Model    \n")
-  message(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n")
-
-  message(sprintf("%15s  %10s  %10s \n", "Name", "Additive effect", "p-value"))
-  for(ii in colnames(fullX) )
+  message(sprintf("%20s %6s  %10s      %10s", "",  "Df", "Wald statstic" , "Pr(Chisq)"))
+  for(ii in varnames )
   {
-      indx <- which(colnames(fullX) == ii)
-      message(sprintf("%15s  %10f         %.3E\n",
-         ii, beta[indx], pval[indx ]))
+      indx <- which(varnames == ii)
+      message(sprintf("%20s %6i     %10.2f       %.3E",
+         ii,  df[indx], W[indx], pval[indx ]))
   }  ## end for ii
  message("\n\n\n")
-df_size <- data.frame("effect_names"=colnames(fullX), "estimate" = beta, "p_value"=pval)
+df_size <- data.frame("Effects"=varnames, "Df"=as.character(df),   
+                      "Wald statistic"=as.character(round(W,2)),        
+                      "Pr(Chisq)"=pval, check.names=FALSE)
 
 
 
@@ -191,29 +208,29 @@ df_size <- data.frame("effect_names"=colnames(fullX), "estimate" = beta, "p_valu
  # full model
   df_R <- NULL
   fullX <- baseX
-  message(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n")
-  message(" Proportion of Phenotype Variance Explained by Multiple-locus \n")
-  message("             Association Mapping Model \n")
-  message("  Marker loci which were found by AM() are added one at a time    \n")
-  message(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n")
-  message(sprintf("   %15s      %10s \n", "Marker name", "Proportion"))
+  message(" Table 2: Proportion of phenotypic variance explained by the ")
+  message("          model. Marker loci, which were found by AM(), are added")
+  message("          a SNP at a time.\n ")
+  message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
   for(loc in AMobj$Indx[-1]){
-        fullX <- constructX(fnameM=geno[["asciifileM"]],
+        fullX <- constructX(fnameM=AMobj$geno[["asciifileM"]],
                                 currentX=fullX, loci_indx=loc,
-                               dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                               map=map)
+                               dim_of_ascii_M=AMobj$geno[["dim_of_ascii_M"]],
+                               map=AMobj$map)
         fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
         full_logML <- fullmod$ML
         Rsq <- 1 - exp(-2/nrow(MMt) * (full_logML - base_logML))
-        message(sprintf("  %+15s          %.3f\n",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
+        message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
         df_R <- rbind.data.frame(df_R, data.frame("Marker_name"=paste("+",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])),
                                                   "Prop_var_explained"=Rsq))
    }  ## end for loc
-
+  colnames(df_R) <- c("SNP", "Prop var explained")
 
   res <- list()
-  res[["pvalue"]] <- df_pvalue
+  res[["pvalue"]] <- pval
   res[["size"]] <- df_size
+  res[["Waldstat"]] <- W
+  res[["df"]] <- df
   res[["R"]] <- df_R
 
   

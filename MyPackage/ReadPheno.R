@@ -7,6 +7,12 @@
 #' @param csv   a logical value. When \code{TRUE}, a csv file format is assumed. When \code{FALSE}, a space separated format is assumed. Default
 #'              is \code{FALSE}.
 #' @param missing the number or character for a missing phenotype value.
+#' @param ...   arguments to be passed to read.table such as \code{skip}, \code{sep}. See \code{\link{read.table}} so the list 
+#'             of arguments. 
+
+
+
+
 #' @details  
 #' 
 #' \code{ReadPheno} reads in the phenotype data 
@@ -78,7 +84,7 @@
 #'  ## print a couple of lines of the data file
 #'  head(pheno_obj)
 #'
-ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL ){
+ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL, ... ){
 
   phenofile <- fullpath(filename)
 
@@ -93,9 +99,9 @@ ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL ){
   if(csv) sep=","
   message("\n\n Loading Phenotype file ... \n\n")
   if(is.null(missing)){
-     phenos <- read.table(phenofile, header=header, sep=sep )
+     phenos <- read.table(phenofile, header=header, sep=sep, ... )
   } else {
-     phenos <- read.table(phenofile, header=header, sep=sep, na.strings = as.character(missing) )
+     phenos <- read.table(phenofile, header=header, sep=sep, na.strings = as.character(missing), ... )
   }
 
 

@@ -36,9 +36,10 @@ if (type=="text"){
     if(!it_worked) #  creation of ASCII file has failed 
        return(FALSE)
 
-
+    message(" \n Taking transpose of marker data and writing untransposed and transposed data to disc ... \n") 
     createMt_ASCII_rcpp(f_name = asciiMfile, f_name_ascii = asciiMtfile,   type=type,
                   max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet, message=message )
+    message("\n  Writing of marker data to disc is complete ... \n")
 } else {
     ## PLINK ped file
     ## using -9 to indicate missing/null genotypes
@@ -52,8 +53,10 @@ if (type=="text"){
 
 
     dim_of_ascii_M[2] <- ncol ## setting back to number of cols in no-space ASCII file
+    message(" \n Taking transpose of marker data and writing untransposed and transposed data to disc ... \n") 
     createMt_ASCII_rcpp(f_name = asciiMfile, f_name_ascii = asciiMtfile,    type=type,
                   max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet, message=message )
+    message(" \n Writing of marker data to disc is complete ... \n")
 
 }  ## end if else type
 

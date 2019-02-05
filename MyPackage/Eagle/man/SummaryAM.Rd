@@ -4,17 +4,10 @@
 \alias{SummaryAM}
 \title{Summary of multiple locus association mapping results}
 \usage{
-SummaryAM(AMobj = NULL, pheno = NULL, geno = NULL, map = NULL)
+SummaryAM(AMobj = NULL)
 }
 \arguments{
-\item{AMobj}{the (list) object obtained from running \code{\link{AM}}. Must be specified.}
-
-\item{pheno}{the (data frame) object  obtained  from running \code{\link{ReadPheno}}. Must be specified.}
-
-\item{geno}{the (list) object obtained from running \code{\link{ReadMarker}}. Must be specified.}
-
-\item{map}{the (data frame) object obtained from running \code{\link{ReadMap}}. The default is to assume 
-a map object has not been supplied.   Optional.}
+\item{AMobj}{the (list) object obtained from running \code{\link{AM}}.}
 }
 \description{
 A summary function that provides additional information on the significant 
@@ -79,7 +72,7 @@ multiple locus model.
   # Produce additional summary information 
   #------------------------------------------
 
-  SummaryAM(AMobj=res, pheno=pheno_obj, geno=geno_obj, map=map_obj)
+  SummaryAM(AMobj=res)
  }
 
 

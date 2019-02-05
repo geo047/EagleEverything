@@ -205,8 +205,9 @@ if(!is.null(fformula)){
  }
 
  ## check for NA's in trait
- indxNA_pheno <- check.for.NA.in.trait(trait=trait)
+ indxNA_pheno <- check.for.NA.in.trait(trait=pheno[, trait])
  indxNA_geno <- indxNA_pheno
+
 
 
  ## remove missing observations from pheno  
@@ -233,7 +234,7 @@ if(!is.null(Zmat)){
 ## remove rows in M.ascii and columns in Mt.ascii of those individuals listed in indxNA 
 if(length(indxNA_geno)>0){
     res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
-    message(cat("new dimensions of reshaped M", res, "\n"))
+    message(cat("New dimensions of reshaped marker matrix", res, "\n"))
 
      if(.Platform$OS.type == "unix") {
        geno$asciifileM <- paste(tempdir() , "/", "M.asciitmp", sep="")

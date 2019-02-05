@@ -12,7 +12,7 @@
       } else {
         Xmat <- matrix(data=1, nrow=nrow(pheno), ncol=1)
       }
-      colnames(Xmat) <- "intercept"
+      colnames(Xmat) <- "(Intercept)"  ## to be consistent with model.matrix
    } else {
       ## trait + fixed effects being fitted. 
      if(length(indxNA)==0 | is.null(indxNA) )

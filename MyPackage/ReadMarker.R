@@ -21,7 +21,6 @@
 #' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
 #'         This should be set to be as large as possible for best performance.   
 #' @param  quiet      a logical value. If set to \code{TRUE}, additional runtime output is printed. 
-#'
 #' @details
 #' 
 #' \code{ReadMarker} can handle two different types of marker data; namely,
@@ -195,7 +194,7 @@
 ReadMarker <- function( filename=NULL, type='text', missing=NULL,
                            AA=NULL, AB=NULL, BB=NULL, 
                            availmemGb=16, 
-                           quiet=TRUE){
+                           quiet=TRUE ){
 
 
  if (nargs() == 0){
@@ -285,8 +284,10 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
 
   ## Rcpp function to create ascii  M and Mt file from 
   message(" Beginning creation of reformatted file ... ")
+  message(" Reading marker data ... \n")
   it_worked <- create.ascii(file_genotype=genofile, type=type, AA=as.character(AA), AB=as.character(AB), BB=as.character(BB), 
               availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M, quiet=quiet, missing=missing  )
+
     if(!it_worked)   ## error has occurred. 
        return(NULL)
 
