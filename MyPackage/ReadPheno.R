@@ -98,11 +98,23 @@ ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL, .
   sep <- ""
   if(csv) sep=","
   message("\n\n Loading Phenotype file ... \n\n")
-  if(is.null(missing)){
-     phenos <- read.table(phenofile, header=header, sep=sep, ... )
-  } else {
-     phenos <- read.table(phenofile, header=header, sep=sep, na.strings = as.character(missing), ... )
-  }
+
+  # argument list - guarding against multiple uses of the same argument by mistake
+  ar <- list(...)
+  exist.missing  <- "na.strings" %in% names(ar) 
+  exist.sep      <- "sep" %in% names(ar)
+
+  if (exist.missing & exist.sep )
+    args <- list(file=filename, header=header, ...)
+  if (exist.missing & !exist.sep )
+    args <- list(file=filename, header=header, sep=sep, ...)
+  if (!exist.missing & exist.sep )
+    args <- list(file=filename, header=header, na.strings=missing, ...)
+  if (!exist.missing & !exist.sep )
+    args <- list(file=filename, header=header, sep=sep, na.strings=missing, ...)
+
+
+    phenos <- do.call(read.table, args)
 
 
   ## check for factors with only one level which will cause contrast code to crash

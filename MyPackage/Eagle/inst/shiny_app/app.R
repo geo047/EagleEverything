@@ -1620,7 +1620,7 @@ setgamma <- 1
 
       withCallingHandlers({
                  shinyjs::html("summary", "")
-                  sumres <- SummaryAM(AMobj=res, pheno=pheno, geno=geno, map=map)
+                  sumres <- SummaryAM(AMobj=res )
                   output$pvalue <- renderTable(sumres[["pvalue"]], digits=-1, hover=TRUE, bordered=TRUE)
                   output$size <- renderTable(sumres[["size"]], digits=-1, hover=TRUE, bordered=TRUE)
                   output$R <- renderTable(sumres[["R"]],  hover=TRUE, bordered=TRUE)

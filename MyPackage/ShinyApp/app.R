@@ -1093,7 +1093,7 @@ tags$div(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Significance of Effects"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Size and Significance of Effects"), sep = ""))),
                                     tableOutput("size")
 
                                     ) ## end conditionalPanel
@@ -1558,11 +1558,13 @@ setgamma <- 1
                  res <<- FPR4AM(numreps = input$analyse_numreps,  falseposrate=input$analyse_fpr,
                             trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat = Zmat) 
+          
                  setgamma <<- res$setgamma
                  
                  res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
                              gamma=res$setgamma,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
+
 
                  },  ## end withCallingHandlers
                     message = function(m) {
@@ -1618,8 +1620,8 @@ setgamma <- 1
 
       withCallingHandlers({
                  shinyjs::html("summary", "")
-                  sumres <- SummaryAM(AMobj=res)
-                  #output$pvalue <- renderTable(sumres[["pvalue"]], digits=-1, hover=TRUE, bordered=TRUE)
+                  sumres <- SummaryAM(AMobj=res )
+                  output$pvalue <- renderTable(sumres[["pvalue"]], digits=-1, hover=TRUE, bordered=TRUE)
                   output$size <- renderTable(sumres[["size"]], digits=-1, hover=TRUE, bordered=TRUE)
                   output$R <- renderTable(sumres[["R"]],  hover=TRUE, bordered=TRUE)
 
