@@ -1,5 +1,5 @@
 .form_results <- function(trait, selected_loci,   fformula, indxNA_pheno, indxNA_geno,
-                           ncpu, availmemGb, quiet,  extBIC, gamma, geno, pheno, map, Zmat )
+                           ncpu, availmemGb, quiet,  extBIC, gamma, geno, pheno, map, Zmat, outlierstat )
 {
   ## internal function - used by AM for forming the results object
   if (length(selected_loci) > 1){
@@ -19,7 +19,8 @@
                     geno=geno,
                     pheno=pheno,
                     map=map,
-                    Zmat=Zmat)
+                    Zmat=Zmat,
+                    outlierstat=outlierstat)
   } else {
    sigres <- list(trait=trait,
                     fformula = fformula,
@@ -37,7 +38,8 @@
                     geno=geno,
                     pheno=pheno,
                     map=map,
-                    Zmat=Zmat)
+                    Zmat=Zmat, 
+                    outlierstat=outlierstat)
   }
 return(sigres)
 }

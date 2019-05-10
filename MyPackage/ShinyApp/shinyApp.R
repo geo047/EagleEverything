@@ -184,6 +184,75 @@ row5Anal <- function()
 }
 
 
+##-----------------------------------
+## Rows for Plotting Page 
+##-----------------------------------
+col1Plot <-   function(){ 
+   page <-  column(3,
+                   wellPanel( 
+                      uiOutput("plot_choice"), 
+
+                      bsTooltip("plot_choice",
+                     title='<font size="3" > With the Manhattan plot type, the score statistics from the model building process are converted into  p-values and their -log values plotted on the y-axis. With the score statistic plot type, the score statistics are plotted on the y-axis. These score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model. </font>',
+                      placement="right", trigger="hover", options=list(container="body"))
+
+                   ) ## end wellPanel
+                )  # column
+  return(page)
+}
+
+
+
+col2Plot <- function(){
+  page <-  column(3,
+                    wellPanel(
+                       uiOutput("plot_modelits"),
+
+                       bsTooltip("plot_modelits",
+                       title='<font size="3" > SNP-trait associations are found by building the best model iteratively.  </font>',
+                       placement="right", trigger="hover", options=list(container="body"))
+
+                       ) ## end wellPanel
+                     ) ## end column
+  return(page)
+}
+
+
+col3Plot <- function(){
+
+  page <-  column(3,
+                    wellPanel(
+                       uiOutput("plot_chromosomes"),
+
+                       bsTooltip("plot_chromosommes",
+                       title='<font size="3" > Select a chromosome or the entire genome (All)  </font>',
+                       placement="right", trigger="hover", options=list(container="body"))
+
+                       ) ## end wellPanel
+                     ) ## end column
+  return(page)
+}
+
+
+col4Plot <- function()
+{
+   page = column(3,
+             wellPanel(
+                shinyjs::useShinyjs(),
+                            #actionButton(inputId="plot_go",label="Generate interactive plot", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
+                            #             icon=icon("upload", lib="glyphicon")),
+                            actionButton(inputId="plot_go",label=HTML('<font size="4">Generate Interactive </br>Plot</font>'), width='100%', style='padding:1px 1px 1px 1px; font-size:100%'),
+                                          style='padding: 1px',
+                                        bsTooltip("plot_go",
+                     title='<font size="3" >  By clicking here, a plot will be created below based on your selections. If you change your selections,  you will need to click this button again to generate a new plot. </font>',
+                          placement="left", trigger="hover",
+                          options=list(container="body"))
+              ) ## wellPanel
+            )   ## column3
+  return(page)
+}
+
+#-----------------------------------------------
 
 
 
@@ -226,6 +295,8 @@ library(shinythemes)
 library(shinyBS)
 library(shinyjs)
 library(shinyFiles)
+library(plotly)
+library(ggthemes)
 
 FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = shinytheme("flatly"),
                 #       theme = shinytheme("slate"),
@@ -945,6 +1016,8 @@ placement="right", trigger="hover",
                                 
                       ),  ## end tabPanel("Read Map")
 
+
+
                   ##-------------------------------------##
                   ## Analysis                            ##
                   ##-------------------------------------##
@@ -1007,7 +1080,7 @@ placement="right", trigger="hover",
 
 
 
-
+                      navbarMenu("More", 
 
 
  
@@ -1120,6 +1193,66 @@ tags$div(
 
 ),  ## end tabPAnel pvalue
 
+##----------------------------##
+## Plotting                   ##
+##----------------------------##
+                      
+                       tabPanel("Plots", icon=icon("file-o"), 
+                               tags$head(tags$style(HTML('
+
+                                                         .popover {
+                                                         max-width: 80%;
+                                                         
+                                                         }
+                                                         '))
+                               ),
+
+
+                            fluidPage(
+                              fluidRow(
+                                column(12, {
+                                       tags$div(img(src = "images/plot_banner.jpg", 
+                                                    style="width: 100% ; height: 100%"))
+                               
+                                }
+                                       ) ## end column(12, )
+                              ), ## end fluidRow
+                              br(),
+                              fluidRow(column(12, 
+                                          bsButton(inputId="plot_overview", label="Hover here for details",
+                                          style="warning", size="large", type="action", block=TRUE,
+                                          icon=icon("question-circle-o")
+                                          )
+
+  
+                                           
+                                       ) ## end column
+                              ), ## end fluidRow
+                              
+                              
+                              br(),
+
+                              fluidRow(
+                                 col1Plot(),
+                                 col2Plot(),
+                                 col3Plot(),
+                                 col4Plot()
+
+
+
+                              ), ## end fluidRow
+
+
+                              fluidRow(
+                                 ## plotly plot
+                                 plotlyOutput("plot")
+ 
+                              ) ## end fluidRow
+                              
+                            ) ## end fluidPage    
+                                
+                                
+                      ),  ## end tabPanel("Plots")
 
    tabPanel("Help",  icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
                 fluidPage(
@@ -1131,7 +1264,7 @@ tags$div(
                  ) ## end fluidPage
             ) ## end tabPanel("Help") 
 
-
+       ) ## end navbarMenu
 
 
 
@@ -1439,16 +1572,6 @@ server <- function(input, output, session){
   })  ## end observeEvent
 
 
-  ##------------------
-  ## Optimize
-  ##------------------
-
-
-
-
-
-
-
 
 
   ##-------------------
@@ -1512,6 +1635,9 @@ server <- function(input, output, session){
 
 
 
+
+
+
   output$analyse_fnames <- renderUI({
       checkboxGroupInput("nmsf", h4("Step 2: Choose fixed effects"), fnms() , inline=TRUE)
     })  ## end renderUI
@@ -1521,6 +1647,8 @@ server <- function(input, output, session){
            fform <<- paste(input$nmsf, collapse="+")
  
    })
+
+
 
 
 
@@ -1576,9 +1704,233 @@ setgamma <- 1
   })  ## end observeEvent
 
 
+ ##----------------------------------
+ ## Plotting  - server code -
+ ##----------------------------------
+
+  #----------------------------------------------------
+  ## get chromosome labels
+  chromnames <- reactive({
+             if (input$analyse_go){
+                 # map has been entered
+                  if (input$map_go){
+                     return(c(unique(map[,2]), "All") )
+                  } else {
+                    # no map 
+                     return(1)
+                  }
+             }
+           })
 
 
 
+  sz <- 0
+  output$plot_chromosomes <- renderUI({
+
+   if (length(chromnames) < 5){
+       sz <- length(chromnames)
+   } else {
+       sz <- 5
+   }
+  
+  selectInput(inputId="chosenchrm", label=h4("Choose chromosome"), choices=chromnames() , size = sz   , selectize=FALSE )     
+  })  ## end renderUI
+  #----------------------------------------------------
+
+
+  #----------------------------------------------------
+  ## get number of iterations of model building 
+  modelits <- reactive({
+                if(input$analyse_go){
+                  return(c(1:length(res$Mrk)))
+                }
+  })
+
+
+  sz <- 0
+  output$plot_modelits <- renderUI({
+
+   if (length(modelits) < 5){
+       sz <- length(modelits)
+   } else {
+       sz <- 5
+   }
+
+  selectInput(inputId="chosenits", label=h4("Choose iteration"), choices=modelits() , size = sz   , selectize=FALSE )    
+  })  ## end renderUI
+
+  #----------------------------------------------------
+
+
+
+  #----------------------------------------------------
+
+   output$plot_choice <- renderUI({
+       radioButtons(inputId="plotchoice", label=h4("Choose plot type"),
+                       choiceNames=c("Manhattan (-log(p))","Score statistics"),
+                       choiceValues=c("manhattan", "raw") )
+   })
+
+  #----------------------------------------------------
+
+   IsItBigger <- function(vals, itnum, xindx=NULL){
+   bigger <- NULL
+   if(as.numeric(itnum) > 1){
+     if(is.null(xindx)){
+       # entire genome
+       bigger <- rep("Decreased from previous iteration", length(vals[[as.numeric(itnum)]]) ) ## initialize logical 
+       indx <- which( vals[[as.numeric(itnum)]] >  vals[[as.numeric(itnum) - 1 ]] )
+       bigger[indx] <- "Increased from previous iteration"
+     } else {
+       # do chromosome xind
+       bigger <- rep("Decreased from previous iteration" , length(vals[[as.numeric(itnum)]][xindx]) ) ## initialize logical 
+       indx <- which( vals[[as.numeric(itnum)]][xindx] >  vals[[as.numeric(itnum) - 1 ]][xindx] )
+       bigger[indx] <- "Increased from previous iteration"
+    }
+     }
+     return(bigger)
+  }
+
+
+  #---------------------------------------------------
+  # ggplot plotting function
+ observeEvent(input$plot_go , {
+
+     # we do not have a map
+     xindx <- 1:length( res$outlierstat[[as.numeric(input$chosenits)]] )
+     xvals <- xindx
+
+     yvals <- res$outlierstat[[as.numeric(input$chosenits)]]
+     bigger <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits )
+
+     chrm <- rep(1, length(xindx))
+     pos  <- xvals 
+
+ 
+     # map exisits
+     if(!is.null(map)){
+        if(input$chosenchrm != "All"){
+          # picking a single chrm to plot
+          xindx <- which(as.character(map[,2]) == input$chosenchrm)
+          xvals <- map[xindx, ncol(map)]
+          chrm <-  map[xindx, 2]
+          pos <- xvals 
+          yvals <-  res$outlierstat[[as.numeric(input$chosenits)]][xindx]
+          bigger <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits, xindx=xindx )
+       } else {
+          # plotting all the chromosomes - more difficult
+          # reordering based on chrm then map position
+          oindx <- order(map[,2], map[, ncol(map)])
+          yvals <- res$outlierstat[[as.numeric(input$chosenits)]][oindx]  ## reordering yvals
+
+          if( as.numeric(input$chosenits)  > 1){
+             bigger <- rep(FALSE, length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+             indx <- which(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] >  res$outlierstat[[as.numeric(input$chosenits) - 1 ]][oindx] )
+             bigger[indx] <- TRUE
+          }
+
+          mapordered <- map[oindx,]
+          # map position is within chrm, need cumulative postion. 
+          chrms <- unique(mapordered[,2])
+          xvals <- mapordered[, ncol(mapordered)]
+          if (length(chrms) > 1){
+            xvals <- rep(0, nrow(mapordered))
+            indx <- which(mapordered[,2] == chrms[1])
+            xvals[indx] <- mapordered[indx,ncol(mapordered)]
+            genometot <- max(xvals)
+             for(ii in chrms[-1]){
+               indx <- which(mapordered[,2] == ii)
+               xvals[indx] <- mapordered[indx, ncol(mapordered)] + genometot
+               genometot <- max(xvals)
+              }  ## end for
+          } ## end if length(chrms)
+           chrm <- mapordered[,2]
+           pos <- mapordered[, ncol(mapordered)]
+       }  # if else 
+       
+
+     }  ##  if(!is.null(map))
+
+    xlabel <- "Map Position (bp)"
+    if(is.null(map))
+      xlabel <- "Column Position of SNP"
+
+    ylabel <- "Score Statistic"
+    if(input$plotchoice=="manhattan")
+       ylabel <- "-log10(p value)"
+    
+
+     # addition on SNP-trait positions on map
+     if(length(res$Chr) > 1){  ## first entry of list is always NA
+         # found associations 
+          found.chr <- res$Chr[!is.na(res$Chr)]
+          found.pos <- res$Pos[!is.na(res$Pos)]
+          found.label <- 1:length(found.chr)  ## used for annotation in plot
+      }
+
+
+     # place on -lgo10 scale if manhattan selected
+     if(input$plotchoice=="manhattan"){
+       yvals[is.nan(yvals)] <- 0
+       yvals[yvals < 0] <- 0  ## rounding error - very close to 0 when negative
+       ts <- sqrt(yvals)
+       pval <- 1 - pnorm(ts)
+       logp <- -1*log10(pval)
+       yvals <- logp
+     }
+
+
+     # create data frame for plotting 
+     df <- data.frame(x=xvals, y=yvals, chrm=chrm, pos=pos, foundchr=FALSE, foundpos=FALSE, foundlabel=0 )
+
+     # check for SNP findings from AM
+     if (length(res$Chr)>1){
+          for(ii in 1:length(found.chr)){
+             indx <- which(df$chrm == found.chr[ii])
+             if(!is.null(indx))
+                   df$foundchr[indx] <- TRUE
+             indx <- which(df$pos == found.pos[ii])
+             if(!is.null(indx))
+                   df$foundpos[indx] <- TRUE
+              indx <- which(df$foundchr & df$foundpos & df$foundlabel==0)
+              if(!is.null(indx))
+                   df$foundlabel[indx] <- ii
+       }  ## end for ii
+     }  ## end if length()       
+     geomX <- with(df, x[foundchr&foundpos])
+     geomLabels <- with(df, foundlabel[foundchr&foundpos])
+
+
+     if(is.null(bigger)){
+       p  <- ggplot(data=df, aes(x=x, y=y )) + geom_point()
+
+     } else {
+       df$Increase <- bigger ## used for color coding points that have increased/decreased from previous iteration 
+       p  <- ggplot(data=df, aes(x=x, y=y, color=Increase )) + geom_point()
+    }
+
+  p <- p + theme_hc()
+            p <- p + ylab(ylabel) + xlab(xlabel)
+            p <- p +  theme(legend.title=element_blank())  ## no legend title
+            p <- p + theme(legend.position="right")
+
+            if(!is.null(geomX)){
+              for(ii in geomX){
+               p <- p + geom_vline(xintercept = ii, linetype="dotted", color="darkblue", size=1)
+               p <- p + annotate("text", label=geomLabels[which(geomX==ii)] , x=(ii  - ( diff(range(df$x))*0.01) )   , y = max(df$y*0.8) )
+              }  ## end for ii
+            } ## if !is.null
+
+
+        output$plot <-  renderPlotly({
+ggplotly(p)
+})
+
+ 
+  })  ## end observeEvent
+
+
+ #--------------------------------------------------
 
  ##--------------------------
  ## Print findings .... 
@@ -1763,6 +2115,14 @@ There is additional computation needed to produce these extra tables. It may tak
 
 ), trigger = "hover")
 
+
+
+addPopover(session, "plot_overview", "Details", content = HTML(paste("
+Eagle finds SNP-trait associations by building a model iteratively. At each iteration of the model building process, the next 'best' SNP is found. This is done by identifying the SNP with the largest score statistic. A new score statitic is calculated at each iteration of the model building process.<br><br>
+Here, the score statistics or their -log p-values can be plotted. A user can see how these score statistics change as the model is built. Red (blue) points mean the score statistic has increased (decreased) from the previous iteration.   
+<br><br>
+The vertical dotted lines mark the location of the SNP-trait findings. The number is the order in which the SNP-trait associations were found by Eagle. 
+     ", sep="") ), trigger = "hover")
 
 
 

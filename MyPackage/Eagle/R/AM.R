@@ -457,7 +457,7 @@ if(length(indxNA_geno)>0){
 
  continue <- TRUE
  itnum <- 1
-
+ outlierstat <- list()
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
     # print(" forming currentX")
@@ -521,7 +521,10 @@ if(length(indxNA_geno)>0){
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
           #print(" do.call find_qtl ")
-          new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+          ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+          fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+          new_selected_locus <- fq[["orig_indx"]]
+          outlierstat[[itnum]] <- fq[["outlierstat"]]
           #print("end")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -537,7 +540,10 @@ if(length(indxNA_geno)>0){
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
            #print("inner  find_qtl")
-          new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+          #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+          fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+          new_selected_locus <- fq[["orig_indx"]]
+          outlierstat[[itnum]] <- fq[["outlierstat"]]
           #print("end")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -558,7 +564,7 @@ if(length(indxNA_geno)>0){
          .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
          sigres <- .form_results(trait, selected_loci[-length(selected_loci)],   fformula, 
                      indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet,  extBIC, gamma, 
-                     geno, pheno, map, Zmat )   
+                     geno, pheno, map, Zmat, outlierstat )   
     }
  
   }  ## end while continue
@@ -568,7 +574,7 @@ if( itnum > maxit){
     .print_final(selected_loci, map,  extBIC, gamma)
     sigres <- .form_results(trait, selected_loci,   fformula, 
                      indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet,  extBIC, gamma,
-                     geno, pheno, map, Zmat )   
+                     geno, pheno, map, Zmat, outlierstat )   
 
 } else {
     ## remove last selected_loci as for this locus, the extBIC went up
@@ -580,13 +586,13 @@ if( itnum > maxit){
         sigres <- .form_results(trait, selected_loci[-length(selected_loci)],   fformula, 
                          indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet, 
                          extBIC[-length(selected_loci)], gamma, 
-                         geno, pheno, map, Zmat )   
+                         geno, pheno, map, Zmat, outlierstat )   
     } else {
         .print_header()
         .print_final(selected_loci, map, extBIC, gamma )
         sigres <- .form_results(trait, selected_loci,   fformula, 
                          indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet, extBIC, gamma, 
-                         geno, pheno, map, Zmat )   
+                         geno, pheno, map, Zmat, outlierstat )   
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)
 

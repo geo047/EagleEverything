@@ -76,15 +76,17 @@
 
 
    # saving test statistic to disc so that we can plot these results
-   if(.Platform$OS.type == "unix") {
-       tmpfile <- paste(tempdir(), "/", paste("tsq", itnum , ".RData", sep="") , sep="")
-       save(tsq, file=tmpfile)
-     } else {
-       tmpfile <- paste(tempdir()  , "\\", paste("tsq", itnum , ".RData", sep="")     , sep="")
-       save(tsq, file=tmpfile)
-     }
+#   if(.Platform$OS.type == "unix") {
+#       tmpfile <- paste(tempdir(), "/", paste("tsq", itnum , ".RData", sep="") , sep="")
+#       save(tsq, file=tmpfile)
+#     } else {
+#       tmpfile <- paste(tempdir()  , "\\", paste("tsq", itnum , ".RData", sep="")     , sep="")
+#       save(tsq, file=tmpfile)
+#     }
 
-
+ ## AWG tmp
+# tmpfile <- paste("/home/geo047/"   , "/", paste("tsq", itnum , ".RData", sep="")     , sep="")
+#  save(tsq, file=tmpfile)
 
 
 
@@ -101,7 +103,11 @@
     indx <- indx[midpoint]
 
     orig_indx <- seq(1, geno[["dim_of_ascii_M"]][2])  ## 1:ncols
-    return(orig_indx[indx])
+    res <- list()
+    res[["orig_indx"]] <- orig_indx[indx]
+    res[["outlierstat"]] <- tsq
+    return(res)
+    #return(orig_indx[indx])
 }
 
 

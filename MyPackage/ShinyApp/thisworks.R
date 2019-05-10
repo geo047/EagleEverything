@@ -2120,8 +2120,6 @@ There is additional computation needed to produce these extra tables. It may tak
 addPopover(session, "plot_overview", "Details", content = HTML(paste("
 Eagle finds SNP-trait associations by building a model iteratively. At each iteration of the model building process, the next 'best' SNP is found. This is done by identifying the SNP with the largest score statistic. A new score statitic is calculated at each iteration of the model building process.<br><br>
 Here, the score statistics or their -log p-values can be plotted. A user can see how these score statistics change as the model is built. Red (blue) points mean the score statistic has increased (decreased) from the previous iteration.   
-<br><br>
-The vertical dotted lines mark the location of the SNP-trait findings. The number is the order in which the SNP-trait associations were found by Eagle. 
      ", sep="") ), trigger = "hover")
 
 
