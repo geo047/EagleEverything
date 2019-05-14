@@ -1,8 +1,9 @@
 #' @title Browser-based Graphical User Interface
 #' @description Opens a web browser to act as a user-friendly interface to 'Eagle'
 #' @details
-#' \code{OpenGUI} is an easy to use web-based interface for 'Eagle'. By clicking on the navigation 
-#' tabs at the top of a page, data can be read and analysed. By using this GUI, a user can avoid having to write R code. 
+#' Once \code{OPenGUI} is run, your default web-browser will open automatically the Eagle GUI. We have written our GUI in html code. 
+#' The GUI allows users to input data files, analyse data, summarise findings, and view results via interactive plots. We 
+#' have designed the GUI for users whom may be unfamilar with R and wishing to avoid having to write R code.  
 #'
 #'
 #' Note, that even though a web browser is being used as the user interface, everything remains local to the computer. 

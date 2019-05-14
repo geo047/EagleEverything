@@ -155,7 +155,6 @@ for(ii in 1:ncol(phenos))
   message(c( sprintf("%20s   %15s", names(phenos)[ii], class(phenos[[ii]]) ), "\n"))
 
 
-message("\n WARNING: if the column classes are incorrect, these will need to be changed by the user.\n\n\n")
 
 message("The phenotype file has been Uploaded.")
 

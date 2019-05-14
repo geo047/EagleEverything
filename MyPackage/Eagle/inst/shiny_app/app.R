@@ -18,12 +18,7 @@ if(.Platform$OS.type == "windows") {
 bannerAnal <- function()
 {
    page =  fluidPage(
-       
-              fluidRow( column(12, {
-                       tags$div(img(src = "images/analyse_banner.jpg", 
-                                 style="width: 100% ; height: 100%"))
-                               
-                                }
+              fluidRow( column(12, { tags$div(img(src = "images/analyse_banner.jpg", style="width: 100% ; height: 100%")) }
                       ) ## end column(12, )
               ), ## end fluidRow
               br(),
@@ -38,7 +33,6 @@ bannerAnal <- function()
 }
 
 row1Anal <- function(){
-
   page <-  fluidRow(column(12,  
                     wellPanel(
                        uiOutput("analyse_names"),
@@ -56,17 +50,17 @@ row1Anal <- function(){
 
 row2Anal <- function()
 {
-   page =   fluidRow(column(12,
-               wellPanel(
-                  uiOutput("analyse_fnames"),
-                       bsTooltip("analyse_fnames",
-                             title='<font size="3" > Select the variables, if any, to be used as fixed effects in the analysis. If no variables are selected, then only an overall mean will be fitted. </font>',
-                              placement="right", trigger="hover", options=list(container="body")),
-                       textOutput("fmodel")
-                         ) ## end wellPanel
-                       ) ## end column
-                   ) ## end fluidRow
-   return(page)
+ page =   fluidRow(column(12,
+          wellPanel(
+            uiOutput("analyse_fnames"),
+              bsTooltip("analyse_fnames",
+              title='<font size="3" > Select the variables, if any, to be used as fixed effects in the analysis. If no variables are selected, then only an overall mean will be fitted. </font>',
+                placement="right", trigger="hover", options=list(container="body")),
+              textOutput("fmodel")
+           ) ## end wellPanel
+                ) ## end column
+          ) ## end fluidRow
+return(page)
 }
 
 
@@ -88,8 +82,6 @@ page =  fluidRow(column(12,  wellPanel(
 
 row4Anal <- function()
 {
-
-
 page =  fluidRow( column(12, 
          wellPanel(
           radioButtons(inputId="analyse_gamma", label=h4("Step 4: Specify gamma value (controls the false positive rate)"), 
@@ -155,7 +147,7 @@ page =  fluidRow( column(12,
                                            
                                            
                         
-                                         
+return(page)                                         
 }  ## end function row4Analyse 
 
 
@@ -177,7 +169,7 @@ row5Anal <- function()
                      title='<font size="3" >  Click here to find the set of snp in strongest association with the trait. This may take some time if the gamma value is being found automatically.   </font>',
                           placement="right", trigger="hover",
                           options=list(container="body"))
-              ) ## wellPanel
+             ) ## wellPanel
             )   ## column12
          ) ## end fluidRow
   return(page)
@@ -187,17 +179,37 @@ row5Anal <- function()
 ##-----------------------------------
 ## Rows for Plotting Page 
 ##-----------------------------------
+banner1Plot <- function(){
+  page <- fluidRow(
+             column(12, {
+                  tags$div(img(src = "images/plot_banner.jpg", style="width: 100% ; height: 100%"))
+                        }
+                   ) ## end column(12, )
+                  ) ## end fluidRow
+     return(page)
+}
+
+banner2Plot <- function(){
+   page <- fluidRow(column(12, 
+                       bsButton(inputId="plot_overview", label="Hover here for details",
+                       style="warning", size="large", type="action", block=TRUE,
+                       icon=icon("question-circle-o"))
+                           ) ## end column
+                   ) ## end fluidRow
+           return(page)             
+}
+
 col1Plot <-   function(){ 
    page <-  column(3,
                    wellPanel( 
                       uiOutput("plot_choice"), 
 
                       bsTooltip("plot_choice",
-                     title='<font size="3" > With the Manhattan plot type, the score statistics from the model building process are converted into  p-values and their -log values plotted on the y-axis. With the score statistic plot type, the score statistics are plotted on the y-axis. These score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model. </font>',
+                     title='<font size="3" > Manhattan plot type -  score statistics are converted into  p-values and their -log values plotted on the y-axis. Score statistic plot type - the score statistics are plotted on the y-axis. The score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model buidling process. </font>',
                       placement="right", trigger="hover", options=list(container="body"))
 
-                   ) ## end wellPanel
-                )  # column
+                 ) ## end wellPanel
+             )  # column
   return(page)
 }
 
@@ -205,15 +217,14 @@ col1Plot <-   function(){
 
 col2Plot <- function(){
   page <-  column(3,
-                    wellPanel(
-                       uiOutput("plot_modelits"),
-
-                       bsTooltip("plot_modelits",
+                  wellPanel(
+                    uiOutput("plot_modelits"),
+                    bsTooltip("plot_modelits",
                        title='<font size="3" > SNP-trait associations are found by building the best model iteratively.  </font>',
                        placement="right", trigger="hover", options=list(container="body"))
 
-                       ) ## end wellPanel
-                     ) ## end column
+                  ) ## end wellPanel
+           ) ## end column
   return(page)
 }
 
@@ -221,15 +232,15 @@ col2Plot <- function(){
 col3Plot <- function(){
 
   page <-  column(3,
-                    wellPanel(
-                       uiOutput("plot_chromosomes"),
+             wellPanel(
+               uiOutput("plot_chromosomes"),
 
-                       bsTooltip("plot_chromosommes",
-                       title='<font size="3" > Select a chromosome or the entire genome (All)  </font>',
-                       placement="right", trigger="hover", options=list(container="body"))
+               bsTooltip("plot_chromosommes",
+               title='<font size="3" > Select a chromosome or the entire genome (All)  </font>',
+               placement="right", trigger="hover", options=list(container="body"))
 
-                       ) ## end wellPanel
-                     ) ## end column
+            ) ## end wellPanel
+          ) ## end column
   return(page)
 }
 
@@ -244,17 +255,34 @@ col4Plot <- function()
                             actionButton(inputId="plot_go",label=HTML('<font size="4">Generate Interactive </br>Plot</font>'), width='100%', style='padding:1px 1px 1px 1px; font-size:100%'),
                                           style='padding: 1px',
                                         bsTooltip("plot_go",
-                     title='<font size="3" >  By clicking here, a plot will be created below based on your selections. If you change your selections,  you will need to click this button again to generate a new plot. </font>',
+                     title='<font size="3" >   Press this button to generate the plot. If you change your selections after the plot has been created, you will need to click this button again to recreate the plot.  </font>',
                           placement="left", trigger="hover",
                           options=list(container="body"))
-              ) ## wellPanel
-            )   ## column3
+            ) ## wellPanel
+         )   ## column3
   return(page)
 }
 
-#-----------------------------------------------
+##---------------------------
+## Rows for Help page
+##---------------------------
+
+row1Help <- function(){
+  page <- fluidRow(
+             column(12, 
+               includeHTML("help.html")
+             )  ## end column
+          ) ## end fluidRow
+  return(page)
+ }
 
 
+
+
+
+#------------------------------
+# Misc functions
+#------------------------------
 
 
 home_intro <- function(){
@@ -286,8 +314,9 @@ read_pheno_intro <- function(){
     
   
 
-
-
+##-------------------
+## ui Body
+##--------------------
 
 ## ui.R ##
 library(shiny)
@@ -298,9 +327,10 @@ library(shinyFiles)
 library(plotly)
 library(ggthemes)
 
-FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  theme = shinytheme("flatly"),
-                #       theme = shinytheme("slate"),
-                #       theme = shinytheme("united"),
+FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  
+                      theme = shinytheme("flatly"),
+                #       theme = shinytheme("paper"),
+                #      theme = shinytheme("united"),
 
                       
                        ##----------------------------##
@@ -1196,73 +1226,38 @@ tags$div(
 ##----------------------------##
 ## Plotting                   ##
 ##----------------------------##
-                      
-                       tabPanel("Plots", icon=icon("file-o"), 
-                               tags$head(tags$style(HTML('
-
-                                                         .popover {
-                                                         max-width: 80%;
-                                                         
-                                                         }
-                                                         '))
-                               ),
-
-
-                            fluidPage(
-                              fluidRow(
-                                column(12, {
-                                       tags$div(img(src = "images/plot_banner.jpg", 
-                                                    style="width: 100% ; height: 100%"))
-                               
-                                }
-                                       ) ## end column(12, )
-                              ), ## end fluidRow
-                              br(),
-                              fluidRow(column(12, 
-                                          bsButton(inputId="plot_overview", label="Hover here for details",
-                                          style="warning", size="large", type="action", block=TRUE,
-                                          icon=icon("question-circle-o")
-                                          )
-
-  
-                                           
-                                       ) ## end column
-                              ), ## end fluidRow
-                              
-                              
-                              br(),
-
-                              fluidRow(
-                                 col1Plot(),
-                                 col2Plot(),
-                                 col3Plot(),
-                                 col4Plot()
+  tabPanel("Interactive Plots", icon=icon("fa-pie-chart", class="fa fa-pie-chart fa-lg"),
+     tags$head(tags$style(HTML('.popover { max-width: 80%; } '))),
+   fluidPage(
+      banner1Plot(),
+      br(),
+      banner2Plot(),
+      br(),
+      fluidRow(
+         col1Plot(),
+         col2Plot(),
+         col3Plot(),
+         col4Plot()
+      ), ## end fluidRow
+      fluidRow(
+         ## plotly plot
+         plotlyOutput("plot")
+      ) ## end fluidRow
+     ) ## end fluidPage    
+   ),  ## end tabPanel("Plots")
 
 
-
-                              ), ## end fluidRow
-
-
-                              fluidRow(
-                                 ## plotly plot
-                                 plotlyOutput("plot")
- 
-                              ) ## end fluidRow
-                              
-                            ) ## end fluidPage    
-                                
-                                
-                      ),  ## end tabPanel("Plots")
+##------------------------------##
+## Help                         ##
+##------------------------------##
 
    tabPanel("Help",  icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
-                fluidPage(
-                      fluidRow(
-                        column(12, 
-                            includeHTML("help.html")
-                        )  ## end column
-                      ) ## end fluidRow
-                 ) ## end fluidPage
-            ) ## end tabPanel("Help") 
+   fluidPage(
+     row1Help()
+
+
+     ) ## end fluidPage
+    ) ## end tabPanel("Help") 
 
        ) ## end navbarMenu
 
@@ -1824,9 +1819,9 @@ setgamma <- 1
           yvals <- res$outlierstat[[as.numeric(input$chosenits)]][oindx]  ## reordering yvals
 
           if( as.numeric(input$chosenits)  > 1){
-             bigger <- rep(FALSE, length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+             bigger <- rep("Decreased from previous iteration"    , length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
              indx <- which(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] >  res$outlierstat[[as.numeric(input$chosenits) - 1 ]][oindx] )
-             bigger[indx] <- TRUE
+             bigger[indx] <- "Increased from previous iteration"
           }
 
           mapordered <- map[oindx,]

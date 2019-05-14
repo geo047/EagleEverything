@@ -32,6 +32,7 @@ Imports:
    matrixcalc,
    shiny,
    shinythemes,
+   ggthemes,
    shinyBS,
    shinyjs,
    plotly,

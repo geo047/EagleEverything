@@ -1,0 +1,10 @@
+Eagle-package	Eagle-package
+AM	AM
+Eagle	Eagle-package
+FPR4AM	FPR4AM
+OpenGUI	OpenGUI
+ReadMap	ReadMap
+ReadMarker	ReadMarker
+ReadPheno	ReadPheno
+ReadZmat	ReadZmat
+SummaryAM	SummaryAM
