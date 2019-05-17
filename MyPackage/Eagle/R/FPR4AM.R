@@ -126,7 +126,7 @@ FPR4AM <- function(
 error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL, falseposrate=falseposrate )
  if(error.code){
-   message("\n The Eagle function FDR4AM has terminated with errors.\n")
+   message("\n The Eagle function FPR4AM has terminated with errors.\n")
    return(NULL)
  }
 

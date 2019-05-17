@@ -16,6 +16,12 @@ if(!is.null(falseposrate)){
  }
 }
 
+if(is.factor(pheno[[colname.trait]])){
+   message("Error: the trait data in ", colname.trait, " is of class factor. Eagle can only handle quantitative traits.   \n")
+   message("       Factors are assumed by R if the trait data contains alphanumeric values. \n")
+   message("       To proceed, change the data in ", colname.trait, " in the input file so that the trait has only numeric values. \n")
+   return(TRUE)
+}
 
 
 if(is.null(colname.trait)){

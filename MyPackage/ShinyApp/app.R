@@ -205,7 +205,7 @@ col1Plot <-   function(){
                       uiOutput("plot_choice"), 
 
                       bsTooltip("plot_choice",
-                     title='<font size="3" > With the Manhattan plot type, the score statistics from the model building process are converted into  p-values and their -log values plotted on the y-axis. With the score statistic plot type, the score statistics are plotted on the y-axis. These score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model. </font>',
+                     title='<font size="3" > Manhattan plot type -  score statistics are converted into  p-values and their -log values plotted on the y-axis. Score statistic plot type - the score statistics are plotted on the y-axis. The score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model buidling process. </font>',
                       placement="right", trigger="hover", options=list(container="body"))
 
                  ) ## end wellPanel
@@ -250,12 +250,10 @@ col4Plot <- function()
    page = column(3,
              wellPanel(
                 shinyjs::useShinyjs(),
-                            #actionButton(inputId="plot_go",label="Generate interactive plot", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
-                            #             icon=icon("upload", lib="glyphicon")),
-                            actionButton(inputId="plot_go",label=HTML('<font size="4">Generate Interactive </br>Plot</font>'), width='100%', style='padding:1px 1px 1px 1px; font-size:100%'),
+                            actionButton(inputId="plot_go",label=HTML('<font size="4">Generate Plot</font>'), width='100%', style='padding:1px 1px 1px 1px; font-size:100%'),
                                           style='padding: 1px',
                                         bsTooltip("plot_go",
-                     title='<font size="3" >  By clicking here, a plot will be created below based on your selections. If you change your selections,  you will need to click this button again to generate a new plot. </font>',
+                     title='<font size="3" >   Press this button to generate the plot. If you change your selections after the plot has been created, you will need to click this button again to recreate the plot.  </font>',
                           placement="left", trigger="hover",
                           options=list(container="body"))
             ) ## wellPanel
@@ -324,8 +322,8 @@ library(shinythemes)
 library(shinyBS)
 library(shinyjs)
 library(shinyFiles)
-library(plotly)
 library(ggthemes)
+library(ggplot2)
 
 FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  
                       theme = shinytheme("flatly"),
@@ -1226,7 +1224,7 @@ tags$div(
 ##----------------------------##
 ## Plotting                   ##
 ##----------------------------##
-  tabPanel("Interactive Plots", icon=icon("fa-pie-chart", class="fa fa-pie-chart fa-lg"),
+  tabPanel("Plots", icon=icon("fa-pie-chart", class="fa fa-pie-chart fa-lg"),
      tags$head(tags$style(HTML('.popover { max-width: 80%; } '))),
    fluidPage(
       banner1Plot(),
@@ -1240,8 +1238,11 @@ tags$div(
          col4Plot()
       ), ## end fluidRow
       fluidRow(
+        textOutput("caption")
+      ),
+      fluidRow(
          ## plotly plot
-         plotlyOutput("plot")
+         plotOutput("plot")
       ) ## end fluidRow
      ) ## end fluidPage    
    ),  ## end tabPanel("Plots")
@@ -1681,13 +1682,14 @@ setgamma <- 1
                  res <<- FPR4AM(numreps = input$analyse_numreps,  falseposrate=input$analyse_fpr,
                             trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat = Zmat) 
-          
-                 setgamma <<- res$setgamma
+         
+                  if(!is.null(res)){ 
+                    setgamma <<- res$setgamma
                  
-                 res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
+                    res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
                              gamma=res$setgamma,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
-
+                  }
 
                  },  ## end withCallingHandlers
                     message = function(m) {
@@ -1769,21 +1771,32 @@ setgamma <- 1
   #----------------------------------------------------
 
    IsItBigger <- function(vals, itnum, xindx=NULL){
+   ## calculates percentage change in size (increase or decrease)
    bigger <- NULL
+   percentagechange <- NULL
    if(as.numeric(itnum) > 1){
-     if(is.null(xindx)){
        # entire genome
-       bigger <- rep("Decreased from previous iteration", length(vals[[as.numeric(itnum)]]) ) ## initialize logical 
-       indx <- which( vals[[as.numeric(itnum)]] >  vals[[as.numeric(itnum) - 1 ]] )
-       bigger[indx] <- "Increased from previous iteration"
-     } else {
-       # do chromosome xind
-       bigger <- rep("Decreased from previous iteration" , length(vals[[as.numeric(itnum)]][xindx]) ) ## initialize logical 
-       indx <- which( vals[[as.numeric(itnum)]][xindx] >  vals[[as.numeric(itnum) - 1 ]][xindx] )
-       bigger[indx] <- "Increased from previous iteration"
-    }
+       bigger <- rep("" , length(vals[[as.numeric(itnum)]]) ) ## initialize 
+       percentagechange <- rep(0, length(vals[[as.numeric(itnum)]]) ) ## initialize
+       a <-  vals[[as.numeric(itnum)]]
+       b <- vals[[as.numeric(itnum) - 1 ]]
+       # a > b       
+       indx <- which( a  >  b )
+       bigger[indx] <- "Increased value"
+       percentagechange[indx] <- ( (a  -    b ) )[indx] 
+       # a < b
+       indx <- which( a <=  b  )
+       bigger[indx] <- "Decreased value"
+       percentagechange[indx] <- ( (b  -    a ) )[indx] 
+      
+       if(!is.null(xindx)){
+          # reduce to chromosome
+          bigger <- bigger[xindx]
+          percentagechange <- percentagechange[xindx]
+       }
      }
-     return(bigger)
+     res <- list(bigger=bigger, percentagechange=percentagechange)
+     return(res)
   }
 
 
@@ -1796,11 +1809,11 @@ setgamma <- 1
      xvals <- xindx
 
      yvals <- res$outlierstat[[as.numeric(input$chosenits)]]
-     bigger <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits )
-
+     isit  <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits )
+     bigger <- isit$bigger
+     percentagechange <- isit$percentagechange
      chrm <- rep(1, length(xindx))
      pos  <- xvals 
-
  
      # map exisits
      if(!is.null(map)){
@@ -1811,7 +1824,9 @@ setgamma <- 1
           chrm <-  map[xindx, 2]
           pos <- xvals 
           yvals <-  res$outlierstat[[as.numeric(input$chosenits)]][xindx]
-          bigger <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits, xindx=xindx )
+          isit <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits, xindx=xindx )
+          bigger <- isit$bigger
+          percentagechange <- isit$percentagechange
        } else {
           # plotting all the chromosomes - more difficult
           # reordering based on chrm then map position
@@ -1819,9 +1834,21 @@ setgamma <- 1
           yvals <- res$outlierstat[[as.numeric(input$chosenits)]][oindx]  ## reordering yvals
 
           if( as.numeric(input$chosenits)  > 1){
-             bigger <- rep("Decreased from previous iteration"    , length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
-             indx <- which(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] >  res$outlierstat[[as.numeric(input$chosenits) - 1 ]][oindx] )
-             bigger[indx] <- "Increased from previous iteration"
+             bigger <- rep(""    , length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+             percentagechange <- rep(0, length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+
+
+            a <-  res$outlierstat[[as.numeric(input$chosenits)]][oindx]
+            b <- res$outlierstat[[as.numeric(input$chosenits) - 1 ]][oindx]
+
+             indx <- which(  a >  b )
+             bigger[indx] <- "Increased value"
+             percentagechange[indx] <-  (( b - a)) [indx]
+
+             indx <- which(  a <=  b )
+             bigger[indx] <- "Decreased value"
+             percentagechange[indx] <-  (( a - b)) [indx]
+
           }
 
           mapordered <- map[oindx,]
@@ -1895,13 +1922,15 @@ setgamma <- 1
      geomX <- with(df, x[foundchr&foundpos])
      geomLabels <- with(df, foundlabel[foundchr&foundpos])
 
-
+     
      if(is.null(bigger)){
        p  <- ggplot(data=df, aes(x=x, y=y )) + geom_point()
 
      } else {
        df$Increase <- bigger ## used for color coding points that have increased/decreased from previous iteration 
-       p  <- ggplot(data=df, aes(x=x, y=y, color=Increase )) + geom_point()
+       df$Percentagechange <- percentagechange
+
+       p  <- ggplot(data=df, aes(x=x, y=y , color=Increase, size=Percentagechange) )  + geom_point() +  scale_color_manual(values=c("#3b5998","#cae1ff" ))
     }
 
   p <- p + theme_hc()
@@ -1911,17 +1940,59 @@ setgamma <- 1
 
             if(!is.null(geomX)){
               for(ii in geomX){
-               p <- p + geom_vline(xintercept = ii, linetype="dotted", color="darkblue", size=1)
-               p <- p + annotate("text", label=geomLabels[which(geomX==ii)] , x=(ii  - ( diff(range(df$x))*0.01) )   , y = max(df$y*0.8) )
+               yadj <- sample(seq(0.5,0.9,0.1), 1)
+               p <- p + geom_vline(xintercept = ii, linetype="solid", color="#FFE4B5", size=1.5)
+               p <- p + annotate("text", size=8, label=geomLabels[which(geomX==ii)] , 
+                       x=(ii  - ( diff(range(df$x))*0.02) )   , 
+                        y = max(df$y)*yadj )
               }  ## end for ii
+              p <- p + scale_size(guide='none')
             } ## if !is.null
+           p <- p + theme( axis.text.x = element_text(size=16), axis.text.y = element_text(size=16), 
+                           axis.title.x=element_text(size=16), axis.title.y=element_text(size=16), 
+                           legend.text=element_text(size=14) )
+           p <- p  + guides(colour = guide_legend(override.aes = list(size=8)))  ## changing point size in legend
+          
+           p <- p + theme(legend.position = 'bottom', legend.spacing.x = unit(0.5, 'cm')) 
+           output$plot <- renderPlot(p)
 
+           if(input$chosenchrm=="All"){
+              # entire genome
+               txt2 <- "across all chromosomes"
+               if(input$plotchoice=="manhattan"){
+                  txt1 <- " -log p value of the score statistic"
+                  txt3 <- "-log p value"
+               } else {
+                 txt1 <- "score statistic"
+                  txt3 <- txt1
+               } ## inner else
+            } else{
+               # chrm selected
+               txt2 <- paste("on chromosome", input$chosenchrm)
+               if(input$plotchoice=="manhattan"){
+                  txt1 <- " -log p value of the score statistic"
+                  txt3 <- "-log p value"
+               } else {
+                  txt1 <- "score statistic"
+                  txt3 <- txt1
 
-        output$plot <-  renderPlotly({
-ggplotly(p)
-})
+               } ## inner else
+            }  ## end outer else
+         
+           if (input$chosenits==1){
+           txt <- paste("Figure: ", 
+                        "A plot of the", txt1, 
+                        "verse map position", txt2 , 
+                        "at iteration", input$chosenits, 
+                        "of the model building process. The horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst,
+                        ". The numbers are the order in which the SNP-trait associations were found. ")
 
- 
+          } else { 
+           txt <- paste("Figure: ", "A plot of the", txt1, "verse map position", txt2 , "at iteration", input$chosenits, "of the model building process.. The horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst, ". The numbers are the order in which the SNP-trait associations were found.  Dark blue (light blue) points denote a", txt3, "that has decreased (increased) in size from the previous iteration. This is useful for inspecting how different parts of the chromosome gain or lose importance as SNP-trait associations are found. The size of the point is proportional to the size of the increase/decrease.")
+
+          } 
+           output$caption <- renderText(txt)
+
   })  ## end observeEvent
 
 

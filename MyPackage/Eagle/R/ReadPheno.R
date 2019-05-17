@@ -156,7 +156,8 @@ for(ii in 1:ncol(phenos))
 
 
 
-message("The phenotype file has been Uploaded.")
+message("The phenotype file has been loaded.")
+
 
 return(phenos)
 

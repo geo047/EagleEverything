@@ -89,6 +89,9 @@ if(nrow(map) > 5){
 }
 
 
+message("The map file has been loaded.")
+
+
 message("\n\n")
 
 return(map)

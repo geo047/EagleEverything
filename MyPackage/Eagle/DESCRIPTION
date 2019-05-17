@@ -35,7 +35,6 @@ Imports:
    ggthemes,
    shinyBS,
    shinyjs,
-   plotly,
    stats,
    utils,
    parallel,
