@@ -3,7 +3,11 @@ importFrom(parallel, detectCores)
 importFrom(data.table, fread)
 importFrom(matrixcalc, is.positive.definite)
 importFrom(shinyjs, useShinyjs)
-import(shinyFiles, shiny,  shinythemes, shinyBS, stats, utils )
+importFrom(shinyBS, bsButton)
+importFrom(shinyBS, bsTooltip)
+import(ggplot2)
+import(ggthemes)
+import(shinyFiles, shiny,  shinythemes,  stats, utils) 
 
 export(
    FPR4AM,

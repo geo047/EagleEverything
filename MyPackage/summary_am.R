@@ -5,7 +5,7 @@
 #' @details
 #'
 #' \code{SummaryAM} produces two tables of results. First, a table of results is produced with 
-#' the additive effect size and p-value for each 
+#' the  p-value for each 
 #' fixed effect in the final model.  Second, a table of results is produced with the 
 #' proportion of phenotypes variance explained by  the different multiple-locus models. Each row 
 #' in this table is the proportion of phenotypic variance explained (Sun et al. 2010) after the marker locus has been added to the 
@@ -180,20 +180,19 @@ for(ii in varnames){
                                                       ## less factor level
  }
 
-message("\n\n Table 1: Size and Significance of Effects in Final Model \n   ")
+message("\n\n Table 1: Significance of Effects in Final Model \n   ")
 
-  message(sprintf("%20s %10s %6s %15s      %8s", "",  "Size", "Df", "Wald statstic" , "Pr(Chisq)"))
+  message(sprintf("%20s %6s %15s      %8s", "",   "Df", "Wald statstic" , "Pr(Chisq)"))
   for(ii in varnames )
   {
       indx <- which(varnames == ii)
-      message(sprintf("%20s %10.2f %6i     %10.2f       %.3E",
-         ii,  beta[indx], df[indx], W[indx], pval[indx ]))
+      message(sprintf("%20s %6i     %10.2f       %.3E",
+         ii,   df[indx], W[indx], pval[indx ]))
   }  ## end for ii
  message("\n\n\n")
-df_size <- data.frame("Effects"=varnames, "Size"=beta, "Df"=as.character(df),   
+df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),   
                       "Wald statistic"=as.character(round(W,2)),        
                       "Pr(Chisq)"=pval, check.names=FALSE)
-
 
 
  ##----------------------------------------------------------------------- 
@@ -204,7 +203,6 @@ df_size <- data.frame("Effects"=varnames, "Size"=beta, "Df"=as.character(df),
  # base model
  basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
  base_logML <- basemod$ML
-
  # full model
   df_R <- NULL
   fullX <- baseX

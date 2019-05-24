@@ -15,7 +15,7 @@ A summary function that provides additional information on the significant
 }
 \details{
 \code{SummaryAM} produces two tables of results. First, a table of results is produced with 
-the additive effect size and p-value for each 
+the  p-value for each 
 fixed effect in the final model.  Second, a table of results is produced with the 
 proportion of phenotypes variance explained by  the different multiple-locus models. Each row 
 in this table is the proportion of phenotypic variance explained (Sun et al. 2010) after the marker locus has been added to the 

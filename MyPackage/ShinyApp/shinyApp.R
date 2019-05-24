@@ -1,3 +1,7 @@
+#'   @import ggplot2
+#'   @import ggthemes
+
+
 ## Shiny GUI for Eagle
 ## Developer:  Andrew W. George
 ## Version: 1.2.0
@@ -23,7 +27,7 @@ bannerAnal <- function()
               ), ## end fluidRow
               br(),
               fluidRow(column(12, 
-                       bsButton(inputId="dummy4", label="Hover here for details",
+                       shinyBS::bsButton(inputId="dummy4", label="Hover here for details",
                        style="warning", size="large", type="action", block=TRUE,
                        icon=icon("question-circle-o"))
                       ) ## end column
@@ -37,7 +41,7 @@ row1Anal <- function(){
                     wellPanel(
                        uiOutput("analyse_names"),
 
-                       bsTooltip("analyse_names",
+                       shinyBS::bsTooltip("analyse_names",
                        title='<font size="3" > Select a single variable to be treated as the trait for the analysis  </font>',
                        placement="right", trigger="hover", options=list(container="body"))
 
@@ -53,7 +57,7 @@ row2Anal <- function()
  page =   fluidRow(column(12,
           wellPanel(
             uiOutput("analyse_fnames"),
-              bsTooltip("analyse_fnames",
+              shinyBS::bsTooltip("analyse_fnames",
               title='<font size="3" > Select the variables, if any, to be used as fixed effects in the analysis. If no variables are selected, then only an overall mean will be fitted. </font>',
                 placement="right", trigger="hover", options=list(container="body")),
               textOutput("fmodel")
@@ -70,7 +74,7 @@ row3Anal <- function()
 page =  fluidRow(column(12,  wellPanel(
            numericInput(inputId="analyse_cpu", label=h4("Step 3: Specify number of cpu"), value=1),
                     style="padding: 1px",
-                    bsTooltip("analyse_cpu",
+                    shinyBS::bsTooltip("analyse_cpu",
            title='<font size="3" > set to the number of cpu available for distributed computing. </font>',
            placement="right", trigger="hover",
                options=list(container="body"))
@@ -90,7 +94,7 @@ page =  fluidRow( column(12,
         tags$span(style = "font-size:18px", "Set automatically (via permutation)")),
                                                     choiceValues=c("manual","auto")),
                         style="padding: 1px",
- bsTooltip("analyse_gamma", title='<font size="3" > Select the manual option if you want a quick analysis. If you leave the gamma value at 1, its default value, this will be a conservative analysis. Select auto if you want to perform an analysis with a specified false positive rate. This analysis will take about 5 times as long as a permutation step is performed to fine-tune the gamma value for the desired false positive rate.  </font>',
+ shinyBS::bsTooltip("analyse_gamma", title='<font size="3" > Select the manual option if you want a quick analysis. If you leave the gamma value at 1, its default value, this will be a conservative analysis. Select auto if you want to perform an analysis with a specified false positive rate. This analysis will take about 5 times as long as a permutation step is performed to fine-tune the gamma value for the desired false positive rate.  </font>',
                                placement="right", trigger="hover", options=list(container="body"))
 
                      )  ## column 12
@@ -104,7 +108,7 @@ page =  fluidRow( column(12,
                            sliderInput(inputId="analyse_setgamma", label=h4("Specify gamma value. "),
                                value=1, min = 0, max = 1, step = 0.01),
                            style="padding: 1px",
-                           bsTooltip("analyse_setgamma", title='<font size="3" >The gamma parameter controls the conservativeness of the model building process. Values closer to 1 (0) decrease (increase) the false positive rate. The default value is 1 - its most conservative setting. </font>',
+                           shinyBS::bsTooltip("analyse_setgamma", title='<font size="3" >The gamma parameter controls the conservativeness of the model building process. Values closer to 1 (0) decrease (increase) the false positive rate. The default value is 1 - its most conservative setting. </font>',
                                placement="right", trigger="hover", options=list(container="body"))
                                ) ## colunn12,
                            ) ## fluidRow
@@ -118,7 +122,7 @@ page =  fluidRow( column(12,
                            sliderInput(inputId="analyse_fpr", label=h4("Specify desired false positive rate."),
                                value=0.05, min = 0.01, max = 0.5, step = 0.01),
                            style="padding: 1px",
-                           bsTooltip("analyse_fpr", title='<font size="3" > Set the slider to the desired false positive rate for the analysis. The default value is 0.05.   </font>',
+                           shinyBS::bsTooltip("analyse_fpr", title='<font size="3" > Set the slider to the desired false positive rate for the analysis. The default value is 0.05.   </font>',
                                placement="right", trigger="hover", options=list(container="body"))
  
                        ) ## end column 12
@@ -130,7 +134,7 @@ page =  fluidRow( column(12,
                    sliderInput(inputId="analyse_numreps", label=h4(" Specify number of replicates."),
                                        value=100, min = 30, max = 1000, step = 5),
                                         style="padding: 1px",
-                   bsTooltip("analyse_numreps", title='<font size="3" > The more replicates, the better the accuracy but we have found 100 replicates to be reasonable.  </font>',
+                   shinyBS::bsTooltip("analyse_numreps", title='<font size="3" > To set the number of replicates, start with 100 replicates and increase in 50 replicate increments. Stop when the gamma value stabilizes.  </font>',
                           placement="right", trigger="hover", options=list(container="body"))
 
 
@@ -165,8 +169,8 @@ row5Anal <- function()
                             actionButton(inputId="analyse_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
                                          icon=icon("upload", lib="glyphicon")),
                                           style='padding: 1px',
-                                        bsTooltip("analyse_go",
-                     title='<font size="3" >  Click here to find the set of snp in strongest association with the trait. This may take some time if the gamma value is being found automatically.   </font>',
+                                        shinyBS::bsTooltip("analyse_go",
+                     title='<font size="3" >  Click here to find the set of snp in strongest association with the trait. Manually setting the gamma value is much faster than having the gamma value set automatically. However, automatically is the preferred option.  </font>',
                           placement="right", trigger="hover",
                           options=list(container="body"))
              ) ## wellPanel
@@ -191,7 +195,7 @@ banner1Plot <- function(){
 
 banner2Plot <- function(){
    page <- fluidRow(column(12, 
-                       bsButton(inputId="plot_overview", label="Hover here for details",
+                       shinyBS::bsButton(inputId="plot_overview", label="Hover here for details",
                        style="warning", size="large", type="action", block=TRUE,
                        icon=icon("question-circle-o"))
                            ) ## end column
@@ -204,7 +208,7 @@ col1Plot <-   function(){
                    wellPanel( 
                       uiOutput("plot_choice"), 
 
-                      bsTooltip("plot_choice",
+                      shinyBS::bsTooltip("plot_choice",
                      title='<font size="3" > Manhattan plot type -  score statistics are converted into  p-values and their -log values plotted on the y-axis. Score statistic plot type - the score statistics are plotted on the y-axis. The score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model buidling process. </font>',
                       placement="right", trigger="hover", options=list(container="body"))
 
@@ -219,7 +223,7 @@ col2Plot <- function(){
   page <-  column(3,
                   wellPanel(
                     uiOutput("plot_modelits"),
-                    bsTooltip("plot_modelits",
+                    shinyBS::bsTooltip("plot_modelits",
                        title='<font size="3" > SNP-trait associations are found by building the best model iteratively.  </font>',
                        placement="right", trigger="hover", options=list(container="body"))
 
@@ -235,7 +239,7 @@ col3Plot <- function(){
              wellPanel(
                uiOutput("plot_chromosomes"),
 
-               bsTooltip("plot_chromosommes",
+               shinyBS::bsTooltip("plot_chromosommes",
                title='<font size="3" > Select a chromosome or the entire genome (All)  </font>',
                placement="right", trigger="hover", options=list(container="body"))
 
@@ -252,7 +256,7 @@ col4Plot <- function()
                 shinyjs::useShinyjs(),
                             actionButton(inputId="plot_go",label=HTML('<font size="4">Generate Plot</font>'), width='100%', style='padding:1px 1px 1px 1px; font-size:100%'),
                                           style='padding: 1px',
-                                        bsTooltip("plot_go",
+                                        shinyBS::bsTooltip("plot_go",
                      title='<font size="3" >   Press this button to generate the plot. If you change your selections after the plot has been created, you will need to click this button again to recreate the plot.  </font>',
                           placement="left", trigger="hover",
                           options=list(container="body"))
@@ -317,16 +321,15 @@ read_pheno_intro <- function(){
 ##--------------------
 
 ## ui.R ##
-library(shiny)
-library(shinythemes)
-library(shinyBS)
-library(shinyjs)
-library(shinyFiles)
-library(ggthemes)
-library(ggplot2)
+#library(shiny)
+#library(shinythemes)
+#library(shinyBS)
+#library(shinyjs)
+#library(shinyFiles)
+#library(ggthemes)
 
 FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  
-                      theme = shinytheme("flatly"),
+                      theme = shinythemes::shinytheme("flatly"),
                 #       theme = shinytheme("paper"),
                 #      theme = shinytheme("united"),
 
@@ -378,7 +381,7 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                               br(),
                               fluidRow(column(12, 
                                             
-                                              bsButton(inputId="dummy1", label="Hover here for details", 
+                                              shinyBS::bsButton(inputId="dummy1", label="Hover here for details", 
                                                     style="warning", size="large", type="action", block=TRUE, 
                                                     icon=icon("question-circle-o")
                                                     )
@@ -403,7 +406,7 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                                                     choiceValues=c("plink","text")),
                                                       ##         choices=c("PLINK"="plink","Text/ASCII"="text" )),
                                                   style="padding: 1px",
-                                                  bsTooltip("filetype",
+                                                  shinyBS::bsTooltip("filetype",
 title='<font size="3" > click on file type </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")
@@ -421,11 +424,11 @@ placement="right", trigger="hover",
                                                   column(4, textInput(inputId="AB",label="AB", value="") ),
                                                   column(4, textInput(inputId="BB",label="BB", value="") ),
                                                   column(4, textInput(inputId="missing",label="missing", value="") ) ,
-bsTooltip("AB", 
+shinyBS::bsTooltip("AB", 
 title='<font size="3" > Only a single value can be entered. If inbreds, leave blank  </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")),
-bsTooltip("missing",
+shinyBS::bsTooltip("missing",
 title='<font size="3" > Enter genotype code used in file that is to be missing. Leave blank if data contains no missing marker genotypes </font>' , 
 placement="right", trigger="hover",
                                                             options=list(container="body"))
@@ -454,7 +457,7 @@ placement="right", trigger="hover",
                                                   numericInput(inputId="memsize", label=h4("Step 2: Specify available memory in Gbytes"), 
                                                                value=8, min = 2, max = NA, step = NA),
                                                   style="padding: 1px",
-                                                  bsTooltip("memsize",
+                                                  shinyBS::bsTooltip("memsize",
 title='<font size="3" > set to maximum available memory in Gbytes  </font>',
 placement="right", trigger="hover",
                                                           options=list(container="body"))
@@ -499,8 +502,8 @@ placement="right", trigger="hover",
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("marker_go", 
-title='<font size="3" > Upload file. <br> This may take some time if the file is large.  </font>',
+                                                          shinyBS::bsTooltip("marker_go", 
+title='<font size="3" > Upload marke data file. <br> This may take some time if the file is large.  </font>',
 placement="right", trigger="hover",
                                                                      options=list(container="body"))
 
@@ -567,7 +570,7 @@ placement="right", trigger="hover",
                               ), ## end fluidRow
                               br(),
                               fluidRow(column(12, 
-                                             bsButton(inputId="dummy2", label="Hover here for details",
+                                             shinyBS::bsButton(inputId="dummy2", label="Hover here for details",
                                                     style="warning", size="large", type="action", block=TRUE, 
                                                     icon=icon("question-circle-o")
                                                     )
@@ -586,7 +589,7 @@ placement="right", trigger="hover",
                                                   radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
                                                                choices=c("yes"="yes","no"="no" ), selected="yes"),
                                                   style="padding: 1px",
-                                                  bsTooltip("pheno_header",
+                                                  shinyBS::bsTooltip("pheno_header",
 title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
 placement="right", 
 trigger="hover",
@@ -605,7 +608,7 @@ trigger="hover",
                                                   radioButtons(inputId="pheno_csv", label=h4("Step 2: Is the file comma separated"),
                                                                choices=c("yes"="yes","no"="no" ), selected="no" ),
                                                   style="padding: 1px",
-                                                  bsTooltip("pheno_csv",
+                                                  shinyBS::bsTooltip("pheno_csv",
 title='<font size="3" > click on yes if the file is a csv file. </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")
@@ -620,7 +623,7 @@ placement="right", trigger="hover",
                                            column(12, wellPanel(
                                                    textInput(inputId="pheno_missing", label=h4("Step 3: Code for missing value", value="") ),
                                                   style="padding: 1px",
-                                                  bsTooltip("pheno_missing",
+                                                  shinyBS::bsTooltip("pheno_missing",
 title='<font size="3" > Assign value that denotes a missing value. Leave blank if file does not contain missing data. </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")
@@ -656,8 +659,8 @@ placement="right", trigger="hover",
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("pheno_go",
-title='<font size="3" > Upload file. <br> This may take some time if the file is large. </font>',
+                                                          shinyBS::bsTooltip("pheno_go",
+title='<font size="3" > Upload phenotypic file.  This file can contain multiple trait and covariate data.</font>',
 placement="right", trigger="hover",
                                                                      options=list(container="body"))
 
@@ -723,7 +726,7 @@ placement="right", trigger="hover",
 #                              ), ## end fluidRow
 #                              br(),
 #                              fluidRow(column(12, 
-#                                             bsButton(inputId="dummy2", label="Hover here for details",
+#                                             shinyBS::bsButton(inputId="dummy2", label="Hover here for details",
 #                                                    style="warning", size="large", type="action", block=TRUE, 
 #                                                    icon=icon("question-circle-o")
 #                                                    )
@@ -742,7 +745,7 @@ placement="right", trigger="hover",
 #                                                  radioButtons(inputId="pheno_header", label=h4("Step 1: Select if file contains column names"), 
 #                                                               choices=c("yes"="yes","no"="no" )),
 #                                                  style="padding: 1px",
-#                                                  bsTooltip("pheno_header",
+#                                                  shinyBS::bsTooltip("pheno_header",
 #title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked.  </font>',
 #placement="right", 
 #trigger="hover",
@@ -764,7 +767,7 @@ placement="right", trigger="hover",
 #                                           actionButton(inputId="choose_marker_file", h6("Choose File")), br(),
 #                                           textOutput("choose_marker_file"),
 #                                           style='padding: 1px',
-#                                           bsTooltip("choose_marker_file",
+#                                           shinyBS::bsTooltip("choose_marker_file",
 #title='<font size="3" >WARNING! File browser window may open behind web browser  </font>',
 #placement="right",
 #trigger="hover",
@@ -814,7 +817,7 @@ placement="right", trigger="hover",
                               ), ## end fluidRow
                               br(),
                               fluidRow(column(12, 
-                                          bsButton(inputId="Zmat1", label="Hover here for details",
+                                          shinyBS::bsButton(inputId="Zmat1", label="Hover here for details",
                                           style="warning", size="large", type="action", block=TRUE,
                                           icon=icon("question-circle-o")
                                           )
@@ -868,8 +871,8 @@ placement="right", trigger="hover",
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("Zmat_go",
-title='<font size="3" > Upload file.    </font>',
+                                                          shinyBS::bsTooltip("Zmat_go",
+title='<font size="3" > Upload Z matrix file.    </font>',
 placement="right", trigger="hover",
                                                                      options=list(container="body"))
  
@@ -933,7 +936,7 @@ placement="right", trigger="hover",
                               ), ## end fluidRow
                               br(),
                               fluidRow(column(12, 
-                                          bsButton(inputId="dummy3", label="Hover here for details",
+                                          shinyBS::bsButton(inputId="dummy3", label="Hover here for details",
                                           style="warning", size="large", type="action", block=TRUE,
                                           icon=icon("question-circle-o")
                                           )
@@ -956,7 +959,7 @@ placement="right", trigger="hover",
                                                   radioButtons(inputId="map_header", label=h4("Step 1: Select if file contains column names"),
                                                                choices=c("yes"="yes","no"="no" )),
                                                   style="padding: 1px",
-                                                  bsTooltip("map_header",
+                                                  shinyBS::bsTooltip("map_header",
 title='<font size="3" > click on yes if the first row of the file contains the column names. Generic names will be assigned if no is clicked. </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")
@@ -975,7 +978,7 @@ placement="right", trigger="hover",
                                                   radioButtons(inputId="map_csv", label=h4("Step 2: Is the file comma separated"),
                                                                choices=c("yes"="yes","no"="no" ), selected="no"),
                                                   style="padding: 1px",
-                                                  bsTooltip("map_csv",
+                                                  shinyBS::bsTooltip("map_csv",
 title='<font size="3" > click on yes/no  </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")
@@ -1014,8 +1017,8 @@ placement="right", trigger="hover",
 
 
                                                           style='padding: 1px',
-                                                          bsTooltip("map_go",
-title='<font size="3" > Upload file. <br> This may take some time if the file is large.   </font>',
+                                                          shinyBS::bsTooltip("map_go",
+title='<font size="3" > Upload marker map file.    </font>',
 placement="right", trigger="hover",
                                                                      options=list(container="body"))
  
@@ -1134,7 +1137,7 @@ placement="right", trigger="hover",
                               ), ## end fluidRow
                               br(),
                               fluidRow(column(12,
-                                          bsButton(inputId="dummy5", label="Hover here for details",
+                                          shinyBS::bsButton(inputId="dummy5", label="Hover here for details",
                                           style="warning", size="large", type="action", block=TRUE,
                                           icon=icon("question-circle-o")
                                           )
@@ -1157,7 +1160,7 @@ placement="right", trigger="hover",
                                                   icon=icon("glyphicon glyphicon-stats", lib="glyphicon")),
 
                                                   style="padding: 1px",
-                                                  bsTooltip("summary",
+                                                  shinyBS::bsTooltip("summary",
 title='<font size="5" > click on yes/no </font>',
 placement="right", trigger="hover",
                                                             options=list(container="body")
@@ -1194,7 +1197,7 @@ tags$div(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Size and Significance of Effects"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Significance of Effects"), sep = ""))),
                                     tableOutput("size")
 
                                     ) ## end conditionalPanel
@@ -1334,6 +1337,7 @@ server <- function(input, output, session){
    ## Read marker information
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
    geno <- NULL
+   observeEvent(input$choose_marker_file, {
    observeEvent(input$marker_go, {
    withProgress(message = 'Loading marker data', value = 1, {
     
@@ -1385,7 +1389,7 @@ server <- function(input, output, session){
 
   })  ## withProgress
 
-  })  ## end observeEvent
+  }) })  ## end observeEvent
 
 
 
@@ -1652,7 +1656,11 @@ server <- function(input, output, session){
  ##  AM analysis for calculation of FPR
 # res <- NULL
 setgamma <- 1
-   observeEvent(input$analyse_go, {
+
+   #observeEvent((input$analyse_go & input$pheno_go & input$marker_go) , {
+ observeEvent(input$marker_go, {
+  observeEvent(input$pheno_go, {
+   observeEvent(input$analyse_go  , {
    withProgress(message = 'Analysing data', value = 1, {
        fform <<- paste(input$nmsf, collapse="+")
 
@@ -1699,6 +1707,8 @@ setgamma <- 1
      }
   })  ## end withProgress
   })  ## end observeEvent
+ })
+ })
 
 
  ##----------------------------------
@@ -1707,6 +1717,7 @@ setgamma <- 1
 
   #----------------------------------------------------
   ## get chromosome labels
+
   chromnames <- reactive({
              if (input$analyse_go){
                  # map has been entered
@@ -2003,8 +2014,9 @@ setgamma <- 1
  ##--------------------------
 
  ## form data frame of results 
+ observeEvent(input$marker_go, {
+ observeEvent(input$pheno_go, {
  observeEvent(input$analyse_go, {
-
  dfparams <- NULL
 
  if(!is.null(fform))
@@ -2058,7 +2070,7 @@ setgamma <- 1
 
 
 
-}) ## end observeEvent
+}) }) }) ## end observeEvent
 
 
 ##----------------------
@@ -2082,7 +2094,7 @@ setgamma <- 1
   ##--------------------------------
 
  
-  addPopover(session, "dummy1", "Details", content = HTML("
+  shinyBS::addPopover(session, "dummy1", "Details", content = HTML("
 Eagle can handle two types of marker genotype file; a space separated plain text file and PLINK
 ped file. We assume the marker loci are snps. 
 Missing marker genotypes are allowed but the 
@@ -2105,7 +2117,7 @@ Output from reading in the marker genotype file will appear in the right hand-si
                                                            "), trigger = 'hover')
 
   
-  addPopover(session, "dummy2", "Details", content = HTML("  
+  shinyBS::addPopover(session, "dummy2", "Details", content = HTML("  
   Eagle assumes the phenotypic file is either a space separated or comma separated file. The rows correspond to data 
   collected on the individuals. The first row of the file can contain column headings or not.  
   The number of rows of data in the phenotypic file must equal the number of rows in the marker genotype file otherwise an error occurs.  
@@ -2117,7 +2129,7 @@ Output from reading in the phenotypic file will appear in the right hand-side pa
   "), trigger = 'hover')
 
 
-addPopover(session, "Zmat1", "Details", content = HTML("
+shinyBS::addPopover(session, "Zmat1", "Details", content = HTML("
 The Z matrix contains only zeros and ones. The number of rows must be greater than the number of columns. 
 It is used for those situations where multiple observations of the same trait have been recorded for an individual. 
 "), trigger = "hover") 
@@ -2127,7 +2139,7 @@ It is used for those situations where multiple observations of the same trait ha
 
 
   
-addPopover(session, "dummy3", "Details", content = HTML("
+shinyBS::addPopover(session, "dummy3", "Details", content = HTML("
     Eagle does not
      require a known marker map in order to analyse the data.  
      If a map file is read into Eagle, then the
@@ -2151,7 +2163,7 @@ addPopover(session, "dummy3", "Details", content = HTML("
 
 
 
-addPopover(session, "dummy4", "Details", content = HTML(paste("
+shinyBS::addPopover(session, "dummy4", "Details", content = HTML(paste("
 This page goes through the steps that are needed to analyse the data. 
 In the first step, the column in the phenotype file containing the trait data is specified. 
 In the second step, any fixed effects are specified. If no fixed effects are selected, the fixed effects part of the model only contains an overall mean. 
@@ -2168,11 +2180,11 @@ by changing any of the choices in steps 1 to 4 and clicking the 'Perform genome-
 
 
 
-addPopover(session, "dummy5", "Details", content = HTML(paste("
+shinyBS::addPopover(session, "dummy5", "Details", content = HTML(paste("
 By default, the 'best' set of snp in strongest association with the trait are reported. 
 These results are given in table form. 
 <br><br>
-By clicking the 'Additional Summary' button on the left, two additional tables of results are shown; a table on the size and significance of the snp 
+By clicking the 'Additional Summary' button on the left, two additional tables of results are shown; a table on the significance of the snp 
 in the model and a table for the amount of phenotypic variance explained as they are added one at a time to the model.
 <br><br>
 There is additional computation needed to produce these extra tables. It may take a few minutes before these tables appear. 
@@ -2183,7 +2195,7 @@ There is additional computation needed to produce these extra tables. It may tak
 
 
 
-addPopover(session, "plot_overview", "Details", content = HTML(paste("
+shinyBS::addPopover(session, "plot_overview", "Details", content = HTML(paste("
 Eagle finds SNP-trait associations by building a model iteratively. At each iteration of the model building process, the next 'best' SNP is found. This is done by identifying the SNP with the largest score statistic. A new score statitic is calculated at each iteration of the model building process.<br><br>
 Here, the score statistics or their -log p-values can be plotted. A user can see how these score statistics change as the model is built. Red (blue) points mean the score statistic has increased (decreased) from the previous iteration.   
 <br><br>
