@@ -8,9 +8,8 @@
 #endif
 
 
-
-
-
+using Eigen::Lower;
+using Eigen::Upper;
 
 
 
@@ -56,7 +55,6 @@ Eigen::MatrixXd
 
 
 
-
 //-----------------------------------
 // Calculate amount of memory needed
 //-----------------------------------
@@ -91,9 +89,11 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
    }
 
 
+
+
+
+
     MMt.noalias() = genoMat * genoMat.transpose();
-
-
 
 } else {
     // based on user defined memory. Doing MMt via blockwise multiplication

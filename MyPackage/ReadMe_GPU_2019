@@ -10,7 +10,7 @@ module load cuda/9.2.88
 module load intel-mkl/2017.2.174
 
 # I changed nvblas.conf to 
-NVBLAS_LOGFILE  /data/geo047/nvblas.log
+NVBLAS_LOGFILE  /home/geo047/nvblas.log
 NVBLAS_CPU_BLAS_LIB /apps/R/3.4.0/lib64/R/lib/libRblas.so
 NVBLAS_GPU_LIST ALL
 NVBLAS_TILE_DIM 2048
@@ -22,5 +22,36 @@ module show intel-mkl/2017.2.174
 
 export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
 LD_PRELOAD=/cm/shared/apps/cuda92/toolkit/9.2.88/lib64/libnvblas.so.9.2.88  R
+
+use nvidia-smi to view GPU usage on node
+
+
+May 2019
+---------
+## instructions obtained from here ...
+https://confluence.csiro.au/display/SC/Implicit+parallelisation+-++Using+LD_PRELOAD+to+provide+GPU+BLAS+libraries#softwareinfo-670666424
+
+
+## Set up modules ... 
+module purge
+module load cuda cuda-driver R/3.4.0
+export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
+
+ 
+# Find the BLAS Library linked to the R you are using
+Rscript -e "sessionInfo()" | grep BLAS
+# Update the nvconfig.conf with the correct library
+
+#Update nvblas.conf
+#------------------
+NVBLAS_LOGFILE  /home/geo047/nvblas.log
+NVBLAS_CPU_BLAS_LIB /apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl/lib/intel64_lin/libmkl_intel_lp64.so
+
+
+#Run R
+#------------
+LD_PRELOAD=$CUDA_ROOT/lib64/libnvblas.so R
+
+
 
 

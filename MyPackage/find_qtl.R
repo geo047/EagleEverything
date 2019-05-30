@@ -4,11 +4,24 @@
                        currentX,  ncpu, quiet, trait, ngpu, itnum )
   {
     ##  internal function: use by   AM
+
+
+
+ 
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
+
+
+
+
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
+
     P <- calculateP(H=H, X=currentX , message=message)
+
+
+
+
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
     rm(H)
@@ -19,8 +32,12 @@
     error_checking <- FALSE
     if (!quiet )
        error_checking <- TRUE
+
+
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                               ngpu=ngpu , message=message)
+
+
     if(!quiet){
        doquiet(dat=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)")
        doquiet(dat=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)^-1")
@@ -28,9 +45,12 @@
     if(!quiet ){
       message(" quiet =", quiet, ": beginning calculation of the BLUP estimates for dimension reduced model. \n")
     }
+
+
     hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=trait, quiet = quiet , message=message)
+
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
 
@@ -55,6 +75,11 @@
       message(" quiet = ", quiet, ": beginning calculation of BLUPS and their standard errors for full model. \n")
     }
 
+     print("about to start ... ")
+     Sys.sleep(10)
+     start_time <- Sys.time()
+     print("Starting ...........................................")
+
      a_and_vara  <- calculate_a_and_vara(geno = geno,
                                          maxmemGb=availmemGb,
                                             selectedloci = selected_loci,
@@ -62,6 +87,9 @@
                                             transformed_a=hat_a,
                                             transformed_vara=var_hat_a,
                                             quiet=quiet, message=message)
+     end_time <- Sys.time()
+     print(end_time - start_time)
+     stop()
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
         doquiet(dat=a_and_vara[["vara"]], num_markers=5, lab="SE of BLUPs for full model")

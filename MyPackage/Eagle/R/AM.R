@@ -441,6 +441,8 @@ if(length(indxNA_geno)>0){
             return(TRUE)
            })
 
+
+
   if(is.logical(chck)){
       if(chck){
         message(" There is a problem with the effects in fformula.\n")
@@ -451,9 +453,12 @@ if(length(indxNA_geno)>0){
         return(NULL)
       }
   }
-#print("end")
 
  ## Initialization
+
+
+
+
 
  continue <- TRUE
  itnum <- 1
@@ -474,17 +479,15 @@ if(length(indxNA_geno)>0){
 
      if(itnum==1){
         if(!quiet)
-           message(" quiet=FALSE: calculating M %*% M^t. \n")
-     #print(" calc MMt")
+           message("  quiet=FALSE: calculating M %*% M^t. \n")
         MMt <- do.call(.calcMMt, Args)  
-     #print("end")
 
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-        #print(" calc invMMt")
-        invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-        #print("end")
+        
+        #invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+        invMMt <- solve(MMt)     ## this uses the GPU
         gc()
      }  
    
@@ -492,18 +495,19 @@ if(length(indxNA_geno)>0){
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-     #print(" calcVC")
+
      vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
-     #print("end")
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
 
      ## Calculate extBIC
     #print(" .calc_extBIC ")
+
+
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
                        numberSNPselected=(itnum-1), quiet, gamma) 
-    #print("end")
+
      gc()
 
      ## set vector extBIC
@@ -522,7 +526,12 @@ if(length(indxNA_geno)>0){
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
           #print(" do.call find_qtl ")
           ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+
+
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+
+
+
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
           #print("end")
@@ -541,7 +550,19 @@ if(length(indxNA_geno)>0){
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
            #print("inner  find_qtl")
           #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+
+ #    print("about to start ... ")
+ #    Sys.sleep(10)
+ #    start_time <- Sys.time()
+ #    print("Starting ...........................................")
+
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+ #    end_time <- Sys.time()
+ #    print(end_time - start_time)
+ #    stop()
+
+
+
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
           #print("end")

@@ -112,9 +112,9 @@ R CMD BATCH ./tmp.R
 
 # copy Makevars to Eagle
 echo " Copy my own Makevars and Makevars.win to Eagle directory "
-cp $DIR/Makevars $DIR/Eagle/src
+# AWG 2019 cp $DIR/Makevars $DIR/Eagle/src
 cp $DIR/Makevars.win $DIR/Eagle/src
-#cp $DIR/Makevars.gpu $DIR/Eagle/src/Makevars
+cp $DIR/Makevars.gpu $DIR/Eagle/src/Makevars
 
 
 
