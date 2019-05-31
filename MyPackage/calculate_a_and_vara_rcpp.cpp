@@ -86,20 +86,22 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 
-    Eigen::MatrixXd  ans_part1 = inv_MMt_sqrt * a;
+    Eigen::MatrixXd  ans_part1;
+    ans_part1.noalias()  = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
 
 
 
 
   // calculate untransformed variances of BLUP values
-    Eigen::MatrixXd var_ans_tmp_part1 =   dim_reduced_vara * inv_MMt_sqrt;
+    Eigen::MatrixXd var_ans_tmp_part1;
+    var_ans_tmp_part1.noalias()  =   dim_reduced_vara * inv_MMt_sqrt;
     var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
 
 
 
 //  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
-    var_ans_tmp  =  Mt  *  var_ans_tmp_part1;
+    var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
     var_ans_tmp_part1.resize(0,0);  // erase matrix 
   long i;
 
