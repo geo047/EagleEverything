@@ -8,7 +8,7 @@
 ##--------------------------------
 packageStartupMessage(' ')
 packageStartupMessage('   +--------------------------------------------------------------------------+ ')
-packageStartupMessage('   |                  Eagle Version 1.5.1 has been loaded                     | ')  
+packageStartupMessage('   |                  Eagle Version 1.5.2 has been loaded                     | ')  
 packageStartupMessage('   |                                                                          | ')             
 packageStartupMessage('   |    Visit eagle.r-forge.r-project.org for Quick Start guide and FAQ       | ')               
 packageStartupMessage('   |                                                                          | ')
