@@ -28,8 +28,8 @@ Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
                                     bool  quiet,
                                     Rcpp::Function message)
 {
-// Purpose: to calculate the untransformed BLUP (a) values from the 
-//          dimension reduced BLUP value estimates. 
+// Purpose: to calculate the untransformed BLUP (a) and var(a) values from the 
+//          dimension reduced BLUP and var value estimates. 
 //          It is necessary to have a block multiplication form of this function. 
 //          Also, since the matrix multiplications are reliant upon the BLAS library, only 
 //          double precision matrix multiplication is possible. This means, the Mt matrix must 
@@ -72,10 +72,8 @@ if (!quiet){
 
 if(mem_bytes_needed < max_memory_in_Gbytes){
  // calculation will fit into memory
-     message("  ReadBlock(fnamebin, 0, dims[1], dims[0]) ");
      Eigen::MatrixXd Mt = ReadBlock(fnamebin, 0, dims[1], dims[0]);
       message(" end readblock ");
-   message("selected_loci ... "); 
    if(!R_IsNA(selected_loci(0))){
    // setting columns to 0
    for(long ii=0; ii < selected_loci.size() ; ii++){
@@ -85,7 +83,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 
-    message(" ans_part1 ");
     Eigen::MatrixXd  ans_part1;
     ans_part1.noalias() = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
@@ -94,20 +91,17 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
   // calculate untransformed variances of BLUP values
-    message(" var_ans_tmp_part1 ");
     Eigen::MatrixXd var_ans_tmp_part1;
     var_ans_tmp_part1.noalias() =   dim_reduced_vara * inv_MMt_sqrt;
-    var_ans_tmp_part1.noalias() = inv_MMt_sqrt * var_ans_tmp_part1;
+    var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
 
 
 
 //  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
-     message(" var_ans_tmp.noalias() ");
     var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
-//    var_ans_tmp_part1.resize(0,0);  // erase matrix 
+    var_ans_tmp_part1.resize(0,0);  // erase matrix 
   long i;
 
-  message(" openmp ");
   #if defined(_OPENMP)
      #pragma omp parallel for shared(var_ans, var_ans_tmp, Mt)  private(i) schedule(static)
   #endif
