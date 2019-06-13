@@ -30,7 +30,7 @@ be assumed.}
 \item{ncpu}{a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically.}
 
 \item{ngpu}{a integer value for the number of gpu available for computation.  The default
-is to assume there are no gpu available.  This option has not yet been implemented.}
+is to assume there are no gpu available.}
 
 \item{quiet}{a logical value. If set to \code{FALSE}, additional runtime output is printed. 
 This is useful for error checking and monitoring the progress of a large analysis.}

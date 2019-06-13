@@ -15,7 +15,7 @@
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
-#'               is to assume there are no gpu available.  This option has not yet been implemented.
+#'               is to assume there are no gpu available.  
 #' @param  quiet      a logical value. If set to \code{FALSE}, additional runtime output is printed. 
 #' This is useful for error checking and monitoring the progress of a large analysis. 
 #' @param maxit     an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting. 
@@ -356,6 +356,17 @@ if(!is.null(fformula)){
  }
 
 
+ ## setting up gpu server
+  if(ngpu > 0 ){
+     if(requireNamespace("rcppMagmaSYEVD", quietly = TRUE)) {
+        library(rcppMagmaSYEVD)
+         rcppMagmaSYEVD::RunServer( matrixMaxDimension=geno[["dim_of_ascii_M"]][1],  numGPUsWanted=ngpu, memName="/syevd_mem", semName="/syevd_sem", print=0)
+     } 
+  }
+
+
+
+
 
  
  ## check for NA's in explanatory variables 
@@ -481,16 +492,30 @@ if(length(indxNA_geno)>0){
         if(!quiet)
            message("  quiet=FALSE: calculating M %*% M^t. \n")
         MMt <- do.call(.calcMMt, Args)  
+      
+
+
 
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         
-        #invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-        invMMt <- solve(MMt)     ## this uses the GPU
+        invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+
+        print(" inverse Via R ")
+        print(invMMt[1:3,1:3])
+        print("stopping")
+        stop()
+
+
+
+        #invMMt <- solve(MMt)     ## this uses the GPU
         gc()
      }  
-   
+    
+
+
+ 
  
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
@@ -560,8 +585,6 @@ if(length(indxNA_geno)>0){
  #    end_time <- Sys.time()
  #    print(end_time - start_time)
  #    stop()
-
-
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]

@@ -75,10 +75,10 @@
       message(" quiet = ", quiet, ": beginning calculation of BLUPS and their standard errors for full model. \n")
     }
 
-     print("about to start ... ")
-     Sys.sleep(10)
-     start_time <- Sys.time()
-     print("Starting ...........................................")
+#     print("about to start ... ")
+#     Sys.sleep(10)
+#     start_time <- Sys.time()
+#     print("Starting ...........................................")
 
      a_and_vara  <- calculate_a_and_vara(geno = geno,
                                          maxmemGb=availmemGb,
@@ -87,9 +87,10 @@
                                             transformed_a=hat_a,
                                             transformed_vara=var_hat_a,
                                             quiet=quiet, message=message)
-     end_time <- Sys.time()
-     print(end_time - start_time)
-     stop()
+#     end_time <- Sys.time()
+#     print(end_time - start_time)
+#     stop()
+
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
         doquiet(dat=a_and_vara[["vara"]], num_markers=5, lab="SE of BLUPs for full model")

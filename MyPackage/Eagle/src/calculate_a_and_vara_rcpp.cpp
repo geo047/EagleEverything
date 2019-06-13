@@ -73,7 +73,6 @@ if (!quiet){
 if(mem_bytes_needed < max_memory_in_Gbytes){
  // calculation will fit into memory
      Eigen::MatrixXd Mt = ReadBlock(fnamebin, 0, dims[1], dims[0]);
-      message(" end readblock ");
    if(!R_IsNA(selected_loci(0))){
    // setting columns to 0
    for(long ii=0; ii < selected_loci.size() ; ii++){

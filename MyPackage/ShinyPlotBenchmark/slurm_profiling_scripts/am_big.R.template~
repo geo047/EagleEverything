@@ -1,0 +1,47 @@
+# This file is sed'ed to fill in NCPU and NGPU values by the "eagle_profile.submit" script
+
+NGPU <- _NUM_GPU_TEMPLATE_
+NCPU <- _OMP_CPU_TEMPLATE_
+message("CPUs: ", NCPU, " GPUs: ", NGPU)
+require(Rcpp)
+library(shinyFiles, lib.loc="~/R/library")
+library(Eagle, lib.loc="~/R/library")
+
+# size <- 4000 ; elems <- size * size ; r1 <- matrix(runif(elems),size)
+# system.time(r2 <- r1 %*% t(r1))
+# system.time(r2 <- r1 %*% t(r1))  # run twice as first time places data in cache
+# system.time(r3 <- matmatt_eigen(r1))
+
+
+origwd <- getwd()
+flushdir <- Sys.getenv("FLUSHDIR")
+message("FLUSHDIR is: ", flushdir)
+
+filepath <- paste0(flushdir,"/AMplus_new_code/Large/")
+
+message("filepath is: ", filepath)
+message("and contains:")
+system(paste0("ls -l ",filepath,"*.ascii"))
+# stop("finished")
+if (1 == 1) {
+	## read genotype
+	# geno <- ReadMarker(filename=paste0(filepath,"genoBig.txt"), AA=0,  AB=1, BB=2, availmemGb=64)
+	# geno <- ReadMarker()
+    geno <- list(asciifileM=paste0(filepath,"M.ascii"), asciifileMt=paste0(filepath,"Mt.ascii"),  dim_of_ascii_M=c(2000,499829))
+	## read map
+	map <- ReadMap(filename = paste0(filepath,"mapBig.txt"))
+	## phenotypes 
+	pheno <- ReadPheno(filename = paste0(filepath,"phenoBig.txt") ) 
+	## Perform AM+ analysis
+	## set args for multiple_locus_am function
+	#fasttimer()
+	argu <- list(ncpu=NCPU, ngpu=NGPU, availmemGb = 64 , trait = "trait", map = map , pheno = pheno, geno = geno,  maxit = 4)
+	## run AM+
+	#systime <- fasttimer()
+	am_res <- do.call( AM, argu) 
+	#systime <- fasttimer()
+} 
+setwd(origwd)
+# save(am_res, file="res_am+0GPU_8threads_2its_docker_mro.RData")  
+
+

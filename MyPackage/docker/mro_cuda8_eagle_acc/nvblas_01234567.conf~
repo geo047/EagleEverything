@@ -1,0 +1,16 @@
+# This requires sed line editing to replace __WHEREISMAKECONF__
+NVBLAS_CPU_BLAS_LIB __WHEREISMAKECONF__/../lib/libRblas.so
+# NVBLAS_CPU_BLAS_LIB /apps/R/3.1.3/lib64/R/lib/libRblas.so
+# Use ALL if you want all your GPUs to contribute 
+# Use ALL0, if you want all your GPUs of the same type as device 0 to contribute 
+# However, NVBLAS consider that all GPU have the same performance and PCI bandwidth 
+# By default if no GPU are listed, only device 0 will be used 
+NVBLAS_GPU_LIST ALL
+# Tile Dimension 
+NVBLAS_TILE_DIM 2048
+# Autopin Memory 
+NVBLAS_AUTOPIN_MEM_ENABLED 
+#List of BLAS routines that are prevented from running on GPU (use for debugging purpose 
+# The current list of BLAS routines supported by NVBLAS are 
+# GEMM, SYRK, HERK, TRSM, TRMM, SYMM, HEMM, SYR2K, HER2K 
+#NVBLAS_GPU_DISABLED_SGEMM
