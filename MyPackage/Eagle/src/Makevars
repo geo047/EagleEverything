@@ -1,2 +1,10 @@
-PKG_CPPFLAGS=-DEIGEN_USE_MKL_ALL=1
-PKG_LIBS=`$R_HOME/bin/Rscript -e "Rcpp:::LdFlags()"` -L$CUDA_HOME/lib64 -L$MAGMA_HOME/lib -lpthread -lm  -fopenmp  -lpthread -lm -ldl
+#PKG_CXXFLAGS= -D_MAGMA_WITH_GPUS=1 -DADD_ -DMAGMA_WITH_MKL -openmp -fpic  -I$(MAGMA_HOME)/include -I$(CUDA_HOME)/include    -I$(MAGMA_HOME)/control -DHAVE_CUBLAS 
+#PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`  -fPIC -openmp -Wl,-rpath,$(MAGMA_HOME)/lib/lp64:$(INTEL_MKL_HOME)/lib/intel64 -L$(MAGMA_HOME)/lib/lp64 -L$(CUDA_HOME)/lib64 -lpthread -lmagma -lcudart -lcublas -lcuda -lstdc++ -lm 
+
+
+PKG_CPPFLAGS= -D_USE_RCPP=1
+PKG_CXXFLAGS=  -I../inst/include -openmp  -DADD_  $(FLIBS) $(BLAS_LIBS) $(LAPACK_LIBS) -I$(CUDA_HOME)/include -I$(MAGMA_HOME)/include  -I$(MAGMA_HOME)/control
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(FLIBS) $(BLAS_LIBS)
+
+
+

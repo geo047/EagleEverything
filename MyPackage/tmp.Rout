@@ -17,11 +17,14 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+Warning: namespace ‘Eagle’ is not available and has been replaced
+by .GlobalEnv when processing object ‘res’
 [Previously saved workspace restored]
 
 > library(Rcpp)
 >     
 >  Rcpp.package.skeleton("Eagle", cpp_files=c(
++             "magma_test_rcpp.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "getRowColumn.cpp"  ,
 +             "CreateASCIInospace_PLINK.cpp"  ,
@@ -91,6 +94,7 @@ Type 'q()' to quit R.
 +             "create_ascii.R", 
 +             "extract_geno.R", 
 +             "constructX.R", 
++             "magma_test.R", 
 +             "summary_am.R"   ) ) 
 Creating directories ...
 Creating DESCRIPTION ...
@@ -106,6 +110,7 @@ Adding Rcpp settings
  >> added LinkingTo: Rcpp
  >> added useDynLib directive to NAMESPACE
  >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
+ >> copied magma_test_rcpp.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied getRowColumn.cpp to src directory
  >> copied CreateASCIInospace_PLINK.cpp to src directory
@@ -146,4 +151,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  2.018   0.152   6.803 
+  1.663   0.113   1.840 

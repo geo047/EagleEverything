@@ -180,6 +180,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// magma_test_rcpp
+Eigen::MatrixXd magma_test_rcpp();
+RcppExport SEXP _Eagle_magma_test_rcpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(magma_test_rcpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Eagle_ReadBlock", (DL_FUNC) &_Eagle_ReadBlock, 4},
@@ -193,6 +203,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Eagle_extract_geno_rcpp", (DL_FUNC) &_Eagle_extract_geno_rcpp, 4},
     {"_Eagle_fasttimer", (DL_FUNC) &_Eagle_fasttimer, 0},
     {"_Eagle_getRowColumn", (DL_FUNC) &_Eagle_getRowColumn, 1},
+    {"_Eagle_magma_test_rcpp", (DL_FUNC) &_Eagle_magma_test_rcpp, 0},
     {NULL, NULL, 0}
 };
 

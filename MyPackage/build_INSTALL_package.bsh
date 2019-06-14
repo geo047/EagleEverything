@@ -5,10 +5,14 @@
 
 module purge
 module load R/3.4.0
-module load pandoc
+#module load pandoc
 module load intel-cc/15.0.6.233 
 module load intel-fc/15.0.6.233
-module load texlive/2015
+#module load texlive/2015
+module load cuda
+module load cuda-driver/current
+module load magma 
+
 
 export RSTUDIO_PANDOC=$PANDOC_HOME
 
@@ -28,6 +32,7 @@ echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
+            \"magma_test_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
@@ -97,6 +102,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"create_ascii.R\", 
             \"extract_geno.R\", 
             \"constructX.R\", 
+            \"magma_test.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
 echo  " library(roxygen2) " >> ./tmp.R
