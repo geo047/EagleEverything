@@ -1,0 +1,48 @@
+# instructions on how to install Josh's rcppMagmaSYEVD package 
+# get node with GPU
+salloc --nodes=1  --ntasks-per-node=1 --cpus-per-task=16 --mem=120Gb --time=02:00:00 --gres=gpu:3 srun  --pty bash
+
+
+module purge
+module load cuda cuda-driver R/3.4.0
+module load magma/2.5.1a1-cuda90
+module load intel-cc  intel-fc
+export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
+
+
+cd /home/geo047/Temp/rpackage
+
+#  Instructions come from
+#  https://bitbucket.csiro.au/users/bow355/repos/rcppmagmasvd/browse/rpackage/rcppmagmasyevd/src/Makevars
+
+# R CMD INSTALL --preclean --build rcppMagmaSYEVD -l ~/RLibs
+R CMD INSTALL --preclean --build rcppmagmasyevd  -l ~/RLibs
+
+# This created the tar ball rcppMagmaSYEVD_0.1.2_R_x86_64-pc-linux-gnu.tar.gz
+
+R CMD INSTALL ./rcppMagmaSYEVD_0.1.2_R_x86_64-pc-linux-gnu.tar.gz
+
+
+
+## TEst code 
+
+# setup
+set.seed(101)
+n <- 500
+ngpu <- 1
+K <- crossprod(matrix(sample(c(0,1), n*n, T), nrow=n))
+
+# load library and RunServer()
+ library(rcppMagmaSYEVD)
+  rcppMagmaSYEVD::RunServer( matrixMaxDimension=n,  numGPUsWanted=ngpu, memName="/syevd_mem", semName="/syevd_sem", print=0)
+
+# use GPU
+eigGPU  <- rcppMagmaSYEVD::eigen_mgpu(K, symmetric = TRUE, only_values=FALSE)
+
+# use CPU
+eigCPU <-  eigen(K, symmetric = TRUE)
+
+# sum of differences of eigen values should be zero
+# I get -125201
+print(sum(eigGPU$values-eigCPU$values))
+
