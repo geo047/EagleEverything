@@ -1,0 +1,9 @@
+## After compilation of the shared library ... 
+dyn.load('./gpuQR_magma.so')
+set.seed(100)
+n_row <- 3; n_col <- 3
+A <- matrix(rnorm(n_row * n_col), n_row, n_col)
+qr(A)$qr
+.Call('gpuQR_magma', A)
+
+

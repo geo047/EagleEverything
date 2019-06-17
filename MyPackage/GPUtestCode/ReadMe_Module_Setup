@@ -1,0 +1,7 @@
+module purge
+module load cuda cuda-driver R/3.4.0
+module load magma/2.5.1a1-cuda90
+module load intel-cc  intel-fc
+export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
+
+

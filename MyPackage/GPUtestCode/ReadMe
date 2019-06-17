@@ -1,0 +1,17 @@
+Date: June 2019
+
+This directory contains the code for running a magma example using the idea presented in 
+https://stackoverflow.com/questions/18402024/magma-and-rcpp-for-linear-algebra-in-r
+
+This was a dog to get working because the example cpp code is incomplete.
+
+I had to modify the cpp code by adding in a point to an array double *work 
+and the real trick was to allocate this array with  magma_dmalloc_cpu( &work,    min_mn );
+
+There are lots of example codes in the magma source files 
+~/Desktop/magma-2.5.1-alpha1/testing/  
+that was originally downloaded from the magma site. 
+
+
+
+

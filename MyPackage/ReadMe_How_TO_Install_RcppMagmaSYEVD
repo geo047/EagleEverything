@@ -16,11 +16,15 @@ cd /home/geo047/Temp/rpackage
 #  https://bitbucket.csiro.au/users/bow355/repos/rcppmagmasvd/browse/rpackage/rcppmagmasyevd/src/Makevars
 
 # R CMD INSTALL --preclean --build rcppMagmaSYEVD -l ~/RLibs
+rm -rf ~/RLibs/rcppMagmaSYEVD 
 R CMD INSTALL --preclean --build rcppmagmasyevd  -l ~/RLibs
 
-# This created the tar ball rcppMagmaSYEVD_0.1.2_R_x86_64-pc-linux-gnu.tar.gz
 
-R CMD INSTALL ./rcppMagmaSYEVD_0.1.2_R_x86_64-pc-linux-gnu.tar.gz
+
+## To run R
+#------------
+LD_PRELOAD=$CUDA_ROOT/lib64/libnvblas.so R
+
 
 
 
@@ -29,7 +33,7 @@ R CMD INSTALL ./rcppMagmaSYEVD_0.1.2_R_x86_64-pc-linux-gnu.tar.gz
 # setup
 set.seed(101)
 n <- 500
-ngpu <- 1
+ngpu <- 2
 K <- crossprod(matrix(sample(c(0,1), n*n, T), nrow=n))
 
 # load library and RunServer()
