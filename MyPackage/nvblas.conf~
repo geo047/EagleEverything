@@ -1,9 +1,0 @@
-NVBLAS_LOGFILE  /home/geo047/nvblas.log
-NVBLAS_CPU_BLAS_LIB /apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl/lib/intel64_lin/libmkl_intel_lp64.so
-NVBLAS_GPU_LIST ALL
-NVBLAS_TILE_DIM 2048
-NVBLAS_AUTOPIN_MEM_ENABLED
-
-
-
-

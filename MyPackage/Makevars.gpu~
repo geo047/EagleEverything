@@ -1,2 +1,0 @@
-PKG_CPPFLAGS=-DEIGEN_USE_MKL_ALL=1 $(MAGMA_HOME)/include  $(CUDA_HOME)/include/ 
-PKG_LIBS=`$R_HOME/bin/Rscript -e "Rcpp:::LdFlags()"` -L$CUDA_HOME/lib64 -L$MAGMA_HOME/lib -lpthread -lm  -fopenmp  -lpthread -lm -ldl -lmagma
