@@ -12,7 +12,7 @@ PKG_CPPFLAGS <- sprintf('-DADD_ -DHAVE_CUBLAS -I/apps/magma/2.5.1a1-cuda90//incl
 #PKG_CPPFLAGS <- sprintf('-DADD_ -DHAVE_CUBLAS -I$(CUDA_HOME)/include  -I$(MAGMA_HOME)/include  %s', Rcpp:::RcppCxxFlags())  
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
 R <- file.path(R.home(component = 'bin'), 'R')
-file <- '~/Test/gpuQR_magma.cpp'
+file <- './gpuQR_magma.cpp'
 cmd <- sprintf('%s CMD SHLIB %s', R, paste(file, collapse = ' '))
 system(cmd)
 
