@@ -4,21 +4,26 @@
 
 library(Rcpp)
 PKG_LIBS <- sprintf('-Wl,-rpath, /apps/magma/2.5.1a1-ipl64-cuda90/lib -L /apps/magma/2.5.1a1-ipl64-cuda90/lib -lmagma  /apps/magma/2.5.1a1-ipl64-cuda90/lib/libmagma.a -Wl,-rpath,/apps/cuda/8.0.61/lib64 %s', Rcpp:::RcppLdFlags())
-PKG_CPPFLAGS <- sprintf('-std=c++11 -DADD_ -DHAVE_CUBLAS -I/apps/magma/2.5.1a1-ipl64-cuda90//include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I/apps/cuda/8.0.61/include %s', Rcpp:::RcppCxxFlags())
+#PKG_CPPFLAGS <- sprintf('-std=c++11 -DADD_ -DHAVE_CUBLAS -I/apps/magma/2.5.1a1-ipl64-cuda90/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I/apps/cuda/8.0.61/include %s', Rcpp:::RcppCxxFlags())
+PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I/apps/magma/2.5.1a1-ipl64-cuda90/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I/apps/cuda/8.0.61/include %s', Rcpp:::RcppCxxFlags())
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
 R <- file.path(R.home(component = 'bin'), 'R')
-file <- './multi.cpp ./magma_generate.cpp'
+#file <- './multi.cpp ./magma_generate.cpp ./magma_util.cpp'
+#file <- './simple.cpp'
+file <- './RcppExample.cpp'
 cmd <- sprintf('%s CMD SHLIB %s', R, paste(file, collapse = ' '))
 system(cmd)
 
 # for testing only
-dyn.load('./multi.so')
+dyn.load('./RcppExample.so')
+#dyn.load('./multi.so')
+#dyn.load('./simple.so')
 library(Rcpp)
 set.seed(100)
-n_row <- 400; n_col <- 400
+n_row <- 100; n_col <- 100
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
 # qr(A)$qr
-.Call('gpuQR_magma', A)
+.Call('gpuQR_magma', A)  ## note  this replaces A with the answers ... 
 
 
 

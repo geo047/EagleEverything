@@ -89,6 +89,7 @@ Rcpp::Rcout << "in here ... " << std::endl;
                                   aux_work,  -1,
                                   aux_iwork, -1,
                                   &info );
+Rcpp::Rcout << "WOW!!!!  ... " << std::endl;
    lwork  = (magma_int_t) MAGMA_D_REAL( aux_work[0] );
    liwork = aux_iwork[0];
 
