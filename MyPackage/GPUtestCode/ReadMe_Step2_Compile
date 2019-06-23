@@ -16,14 +16,20 @@ system(cmd)
 
 # for testing only
 dyn.load('./RcppExample.so')
-#dyn.load('./multi.so')
-#dyn.load('./simple.so')
 library(Rcpp)
 set.seed(100)
-n_row <- 100; n_col <- 100
+n_row <- 5; n_col <- 5
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
-# qr(A)$qr
+print(A[1:3,1:3])
+Akeep <- A
+ qr(A)$qr
+print("-----------------")
+
 .Call('gpuQR_magma', A)  ## note  this replaces A with the answers ... 
+
+Akeep[1:3,1:3]
+
+
 
 
 
