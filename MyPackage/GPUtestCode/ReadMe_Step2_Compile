@@ -6,21 +6,35 @@ library(Rcpp)
 PKG_LIBS <- sprintf('-Wl,-rpath, /apps/magma/2.5.1a1-ipl64-cuda90/lib -L /apps/magma/2.5.1a1-ipl64-cuda90/lib -lmagma  /apps/magma/2.5.1a1-ipl64-cuda90/lib/libmagma.a -Wl,-rpath,/apps/cuda/8.0.61/lib64 %s', Rcpp:::RcppLdFlags())
 PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I/apps/magma/2.5.1a1-ipl64-cuda90/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I/apps/cuda/8.0.61/include %s', Rcpp:::RcppCxxFlags())
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
-sourceCpp("RcppExampleSourceCpp.cpp")
-
-
+sourceCpp("RcppExample.cpp")
 
 # for testing only
 set.seed(100)
-n_row <- 5000; n_col <- 5000
+n_row <- 5; n_col <- 5
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
-#  qr(A)$qr
-
-gpuQR_magma(A)  ## note  this replaces A with the answers ... 
-
-Akeep[1:3,1:3]
 
 
+start.time <- Sys.time()
+qrA <- gpuQR_magma(A)  ## note  this replaces A with the answers ... 
+end.time <- Sys.time()
+print(end.time - start.time)
+
+
+
+
+start.time <- Sys.time()
+qrA_R <- qr(A, complete=TRUE)
+end.time <- Sys.time()
+print(end.time - start.time)
+
+print("Results from CPU")
+qr.Q(qrA_R)[1:5,1:5]
+qr.R(qrA_R)[1:5,1:5]
+
+
+
+print("Results from Magma GPU")
+qrA[1:5,1:5]
 
 
 

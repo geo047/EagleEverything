@@ -5,7 +5,10 @@
 
 using namespace Rcpp;
 
-
+// Potential issue
+// First, you are accessing the matrix row-wise, whereas MAGMA and LAPACK use column-wise ordering. That is,
+//
+// A[ i + j*size ]
 
 
 // [[Rcpp::export]]
@@ -13,9 +16,11 @@ Rcpp::NumericVector   gpuQR_magma(Rcpp::NumericMatrix X)
 {
 
    // convert to C++ type
-   double const* d_X = X.begin();
+   double const* d_X = X.begin();   // this is a column-wise vector which magma likes
+  
 
-    // Initialize magma and cublas
+
+  // Initialize magma and cublas
     magma_init();
 
    magma_print_environment();
@@ -61,20 +66,20 @@ magma_dmalloc (&d_a , ldda*M); // device memory for d_a
 
 magma_dsetmatrix ( M, N, d_X ,M,d_a ,ldda , queue ); // copy X -> d_a
 std::cout << " This is what is now sitting in d_a on the GPU ready for analysis" << std::endl;
-magma_dprint_gpu(M, N, d_a , ldda, queue);   // print contents of matrix on gpu device
+// magma_dprint_gpu(M, N, d_a , ldda, queue);   // print contents of matrix on gpu device
 
 
 
 // QR algorithm
 magma_dgeqrf2_gpu( M, N, d_a, ldda, tau, &info );
 std::cout << "Results coming out of dgeqrf2 - has d_a changed? " << std::endl;
-magma_dprint_gpu(M, N, d_a , ldda, queue);   // print contents of matrix on gpu device
+// magma_dprint_gpu(M, N, d_a , ldda, queue);   // print contents of matrix on gpu device
 
 double *r;
 magma_dmalloc_pinned (&r,n2 ); // host memory for r
 magma_dgetmatrix ( M, N, d_a ,ldda ,r, M , queue ); // copy d_a -> r
 std::cout << "Contents of r after moving contents d_a to r which is in host memory " << std::endl;
-magma_dprint(M,N, r, lda);
+ magma_dprint(M,N, r, lda);
   
 
 
