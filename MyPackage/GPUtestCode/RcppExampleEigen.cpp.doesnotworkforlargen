@@ -1,0 +1,131 @@
+#include <Rcpp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "cublas_v2.h"
+#include "magma_v2.h"      // also includes cublas_v2.h
+#include "magma_lapack.h"  // if you need BLAS & LAPACK
+#include<magma_operators.h>
+
+
+
+
+using namespace Rcpp;
+
+// Potential issue
+// First, you are accessing the matrix row-wise, whereas MAGMA and LAPACK use column-wise ordering. That is,
+//
+// A[ i + j*size ]
+
+
+// [[Rcpp::export]]
+Rcpp::NumericVector   gpuEigen_magma(Rcpp::NumericMatrix X)
+{
+   // convert to C++ type
+   double const* h_X = X.begin();   // this is a column-wise vector which magma likes
+
+
+   magma_init (); // initialize Magma
+   magma_queue_t queue = NULL ;
+   magma_int_t dev =0;
+   magma_queue_create (dev ,& queue );
+
+   magma_int_t  lda, ldda,   min_mn, nb, size;
+
+
+magma_int_t n=X.rows() , n2=n*n;
+
+    lda    = n;
+    ldda = ((n +31)/32)*32; // ldda = n if 32 divides m
+    nb     = magma_get_dgeqrf_nb( n, n );
+
+
+
+double  *h_R; // a, r - nxn matrices on the host
+double *d_X ; // nxn matrix on the device
+double *h_work ; // workspace
+magma_int_t lwork ; // h_work size
+magma_int_t * iwork ; // workspace
+magma_int_t liwork ; // iwork size
+double *w1  ; //  vector of eigenvalues
+double  work [1]; // used in difference computations
+magma_int_t info ;
+magma_dmalloc_cpu (&w1 ,n); // host memory for real
+magma_dmalloc_cpu (&h_R,n2 ); // host memory for r
+// magma_dmalloc (& d_X ,n2 ); // device memory for d_r
+magma_dmalloc (&d_X , ldda*n ); // device memory for d_r
+
+// Query for workspace sizes
+double aux_work [1];
+magma_int_t aux_iwork [1];
+std::cout << "i here " << std::endl;
+magma_dsyevd_gpu ( MagmaVec , MagmaLower ,n,d_X ,ldda ,w1 ,h_R,n, aux_work ,
+                     -1, aux_iwork ,-1,& info );
+std::cout << aux_work[0] << std::endl;
+std::cout << aux_iwork[0] << std::endl;
+
+// magma_dsyevd_gpu( MagmaVec, MagmaLower,
+//                                  n, NULL, ldda, NULL,  // A, w
+//                                  NULL, n,            // host A
+//                                  aux_work,  -1,
+//                                  aux_iwork, -1,
+//                                  &info );
+
+ lwork = ( magma_int_t ) aux_work [0];
+//lwork  = (magma_int_t) MAGMA_D_REAL( aux_work[0] );
+
+liwork = aux_iwork [0];
+//iwork =( magma_int_t *) malloc ( liwork * sizeof ( magma_int_t ));
+ magma_imalloc_cpu( &iwork,  liwork );
+
+
+
+
+// magma_dmalloc_cpu (& h_work , lwork ); // memory for workspace
+magma_dmalloc_pinned (& h_work , lwork ); // memory for workspace
+magma_dsetmatrix ( n, n, h_X, n, d_X , ldda  , queue ); // copy a -> d_r
+// std::cout << " h_X ... " << std::endl;
+//  magma_dprint(n,n, h_X, n);
+// std::cout << " d_X  ... " << std::endl;
+//  magma_dprint_gpu(n, n, d_X , ldda  , queue);   // print contents of matrix on gpu device
+
+
+
+
+// compute the eigenvalues and eigenvectors for a symmetric ,
+// real nxn matrix ; Magma version
+std::cout << ldda << std::endl;
+std::cout << info << std::endl;
+std::cout << lwork << std::endl;
+
+
+magma_dsyevd_gpu(MagmaVec,MagmaLower, n,d_X, ldda , 
+                 w1, h_R, n, h_work, lwork, iwork, liwork, &info);
+
+
+std::cout << "d_X that has been returned  for the dsyevd_gpu calculation .. " <<  std::endl;
+// magma_dprint_gpu(n, n, d_X , ldda , queue);   // print contents of matrix on gpu device
+
+
+
+
+
+
+NumericVector ans =  NumericVector(w1,w1 + n  );
+// ans.attr("dim") = Dimension(n, n);
+
+
+magma_free_cpu (h_R); // free host memory
+magma_free_cpu (w1 ); // free host memory
+// free ( h_work ); // free host memory
+magma_free_pinned ( h_work ); // free host memory
+magma_free (d_X ); // free device memory
+magma_queue_destroy ( queue ); // destroy queue
+magma_finalize (); // finalize Magma
+
+return ans;
+
+
+}
+
+
+

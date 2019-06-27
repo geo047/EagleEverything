@@ -1,0 +1,5 @@
+/usr/lib64/gcc/x86_64-suse-linux/4.8/../../../../x86_64-suse-linux/bin/ld: skipping incompatible /lib/libgcc_s.so.1 when searching for libgcc_s.so.1
+/usr/lib64/gcc/x86_64-suse-linux/4.8/../../../../x86_64-suse-linux/bin/ld: skipping incompatible /lib/libgcc_s.so.1 when searching for libgcc_s.so.1
+/usr/lib64/gcc/x86_64-suse-linux/4.8/../../../../x86_64-suse-linux/bin/ld: /apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl/lib/intel64/libmkl_gnu_thread.a(s__gemm_drv.o)(.text+0x4f92): unresolvable R_X86_64_PC32 relocation against symbol `.gomp_critical_user_mkl_blas_sgemm_omp_acopy_la_cs'
+/usr/lib64/gcc/x86_64-suse-linux/4.8/../../../../x86_64-suse-linux/bin/ld: final link failed: nonrepresentable section on output
+collect2: error: ld returned 1 exit status
