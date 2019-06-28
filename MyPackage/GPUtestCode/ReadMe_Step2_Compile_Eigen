@@ -43,9 +43,7 @@ eigenA_R <- eigen(A)
 end.time <- Sys.time()
 print(end.time - start.time)
 
-eigenA_MAGMA
-
-sort(eigenA_R$values)
+summary( eigenA_MAGMA -  sort(eigenA_R$values))
 
 
 
