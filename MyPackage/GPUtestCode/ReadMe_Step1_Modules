@@ -1,8 +1,9 @@
 module purge
 module load cuda/9.0.176  cuda-driver R/3.4.0
-### module load magma/2.5.1a1-cuda90
-module load  magma/2.5.1a1-ipl64-cuda90
+module load magma/2.5.1a1-cuda90
+### ===> module load  magma/2.5.1a1-ipl64-cuda90
 module load intel-cc  intel-fc
+module load  intel-mkl/2018.2.199
 export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
 
 

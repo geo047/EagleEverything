@@ -4,25 +4,28 @@
 
 MAGMA_HOME <- "/apps/magma/2.5.1a1-ipl64-cuda90"
 CUDA_HOME <- "/apps/cuda/9.0.176"
-MKLROOT <- "/apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl"
+INTEL_MKL_HOME <- "/apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl"
 
 library(Rcpp)
-# experimenting with flags - grabbed from intel web site but these dont load magma correctlyl  - dynamic
-#PKG_LIBS <- sprintf('-L%s/lib  -lmagma -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/intel64  -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl', MAGMA_HOME, CUDA_HOME, MKLROOT, MKLROOT, MKLROOT, MKLROOT)
-
-#PKG_CPPFLAGS <- sprintf('-DADD_ %s -I%s/include -I%s/include  -DMKL_ILP64 -DMKL_ILP64 -m64  -I%s/include', Rcpp:::RcppCxxFlags() , MAGMA_HOME,  CUDA_HOME, MKLROOT)
-
-# static version 
-#PKG_LIBS <- sprintf('-L%s/lib  -lmagma -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib -Wl,--start-group %s/lib/intel64/libmkl_intel_ilp64.a %s/lib/intel64/libmkl_intel_thread.a %s/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl', MAGMA_HOME, CUDA_HOME, MKLROOT, MKLROOT, MKLROOT, MKLROOT)
-#PKG_CPPFLAGS <- sprintf('-std=c++11  -DADD_ %s -I%s/include -I%s/include -DMKL_ILP64 -I%s/include', Rcpp:::RcppCxxFlags() , MAGMA_HOME,  CUDA_HOME, MKLROOT)
 
 
 ## This works
-PKG_LIBS <- sprintf('-Wl,-rpath, %s/lib -L %s/lib -lmagma  %s/lib/libmagma.a -Wl,-rpath,/apps/cuda/8.0.61/lib64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl  %s', MAGMA_HOME,  MAGMA_HOME, MAGMA_HOME,   Rcpp:::RcppLdFlags())
-PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I%s/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I%s/include -DMKL_ILP64 -m64 -I%s/include  %s', MAGMA_HOME, CUDA_HOME, MKLROOT, Rcpp:::RcppCxxFlags())
-# PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I%s/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I/apps/cuda/8.0.61/include -DMKL_ILP64 -m64 -I%s/include  %s', MAGMA_HOME, MKLROOT, Rcpp:::RcppCxxFlags())
+#PKG_LIBS <- sprintf('-Wl,-rpath, %s/lib -L %s/lib -lmagma  %s/lib/libmagma.a -Wl,-rpath,/apps/cuda/8.0.61/lib64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl  %s', MAGMA_HOME,  MAGMA_HOME, MAGMA_HOME,   Rcpp:::RcppLdFlags())
+#PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I%s/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I%s/include -DMKL_ILP64 -m64 -I%s/include  %s', MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME, Rcpp:::RcppCxxFlags())
+PKG_CPPFLAGS  <- sprintf('-DADD_ -I%s/include -I%s/include -DMKL_ILP64 -DMKL_ILP64 -m64 -I%s/include', MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+PKG_LIBS  <- sprintf('-L%s/lib  -lmagma -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl', MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+
+
+
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
 sourceCpp("RcppExampleEigen.cpp", rebuild=TRUE, verbose=TRUE)
+
+
+#gcc  -DADD_ -I$MAGMA_HOME/include -I$CUDA_HOME/include -DMKL_ILP64 -DMKL_ILP64 -m64 -I${INTEL_MKL_HOME}/include   -c example_v3.c
+# gcc  -L$MAGMA_HOME/lib  -lmagma -L$CUDA_HOME/lib64 -lcublas -lcudart -lcusparse -L${INTEL_MKL_HOME}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl    -o a.out  example_v3.o
+
+
+
 
 # for testing only
 set.seed(100)
@@ -44,6 +47,75 @@ end.time <- Sys.time()
 print(end.time - start.time)
 
 summary( eigenA_MAGMA -  sort(eigenA_R$values))
+
+###====>
+
+
+system("rm *.o *.so")
+library(Rcpp)  
+print(" This works for the stand alone C version ..... ")
+
+PKG_LIBS  <- sprintf('  -L%s/lib -lmagma   -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl', MAGMA_HOME,  MAGMA_HOME, MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+
+PKG_CPPFLAGS  <- sprintf('   -DADD_ -I%s/include -I%s/include -DMKL_ILP64 -DMKL_ILP64 -m64 -I%s/include -I/home/geo047/RLibs/Rcpp/include %s ', MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME,  Rcpp:::RcppCxxFlags())
+
+Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS) 
+R <- file.path(R.home(component = 'bin'), 'R') 
+file <- 'RcppExampleEigen.cpp'
+cmd <- sprintf('%s CMD SHLIB %s', R, paste(file, collapse = ' '))
+system(cmd)
+
+dyn.load("./RcppExampleEigen.so") 
+
+n_row <- 150; n_col <- 150
+A <- matrix(rnorm(n_row * n_col), n_row, n_col)
+A <- tcrossprod(A)    ##  gives me a symmetric matrix
+eigenA_MAGMA  <- gpuEigen_magma(A)  ## note  this replaces A with the answers ... 
+
+#PKG_LIBS <- sprintf('-Wl,-rpath, %s/lib -L %s/lib -lmagma  %s/lib/libmagma.a -Wl,-rpath,/apps/cuda/8.0.61/lib64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl  %s', MAGMA_HOME,  MAGMA_HOME, MAGMA_HOME,   Rcpp:::RcppLdFlags())
+
+#PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I%s/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I%s/include -DMKL_ILP64 -m64 -I%s/include  %s', MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME, Rcpp:::RcppCxxFlags())
+
+
+##3====================> Where I am up to so far
+
+print("Remember to adjust LD_LIBRARY_PATH to include magma directory ")
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MAGMA_HOME/lib
+library(Rcpp)
+#MAGMA_HOME <- "/apps/magma/2.5.1a1-ipl64-cuda90"
+MAGMA_HOME <- "/apps/magma/2.5.1a1-cuda90"
+CUDA_HOME <- "/apps/cuda/9.0.176"
+#INTEL_MKL_HOME <- "/apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl"
+PKG_LIBS  <- sprintf('  -L%s/lib -lmagma   -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl', MAGMA_HOME,  MAGMA_HOME, MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+
+PKG_CPPFLAGS  <- sprintf('   -DADD_ -DMAGMA_WITH_MKL -mkl -DHAVE_CUBLAS -I%s/include -I%s/include   -m64 -I%s/include -I/home/geo047/RLibs/Rcpp/include %s ', MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME,  Rcpp:::RcppCxxFlags())
+
+
+Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
+sourceCpp("RcppExampleEigen.cpp", rebuild=TRUE, verbose=TRUE)
+
+
+
+
+# export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib
+library(Rcpp)
+MAGMA_HOME <- "/apps/magma/2.5.1a1-cuda90"
+CUDA_HOME <- "/apps/cuda/9.0.176"
+#INTEL_MKL_HOME <- "/apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl"
+INTEL_MKL_HOME <-    "/apps/intel/mkl/2018.2.199/compilers_and_libraries_2018.2.199/linux/mkl"
+# compile options ... 1st step
+PKG_CPPFLAGS  <- sprintf('   -DADD_  -I%s/include -I%s/include   -I/home/geo047/RLibs/Rcpp/include %s ', MAGMA_HOME, CUDA_HOME,  Rcpp:::RcppCxxFlags())
+#PKG_LIBS  <- sprintf('   -DADD_  -I%s/include -I%s/include   -I/home/geo047/RLibs/Rcpp/include %s ', MAGMA_HOME, CUDA_HOME,  Rcpp:::RcppCxxFlags())
+# linking options ...  2nd step
+PKG_LIBS  <- sprintf( ' -L%s/lib -lmagma -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/intel64_lin   -liomp5 -lpthread -lm -ldl    ' , MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+#PKG_CPPFLAGS  <- sprintf( ' -L%s/lib -lmagma_sparse -lmagma -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/ia32 -lmkl   ' , MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
+sourceCpp("RcppExampleEigen.cpp", rebuild=TRUE, verbose=TRUE)
+
+n_row <- 150; n_col <- 150
+A <- matrix(rnorm(n_row * n_col), n_row, n_col)
+A <- tcrossprod(A)    ##  gives me a symmetric matrix
+eigenA_MAGMA  <- gpuEigen_magma(A)  ## note  this replaces A with the answers ... 
 
 
 

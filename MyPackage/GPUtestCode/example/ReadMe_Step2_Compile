@@ -3,6 +3,6 @@
 #icpc -L$MAGMA_HOME/lib  -lmagma -L$CUDA_HOME/lib64 -lcublas -lcudart -lcusparse -L$MKLROOT/lib -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl   -o a.out  example_v2.o 
 
 # dynamic build - in line with R
-gcc  -DADD_ -I$MAGMA_HOME/include -I$CUDA_HOME/include -DMKL_ILP64 -DMKL_ILP64 -m64 -I${MKLROOT}/include   -c example_v2.c 
-gcc  -L$MAGMA_HOME/lib  -lmagma -L$CUDA_HOME/lib64 -lcublas -lcudart -lcusparse -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl    -o a.out  example_v2.o 
+gcc  -DADD_ -I$MAGMA_HOME/include -I$CUDA_HOME/include -DMKL_ILP64 -DMKL_ILP64 -m64 -I${MKLROOT}/include   -c example_v3.c 
+gcc  -L$MAGMA_HOME/lib  -lmagma -L$CUDA_HOME/lib64 -lcublas -lcudart -lcusparse -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl    -o a.out  example_v3.o 
 

@@ -1,34 +1,25 @@
-#include <Rcpp.h>
+// This is a simple standalone example. See README.txt
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "cublas_v2.h"
 #include "magma_v2.h"      // also includes cublas_v2.h
 #include "magma_lapack.h"  // if you need BLAS & LAPACK
-#include<magma_operators.h>
 
 
 
-using namespace Rcpp;
 
-// Potential issue
-// First, you are accessing the matrix row-wise, whereas MAGMA and LAPACK use column-wise ordering. That is,
-//
-// A[ i + j*size ]
-
-
-// [[Rcpp::export]]
-Rcpp::NumericVector   gpuEigen_magma(const Rcpp::NumericMatrix&  X)
+// ------------------------------------------------------------
+int main( int argc, char** argv )
 {
 
-
-magma_init(); // initialize Magma
+magma_init (); // initialize Magma
 magma_queue_t queue = NULL ;
 magma_int_t dev =0;
 magma_queue_create (dev ,& queue );
 double gpu_time , cpu_time ;
-// magma_int_t n=8192 , n2=n*n;
-magma_int_t n=X.nrow() , n2=n*n;
+magma_int_t n=150 , n2=n*n;
 float *a, *r; // a, r - nxn matrices on the host
 float *d_r; // nxn matrix on the device
 float * h_work ; // workspace
@@ -59,20 +50,14 @@ magma_smalloc_cpu (& h_work , lwork ); // memory for workspace
 lapackf77_slarnv (& ione ,ISEED ,&n2 ,a);
 lapackf77_slacpy ( MagmaFullStr ,&n ,&n,a ,&n,r ,&n);
 magma_ssetmatrix ( n, n, a, n, d_r ,n, queue ); // copy a -> d_r
-std::cout << "d_r " << std::endl;
+// std::cout << "d_r " << std::endl;
 magma_sprint_gpu(5,5,d_r,n,queue);
-
 
 // compute the eigenvalues and eigenvectors for a symmetric ,
 // real nxn matrix ; Magma version
 gpu_time = magma_sync_wtime ( NULL );
 magma_ssyevd_gpu(MagmaVec,MagmaLower,n,d_r,n,w1,r,n,h_work,
 lwork,iwork,liwork,&info);
-
-
-NumericVector ans =  NumericVector(w1,w1 + n  );
-// ans.attr("dim") = Dimension(M, N);
-
 
 free (w1 ); // free host memory
 free (w2 ); // free host memory
@@ -84,22 +69,5 @@ magma_queue_destroy ( queue ); // destroy queue
 magma_finalize (); // finalize Magma
 
 
-return ans ;
-
-
-
-
-
-
-
-
-
-return 0;
-
-
-
 
 }
-
-
-
