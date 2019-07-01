@@ -24,7 +24,7 @@ Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
 sourceCpp("RcppExampleEigen.cpp", rebuild=TRUE, verbose=TRUE)
 
 set.seed(100)
-n_row <- 20000; n_col <- 20000
+n_row <- 10000; n_col <- 10000
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
 A <- tcrossprod(A)    ##  gives me a symmetric matrix
 
@@ -38,7 +38,13 @@ eigenA_R <- eigen(A)
 end.time <- Sys.time()
 print(end.time - start.time)
 
-summary( eigenA_MAGMA -  sort(eigenA_R$values))
+summary( sort(eigenA_MAGMA$values) -  sort(eigenA_R$values))
+
+indx <- order(eigenA_R$values)
+# needs abs otherwise a change in sign can cause differences that don't exist
+summary( as.vector(  abs(eigenA_MAGMA$vectors) - abs(eigenA_R$vectors[,indx]) ) )
+
+
 
 
 
