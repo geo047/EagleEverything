@@ -1,5 +1,6 @@
 // This is a simple standalone example. See README.txt
-#include <iostream> 
+
+#include<iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include "cublas_v2.h"
@@ -49,8 +50,8 @@
      magma_finalize (); \
      magma_free_cpu(iwork) ; \
     queue = NULL;    \
-    magma_queue_destroy( queues2[0] );  \ 
-    magma_queue_destroy( queues2[1] );  \
+    magma_queue_destroy( queues2[0] ); \  
+    magma_queue_destroy( queues2[1] ); \ 
     queues2[0] = NULL;     \
     queues2[1] = NULL;   \
     handle = NULL  

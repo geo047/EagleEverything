@@ -79,7 +79,7 @@ double *r;
 magma_dmalloc_pinned (&r,n2 ); // host memory for r
 magma_dgetmatrix ( M, N, d_a ,ldda ,r, M , queue ); // copy d_a -> r
 std::cout << "Contents of r after moving contents d_a to r which is in host memory " << std::endl;
- magma_dprint(M,N, r, lda);
+//  magma_dprint(M,N, r, lda);
   
 
 

@@ -3,32 +3,32 @@
 # this needs to run in R
 
 # set up LD_LIBRARY_PATH variable 
-## ====> Do this First ====> export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib
+## ====> Do this First ====> export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
 ##                           export OMP_NUM_THREADS=16  
 library(Rcpp)
-MAGMA_HOME <- "/apps/magma/2.5.1a1-cuda90"
-CUDA_HOME <- "/apps/cuda/9.0.176"
-#INTEL_MKL_HOME <-    "/apps/intel/mkl/2018.2.199/compilers_and_libraries_2018.2.199/linux/mkl"
+#MAGMA_HOME <- "/apps/magma/2.5.1a1-cuda90"
+MAGMA_HOME <- "/apps/magma/2.5.1a1-ipl64-cuda90"
+CUDA_HOME <- "/apps/cuda/9.0.176/"
+INTEL_MKL_HOME <-    "/apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl"
+#### ======>     export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
 
-# compile options ... 1st step
-PKG_CPPFLAGS  <- sprintf('   -DADD_  -I%s/include   -I%s/include   ', MAGMA_HOME, CUDA_HOME)
-#PKG_CPPFLAGS  <- sprintf('   -DADD_  -I%s/include -I%s/include   -I/home/geo047/RLibs/Rcpp/include  ', MAGMA_HOME, CUDA_HOME)
-#PKG_CPPFLAGS  <- sprintf('   -DADD_  -I%s/include -I%s/include   -I/home/geo047/RLibs/Rcpp/include %s ', MAGMA_HOME, CUDA_HOME,  Rcpp:::RcppCxxFlags())
-# linking options ...  2nd step
-PKG_LIBS  <- sprintf( ' -L%s/lib -lmagma     ' , MAGMA_HOME )
-#PKG_LIBS  <- sprintf( ' -L%s/lib -lmagma -L%s/lib64 -lcublas -lcudart -lcusparse -L%s/lib/intel64_lin   -liomp5 -lpthread -lm -ldl    ' , MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME)
+#PKG_LIBS  <- sprintf( '-Wl,-rpath,%s/lib  -lmagma  ', MAGMA_HOME)
+PKG_LIBS  <- sprintf( '-Wl,-rpath,%s/lib  -lmagma -Wl,-rpath,%s/lib64 -lcublas -lcudart -lcusparse -Wl,-rpath,%s/lib/intel64  -Wl,--no-as-needed -lmkl_intel_ilp64 -Wl,-rpath,%s/../compiler/lib/intel64  -liomp5' , MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME, INTEL_MKL_HOME)
+PKG_CPPFLAGS  <- sprintf('   -DADD_ -DMAGMA_WITH_MKL -mkl -DHAVE_CUBAS -DMKL_ILP64    -I%s/include    -I%s/include    ', MAGMA_HOME, CUDA_HOME)
+#PKG_CPPFLAGS  <- sprintf('   -DADD_  -DMKL_ILP64    -I%s/include    -I%s/include    ', MAGMA_HOME, CUDA_HOME)
 
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
-sourceCpp("RcppExampleEigen.cpp", rebuild=TRUE, verbose=TRUE)
+ sourceCpp("RcppExampleEigen_m.cpp", rebuild=TRUE, verbose=TRUE)
 
 set.seed(100)
-n_row <- 1000; n_col <- 1000
+n_row <- 500; n_col <- 500
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
 A <- tcrossprod(A)    ##  gives me a symmetric matrix
-start.time <- Sys.time()
+#A <- diag(A)
+#A <- diag(A)
 eigenA_MAGMA  <- gpuEigen_magma(A)  ## note  this replaces A with the answers ... 
-end.time <- Sys.time()
-print(end.time - start.time)
+
+
 start.time <- Sys.time()
 eigenA_R <- eigen(A)
 end.time <- Sys.time()

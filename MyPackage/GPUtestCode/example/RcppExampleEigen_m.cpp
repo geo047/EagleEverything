@@ -1,5 +1,4 @@
-// This is a simple standalone example. See README.txt
-#include <iostream> 
+#include <Rcpp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "cublas_v2.h"
@@ -7,13 +6,11 @@
 #include "magma_lapack.h"  // if you need BLAS & LAPACK
 #include<magma_operators.h>
 
-
-
-
 // set to 1 if debug information is desired
 #define DEBUG 1
 
 
+using namespace Rcpp;
 
 /***************************************************************************//**
  * Macros 
@@ -24,18 +21,18 @@
 
 #define CHECK_MALLOC( err )                                                                        \
     if (err != MAGMA_SUCCESS){                                                                     \
-        std::cout << "\nError: Eigenvalue calculation has failed due to failure of memory allocation.\n" << std::endl;  \
+        Rcpp::Rcout << "\nError: Eigenvalue calculation has failed due to failure of memory allocation.\n" << std::endl;  \
      }
 
 #define CHECK_GPU( err )   \
    if (err != MAGMA_SUCCESS ){                         \
-       std::cout <<"\n" << std::endl;    \
-       std::cout << "\nError:    " << std::endl;    \
-       std::cout << "  Eigenvalue calculation has failed. " << std::endl;  \
-       std::cout << "  Things to try to solve this problem are:            " << std::endl;  \
-       std::cout << "    1. Reduce the number of individuals to see if this is a GPU memory issue. " << std::endl; \
-       std::cout << "    2. Ensure that you do not have perfectly correlated fixed effects in the model. " << std::endl; \
-       std::cout << "       This will cause collinearity between columns in the model matrix. \n\n " << std::endl;     \
+       Rcpp::Rcout <<"\n" << std::endl;    \
+       Rcpp::Rcout << "\nError:    " << std::endl;    \
+       Rcpp::Rcout << "  Eigenvalue calculation has failed. " << std::endl;  \
+       Rcpp::Rcout << "  Things to try to solve this problem are:            " << std::endl;  \
+       Rcpp::Rcout << "    1. Reduce the number of individuals to see if this is a GPU memory issue. " << std::endl; \
+       Rcpp::Rcout << "    2. Ensure that you do not have perfectly correlated fixed effects in the model. " << std::endl; \
+       Rcpp::Rcout << "       This will cause collinearity between columns in the model matrix. \n\n " << std::endl;     \
    }
 
 
@@ -71,8 +68,11 @@
 #endif
 
 
-// ------------------------------------------------------------
-int main( int argc, char** argv )
+
+
+
+// [[Rcpp::export]]
+Rcpp::List   gpuEigen_magma(const Rcpp::NumericMatrix&  X)
 {
 
 
@@ -130,7 +130,7 @@ int main( int argc, char** argv )
 
 // Variables 
 double gpu_time , cpu_time ;
-magma_int_t n=500 , n2=n*n;
+magma_int_t n=X.nrow() , n2=n*n;
 magma_int_t  ldda = magma_roundup( n, 32 );
 
 // Convert X into a form that Magma can deal with of type double *
@@ -139,9 +139,9 @@ magma_int_t  ldda = magma_roundup( n, 32 );
 double  xx[n2];
 
 // copy contents to CPU that can be changed 
-for (int j=0; j< 500 ; j++){
-  for (int i=0; i < 500 ; i++){
-     xx[i+n*j] = rand()*100;
+for (int j=0; j< X.ncol(); j++){
+  for (int i=0; i < X.nrow(); i++){
+     xx[i+n*j] = X(i,j);
   }
 }
 
@@ -253,15 +253,26 @@ if (info != MAGMA_SUCCESS){
      return 0;
 };
 if (DEBUG){
-     std::cout << " First 10 eigenvalues (descending order)... " << std::endl;
+     Rcpp::Rcout << " First 10 eigenvalues (descending order)... " << std::endl;
      for(int i=0; i<10; i++){
-        std::cout << w1[i] << " " ;
+        Rcpp::Rcout << w1[i] << " " ;
      }
-     std::cout << "\n\n" << std::endl;
+     Rcpp::Rcout << "\n\n" << std::endl;
 
-     std::cout << " First 10 rows and columns of the eigenvector matrix (residing in GPU memory) " << std::endl;
+     Rcpp::Rcout << " First 10 rows and columns of the eigenvector matrix (residing in GPU memory) " << std::endl;
   // --->    magma_dprint_gpu(10,10,d_r_array,n, queue);
 };
+
+
+
+
+
+
+
+// create R list structure
+NumericVector values =  NumericVector(w1,w1 + n  );
+NumericVector vectors = NumericVector(xx, xx + n2);
+vectors.attr("dim") = Dimension(n,n);
 
 
 // clean up and shut down 
@@ -271,12 +282,9 @@ SHUTDOWN;
 
 
 // Return list structure 
-return 0;
+return Rcpp::List::create( 
+       Rcpp::Named("values") =   values, 
+       Rcpp::Named("vectors") =  vectors );
 
 } 
-
-
-
-
-
 
