@@ -6,12 +6,14 @@ library(Rcpp)
 PKG_LIBS <- sprintf('-Wl,-rpath, /apps/magma/2.5.1a1-ipl64-cuda90/lib -L /apps/magma/2.5.1a1-ipl64-cuda90/lib -lmagma  /apps/magma/2.5.1a1-ipl64-cuda90/lib/libmagma.a -Wl,-rpath,/apps/cuda/8.0.61/lib64 %s', Rcpp:::RcppLdFlags())
 PKG_CPPFLAGS <- sprintf('-std=c++11 -DMAGMA_WITH_MKL -mkl -DADD_ -DHAVE_CUBLAS -I/apps/magma/2.5.1a1-ipl64-cuda90/include -I /home/geo047/EagleEverything/MyPackage/GPUtestCode/include -I/apps/cuda/8.0.61/include %s', Rcpp:::RcppCxxFlags())
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
-sourceCpp("RcppExampleQR.cpp")
+sourceCpp("RcppExampleQR.cpp", rebuild=TRUE, verbose=TRUE)
 
 # for testing only
 set.seed(100)
 n_row <- 10000; n_col <- 10000
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
+A <-tcrossprod(A)
+
 
 start.time <- Sys.time()
 qrA <- gpuQR_magma(A)  ## note  this replaces A with the answers ... 

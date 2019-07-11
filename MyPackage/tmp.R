@@ -1,7 +1,6 @@
 library(Rcpp)
     
  Rcpp.package.skeleton("Eagle", cpp_files=c(
-            "magma_test_rcpp.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "getRowColumn.cpp"  ,
             "CreateASCIInospace_PLINK.cpp"  ,
@@ -71,7 +70,6 @@ library(Rcpp)
             "create_ascii.R", 
             "extract_geno.R", 
             "constructX.R", 
-            "magma_test.R", 
             "summary_am.R"   ) ) 
   ## running roxygen2  
  library(roxygen2) 

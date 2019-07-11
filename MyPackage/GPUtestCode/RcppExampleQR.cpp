@@ -11,9 +11,45 @@ using namespace Rcpp;
 // A[ i + j*size ]
 
 
+/***************************************************************************//**
+ * Macros 
+ */
+
+#define PRINT(x)  \
+     std::cout << x << std::endl
+
+#define CHECK_MALLOC( err )                                                                        \
+    if (err != MAGMA_SUCCESS){                                                                     \
+        Rcpp::Rcout << "\nError: Eigenvalue calculation has failed due to failure of memory allocation.\n" << std::endl;  \
+     }
+
+#define CHECK_GPU( err )   \
+   if (err != MAGMA_SUCCESS ){                         \
+       Rcpp::Rcout <<"\n" << std::endl;    \
+       Rcpp::Rcout << "\nError:    " << std::endl;    \
+       Rcpp::Rcout << "  Eigenvalue calculation has failed. " << std::endl;  \
+       Rcpp::Rcout << "  Things to try to solve this problem are:            " << std::endl;  \
+       Rcpp::Rcout << "    1. Reduce the number of individuals to see if this is a GPU memory issue. " << std::endl; \
+       Rcpp::Rcout << "    2. Ensure that you do not have perfectly correlated fixed effects in the model. " << std::endl; \
+       Rcpp::Rcout << "       This will cause collinearity between columns in the model matrix. \n\n " << std::endl;     \
+   }
+
+
+#define SHUTDOWN   \
+     magma_free_cpu ( work ); \
+     magma_free_cpu ( h_R ); \
+     magma_free_cpu (tau); \
+     magma_queue_destroy ( queue ); \
+     magma_finalize (); 
+
+
+
+
+
 // [[Rcpp::export]]
-Rcpp::NumericVector   gpuQR_magma(Rcpp::NumericMatrix X)
+Rcpp::List   gpuQR_magma(const Rcpp::NumericMatrix  X)
 {
+
 
    // convert to C++ type
    double const* d_X = X.begin();   // this is a column-wise vector which magma likes
@@ -21,73 +57,81 @@ Rcpp::NumericVector   gpuQR_magma(Rcpp::NumericMatrix X)
 
 
   // Initialize magma and cublas
-    magma_init();
+   magma_init();
 
    magma_print_environment();
 
+   // Initialize the queue
    magma_queue_t queue = NULL ;
    magma_int_t dev =0;
    magma_queue_create (dev ,& queue );
-    const double c_zero    = MAGMA_D_ZERO;
-   
-    double  *tau,  tmp[1], unused[1];
-    magmaDouble_ptr d_A, dT;
-    magma_int_t M, N, n2, lda, ldda, lwork, info, min_mn, nb, size;
-   
-    M = X.rows();
-    N = X.cols();
-    min_mn = std::min(M, N); 
-    lda    = M;
-    n2     = lda*N;
-    ldda = ((M +31)/32)*32; // ldda = m if 32 divides m
-    nb     = magma_get_dgeqrf_nb( M, N );
 
-    // query for workspace size
-    lwork = -1;
-    lapackf77_dgeqrf( &M, &N, unused, &M, unused, tmp, &lwork, &info );
-    lwork = (magma_int_t)MAGMA_D_REAL( tmp[0] );
 
-    magma_dmalloc_cpu( &tau,    min_mn );
+   double  *work, *h_R, *tau ;
+   magma_int_t M, N, n2, lda, ldda,  info,  nb;
+   magma_int_t ngpu=4;
 
-    magma_dmalloc( &d_A,    ldda*N );
 
-    size = (2*M + magma_roundup( N, 32 ) )*nb;
-    magma_dmalloc( &dT, size );
-    magmablas_dlaset( MagmaFull, size, 1, c_zero, c_zero, dT, size, queue );
- 
- /* ====================================================================
+   M = X.rows();
+   N = X.cols();
+   lda    = M;
+   n2     = lda*N;
+   ldda = ((M +31)/32)*32; // ldda = m if 32 divides m
+   nb     = magma_get_dgeqrf_nb( M, N );
+   magma_int_t lwork = N*nb;
+
+
+   // mallocs
+   magma_dmalloc_cpu(&work, lwork);
+   magma_dmalloc_cpu(&tau, N);
+   magma_dmalloc_cpu(&h_R, n2);
+
+
+ // Assign data to CPU 
+  for (int j=0; j< N; j++){
+    for (int i=0; i < N; i++){
+        h_R[i+N*j] = X(i,j);
+    }
+  }
+
+
+// magma_dprint(5,5, h_R, N); 
+
+
+  /* ====================================================================
                Performs operation using MAGMA
-    =================================================================== */
+  =================================================================== */
+
+  magma_dgeqrf_m( ngpu, M, N, h_R , N   , tau, work, lwork, &info );
+  if (info != 0) {
+       printf("magma_dgeqrf_m returned error %lld: %s.\n",
+                       (long long) info, magma_strerror( info ));
+       }
+
+    
+// create R list structure
+NumericVector values =  NumericVector(tau,tau + N  );
+NumericVector vectors = NumericVector(h_R, h_R + n2);
+vectors.attr("dim") = Dimension(N,N);
 
 
-// MAGMA
- double *d_a ; // d_a mxn matrix on the device
-magma_dmalloc (&d_a , ldda*M); // device memory for d_a
+for(int i=0; i< 3; i++){
+  for(int j=0; j< 3; j++){
+    std::cout << h_R[i+N*j] << std::endl;
+  }
+}
 
-magma_dsetmatrix ( M, N, d_X ,M,d_a ,ldda , queue ); // copy X -> d_a
-std::cout << " This is what is now sitting in d_a on the GPU ready for analysis" << std::endl;
-// magma_dprint_gpu(M, N, d_a , ldda, queue);   // print contents of matrix on gpu device
-
-
-
-// QR algorithm
-magma_dgeqrf2_gpu( M, N, d_a, ldda, tau, &info );
-std::cout << "Results coming out of dgeqrf2 - has d_a changed? " << std::endl;
-// magma_dprint_gpu(M, N, d_a , ldda, queue);   // print contents of matrix on gpu device
-
-double *r;
-magma_dmalloc_pinned (&r,n2 ); // host memory for r
-magma_dgetmatrix ( M, N, d_a ,ldda ,r, M , queue ); // copy d_a -> r
-std::cout << "Contents of r after moving contents d_a to r which is in host memory " << std::endl;
-//  magma_dprint(M,N, r, lda);
-  
+// clean up and shut down 
+ SHUTDOWN;
 
 
 
-NumericVector ans =  NumericVector(r,r + n2  );
-ans.attr("dim") = Dimension(M, N);
 
-return ans;
+// Return list structure 
+return Rcpp::List::create(
+       Rcpp::Named("tau") =   values,
+      Rcpp::Named("A") =  vectors );
+
 
 
 

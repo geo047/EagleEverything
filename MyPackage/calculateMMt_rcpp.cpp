@@ -94,17 +94,24 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
      MMt.noalias() = genoMat * genoMat.transpose();
 
+
+
+
 message(" ended MMt calculation ... ");
 for(int ii=0; ii < 100000; ii++)
    Rcpp::Rcout << ii << std::endl;
 
 //Bum doesnt use GPUs .... 
-message(" about to start inverse multiple-GPU test in Eigen code ... ");
- Eigen::MatrixXd A = Eigen::MatrixXd::Random(7000,7000);
+message(" about to start multiple-GPU test in QR code ... ");
+ Eigen::MatrixXd A = Eigen::MatrixXd::Random(8000,8000);
+  Eigen::MatrixXd Asym =  A * A.transpose();
 message(" doing eigenvalues now ... ");
 
- Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(A);
- es.eigenvalues();
+ Eigen::HouseholderQR<Eigen::MatrixXd> qr(A.rows(), A.cols());
+  qr.compute(A);
+
+// Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(Asym);
+// es.eigenvalues();
 message("end eigen calc of testing ... ");
 
 

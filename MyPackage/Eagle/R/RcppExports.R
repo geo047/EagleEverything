@@ -45,7 +45,3 @@ getRowColumn <- function(fname) {
     .Call('_Eagle_getRowColumn', fname)
 }
 
-magma_test_rcpp <- function() {
-    .Call('_Eagle_magma_test_rcpp')
-}
-
