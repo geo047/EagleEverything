@@ -10,7 +10,7 @@ sourceCpp("RcppExampleQR.cpp", rebuild=TRUE, verbose=TRUE)
 
 # for testing only
 set.seed(100)
-n_row <- 10000; n_col <- 10000
+n_row <- 1000; n_col <- 1000
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
 A <-tcrossprod(A)
 

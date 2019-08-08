@@ -23,6 +23,7 @@ Type 'q()' to quit R.
 >     
 >  Rcpp.package.skeleton("Eagle", cpp_files=c(
 +             "ReshapeM_rcpp.cpp"  ,
++             "RcppExampleEigen_m_v2.cpp"  ,
 +             "getRowColumn.cpp"  ,
 +             "CreateASCIInospace_PLINK.cpp"  ,
 +             "CreateASCIInospace.cpp"  ,
@@ -107,6 +108,7 @@ Adding Rcpp settings
  >> added useDynLib directive to NAMESPACE
  >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
  >> copied ReshapeM_rcpp.cpp to src directory
+ >> copied RcppExampleEigen_m_v2.cpp to src directory
  >> copied getRowColumn.cpp to src directory
  >> copied CreateASCIInospace_PLINK.cpp to src directory
  >> copied CreateASCIInospace.cpp to src directory
@@ -146,4 +148,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  2.675   0.243   3.228 
+  1.429   0.100   1.659 

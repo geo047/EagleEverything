@@ -5,6 +5,17 @@
 #include <Rcpp.h>
 using namespace Rcpp ; 
 
+// gpuEigen_magma
+Rcpp::List gpuEigen_magma(const Rcpp::NumericMatrix X);
+RcppExport SEXP _Eagle_gpuEigen_magma(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpuEigen_magma(X));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ReadBlock
 Eigen::MatrixXd ReadBlock(std::string asciifname, long start_row, long numcols, long numrows_in_block);
 RcppExport SEXP _Eagle_ReadBlock(SEXP asciifnameSEXP, SEXP start_rowSEXP, SEXP numcolsSEXP, SEXP numrows_in_blockSEXP) {
@@ -182,6 +193,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_Eagle_gpuEigen_magma", (DL_FUNC) &_Eagle_gpuEigen_magma, 1},
     {"_Eagle_ReadBlock", (DL_FUNC) &_Eagle_ReadBlock, 4},
     {"_Eagle_ReshapeM_rcpp", (DL_FUNC) &_Eagle_ReshapeM_rcpp, 4},
     {"_Eagle_calculateMMt_rcpp", (DL_FUNC) &_Eagle_calculateMMt_rcpp, 7},

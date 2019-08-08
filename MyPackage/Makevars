@@ -1,3 +1,2 @@
-PKG_LIBS =  $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
-PKG_CXXFLAGS = -DEIGEN_USE_BLAS $(SHLIB_OPENMP_CXXFLAGS)
-
+PKG_LIBS  = -Wl,-rpath,$(MAGMA_HOME)/lib  -lmagma -Wl,-rpath,$(CUDA_HOME)/lib64 -lcublas -lcudart -lcusparse -Wl,-rpath,$(INTEL_MKL_HOME)/lib/intel64  -Wl,--no-as-needed -lmkl_intel_ilp64 -Wl,-rpath,$(INTEL_MKL_HOME)/../compiler/lib/intel64  -liomp5   $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS) 
+PKG_CXXFLAGS  <-  -DADD_ -DMAGMA_WITH_MKL -mkl -DHAVE_CUBAS -DMKL_ILP64    -I$(MAGMA_HOME)/include   -I$(CUDA_HOME)/include  -DEIGEN_USE_BLAS $(SHLIB_OPENMP_CXXFLAGS) 

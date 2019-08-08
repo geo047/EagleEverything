@@ -2,6 +2,7 @@ library(Rcpp)
     
  Rcpp.package.skeleton("Eagle", cpp_files=c(
             "ReshapeM_rcpp.cpp"  ,
+            "RcppExampleEigen_m_v2.cpp"  ,
             "getRowColumn.cpp"  ,
             "CreateASCIInospace_PLINK.cpp"  ,
             "CreateASCIInospace.cpp"  ,

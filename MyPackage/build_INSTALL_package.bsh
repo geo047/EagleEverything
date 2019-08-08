@@ -33,6 +33,7 @@ echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"ReshapeM_rcpp.cpp\"  ,
+            \"RcppExampleEigen_m_v2.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
             \"CreateASCIInospace.cpp\"  ,
@@ -118,7 +119,8 @@ R CMD BATCH ./tmp.R
 echo " Copy my own Makevars and Makevars.win to Eagle directory "
 # AWG 2019 cp $DIR/Makevars $DIR/Eagle/src
 cp $DIR/Makevars.win $DIR/Eagle/src
-cp $DIR/Makevars.gpu $DIR/Eagle/src/Makevars
+# ------ >  cp $DIR/Makevars.gpu  $DIR/Eagle/src/Makevars
+cp $DIR/Makevars.Magma $DIR/Eagle/src/Makevars
 
 
 

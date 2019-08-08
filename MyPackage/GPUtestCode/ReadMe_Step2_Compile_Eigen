@@ -6,22 +6,19 @@
 ## ====> Do this First ====> export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
 ##                           export OMP_NUM_THREADS=16  
 library(Rcpp)
-#MAGMA_HOME <- "/apps/magma/2.5.1a1-cuda90"
 MAGMA_HOME <- "/apps/magma/2.5.1a1-ipl64-cuda90"
 CUDA_HOME <- "/apps/cuda/9.0.176/"
 INTEL_MKL_HOME <-    "/apps/intel/mkl/2017.2.174/compilers_and_libraries_2017.2.174/linux/mkl"
 #### ======>     export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
 
-#PKG_LIBS  <- sprintf( '-Wl,-rpath,%s/lib  -lmagma  ', MAGMA_HOME)
-PKG_LIBS  <- sprintf( '-Wl,-rpath,%s/lib  -lmagma -Wl,-rpath,%s/lib64 -lcublas -lcudart -lcusparse -Wl,-rpath,%s/lib/intel64  -Wl,--no-as-needed -lmkl_intel_ilp64 -Wl,-rpath,%s/../compiler/lib/intel64  -liomp5' , MAGMA_HOME, CUDA_HOME, INTEL_MKL_HOME, INTEL_MKL_HOME)
-PKG_CPPFLAGS  <- sprintf('   -DADD_ -DMAGMA_WITH_MKL -mkl -DHAVE_CUBAS -DMKL_ILP64    -I%s/include    -I%s/include    ', MAGMA_HOME, CUDA_HOME)
-#PKG_CPPFLAGS  <- sprintf('   -DADD_  -DMKL_ILP64    -I%s/include    -I%s/include    ', MAGMA_HOME, CUDA_HOME)
+PKG_LIBS  <- sprintf( ' -L%s/lib  -lmagma  -L%s/lib/intel64_lin  -lmkl_intel_ilp64  -L%s/../compiler/lib/intel64_lin  -liomp5 ', MAGMA_HOME, INTEL_MKL_HOME, INTEL_MKL_HOME)
+PKG_CPPFLAGS  <- sprintf('    -I%s/include  -I%s/include   -DMAGMA_ILP64 -DMKL_ILP64       ', MAGMA_HOME, CUDA_HOME)
 
 Sys.setenv(PKG_LIBS = PKG_LIBS , PKG_CPPFLAGS = PKG_CPPFLAGS)
- sourceCpp("RcppExampleEigen_m.cpp", rebuild=TRUE, verbose=TRUE)
+ sourceCpp("RcppExampleEigen_m_v2.cpp", rebuild=TRUE, verbose=TRUE)
 
 set.seed(100)
-n_row <- 500; n_col <- 500
+n_row <- 300; n_col <- 300
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
 A <- tcrossprod(A)    ##  gives me a symmetric matrix
 #A <- diag(A)

@@ -1,7 +1,21 @@
 
-icpc   -I/apps/R/3.4.0/lib64/R/include -DNDEBUG   -std=c++11 -DADD_ -I$MAGMA_HOME/include -I$CUDA_HOME/include -m64 -DMKL_ILP64   -I$MKLROOT/include   -c example_v3.cpp   -fpic -O3 -qopenmp 
+icpc   -I/apps/R/3.4.0/lib64/R/include -DNDEBUG   -std=c++11 -DADD_ -I$MAGMA_HOME/include -I$CUDA_HOME/include -m64 -DMKL_ILP64   -I$MKLROOT/include   -c example_m_v2.cpp   -fpic -O3 -qopenmp 
 
-icpc  -L$MAGMA_HOME/lib  -lmagma -L$CUDA_HOME/lib64 -lcublas -lcudart -lcusparse -L$MKLROOT/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -liomp5 -o a.out  example_v3.o   
+icpc  -L$MAGMA_HOME/lib  -lmagma -L$CUDA_HOME/lib64 -lcublas -lcudart -lcusparse -L$MKLROOT/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -liomp5 -o a.out  example_m_v2.o   
+
+
+
+# min options needed ... 
+icpc   -I/apps/R/3.4.0/lib64/R/include    -std=c++11 -I$MAGMA_HOME/include -I$CUDA_HOME/include  -DMKL_ILP64   -I$MKLROOT/include   -c example_m_v2.cpp
+
+
+icpc  -L$MAGMA_HOME/lib  -lmagma   -lmkl_intel_ilp64 -o a.out  example_m_v2.o
+./a.out
+
+
+
+
+
 
 #--------------------------
 ## were does this break .... 
