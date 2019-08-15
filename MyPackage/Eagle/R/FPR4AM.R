@@ -491,7 +491,7 @@ cat(" ----------------------------- \n")
 d <- abs(falsepos - falseposrate)
 indx <- which(min(d) == d)
 if(length(indx) > 1){
-   indx <- max(indx)   ## picking most conservative value if there are multiple values
+    indx <- max(indx)   ## picking most conservative value if there are multiple values
 }
  setgamma <- gamma[indx]
 
