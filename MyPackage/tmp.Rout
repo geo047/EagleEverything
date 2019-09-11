@@ -1,6 +1,6 @@
 
-R version 3.4.0 (2017-04-21) -- "You Stupid Darkness"
-Copyright (C) 2017 The R Foundation for Statistical Computing
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -17,11 +17,14 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+Warning: namespace ‘Eagle’ is not available and has been replaced
+by .GlobalEnv when processing object ‘res’
 [Previously saved workspace restored]
 
 > library(Rcpp)
 >     
 >  Rcpp.package.skeleton("Eagle", cpp_files=c(
++             "magma_qr.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "RcppExampleEigen_m_v2.cpp"  ,
 +             "getRowColumn.cpp"  ,
@@ -107,6 +110,7 @@ Adding Rcpp settings
  >> added LinkingTo: Rcpp
  >> added useDynLib directive to NAMESPACE
  >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
+ >> copied magma_qr.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied RcppExampleEigen_m_v2.cpp to src directory
  >> copied getRowColumn.cpp to src directory
@@ -148,4 +152,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  1.429   0.100   1.659 
+  1.142   0.087   1.341 

@@ -4,14 +4,14 @@
 
 
 module purge
-module load R/3.4.0
+module load R/3.6.1
 #module load pandoc
 module load intel-cc/15.0.6.233 
 module load intel-fc/15.0.6.233
 #module load texlive/2015
 module load cuda
 module load cuda-driver/current
-# module load magma 
+module load magma 
 
 
 export RSTUDIO_PANDOC=$PANDOC_HOME
@@ -32,6 +32,7 @@ echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
+            \"magma_qr.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"RcppExampleEigen_m_v2.cpp\"  ,
             \"getRowColumn.cpp\"  ,
@@ -261,7 +262,13 @@ R CMD INSTALL Eagle -l ~/RLibs
 
 # rm tmp.R  tmp.Rout 
 
-
+# copy to git area ready to upload to github/EagleGPU and eventual install via devtools pipeline
+cp Eagle_1.5.1.tar.gz ~/EagleGPU/EagleGPU/.
+cd ~/EagleGPU/EagleGPU/
+tar xfz Eagle_1.5.1.tar.gz
+cp -rf ./Eagle/* .
+rm -rf ./Eagle
+cd /home/geo047/EagleEverything/MyPackage
 
 
 

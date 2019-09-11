@@ -49,3 +49,7 @@ getRowColumn <- function(fname) {
     .Call('_Eagle_getRowColumn', fname)
 }
 
+magma_qr <- function(X, numgpus = 1L, printInfo = FALSE, fname) {
+    .Call('_Eagle_magma_qr', X, numgpus, printInfo, fname)
+}
+

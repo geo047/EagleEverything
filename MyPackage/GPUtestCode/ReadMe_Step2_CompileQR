@@ -10,13 +10,19 @@ sourceCpp("RcppExampleQR.cpp", rebuild=TRUE, verbose=TRUE)
 
 # for testing only
 set.seed(100)
-n_row <- 1000; n_col <- 1000
+n_row <- 4000; n_col <- 4000
 A <- matrix(rnorm(n_row * n_col), n_row, n_col)
 A <-tcrossprod(A)
 
 
 start.time <- Sys.time()
 qrA <- gpuQR_magma(A)  ## note  this replaces A with the answers ... 
+# read Q from /scratch1/geo047/test.bin
+filename <- "/scratch1/geo047/test.bin"
+Q <- readBin(filename, double(), n_row*n_col)
+Q <- matrix(data=Q, nrow=n_row, byrow=FALSE)
+
+
 end.time <- Sys.time()
 print(end.time - start.time)
 start.time <- Sys.time()

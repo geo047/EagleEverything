@@ -38,7 +38,7 @@ Imports:
    utils,
    parallel,
    data.table,
-   rcppMagmaSYEVD
+  MagmaEigen 
 LinkingTo: 
    RcppEigen, Rcpp
 Roxygen: 
