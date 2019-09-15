@@ -55,6 +55,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
              ),    " >> ./tmp.R
 echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
+            \"magmaQR.R\",
             \"FPR4AM.R\",
             \"ReadMarker.R\",
             \"ReadMap.R\",

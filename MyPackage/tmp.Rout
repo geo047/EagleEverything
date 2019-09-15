@@ -17,8 +17,6 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-Warning: namespace ‘Eagle’ is not available and has been replaced
-by .GlobalEnv when processing object ‘res’
 [Previously saved workspace restored]
 
 > library(Rcpp)
@@ -47,6 +45,7 @@ by .GlobalEnv when processing object ‘res’
 +              ),    
 +     example_code=FALSE, code_files=c(
 +             "onAttach.R", 
++             "magmaQR.R",
 +             "FPR4AM.R",
 +             "ReadMarker.R",
 +             "ReadMap.R",
@@ -152,4 +151,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  1.142   0.087   1.341 
+  1.183   0.177   1.520 

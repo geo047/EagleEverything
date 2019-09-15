@@ -24,6 +24,7 @@ library(Rcpp)
              ),    
     example_code=FALSE, code_files=c(
             "onAttach.R", 
+            "magmaQR.R",
             "FPR4AM.R",
             "ReadMarker.R",
             "ReadMap.R",
