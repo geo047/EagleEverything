@@ -1,22 +1,13 @@
 #include <Rcpp.h>
 #include<magma_v2.h>
-//#include<magma_lapack.h>
-//#include<magma_operators.h>
 
 
-
-
-/*
-
-// [[Rcpp::depends(RcppEigen)]]
-#include <RcppEigen.h>
-#include "magma_v2.h"
-// #include "magma_myown.h"
-
-
+/* Author: Andrew W. George
+   Date:   16 Sep, 2019
+   Purpose: to implement a multi-GPU version of the R function qr() which is very slow. 
 */
 
- // int  magma_qr(Eigen::Map<Eigen::MatrixXd>  X , int numgpus, bool printInfo, std::string fname,  Rcpp::Function message )
+
 
 
 //--------------------------------------------
@@ -25,10 +16,24 @@
 // [[Rcpp::export]]
  int  magma_qr(Rcpp::NumericMatrix  X , int numgpus, bool printInfo, std::string fname,  Rcpp::Function message )
 {
-    // convert to C++ typ, std::string fnamee
-  // ----> double * h_X = X.begin();
+
+  /*
+  - Single- and mult-gpu  Magma code for performing QR factorisiation. 
+  - A square data matrix is assumed. 
+  - The data is read in from R and a copy is made otherwise the contents are overridden. 
+  - The interface between R and Magma is 32 bits, even when Magma and R are built as 64 bit code. 
+    Josh got around this by designing a server to run on shared memory. However, shared memory is limited to 
+    matrices of around 46000 rows/cols. 
+    I got around the problem by writing Q to disk, as a binary file, and reading this binary file back into R (very fast).   
+    A simple solution to a very complicated problem. 
+  */
+
    magma_init();
+
+
+  if (printInfo){
    magma_print_environment();
+  }
 
    // Initialize the queue
    magma_queue_t queue = NULL ;
@@ -42,7 +47,7 @@
   double  *tau;
   magmaDouble_ptr dA,  dT;
 
- n = X.rows() ;
+  n = X.rows() ;
 
   magma_int_t lda, ldda, min_mn, nb;
   lda  = n;
@@ -57,7 +62,11 @@
 
 
   double * h_X;
-  magma_dmalloc_cpu(&h_X, n2);
+  if (  MAGMA_SUCCESS !=   magma_dmalloc_cpu(&h_X, n2) )
+  {
+    message(" Error: magma_qr() magma_dmalloc_cpu failed for h_X. Need more memory.\n" );
+    return(-1);
+  }
 
 
  // Assign data to CPU 
@@ -72,8 +81,8 @@
 
  if (  MAGMA_SUCCESS !=  magma_dmalloc_cpu( &tau,     n  ) )
  {
-    message(" Error: magma_qr() magma_dmalloc_cpu failed. Need more memory." );
-    return(0);
+    message(" Error: magma_qr() magma_dmalloc_cpu failed for tau. Need more memory. \n" );
+    return(-1);
 
  }
 
@@ -81,50 +90,65 @@
 
     if (  MAGMA_SUCCESS !=  magma_dmalloc( &dA,     ldda*n )  )
      {
-          message(" Error: magma_qr() magma_malloc failed. Most likely need more memory on GPU. Run on machine with multiple GPU." );
-          return(0);
+          message(" Error: magma_qr() magma_malloc failed for dA. Most likely need more memory on GPU. Run on machine with multiple GPU. \n" );
+          return -1;
      }
 
- std::cout << "In here " <<std::endl;
 
      if (  MAGMA_SUCCESS !=  magma_dmalloc( &dT,     ( 2*min_mn + magma_roundup( n, 32 ) )*nb )  )
      {
-          message(" Error: magma_qr() magma_malloc failed. Most likely need more memory on GPU. Run on machine with multiple GPU." );
-          return(0);
+          message(" Error: magma_qr() magma_malloc failed for dT. Most likely need more memory on GPU. Run on machine with multiple GPU. \n" );
+          return(-1);
      }
 
- std::cout << "about to magma_dsetmatrix  " <<std::endl;
 
      magma_dsetmatrix(  n, n, h_X  , lda, dA, ldda, queue );
      if (printInfo) {
-         std::cout << " Single GPU "  << std::endl;
-         std::cout << " First 5 rows/columns of R data that is now sitting on the GPU "  << std::endl;
+         message(" Single GPU \n ");
+         message(" First 5 rows/columns of R data that is now sitting on the GPU \n ");
          magma_dprint_gpu(5,5, dA, n , queue);
      }
 
 
      magma_dgeqrf_gpu( n, n, dA, ldda, tau, dT, &info );
+
+     if(info < 0){
+        message(" magma_dgeqrf_gpu has returned error message ",   info, "\n");
+        message(" The number identifies which parameter is the cause of the error. \n");
+        return info;
+     }
+
+
+
      if (printInfo ) {
-         std::cout << " Output from running magma_dgeqrf_gpu: contents still on GPU "  << std::endl;
+         message(" Output from running magma_dgeqrf_gpu: contents still on GPU \n ");
          magma_dprint_gpu(5,5, dA, n , queue);
      }
 
      magma_dorgqr_gpu( n, n, n, dA, ldda, tau, dT, nb, &info );
 
+     if(info < 0){
+        message( " magma_dorgqr_gpu has returned error message \n" );
+        message(" The number identifies which parameter is the cause of the error. \n");
+        return info;
+     }
+
      if (printInfo ) {
-         std::cout << " Q matrix. From running magma_dorgqr_gpu: contents still on GPU "  << std::endl;
+         message(" Q matrix. From running magma_dorgqr_gpu: contents still on GPU \n ");
          magma_dprint_gpu(5,5, dA, n , queue);
      }
 
 
      magma_dgetmatrix(  n, n ,dA,    ldda,  h_X  , lda, queue );
      if (printInfo ) {
-         std::cout << " Q matrix. GPU -> CPU. This is what is being passed into R land."  << std::endl;
+         message( " Q matrix. GPU -> CPU. This is what is going to be passed into R land (via binary file). \n" );
          magma_dprint(5,5, h_X , n );
      }
 
      // Write Q matrix to disc in binary format
-     std::cout << "Starting writing fwrite ... " << std::endl;
+     if (printInfo){
+         message("About to start writing to the tempoarary binary file. \n ");
+     }
      FILE* file = fopen(fname.c_str() , "wb");
      fwrite(&h_X[0], 1 , n*n*sizeof(double) , file);
      fclose(file);
@@ -138,6 +162,14 @@
      lwork = -1;
      double tmp[1];
      magma_dgeqrf( n, n, NULL, n, NULL, tmp, lwork, &info );
+
+    if(info < 0){
+        message( " magma_dgeqrf has returned error message " , info, "\n" );
+        message( " The number identifies which parameter is the cause of the error. \n" );
+        return info;
+     }
+
+
      lwork = tmp[0];
 
 
@@ -145,16 +177,21 @@
 
     if (  MAGMA_SUCCESS !=  magma_dmalloc_cpu(&h_work, lwork) )
      {
-        message(" Error: magma_qr() magma_dmalloc_cpu failed. Need more memory." );
+        message(" Error: magma_qr() magma_dmalloc_cpu failed for h_work. Need more memory. \n" );
         return(0);
      }
 
-   magma_dprint(n,n, h_X, n);
 
 
    magma_dgeqrf_m(numgpus  , n, n, h_X   , n   , tau, h_work, lwork, &info );
+   if(info < 0){
+        message( " magma_dgeqrf_m has returned error message " ,info, "\n" );
+        message( " The number identifies which parameter is the cause of the error. \n " );
+        return info;
+    }
+
    if (printInfo ) {
-         std::cout << " Output from running magma_dgeqrf_m: contents on CPU "  << std::endl;
+         message( " Output from running magma_dgeqrf_m: contents on CPU \n "  );
          magma_dprint(5, 5, h_X , n);
 
    }
@@ -162,7 +199,7 @@
    double *cmat;
     if (  MAGMA_SUCCESS !=  magma_dmalloc_cpu(&cmat, n2) )
      {
-        message(" Error: magma_qr() magma_dmalloc_cpu failed. Need more memory." );
+        message(" Error: magma_qr() magma_dmalloc_cpu failed for cmat. Need more memory. \n" );
         return(0);
      }
 
@@ -182,26 +219,27 @@
 
    magma_dormqr_m  ( numgpus , MagmaLeft, MagmaNoTrans, n, n, n, h_X, n, tau, cmat , n, h_work, lwork, &info ) ;
 
+   if(info < 0){
+        message( " magma_dormqr_m  has returned error message " , info, "\n" );
+        message( " The number identifies which parameter is the cause of the error. \n" );
+        return info;
+    }
+
+
    if (printInfo ) {
-         std::cout << " Q matrix  from running magma_dormqr_m: contents on CPU "  << std::endl;
+         message( " Q matrix  from running magma_dormqr_m: contents on CPU \n"  );
           magma_dprint(5,5, cmat , n);
    }
 
 
    // Write Q matrix to disc in binary format
-   std::cout << "Starting writing fwrite ... " << std::endl;
+     if (printInfo){
+         message( "About to start writing to the tempoarary binary file. \n " );
+     }
+
    FILE* file = fopen(fname.c_str() , "wb");
     fwrite(&cmat[0], 1 , n*n*sizeof(double) , file);
     fclose(file);
-
-   // write out tail end of cmat for checking - hard coded to be 60000x60000
-//  for( magma_int_t col=59996; col < 60000; col++){
-//      for( magma_int_t row=59996; row< 60000; row++){
-//          std::cout << cmat[row + n * col] << " " ;
-//     }
-//      std::cout << std::endl;
-//   }
-
 
 
    magma_free_cpu  (h_X);

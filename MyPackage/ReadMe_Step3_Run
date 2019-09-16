@@ -1,19 +1,17 @@
-library(Eagle)
 # setup
 set.seed(101)
-n <- 5
+n <- 60000
 ngpu <- 4
-res   <- matrix(sample(c(0,1), n*n, T), nrow=n)
-#res  <- tcrossprod(K)
+res   <- matrix(sample(1:1000, n*n, T), nrow=n)
+# res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
 
+
+## Testing of magmaQR
+library(Eagle)
 start <- Sys.time()
-qGPU  <- magmaQR(res, ngpu=4, printInfo=TRUE)
+qGPU  <- magmaQR(res, ngpu=ngpu, printInfo=TRUE)
 end  <- Sys.time()
 print(end - start)
-
-
-
-
 
  ## CPU 
 start <- Sys.time()
@@ -21,11 +19,9 @@ qCPU  <- qr.Q(qr(res))
 end  <- Sys.time()
 print(end - start)
 
-
 print(qGPU[1:5, 1:5])
 print("---------------------")
 print(qCPU[1:5, 1:5])
-
 
 print(sum(qGPU-qCPU))
 
