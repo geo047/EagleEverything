@@ -1,9 +1,34 @@
 # setup
 set.seed(101)
-n <- 60000
-ngpu <- 4
+n <- 10000
+ngpu <- 1
 res   <- matrix(sample(1:1000, n*n, T), nrow=n)
-# res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
+ res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
+
+library(Eagle)
+start <- Sys.time()
+eigenGPU <- magmaEigen(res, ngpu=ngpu, printInfo=TRUE)
+end  <- Sys.time()
+print(end - start)
+
+
+start <- Sys.time()
+eigenCPU <- eigen(res)
+end  <- Sys.time()
+print(end - start)
+
+
+print(sum(eigenCPU$values - eigenGPU$values))
+# abs because of the sign can be different
+print(sum(abs(eigenCPU$vectors) - abs(eigenGPU$vectors)))
+
+
+
+
+
+
+
+
 
 
 ## Testing of magmaQR

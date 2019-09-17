@@ -38,7 +38,6 @@ magmaQR <- function(Xmat , ngpu=1, printInfo=FALSE){
         extravals <- (  ( ( nrow(Xmat) / MaxIntVal) * ncol(Xmat) ) %% 1) * MaxIntVal
 
       } 
-      cat("Number of block reads needed ", numblocks, "\n")
       Q <- NULL
       conBinFile <- file(description = binQfile, open = "rb")
       if (printInfo){
@@ -46,7 +45,7 @@ magmaQR <- function(Xmat , ngpu=1, printInfo=FALSE){
       }
       for(ii in 1:numblocks){
         if(printInfo){
-           message(" Reading in block number ", ii, " of ", numblocks, " blocks of binary data. \n") 
+           message(" Reading in block number ", ii, " of ", numblocks+1, " blocks of binary data. \n") 
         }
         Q <- c(Q, readBin(conBinFile , double(), MaxIntVal))
       }

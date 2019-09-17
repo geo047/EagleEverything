@@ -10,6 +10,7 @@ import(ggthemes)
 import(shinyFiles, shiny,  shinythemes,  stats, utils) 
 
 export(
+   magmaEigen,
    magmaQR,
    FPR4AM,
    ReadPheno,

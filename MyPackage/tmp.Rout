@@ -23,6 +23,7 @@ Type 'q()' to quit R.
 >     
 >  Rcpp.package.skeleton("Eagle", cpp_files=c(
 +             "magma_qr.cpp"  ,
++             "magma_eigen.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "RcppExampleEigen_m_v2.cpp"  ,
 +             "getRowColumn.cpp"  ,
@@ -46,6 +47,7 @@ Type 'q()' to quit R.
 +     example_code=FALSE, code_files=c(
 +             "onAttach.R", 
 +             "magmaQR.R",
++             "magmaEigen.R",
 +             "FPR4AM.R",
 +             "ReadMarker.R",
 +             "ReadMap.R",
@@ -110,6 +112,7 @@ Adding Rcpp settings
  >> added useDynLib directive to NAMESPACE
  >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
  >> copied magma_qr.cpp to src directory
+ >> copied magma_eigen.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied RcppExampleEigen_m_v2.cpp to src directory
  >> copied getRowColumn.cpp to src directory
@@ -151,4 +154,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  1.093   0.188   1.441 
+  1.102   0.149   1.383 
