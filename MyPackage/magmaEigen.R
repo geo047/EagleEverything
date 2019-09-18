@@ -29,10 +29,14 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
   # will need to change this if this works for 32bit version
   writeBin(object=as.vector(Xmat), con=binXmatfile)
 
+  complete.name <- system.file('Magma', 'magma_eigen.exe', package='Eagle')
+  system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors)))
 
 
- ## ===> success <- magma_eigen(X=Xmat ,  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, message=message, wantvectors=wantvectors )
- success <- magma_eigen(X=binXmatfile  , numrows=nrow(Xmat),  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, message=message, wantvectors=wantvectors )
+
+print("Success")  
+
+# success <- magma_eigen(X=binXmatfile  , numrows=nrow(Xmat),  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, message=message, wantvectors=wantvectors )
  if(success < 0)
   {
    message("\n magmaEigen function has failed. A zero value has been returned.  \n")

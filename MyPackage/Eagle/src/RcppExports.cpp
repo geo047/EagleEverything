@@ -191,24 +191,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// magma_eigen
-int magma_eigen(std::string X, long numrows, int numgpus, bool printInfo, std::string fnamevec, std::string fnameval, Rcpp::Function message, bool wantvectors);
-RcppExport SEXP _Eagle_magma_eigen(SEXP XSEXP, SEXP numrowsSEXP, SEXP numgpusSEXP, SEXP printInfoSEXP, SEXP fnamevecSEXP, SEXP fnamevalSEXP, SEXP messageSEXP, SEXP wantvectorsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type X(XSEXP);
-    Rcpp::traits::input_parameter< long >::type numrows(numrowsSEXP);
-    Rcpp::traits::input_parameter< int >::type numgpus(numgpusSEXP);
-    Rcpp::traits::input_parameter< bool >::type printInfo(printInfoSEXP);
-    Rcpp::traits::input_parameter< std::string >::type fnamevec(fnamevecSEXP);
-    Rcpp::traits::input_parameter< std::string >::type fnameval(fnamevalSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
-    Rcpp::traits::input_parameter< bool >::type wantvectors(wantvectorsSEXP);
-    rcpp_result_gen = Rcpp::wrap(magma_eigen(X, numrows, numgpus, printInfo, fnamevec, fnameval, message, wantvectors));
-    return rcpp_result_gen;
-END_RCPP
-}
 // magma_qr
 int magma_qr(Rcpp::NumericMatrix X, int numgpus, bool printInfo, std::string fname, Rcpp::Function message);
 RcppExport SEXP _Eagle_magma_qr(SEXP XSEXP, SEXP numgpusSEXP, SEXP printInfoSEXP, SEXP fnameSEXP, SEXP messageSEXP) {
@@ -238,7 +220,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Eagle_extract_geno_rcpp", (DL_FUNC) &_Eagle_extract_geno_rcpp, 4},
     {"_Eagle_fasttimer", (DL_FUNC) &_Eagle_fasttimer, 0},
     {"_Eagle_getRowColumn", (DL_FUNC) &_Eagle_getRowColumn, 1},
-    {"_Eagle_magma_eigen", (DL_FUNC) &_Eagle_magma_eigen, 8},
     {"_Eagle_magma_qr", (DL_FUNC) &_Eagle_magma_qr, 5},
     {NULL, NULL, 0}
 };

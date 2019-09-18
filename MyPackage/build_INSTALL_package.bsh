@@ -33,7 +33,6 @@ echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"magma_qr.cpp\"  ,
-            \"magma_eigen.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"RcppExampleEigen_m_v2.cpp\"  ,
             \"getRowColumn.cpp\"  ,
@@ -56,8 +55,8 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
              ),    " >> ./tmp.R
 echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
-            \"magmaQR.R\",
             \"magmaEigen.R\",
+            \"magmaQR.R\",
             \"FPR4AM.R\",
             \"ReadMarker.R\",
             \"ReadMap.R\",
@@ -125,6 +124,9 @@ echo " Copy my own Makevars and Makevars.win to Eagle directory "
 cp $DIR/Makevars.win $DIR/Eagle/src
 # ------ >  cp $DIR/Makevars.gpu  $DIR/Eagle/src/Makevars
 cp $DIR/Makevars.Magma $DIR/Eagle/src/Makevars
+
+
+ 
 
 
 
@@ -215,6 +217,15 @@ cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/*banner* $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/logo.jpg $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/faq.rmd $DIR/inst/shiny_app/.
+
+
+# create bin directory in ./Eagle/inst and copy magma executables
+mkdir  $DIR/Eagle/inst/Magma
+cp /home/geo047/EagleEverything/MyPackage/MagmaEigen/magma_eigen.exe   $DIR/Eagle/inst/Magma/.
+
+
+
+
 
 ###-----------------
 ### Testing only
