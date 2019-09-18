@@ -34,18 +34,14 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
 
 
 
-print("Success")  
 
 # success <- magma_eigen(X=binXmatfile  , numrows=nrow(Xmat),  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, message=message, wantvectors=wantvectors )
- if(success < 0)
-  {
-   message("\n magmaEigen function has failed. A zero value has been returned.  \n")
-   return(0)
-  } else {
    # read in eigenvalues
    values <- readBin(binvalfile , double(), nrow(Xmat) )
-   values <- matrix(data=values, nrow=nrow(Xmat) , byrow=FALSE)
+   #values <- matrix(data=values, nrow=nrow(Xmat) , byrow=FALSE)
    vectors <- NULL 
+
+  
    if (wantvectors){ 
 
      lognumvals <- log(nrow(Xmat)) + log(ncol(Xmat)) 
@@ -91,10 +87,10 @@ print("Success")
    }
 
   }
-  }  ## end if else
  
   # need to change the order of the results to be consistent with R order
   indx <- order(values, decreasing=TRUE)
+
 
   return(list(vectors=vectors[,indx], values=values[indx]))
 
