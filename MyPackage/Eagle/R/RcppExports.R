@@ -49,8 +49,8 @@ getRowColumn <- function(fname) {
     .Call('_Eagle_getRowColumn', fname)
 }
 
-magma_eigen <- function(X, numgpus, printInfo, fnamevec, fnameval, message, wantvectors) {
-    .Call('_Eagle_magma_eigen', X, numgpus, printInfo, fnamevec, fnameval, message, wantvectors)
+magma_eigen <- function(X, numrows, numgpus, printInfo, fnamevec, fnameval, message, wantvectors) {
+    .Call('_Eagle_magma_eigen', X, numrows, numgpus, printInfo, fnamevec, fnameval, message, wantvectors)
 }
 
 magma_qr <- function(X, numgpus, printInfo, fname, message) {

@@ -1,8 +1,8 @@
 # setup
 set.seed(101)
-n <- 10000
+n <- 500
 ngpu <- 1
-res   <- matrix(sample(1:1000, n*n, T), nrow=n)
+res   <- matrix(sample(1:10, n*n, T), nrow=n)
  res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
 
 library(Eagle)
