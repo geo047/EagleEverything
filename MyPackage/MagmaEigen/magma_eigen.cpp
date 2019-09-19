@@ -185,7 +185,7 @@ int main( int argc, char** argv )
        std::cout << " Computation will use " << numgpus << " gpus. " << std::endl;
      }
 
-      magma_dsyevdx_2stage_m(numgpus, jobv, MagmaRangeAll , MagmaUpper , n,
+      magma_dsyevdx_2stage_m(numgpus, jobv, MagmaRangeAll , MagmaLower , n,
                       h_vectors, n, vl, vu, il, iu, &m, h_values,
                       work, lwork, iwork, liwork, &info);
   }
@@ -243,18 +243,19 @@ int main( int argc, char** argv )
        fclose(file);
     }
   }
-
+ 
 
   // tidying up 
   magma_free_cpu (h_vectors)  ;
   magma_free_cpu (h_values)  ;
   magma_free_cpu(iwork)  ;
   magma_free_cpu(work) ;
-  free(aux_work);
-  free(aux_iwork);
+//  delete [] aux_work;
+//  delete [] aux_iwork;
 
-
-  return info ;
+ magma_finalize();
+  
+ return 0;
 
 
 }
