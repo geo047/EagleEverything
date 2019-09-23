@@ -2,6 +2,7 @@ library(Rcpp)
     
  Rcpp.package.skeleton("Eagle", cpp_files=c(
             "magma_qr.cpp"  ,
+            "magma_solve.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "RcppExampleEigen_m_v2.cpp"  ,
             "getRowColumn.cpp"  ,
@@ -24,7 +25,9 @@ library(Rcpp)
              ),    
     example_code=FALSE, code_files=c(
             "onAttach.R", 
+            "magmaSolve.R",
             "magmaEigen.R",
+            "magmaEigenNonsym.R",
             "magmaQR.R",
             "FPR4AM.R",
             "ReadMarker.R",

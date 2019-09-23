@@ -1,28 +1,19 @@
+[NVBLAS] NVBLAS_CONFIG_FILE environment variable is set to '/home/geo047/EagleEverything/MyPackage/nvblas.conf'
 % MAGMA 2.5.1 alpha1 compiled for CUDA capability >= 3.0, 64-bit magma_int_t, 64-bit pointer.
 % CUDA runtime 9000, driver 10010. OpenMP threads 16. MKL 2017.0.2, MKL threads 16. 
 % device 0: Tesla P100-SXM2-16GB, 1480.5 MHz clock, 16280.9 MiB memory, capability 6.0
 % device 1: Tesla P100-SXM2-16GB, 1480.5 MHz clock, 16280.9 MiB memory, capability 6.0
 % device 2: Tesla P100-SXM2-16GB, 1480.5 MHz clock, 16280.9 MiB memory, capability 6.0
 % device 3: Tesla P100-SXM2-16GB, 1480.5 MHz clock, 16280.9 MiB memory, capability 6.0
-% Thu Sep 19 14:12:36 2019
+% Mon Sep 23 12:11:34 2019
 About to begin reading in the X matrix data ... 
 Reading of X  matrix data complete.  
  First 5 rows and columns of the  X matrix 
 [
- 761191.0000 603138.0000 597646.0000 597792.0000 603190.0000
- 603138.0000 772804.0000 602309.0000 604975.0000 610521.0000
- 597646.0000 602309.0000 761512.0000 596878.0000 603663.0000
- 597792.0000 604975.0000 596878.0000 764250.0000 604812.0000
- 603190.0000 610521.0000 603663.0000 604812.0000 775728.0000
+ 1931381.0000 1519314.0000 1516513.0000 1516024.0000 1510640.0000
+ 1519314.0000 1922894.0000 1511541.0000 1514552.0000 1509526.0000
+ 1516513.0000 1511541.0000 1927051.0000 1511207.0000 1507200.0000
+ 1516024.0000 1514552.0000 1511207.0000 1922486.0000 1506278.0000
+ 1510640.0000 1509526.0000 1507200.0000 1506278.0000 1917866.0000
 ];
- About to begin single-gpu dsyevdx_2stage eigendecomposition calculation. 
-Error in sched_setaffinity (single cpu)
-Error in sched_setaffinity (single cpu)
-Error in sched_setaffinity (single cpu)
-Error in sched_setaffinity (single cpu)
-Error in sched_setaffinity (single cpu)
-Error in sched_setaffinity (single cpu)
-The largest 4 eigenvalues found
-1.2101e+10,	659175,	658088,	657744,	
- About to write eigenvalues to binary file. 
- About to write eigenvectors  to binary file. 
+ About to write inverse to binary file. 

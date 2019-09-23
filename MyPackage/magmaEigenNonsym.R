@@ -1,4 +1,4 @@
-magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
+magmaEigenNonsym <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
 
 
 ## The R frontend to the magma code (magma_eigen) 
@@ -78,18 +78,22 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
   }
 
 
-  complete.name <- system.file('Magma', 'magma_eigen.exe', package='Eagle')
+  complete.name <- system.file('Magma', 'magma_eigennonsym.exe', package='Eagle')
   if (printInfo)
-    print(complete.name)
+    paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" )
+
+
+
+   # magma_eigen(X=binXmatfile  , numrows=nrow(Xmat),  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, 
+   #               message=message, wantvectors=wantvectors )
   system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
 
 
-# success <- magma_eigen(X=binXmatfile  , numrows=nrow(Xmat),  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, message=message, wantvectors=wantvectors )
+
+
    # read in eigenvalues
    values <- readBin(binvalfile , double(), nrow(Xmat) )
-   #values <- matrix(data=values, nrow=nrow(Xmat) , byrow=FALSE)
    vectors <- NULL 
-
   
    if (wantvectors){ 
 

@@ -53,3 +53,7 @@ magma_qr <- function(X, numgpus, printInfo, fname, message) {
     .Call('_Eagle_magma_qr', X, numgpus, printInfo, fname, message)
 }
 
+magma_solve <- function(X, numgpus, printInfo, fname) {
+    .Call('_Eagle_magma_solve', X, numgpus, printInfo, fname)
+}
+
