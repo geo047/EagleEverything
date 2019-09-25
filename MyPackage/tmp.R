@@ -1,6 +1,6 @@
 library(Rcpp)
     
- Rcpp.package.skeleton("Eagle", cpp_files=c(
+ Rcpp.package.skeleton("EagleGPU", cpp_files=c(
             "magma_solve.cpp"  ,
             "magma_qr.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
@@ -80,6 +80,6 @@ library(Rcpp)
             "summary_am.R"   ) ) 
   ## running roxygen2  
  library(roxygen2) 
- setwd("./Eagle")  
+ setwd("./EagleGPU")  
   roxygenise() 
   

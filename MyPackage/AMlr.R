@@ -134,7 +134,7 @@
 #'
 #' \code{AM} can tolerate some missing marker data. However, ideally, 
 #' a specialized genotype imputation program such as  'BEAGLE', 'MACH', 'fastPHASE', or 'PHASE2', should be 
-#' used to impute the missing marker data before being read into 'Eagle'.  
+#' used to impute the missing marker data before being read into 'EagleGPU'.  
 #'
 #' }
 #'
@@ -196,7 +196,7 @@
 #'   # File is a plain space separated text file with the first row 
 #'   # the column headings
 #'   complete.name <- system.file('extdata', 'map.txt', 
-#'                                    package='Eagle')
+#'                                    package='EagleGPU')
 #'   map_obj <- ReadMap(filename=complete.name) 
 #'
 #'   # read marker data
@@ -204,7 +204,7 @@
 #'   # Reading in a PLINK ped file 
 #'   # and setting the available memory on the machine for the reading of the data to 8  gigabytes
 #'   complete.name <- system.file('extdata', 'geno.ped', 
-#'                                      package='Eagle')
+#'                                      package='EagleGPU')
 #'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
 #'  
 #'   # read phenotype data
@@ -212,7 +212,7 @@
 #'
 #'   # Read in a plain text file with data on a single trait and two covariates
 #'   # The first row of the text file contains the column names y, cov1, and cov2. 
-#'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
+#'   complete.name <- system.file('extdata', 'pheno.txt', package='EagleGPU')
 #'   
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
@@ -266,7 +266,7 @@ AM <- function(trait=NULL,
  error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait, 
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat )
  if(error.code){
-   message("\n The Eagle function AM has terminated with errors.\n")
+   message("\n The EagleGPU function AM has terminated with errors.\n")
    return(NULL)
  }
 
