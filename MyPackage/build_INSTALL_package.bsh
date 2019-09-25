@@ -242,7 +242,6 @@ cp ./ShinyApp/faq.rmd $DIR/inst/shiny_app/.
 
 # create bin directory in ./Eagle/inst and copy magma executables
 mkdir  $DIR/Eagle/inst/Magma
-cp /home/geo047/EagleEverything/MyPackage/MagmaSolve/magma_solve.exe   $DIR/Eagle/inst/Magma/.
 cp /home/geo047/EagleEverything/MyPackage/MagmaEigen/magma_eigen.exe   $DIR/Eagle/inst/Magma/.
 cp /home/geo047/EagleEverything/MyPackage/MagmaEigenNonsym/magma_eigennonsym.exe   $DIR/Eagle/inst/Magma/.
 

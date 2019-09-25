@@ -1,9 +1,11 @@
 # setup
-set.seed(101)
-n <- 75000
-ngpu <- 1
-res   <- matrix(sample(1:10, n*n, T), nrow=n)
+set.seed(104)
+n <- 50000
+ngpu <- 4
+res   <- matrix(sample(c(0,2), n*n, T), nrow=n)
  res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
+
+
 
 
 ## solve

@@ -18,14 +18,13 @@
 {
 
   /*
-  - Single- and mult-gpu  Magma code for performing QR factorisiation. 
-  - A square data matrix is assumed. 
+  - A square symmetric data matrix is assumed. 
   - The data is read in from R and a copy is made otherwise the contents are overridden. 
   - The interface between R and Magma is 32 bits, even when Magma and R are built as 64 bit code. 
     Josh got around this by designing a server to run on shared memory. However, shared memory is limited to 
     matrices of around 46000 rows/cols. 
-    I got around the problem by writing Q to disk, as a binary file, and reading this binary file back into R (very fast).   
-    A simple solution to a very complicated problem. 
+    I got around the problem by writing the inverse to disk, as a binary file, and reading this binary file back into R (very fast).   
+    A simple solution to a complicated problem. 
   */
 
    magma_init();
@@ -65,14 +64,58 @@
 
 
   if (printInfo){
-     std::cout << " First 5 rows and columns of the  X matrix " << std::endl;
+     std::cout << " Prior to magma_dpotrf: First 5 rows and columns of the  X matrix " << std::endl;
+     magma_dprint(5,5, h_X, n);
+  }
+
+  if (numgpus == 1){
+      magma_dpotrf( MagmaLower, n, h_X, n, &info );
+  
+      if ( info != 0){
+        std::cout << "Error: magma_dpotrf has returned a non-zero info value of " << info << std::endl;
+        std::cout << "       This error is most likely due to the matrix beig too large for the GPU. " << std::endl;
+        std::cout << "        Need to use the CPU-based solve function in R instead. " << std::endl;         
+        std::cout << "        Select this option in the AM function.      " << std::endl;
+        return info;
+      }
+   } else {
+       magma_dpotrf_m (numgpus,  MagmaLower, n, h_X, n, &info ); 
+
+      if ( info != 0){
+        std::cout << "Error: magma_dpotrf has returned a non-zero info value of " << info << std::endl;
+        std::cout << "       This error is most likely due to the matrix beig too large for the GPU. " << std::endl;
+        std::cout << "        Need to use the CPU-based solve function in R instead. " << std::endl;
+        std::cout << "        Select this option in the AM function.      " << std::endl;
+        return info;
+      }
+
+
+ 
+   }
+
+
+  if (printInfo){
+     std::cout << " After magma_dpotrf but prior to magma_dpotri: First 5 rows and columns of the  X matrix " << std::endl;
      magma_dprint(5,5, h_X, n);
   }
 
 
-   magma_dpotrf( MagmaLower, n, h_X, n, &info );
    magma_dpotri( MagmaLower, n, h_X, n, &info );
 
+      if ( info != 0){
+        std::cout << "Error: magma_dpotri has returned a non-zero info value of " << info << std::endl;
+        std::cout << "       This error is most likely due to the matrix beig too large for the GPU. " << std::endl;
+        std::cout << "        Need to use the CPU-based solve function in R instead. " << std::endl;
+        std::cout << "        Select this option in the AM function.      " << std::endl;
+        return info;
+      }
+
+
+
+  if (printInfo){
+     std::cout << " After magma calls: First 5 rows and columns of the INVERSE  matrix " << std::endl;
+     magma_dprint(5,5, h_X, n);
+  }
 
  //Move lower to upper triangle
   for (int j=0; j< n; j++){
@@ -81,7 +124,6 @@
         h_X[j+n*i] = h_X[i+n*j];
     }
   }
-
 
 
 
