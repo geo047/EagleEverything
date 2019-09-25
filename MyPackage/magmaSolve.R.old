@@ -73,54 +73,16 @@ bininversefile <-  paste(tempdir() , "/", "inverse.bin", sep="")
   system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo),  bininversefile,  "&> output.out" ) ) 
 
 
-   vectors <- NULL 
 
-  
-
-     lognumvals <- log(nrow(Xmat)) + log(ncol(Xmat)) 
-
-     if (  lognumvals  > log(MaxIntVal)  ) {
-         numblocks <- trunc( ( nrow(Xmat) / MaxIntVal) * ncol(Xmat) )  # getting around 32 bit integer issues
-         extravals <- 0
-         if (  ( ( nrow(Xmat) / MaxIntVal) * ncol(Xmat) ) %% 1 > 0)
-         {
-           # this are extra values to be read in 
-           extravals <- (  ( ( nrow(Xmat) / MaxIntVal) * ncol(Xmat) ) %% 1) * MaxIntVal
-
-         } 
-      vectors <- NULL
-      conBinFile <- file(description = bininversefile, open = "rb")
-      if (printInfo){
-           message(" The input matrix is large and must be read in as ", numblocks+1, " blocks \n")
-      }
-      for(ii in 1:numblocks){
-        if(printInfo){
-           message(" Reading in block number ", ii, " of ", numblocks+1, " blocks of binary data. \n") 
-        }
-        vectors <- c(vectors, readBin(conBinFile , double(), MaxIntVal))
-      }
-      if(extravals > 0){
-        if(printInfo){
-           message(" Reading in block number ", ii+1, " of ", numblocks+1, " blocks of binary data. \n") 
-        }
-        vectors <-  c(vectors, readBin(conBinFile , double(), extravals) )
-     }
-
-    if(printInfo){
-      message("Binary data has been read. vector matrix is now being formed. \n")
-    }
+ conBinFile <- file(description = bininversefile, open = "rb")
+ Inv <- NULL
+ while (length( a<-   readBin(conBinFile, 'double', MaxIntVal ) )> 0 ){
+        Inv <- c(Inv, a)
+}
+ close(conBinFile)
 
 
-    vectors <- matrix(data=vectors, nrow=nrow(Xmat) , byrow=FALSE)
 
-   } else {
-      vectors <- readBin(bininversefile , double(), nrow(Xmat) * ncol(Xmat) )
-      vectors <- matrix(data=vectors, nrow=nrow(Xmat) , byrow=FALSE)
-   }
-
- 
-
-
-  return(vectors)
+  return(Inv)
 
  }

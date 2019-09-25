@@ -1,8 +1,8 @@
 library(Rcpp)
     
  Rcpp.package.skeleton("Eagle", cpp_files=c(
-            "magma_qr.cpp"  ,
             "magma_solve.cpp"  ,
+            "magma_qr.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "RcppExampleEigen_m_v2.cpp"  ,
             "getRowColumn.cpp"  ,

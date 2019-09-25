@@ -1,39 +1,82 @@
-#include <Rcpp.h>
-#include<magma_v2.h>
+// This is a simple standalone example. See README.txt
+
+#include<iostream>
+#include "cublas_v2.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "magma_v2.h"      // also includes cublas_v2.h
+#include "magma_lapack.h"  // if you need BLAS & LAPACK
+#include<magma_operators.h>
+#include <cstdlib>
+#include<fstream>
 
 
-/* Author: Andrew W. George
-   Date:   16 Sep, 2019
-   Purpose: to implement a multi-GPU version of the R function qr() which is very slow. 
+
+// set to 1 if debug information is desired
+#define DEBUG 1
+
+
+
+/***************************************************************************//**
+ * Macros 
+ */
+
+#define PRINT(x)  \
+     std::cout << x << std::endl
+
+#define CHECK_MALLOC( err )                                                                        \
+    if (err != MAGMA_SUCCESS){                                                                     \
+        std::cout << "\nError: Eigenvalue calculation has failed due to failure of memory allocation.\n" << std::endl;  \
+     }
+
+#define CHECK_GPU( err )   \
+   if (err != MAGMA_SUCCESS ){                         \
+       std::cout <<"\n" << std::endl;    \
+       std::cout << "\nError:    " << std::endl;    \
+       std::cout << "  Eigenvalue calculation has failed. " << std::endl;  \
+       std::cout << "  Things to try to solve this problem are:            " << std::endl;  \
+       std::cout << "    1. Reduce the number of individuals to see if this is a GPU memory issue. " << std::endl; \
+       std::cout << "    2. Ensure that you do not have perfectly correlated fixed effects in the model. " << std::endl; \
+       std::cout << "       This will cause collinearity between columns in the model matrix. \n\n " << std::endl;     \
+   }
+
+
+
+/*
+ Command line parameters
+--------------------------
+std::string  X  
+long  numrows, 
+int numgpus, 
+bool printInfo, 
+std::string fnamevec,  
 */
 
 
 
-
-//--------------------------------------------
-// Magma test code 
-//--------------------------------------------
-// [[Rcpp::export]]
- int  magma_solve(Rcpp::NumericMatrix  X , int numgpus, bool printInfo, std::string fname   )
+int main( int argc, char** argv )
 {
 
-  /*
-  - Single- and mult-gpu  Magma code for performing QR factorisiation. 
-  - A square data matrix is assumed. 
-  - The data is read in from R and a copy is made otherwise the contents are overridden. 
-  - The interface between R and Magma is 32 bits, even when Magma and R are built as 64 bit code. 
-    Josh got around this by designing a server to run on shared memory. However, shared memory is limited to 
-    matrices of around 46000 rows/cols. 
-    I got around the problem by writing Q to disk, as a binary file, and reading this binary file back into R (very fast).   
-    A simple solution to a very complicated problem. 
-  */
+ // Input received from command line
+ std::string X = argv[1];  // name of binary file with data
+ int numrows = atoi(argv[2]); // number of rows 
+ int numgpus = atoi(argv[3]); // number of gpu 
 
-   magma_init();
+ bool printInfo = (bool) atoi(argv[4]); // printInfo value (0 no print, 1 print)
+ std::string fnamevec = argv[5];  // name of binary file containing eigenvector answers 
 
 
-  if (printInfo){
-   magma_print_environment();
-  }
+
+ // Initialize Magma and print GPU environment
+ magma_init (); 
+
+ if (printInfo)
+       magma_print_environment();
+
+
+
+
+
 
 
 
@@ -41,47 +84,58 @@
 
 
   magma_int_t n, n2, lwork, info = 0;  // define MAGMA_ILP64 to get these as 64 bit integers
-   n = X.rows() ;   // this is X.rows() but passed in from command line
+   n = numrows ;   // this is X.rows() but passed in from command line
    n2     = n*n;
 
 
-  double * h_X;
-  if (  MAGMA_SUCCESS !=   magma_dmalloc_cpu(&h_X, n2) )
+  double * h_vectors;
+  if (  MAGMA_SUCCESS !=   magma_dmalloc_cpu(&h_vectors, n2) )
   {
-    std::cout << " Error: magma_eigen() magma_dmalloc_cpu failed for h_X. Need more memory" << std::endl;
+    std::cout << " Error: magma_eigen() magma_dmalloc_cpu failed for h_vectors. Need more memory" << std::endl;
     return -1;
   }
 
+  // X matrix being passed in as a binary file
+  std::streampos size;
+  char * memblock;
 
- // Assign data to CPU 
-  for (int j=0; j< n; j++){
-    for (int i=0; i < n; i++){
-        h_X[i+n*j] = X(i,j);
-    }
+  std::ifstream bfile ( X.c_str() , std::ios::in|std::ios::binary|std::ios::ate);
+
+
+//size = bfile.tellg();
+//    std::cout << "size=" << size << "\n";
+
+
+  if(printInfo){
+     std::cout << "About to begin reading in the X matrix data ... " << std::endl;
   }
 
+  size = n * n * sizeof(double);
+  memblock = new char [size];
+  bfile.seekg (0, std::ios::beg);
+  bfile.read (memblock, size);
+  bfile.close();
 
+  h_vectors =  (double*)memblock;  //reinterpret as doubles
 
-
+  if(printInfo){
+     std::cout << "Reading of X  matrix data complete.  " << std::endl;
+  }
 
   if (printInfo){
      std::cout << " First 5 rows and columns of the  X matrix " << std::endl;
-     magma_dprint(5,5, h_X, n);
+     magma_dprint(5,5, h_vectors, n);
   }
 
 
-   magma_dpotrf( MagmaLower, n, h_X, n, &info );
-   magma_dpotri( MagmaLower, n, h_X, n, &info );
+   magma_dpotrf( MagmaLower, n, h_vectors, n, &info );
+    std::cout << "after  magma_dpotrf" << std::endl;
+     magma_dprint(5,5, h_vectors, n);
+   magma_dpotri( MagmaLower, n, h_vectors, n, &info );
+    std::cout << "after  magma_dpotri" << std::endl;
+     magma_dprint(5,5, h_vectors, n);
 
 
- //Move lower to upper triangle
-  for (int j=0; j< n; j++){
-    for (int i=j; i < n; i++){
-        h_X[i+n*j] = h_X[j+n*i];
-    }
-  }
-
-  magma_dprint(n,n, h_X, n);
 
 
    if( printInfo){
@@ -100,13 +154,13 @@
        std::cout << " Error: in magma_eigen. Binary file for eigenvectors has failed to open." << std::endl;
        return -1;
     } else {
-       fwrite(&h_X[0], 1 , n*n*sizeof(double) , file);
+       fwrite(&h_vectors[0], 1 , n*n*sizeof(double) , file);
        fclose(file);
     }
  
 
   // tidying up 
-  magma_free_cpu (h_X)  ;
+  magma_free_cpu (h_vectors)  ;
 
  magma_finalize();
   

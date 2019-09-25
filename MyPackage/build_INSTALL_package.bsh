@@ -50,8 +50,8 @@ echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
-            \"magma_qr.cpp\"  ,
             \"magma_solve.cpp\"  ,
+            \"magma_qr.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"RcppExampleEigen_m_v2.cpp\"  ,
             \"getRowColumn.cpp\"  ,
@@ -242,6 +242,7 @@ cp ./ShinyApp/faq.rmd $DIR/inst/shiny_app/.
 
 # create bin directory in ./Eagle/inst and copy magma executables
 mkdir  $DIR/Eagle/inst/Magma
+# cp /home/geo047/EagleEverything/MyPackage/MagmaSolve/magma_solve.exe   $DIR/Eagle/inst/Magma/.
 cp /home/geo047/EagleEverything/MyPackage/MagmaEigen/magma_eigen.exe   $DIR/Eagle/inst/Magma/.
 cp /home/geo047/EagleEverything/MyPackage/MagmaEigenNonsym/magma_eigennonsym.exe   $DIR/Eagle/inst/Magma/.
 
