@@ -1,0 +1,7 @@
+This directory contains the  Magma cpp code for performing eigendecomposition for non-symmetric matrices. 
+
+To build the executable, run make.bat
+
+The executable is copied into the Eagle package via the  ../build_INSTALL_package.bsh
+
+

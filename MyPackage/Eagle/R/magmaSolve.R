@@ -5,6 +5,7 @@ magmaSolve <- function(Xmat , ngpu=1, printInfo=FALSE){
 ## Xmat is assumed to be symmetric.  
 ## Due to the 32 bit interface problem between R and Magma, the Inv matrix solution from 
 ## magma_solve is passed back into R via a temporary binary file using the readBin() function. 
+## Found that this would only work for matrices < 45000 rows/cols
 
  if (nrow(Xmat) != ncol(Xmat)){
    message("\n magmaSolve function needs a square matrix. \n")
