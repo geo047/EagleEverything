@@ -54,7 +54,6 @@ library(Rcpp)
             "emma_eigen_L_wo_Z.R", 
             "emma_eigen_R_wo_Z.R", 
             "emma_delta_ML_LL_w_Z.R", 
-            "emma_misc.R", 
             "check_for_NA_in_trait.R", 
             "check_inputs_mlam.R", 
             "calculateMMt.R", 

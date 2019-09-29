@@ -38,19 +38,38 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
     }
     if (is.null(Z)) {
         if (is.null(eig.R)) {
+            start <- Sys.time()
             eig.R <- emma.eigen.R.wo.Z(K, X, ngpu)
+            end <- Sys.time()
+            cat(" emma.eigen.R.wo.Z ", end - start, "\n")
         }
+
+        start <- Sys.time()
         etas <- crossprod(eig.R$vectors, y)
+ end <- Sys.time()
+            cat(" crossprod(eig.R$vectors, y)  ", end - start, "\n")
+
         logdelta <- (0:ngrids)/ngrids * (ulim - llim) + llim
         m <- length(logdelta)
         delta <- exp(logdelta)
+        start <- Sys.time()
         Lambdas <- matrix(eig.R$values, n - q, m) + matrix(delta, 
             n - q, m, byrow = TRUE)
+        end <-  Sys.time()
+            cat(" matrix addition  ", end - start, "\n")
+
+
+
         Etasq <- matrix(etas * etas, n - q, m)
         LL <- 0.5 * ((n - q) * (log((n - q)/(2 * pi)) - 1 - log(colSums(Etasq/Lambdas))) - 
             colSums(log(Lambdas)))
+
+
+           start <- Sys.time()
         dLL <- 0.5 * delta * ((n - q) * colSums(Etasq/(Lambdas * 
             Lambdas))/colSums(Etasq/Lambdas) - colSums(1/Lambdas))
+           end <- Sys.time()
+        cat(" dLL =  ", end - start, "\n")
         optlogdelta <- vector(length = 0)
         optLL <- vector(length = 0)
         if (dLL[1] < esp) {
@@ -63,6 +82,7 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
             optLL <- append(optLL, emma.delta.REML.LL.wo.Z(ulim, 
                 eig.R$values, etas))
         }
+        start <- Sys.time()
         for (i in 1:(m - 1)) {
             if ((dLL[i] * dLL[i + 1] < 0 - esp * esp) && (dLL[i] > 
                 0) && (dLL[i + 1] < 0)) {
@@ -74,6 +94,8 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
                   eig.R$values, etas))
             }
         }
+        end <- Sys.time()
+        cat(" for loop  =  ", end - start, "\n")
     }
    else {
         if (is.null(eig.R)) {

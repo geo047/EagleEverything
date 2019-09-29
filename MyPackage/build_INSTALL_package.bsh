@@ -81,7 +81,6 @@ echo  "    example_code=FALSE, code_files=c(
             \"emma_eigen_L_wo_Z.R\", 
             \"emma_eigen_R_wo_Z.R\", 
             \"emma_delta_ML_LL_w_Z.R\", 
-            \"emma_misc.R\", 
             \"check_for_NA_in_trait.R\", 
             \"check_inputs_mlam.R\", 
             \"calculateMMt.R\", 
@@ -247,7 +246,7 @@ R CMD build Eagle
 
 
 
-  R CMD check --as-cran Eagle_1.5.2.tar.gz 
+#  R CMD check --as-cran Eagle_1.5.2.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

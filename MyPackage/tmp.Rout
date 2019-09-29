@@ -75,7 +75,6 @@ Type 'q()' to quit R.
 +             "emma_eigen_L_wo_Z.R", 
 +             "emma_eigen_R_wo_Z.R", 
 +             "emma_delta_ML_LL_w_Z.R", 
-+             "emma_misc.R", 
 +             "check_for_NA_in_trait.R", 
 +             "check_inputs_mlam.R", 
 +             "calculateMMt.R", 
@@ -146,4 +145,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  1.169   0.222   4.814 
+  1.205   0.136   1.463 

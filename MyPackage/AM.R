@@ -475,15 +475,20 @@ if(length(indxNA_geno)>0){
      if(itnum==1){
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
-     #print(" calc MMt")
+      start <- Sys.time()
         MMt <- do.call(.calcMMt, Args)  
-     #print("end")
+       end <- Sys.time()
+     cat(" .calcMMt ", end - start, "\n")
 
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         #print(" calc invMMt")
+  start <- Sys.time()
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+       end <- Sys.time()
+     cat(" invMMt  ", end - start, "\n")
+
         #print("end")
         gc()
      }  
@@ -493,7 +498,12 @@ if(length(indxNA_geno)>0){
         message(" Calculating variance components for multiple-locus model. \n")
      }
      #print(" calcVC")
+ start <- Sys.time()
      vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
+      end <- Sys.time()
+     cat(" .calcVC  ", end - start, "\n")
+
+
      #print("end")
      gc()
      best_ve <- vc[["ve"]]
@@ -501,8 +511,12 @@ if(length(indxNA_geno)>0){
 
      ## Calculate extBIC
     #print(" .calc_extBIC ")
+ start <- Sys.time()
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
                        numberSNPselected=(itnum-1), quiet, gamma) 
+      end <- Sys.time()
+     cat(" .calc_extBIC  ", end - start, "\n")
+
     #print("end")
      gc()
 
@@ -522,7 +536,11 @@ if(length(indxNA_geno)>0){
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
           #print(" do.call find_qtl ")
           ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+ start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+      end <- Sys.time()
+     cat(" .find_qtl  ", end - start, "\n")
+
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
           #print("end")
@@ -541,7 +559,11 @@ if(length(indxNA_geno)>0){
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
            #print("inner  find_qtl")
           #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+      end <- Sys.time()
+     cat(" .find_qtl in else  ", end - start, "\n")
+
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
           #print("end")
