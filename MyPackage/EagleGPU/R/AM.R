@@ -23,6 +23,9 @@
 #' then the model building process is stopped when extBIC increases in value. 
 #' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
 #' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value. 
+#' @param solveCPU     a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
+#' run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
+#' This will force the use of the CPU-based solved which is slower but it can invert large matrices.
 #'
 
 #' @details
@@ -260,7 +263,8 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL 
+               gamma=NULL, 
+               solveCPU=FALSE
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -469,12 +473,10 @@ if(length(indxNA_geno)>0){
  outlierstat <- list()
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
-    # print(" forming currentX")
+     #print(" forming currentX")
      currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_ascii_M=geno[["dim_of_ascii_M"]],
                           map=map, availmemGb = availmemGb)  
-    # print("end")
-
 
      ## calculate Ve and Vg
      Args <- list(geno=geno,availmemGb=availmemGb,
@@ -484,25 +486,27 @@ if(length(indxNA_geno)>0){
      if(itnum==1){
         if(!quiet)
            message("  quiet=FALSE: calculating M %*% M^t. \n")
+     
+        start <- Sys.time()
         MMt <- do.call(.calcMMt, Args)  
-      
-
+        end <- Sys.time() 
+        cat(" do.call(.calcMMt, Args) ", end - start, "\n")
 
 
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         
+        start <- Sys.time()
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+        end <- Sys.time() 
+        cat("  chol2inv(chol(MMt))  ", end - start, "\n")
+        
+        #print(" inverse Via R ")
+        #print(invMMt[1:3,1:3])
 
-        print(" inverse Via R ")
-        print(invMMt[1:3,1:3])
-        print("stopping")
-        stop()
 
 
-
-        #invMMt <- solve(MMt)     ## this uses the GPU
         gc()
      }  
     
@@ -513,18 +517,26 @@ if(length(indxNA_geno)>0){
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-
+     #print("start calcVC")
+     start <- Sys.time()
      vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
+     end <- Sys.time()
+     cat("  .calcVC  ", end - start, "\n")
+ 
+     #print(" end")
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
 
      ## Calculate extBIC
-    #print(" .calc_extBIC ")
 
+    print(" .calc_extBIC ")
 
+ start <- Sys.time()
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
-                       numberSNPselected=(itnum-1), quiet, gamma) 
+                       numberSNPselected=(itnum-1), quiet, gamma, ngpu=ngpu, solveCPU=solveCPU) 
+  end <- Sys.time()
+     cat("  .calc_extBIC   ", end - start, "\n")
 
      gc()
 
@@ -545,8 +557,10 @@ if(length(indxNA_geno)>0){
           #print(" do.call find_qtl ")
           ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
 
-
+          start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+  end <- Sys.time()
+     cat("  .find_qtl   ", end - start, "\n")
 
 
 
@@ -569,15 +583,11 @@ if(length(indxNA_geno)>0){
            #print("inner  find_qtl")
           #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
 
- #    print("about to start ... ")
- #    Sys.sleep(10)
- #    start_time <- Sys.time()
- #    print("Starting ...........................................")
-
+  start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
- #    end_time <- Sys.time()
- #    print(end_time - start_time)
- #    stop()
+ end <- Sys.time()
+     cat("  .find_qtl in else    ", end - start, "\n")
+
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]

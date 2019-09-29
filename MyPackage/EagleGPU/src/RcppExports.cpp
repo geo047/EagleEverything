@@ -5,17 +5,6 @@
 #include <Rcpp.h>
 using namespace Rcpp ; 
 
-// gpuEigen_magma
-Rcpp::List gpuEigen_magma(const Rcpp::NumericMatrix X);
-RcppExport SEXP _EagleGPU_gpuEigen_magma(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(gpuEigen_magma(X));
-    return rcpp_result_gen;
-END_RCPP
-}
 // ReadBlock
 Eigen::MatrixXd ReadBlock(std::string asciifname, long start_row, long numcols, long numrows_in_block);
 RcppExport SEXP _EagleGPU_ReadBlock(SEXP asciifnameSEXP, SEXP start_rowSEXP, SEXP numcolsSEXP, SEXP numrows_in_blockSEXP) {
@@ -207,8 +196,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // magma_solve
-int magma_solve(Rcpp::NumericMatrix X, int numgpus, bool printInfo, std::string fname);
-RcppExport SEXP _EagleGPU_magma_solve(SEXP XSEXP, SEXP numgpusSEXP, SEXP printInfoSEXP, SEXP fnameSEXP) {
+int magma_solve(Rcpp::NumericMatrix X, int numgpus, bool printInfo, std::string fname, Rcpp::Function message);
+RcppExport SEXP _EagleGPU_magma_solve(SEXP XSEXP, SEXP numgpusSEXP, SEXP printInfoSEXP, SEXP fnameSEXP, SEXP messageSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -216,13 +205,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type numgpus(numgpusSEXP);
     Rcpp::traits::input_parameter< bool >::type printInfo(printInfoSEXP);
     Rcpp::traits::input_parameter< std::string >::type fname(fnameSEXP);
-    rcpp_result_gen = Rcpp::wrap(magma_solve(X, numgpus, printInfo, fname));
+    Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
+    rcpp_result_gen = Rcpp::wrap(magma_solve(X, numgpus, printInfo, fname, message));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_EagleGPU_gpuEigen_magma", (DL_FUNC) &_EagleGPU_gpuEigen_magma, 1},
     {"_EagleGPU_ReadBlock", (DL_FUNC) &_EagleGPU_ReadBlock, 4},
     {"_EagleGPU_ReshapeM_rcpp", (DL_FUNC) &_EagleGPU_ReshapeM_rcpp, 4},
     {"_EagleGPU_calculateMMt_rcpp", (DL_FUNC) &_EagleGPU_calculateMMt_rcpp, 7},
@@ -235,7 +224,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_EagleGPU_fasttimer", (DL_FUNC) &_EagleGPU_fasttimer, 0},
     {"_EagleGPU_getRowColumn", (DL_FUNC) &_EagleGPU_getRowColumn, 1},
     {"_EagleGPU_magma_qr", (DL_FUNC) &_EagleGPU_magma_qr, 5},
-    {"_EagleGPU_magma_solve", (DL_FUNC) &_EagleGPU_magma_solve, 4},
+    {"_EagleGPU_magma_solve", (DL_FUNC) &_EagleGPU_magma_solve, 5},
     {NULL, NULL, 0}
 };
 

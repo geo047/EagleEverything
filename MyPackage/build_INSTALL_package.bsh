@@ -46,7 +46,6 @@ echo  " Rcpp.package.skeleton(\"EagleGPU\", cpp_files=c(
             \"magma_solve.cpp\"  ,
             \"magma_qr.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
-            \"RcppExampleEigen_m_v2.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
             \"CreateASCIInospace.cpp\"  ,
@@ -102,8 +101,8 @@ echo  "    example_code=FALSE, code_files=c(
             \"emma_delta_ML_LL_wo_Z.R\", 
             \"emma_eigen_L_wo_Z.R\", 
             \"emma_eigen_R_wo_Z.R\", 
-            \"emma_delta_ML_LL_w_Z.R\", 
             \"emma_misc.R\", 
+            \"emma_delta_ML_LL_w_Z.R\", 
             \"check_for_NA_in_trait.R\", 
             \"check_inputs_mlam.R\", 
             \"calculateMMt.R\", 
@@ -148,7 +147,6 @@ cp $DIR/Makevars.Magma $DIR/EagleGPU/src/Makevars
 echo " Replace NAMESPACE and DESCRIPTION with my own version "
 cp ./NAMESPACE.OLD ./EagleGPU/NAMESPACE
 cp ./DESCRIPTION.OLD ./EagleGPU/DESCRIPTION
-## Modify ./EagleGPU/src/RcppExports.cpp
 
 
 
@@ -260,7 +258,7 @@ R CMD build EagleGPU
 
 
 
-  R CMD check --as-cran EagleGPU_1.5.1.tar.gz 
+#  R CMD check --as-cran EagleGPU_1.5.1.tar.gz 
 
 
 R CMD INSTALL EagleGPU -l ~/RLibs

@@ -5,7 +5,7 @@
     MMt <- calculateMMt(geno=geno[["asciifileM"]], availmemGb=availmemGb,
                            ncpu=ncpu,
                            dim_of_ascii_M = geno[["dim_of_ascii_M"]],
-                           selected_loci=selected_loci, quiet = quiet, message=message)
+                           selected_loci=selected_loci, quiet = quiet )
     gc()
 
 

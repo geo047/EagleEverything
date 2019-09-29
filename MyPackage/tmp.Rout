@@ -23,7 +23,6 @@ Type 'q()' to quit R.
 +             "magma_solve.cpp"  ,
 +             "magma_qr.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
-+             "RcppExampleEigen_m_v2.cpp"  ,
 +             "getRowColumn.cpp"  ,
 +             "CreateASCIInospace_PLINK.cpp"  ,
 +             "CreateASCIInospace.cpp"  ,
@@ -79,8 +78,8 @@ Type 'q()' to quit R.
 +             "emma_delta_ML_LL_wo_Z.R", 
 +             "emma_eigen_L_wo_Z.R", 
 +             "emma_eigen_R_wo_Z.R", 
-+             "emma_delta_ML_LL_w_Z.R", 
 +             "emma_misc.R", 
++             "emma_delta_ML_LL_w_Z.R", 
 +             "check_for_NA_in_trait.R", 
 +             "check_inputs_mlam.R", 
 +             "calculateMMt.R", 
@@ -114,7 +113,6 @@ Adding Rcpp settings
  >> copied magma_solve.cpp to src directory
  >> copied magma_qr.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
- >> copied RcppExampleEigen_m_v2.cpp to src directory
  >> copied getRowColumn.cpp to src directory
  >> copied CreateASCIInospace_PLINK.cpp to src directory
  >> copied CreateASCIInospace.cpp to src directory
@@ -154,4 +152,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.787   0.084   0.975 
+  0.680   0.132   0.898 

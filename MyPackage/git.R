@@ -6,7 +6,7 @@
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
-    P <- calculateP(H=H, X=currentX , message=message)
+    P <- calculateP(H=H, X=currentX  )
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
     rm(H)

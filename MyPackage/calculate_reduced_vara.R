@@ -1,5 +1,5 @@
 
-calculate_reduced_vara <- function(Zmat=NULL, X=NULL, varE=NULL, varG=NULL, invMMt=NULL, MMtsqrt=NULL, quiet=TRUE, message=message)
+calculate_reduced_vara <- function(Zmat=NULL, X=NULL, varE=NULL, varG=NULL, invMMt=NULL, MMtsqrt=NULL, quiet=TRUE,  ngpu=1 )
 {
  ## internal function to AM
  ## Using var(\hat(a)) = simgaG - Cjj  where Cjj is the component from C^-1 (Henderson's 
@@ -34,8 +34,10 @@ calculate_reduced_vara <- function(Zmat=NULL, X=NULL, varE=NULL, varG=NULL, invM
      C <- (1/varE) * t(Ze) %*% t(Zmat) %*%  X       
      D <- (1/varE) * t(Ze) %*% t(Zmat) %*% Zmat %*% Ze + (1/varG) * diag(nrow(invMMt))     
   }
-  D1 <- solve(D)
-  vars <- varG * diag(nrow(D1))  - ( D1 + D1 %*% C %*% solve(A - B %*% D1 %*% C) %*% B %*% D1 )
+  # D1 <- solve(D)
+  D1 <- magmaSolve(Xmat=D, ngpu=ngpu, printInfo=FALSE)
+  #vars <- varG * diag(nrow(D1))  - ( D1 + D1 %*% C %*% solve(A - B %*% D1 %*% C) %*% B %*% D1 )
+  vars <- varG * diag(nrow(D1))  - ( D1 + D1 %*% C %*% magmaSolve( Xmat= (A - B %*% D1 %*% C), printInfo=FALSE, ngpu=ngpu)    %*% B %*% D1 )
   return(vars )
 
 }

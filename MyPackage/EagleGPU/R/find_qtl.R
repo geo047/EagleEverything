@@ -8,7 +8,7 @@
 
 
  
-    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
+    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
 
 
 
@@ -17,7 +17,7 @@
         doquiet(dat=H, num_markers=5, lab="H")
 
 
-    P <- calculateP(H=H, X=currentX , message=message)
+    P <- calculateP(H=H, X=currentX ,  ngpu=ngpu )
 
 
 
@@ -35,7 +35,7 @@
 
 
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                              ngpu=ngpu , message=message)
+                              ngpu=ngpu  )
 
 
     if(!quiet){
@@ -49,7 +49,7 @@
 
     hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=trait, quiet = quiet , message=message)
+                       y=trait, quiet = quiet , ngpu=ngpu )
 
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
@@ -64,7 +64,7 @@
 
     var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX, varE=best_ve, varG=best_vg, invMMt=invMMt,
                                                 MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                                quiet = quiet, message=message )
+                                                quiet = quiet,  ngpu=ngpu )
     if(!quiet)
              doquiet(dat=var_hat_a, num_markers=5, lab="SE of BLUPs")
 
@@ -86,7 +86,7 @@
                                             invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                             transformed_a=hat_a,
                                             transformed_vara=var_hat_a,
-                                            quiet=quiet, message=message)
+                                            quiet=quiet )
 #     end_time <- Sys.time()
 #     print(end_time - start_time)
 #     stop()

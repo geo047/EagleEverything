@@ -1,9 +1,0 @@
-* using log directory ‘/home/geo047/EagleEverything/MyPackage/EagleGPU.Rcheck’
-* using R version 3.6.1 (2019-07-05)
-* using platform: x86_64-pc-linux-gnu (64-bit)
-* using session charset: UTF-8
-* using option ‘--as-cran’
-* checking for file ‘EagleGPU/DESCRIPTION’ ... OK
-* checking extension type ... Package
-* this is package ‘EagleGPU’ version ‘1.5.1’
-* checking CRAN incoming feasibility ...

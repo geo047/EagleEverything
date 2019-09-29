@@ -1,5 +1,5 @@
 
-calculateP  <- function(H=NULL, X=NULL, ngpu=0, message=message)
+calculateP  <- function(H=NULL, X=NULL, ngpu=1)
 {
   ## internal function to AM
   ## R function to calculate P matrix
@@ -24,8 +24,9 @@ calculateP  <- function(H=NULL, X=NULL, ngpu=0, message=message)
     return(NULL)
   }
 
- Hinv <- chol2inv(chol(H))
- P <- Hinv - Hinv %*% X %*% solve( t(X) %*% Hinv %*% X )  %*% t(X) %*% Hinv
+ # Hinv <- chol2inv(chol(H))
+ Hinv <- magmaSolve(Xmat=H, ngpu=ngpu, printInfo=FALSE)
+ P <- Hinv - Hinv %*% X %*% magmaSolve( Xmat= (t(X) %*% Hinv %*% X ), ngpu=ngpu, printInfo=FALSE)  %*% t(X) %*% Hinv
 
   return(P)
 

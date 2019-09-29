@@ -6,7 +6,8 @@
 \usage{
 AM(trait = NULL, fformula = NULL, availmemGb = 8, geno = NULL,
   pheno = NULL, map = NULL, Zmat = NULL, ncpu = detectCores(),
-  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL)
+  ngpu = 0, quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL,
+  solveCPU = FALSE)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}
@@ -42,6 +43,10 @@ then the model building process is stopped when extBIC increases in value.}
 
 \item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a
 more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value.}
+
+\item{solveCPU}{a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
+run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
+This will force the use of the CPU-based solved which is slower but it can invert large matrices.}
 }
 \value{
 A list with the following components:

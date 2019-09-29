@@ -1,7 +1,7 @@
 calculate_a_and_vara <- function(geno=NULL, maxmemGb=8,
                          selectedloci = NA,
                          invMMtsqrt=NULL, transformed_a=NULL, transformed_vara=NULL,
-                         quiet = TRUE, message=message)
+                         quiet = TRUE )
 {
  ## internal function to AM
  ## an Rcpp function to take dimension reduced a (BLUP) values 

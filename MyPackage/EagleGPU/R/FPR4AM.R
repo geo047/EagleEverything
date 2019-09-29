@@ -20,6 +20,9 @@
 #'               is to assume there are no gpu available.  
 #'               This option has not yet been implemented.
 #' @param seed  a integer value for the starting seed for the permutations. 
+#' @param solveCPU     a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
+#' run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
+#' This will force the use of the CPU-based solved which is slower but it can invert large matrices.
 #' 
 #' @details
 
@@ -116,8 +119,9 @@ FPR4AM <- function(
                map = NULL,
                Zmat = NULL,
                ncpu=detectCores(),
-               ngpu=0,
-               seed=101 
+               ngpu=1,
+               seed=101,
+               solveCPU=FALSE
                ){
   quiet <- TRUE   ## change to FALSE if additional error checking is needed. 
 
@@ -316,7 +320,10 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
  if(!quiet)
    doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
- invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+# invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+invMMt <- magmaSolve(Xmat=MMt, ngpu=ngpu, printInfo=FALSE)
+
+
  gc()
 
 gamma <- seq(0,1,length.out=numgammas)
@@ -348,7 +355,7 @@ rep(NA, numreps)
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
 extBIC  <- .calc_extBIC(bigpheno[, 1], currentX_null,MMt, geno, Zmat,
-                       numberSNPselected=0 , quiet, gamma)
+                       numberSNPselected=0 , quiet, gamma, ngpu=ngpu, solveCPU=solveCPU)
 
 extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix of null extBIC values
 
@@ -361,23 +368,23 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
        error_checking <- TRUE
 
        MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                                                              ngpu=ngpu , message=message)
+                                                              ngpu=ngpu  )
 
 
-      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
+      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat,  ngpu=ngpu  )
  
-      P <- calculateP(H=H, X=currentX_null , message=message)
+      P <- calculateP(H=H, X=currentX_null )
 
 
 
       hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=bigpheno , quiet = quiet , message=message)
+                       y=bigpheno , quiet = quiet )
 
       var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                             quiet = quiet, message=message )
+                                             quiet = quiet,  ngpu=ngpu  )
 
 
 
@@ -389,7 +396,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
                                           invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                           transformed_a=hat_a ,
                                           transformed_vara=var_hat_a,
-                                          quiet=quiet, message=message)
+                                          quiet=quiet )
 
 
 
@@ -405,32 +412,6 @@ for(ii in 1:numreps){
        if(ii %% 4 == 3 )
           message("/", appendLF=FALSE)
  
-
-
-      # Select new locus : find_qtl function but with calculateMMt_sqrt_and_sqrtinv
-      # moved outside the function for computational gain with permuted samples
-     
-#      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
- 
-#      P <- calculateP(H=H, X=currentX_null , message=message)
-
-#      hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg[ii], P=P,
-#                       MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-#                       y=bigpheno[, ii] , quiet = quiet , message=message)
-
-#      var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
-#                                             varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
-#                                             MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-#                                             quiet = quiet, message=message )
-
-#      a_and_vara  <- calculate_a_and_vara(geno = geno,
-#                                          maxmemGb=availmemGb,
-#                                          selectedloci = selected_loci,
-#                                          invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
-#                                          transformed_a=hat_a ,
-#                                          transformed_vara=var_hat_a,
-#                                          quiet=quiet, message=message)
-
 
 
 
@@ -467,7 +448,7 @@ for(ii in 1:numreps){
 
        ## Calculate extBIC
        extBIC_alternate[ii, ]   <- .calc_extBIC(bigpheno[, ii] , currentX, MMt, geno, Zmat,
-                                       numberSNPselected=1 , quiet, gamma)
+                                       numberSNPselected=1 , quiet, gamma, ngpu=ngpu, solveCPU=solveCPU)
 
 }
 

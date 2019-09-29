@@ -6,7 +6,6 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
 # built separate to R. It is the executable that is being accessed here via a system() command. 
 # The executable is in  the Magma directory.  
 
- 
  if (nrow(Xmat) != ncol(Xmat)){
    message("\n magmaQR function needs a square matrix. \n")
    return(0)

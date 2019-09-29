@@ -14,7 +14,7 @@
 // Magma test code 
 //--------------------------------------------
 // [[Rcpp::export]]
- int  magma_solve(Rcpp::NumericMatrix  X , int numgpus, bool printInfo, std::string fname   )
+ int  magma_solve(Rcpp::NumericMatrix  X , int numgpus, bool printInfo, std::string fname,  Rcpp::Function message   )
 {
 
   /*
@@ -47,7 +47,7 @@
   double * h_X;
   if (  MAGMA_SUCCESS !=   magma_dmalloc_cpu(&h_X, n2) )
   {
-    std::cout << " Error: magma_eigen() magma_dmalloc_cpu failed for h_X. Need more memory" << std::endl;
+    message( " Error: magma_eigen() magma_dmalloc_cpu failed for h_X. Need more memory \n");
     return -1;
   }
 
@@ -64,7 +64,7 @@
 
 
   if (printInfo){
-     std::cout << " Prior to magma_dpotrf: First 5 rows and columns of the  X matrix " << std::endl;
+     message(" Prior to magma_dpotrf: First 5 rows and columns of the  X matrix \n");
      magma_dprint(5,5, h_X, n);
   }
 
@@ -72,20 +72,20 @@
       magma_dpotrf( MagmaLower, n, h_X, n, &info );
   
       if ( info != 0){
-        std::cout << "Error: magma_dpotrf has returned a non-zero info value of " << info << std::endl;
-        std::cout << "       This error is most likely due to the matrix beig too large for the GPU. " << std::endl;
-        std::cout << "        Need to use the CPU-based solve function in R instead. " << std::endl;         
-        std::cout << "        Select this option in the AM function.      " << std::endl;
+        message( "Error: magma_dpotrf has returned a non-zero info value of \n");
+        message("       This error is most likely due to the matrix beig too large for the GPU. \n" );
+        message( "        Need to use the CPU-based solve function in R instead. \n" );
+        message("        Set solveCPU to TRUE in the AM function.   \n   " );
         return info;
       }
    } else {
        magma_dpotrf_m (numgpus,  MagmaLower, n, h_X, n, &info ); 
 
       if ( info != 0){
-        std::cout << "Error: magma_dpotrf has returned a non-zero info value of " << info << std::endl;
-        std::cout << "       This error is most likely due to the matrix beig too large for the GPU. " << std::endl;
-        std::cout << "        Need to use the CPU-based solve function in R instead. " << std::endl;
-        std::cout << "        Select this option in the AM function.      " << std::endl;
+        message( "Error: magma_dpotrf has returned a non-zero info value of " , info, "\n"  );
+        message( "       This error is most likely due to the matrix beig too large for the GPU. \n" );
+        message( "        Need to use the CPU-based solve function in R instead. \n" );
+        message("        Set solveCPU to TRUE in the AM function.   \n   " );
         return info;
       }
 
@@ -95,7 +95,7 @@
 
 
   if (printInfo){
-     std::cout << " After magma_dpotrf but prior to magma_dpotri: First 5 rows and columns of the  X matrix " << std::endl;
+     message( " After magma_dpotrf but prior to magma_dpotri: First 5 rows and columns of the  X matrix \n " );
      magma_dprint(5,5, h_X, n);
   }
 
@@ -103,17 +103,17 @@
    magma_dpotri( MagmaLower, n, h_X, n, &info );
 
       if ( info != 0){
-        std::cout << "Error: magma_dpotri has returned a non-zero info value of " << info << std::endl;
-        std::cout << "       This error is most likely due to the matrix beig too large for the GPU. " << std::endl;
-        std::cout << "        Need to use the CPU-based solve function in R instead. " << std::endl;
-        std::cout << "        Select this option in the AM function.      " << std::endl;
+        message( "Error: magma_dpotri has returned a non-zero info value of " , info , "\n");
+        message( "       This error is most likely due to the matrix beig too large for the GPU. \n" );
+        message( "        Need to use the CPU-based solve function in R instead. \n " );
+        message("        Set solveCPU to TRUE in the AM function.   \n   " );
         return info;
       }
 
 
 
   if (printInfo){
-     std::cout << " After magma calls: First 5 rows and columns of the INVERSE  matrix " << std::endl;
+     message( " After magma calls: First 5 rows and columns of the INVERSE  matrix \n " );
      magma_dprint(5,5, h_X, n);
   }
 
@@ -128,19 +128,19 @@
 
 
    if( printInfo){
-       std::cout << " About to write inverse to binary file. " << std::endl;
+       message( " About to write inverse to binary file. \n " );
     }
 
 
 
     if (fname.empty()){
-      std::cout << " Error: in magma_eigen. Name of binary file for the eigenvectors has not been specified. \n" << std::endl;
+      message( " Error: in magma_eigen. Name of binary file for the eigenvectors has not been specified. \n" );
       return -1;
     }
 
     FILE* file = fopen(fname.c_str() , "wb");
     if (file == NULL){
-       std::cout << " Error: in magma_eigen. Binary file for eigenvectors has failed to open." << std::endl;
+       message( " Error: in magma_eigen. Binary file for eigenvectors has failed to open. \n" );
        return -1;
     } else {
        fwrite(&h_X[0], 1 , n*n*sizeof(double) , file);

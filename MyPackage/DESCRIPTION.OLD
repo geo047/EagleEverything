@@ -38,8 +38,7 @@ Imports:
    stats,
    utils,
    parallel,
-   data.table,
-  MagmaEigen 
+   data.table
 LinkingTo: 
    RcppEigen, Rcpp
 Roxygen: 

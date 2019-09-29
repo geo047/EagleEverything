@@ -24,8 +24,8 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
 }
 
 
- emma.REMLE <-  function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,  ngpu=0,
-    esp = 1e-10, eig.L = NULL, eig.R = NULL) 
+ emma.REMLE <-  function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,  ngpu=1,
+    esp = 1e-10, eig.L = NULL, eig.R = NULL, solveCPU=FALSE) 
 {
     n <- length(y)
     t <- nrow(K)
@@ -36,10 +36,15 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
         warning("X is singular")
         return(list(REML = 0, delta = 0, ve = 0, vg = 0))
     }
+
     if (is.null(Z)) {
+
+
         if (is.null(eig.R)) {
             eig.R <- emma.eigen.R.wo.Z(K, X, ngpu)
         }
+
+
         etas <- crossprod(eig.R$vectors, y)
         logdelta <- (0:ngrids)/ngrids * (ulim - llim) + llim
         m <- length(logdelta)
@@ -77,7 +82,7 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
     }
    else {
         if (is.null(eig.R)) {
-            eig.R <- emma.eigen.R.w.Z(Z, K, X)
+            eig.R <- emma.eigen.R.w.Z(Z, K, X, ngpu=ngpu, solveCPU=solveCPU)
         }
         etas <- crossprod(eig.R$vectors, y)
         etas.1 <- etas[1:(t - q)]
