@@ -2,7 +2,7 @@
                        currentX,  ncpu, quiet, trait, ngpu )
   {
     ##  internal function: use by   AM
-    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
+    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat)
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 

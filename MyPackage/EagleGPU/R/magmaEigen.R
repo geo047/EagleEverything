@@ -68,14 +68,21 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
   }
 
 
+ start <- Sys.time()
+
   complete.name <- system.file('Magma', 'magma_eigen.exe', package='EagleGPU')
   if (printInfo)
     print(complete.name)
+
   system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
+  #system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors) ) ) 
+ end <- Sys.time()
+ cat(" magmaEigen:  system call ", end-start, "\n")
+
 
    # read in eigenvalues
    values <- readBin(binvalfile , double(), nrow(Xmat) )
-   
+
    if (wantvectors){ 
 
      MaxIntVal <- .Machine$integer.max - 2

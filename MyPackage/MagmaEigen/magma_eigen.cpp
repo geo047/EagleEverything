@@ -9,6 +9,7 @@
 #include<magma_operators.h>
 #include <cstdlib>
 #include<fstream>
+#include<chrono>
 
 
 
@@ -58,6 +59,7 @@ bool wantvectors
 
 int main( int argc, char** argv )
 {
+auto start = std::chrono::high_resolution_clock::now();
 
  // Input received from command line
  std::string X = argv[1];  // name of binary file with data
@@ -114,10 +116,18 @@ int main( int argc, char** argv )
 //    std::cout << "size=" << size << "\n";
 
 
+
+
+
+
+
+
+
   if(printInfo){
      std::cout << "About to begin reading in the X matrix data ... " << std::endl;
   }
 
+//auto start = std::chrono::high_resolution_clock::now();
   size = n * n * sizeof(double);
   memblock = new char [size];
   bfile.seekg (0, std::ios::beg);
@@ -125,6 +135,10 @@ int main( int argc, char** argv )
   bfile.close();
 
   h_vectors =  (double*)memblock;  //reinterpret as doubles
+
+//auto finish = std::chrono::high_resolution_clock::now();
+//std::chrono::duration<double> elapsed = finish - start;
+//std::cout << "Read X matrix binary file =   " << elapsed.count() << "\n";
 
   if(printInfo){
      std::cout << "Reading of X  matrix data complete.  " << std::endl;
@@ -142,8 +156,15 @@ int main( int argc, char** argv )
   double aux_work[1];
   magma_int_t aux_iwork[1];
 
+//start = std::chrono::high_resolution_clock::now();
   magma_dsyevdx_2stage( jobv, MagmaRangeAll, MagmaLower , n, NULL  , n,
                       vl, vu, il, iu, &m, NULL , aux_work, -1, aux_iwork, -1 , &info);
+
+//finish = std::chrono::high_resolution_clock::now();
+//elapsed = finish - start;
+//std::cout << "Workspace query =    " << elapsed.count() << "\n";
+
+
 
    lwork = ( magma_int_t ) aux_work [0];
    liwork = aux_iwork [0];
@@ -176,18 +197,32 @@ int main( int argc, char** argv )
      if (printInfo){
        std::cout << " About to begin single-gpu dsyevdx_2stage eigendecomposition calculation. " << std::endl;
      }
+//start = std::chrono::high_resolution_clock::now();
       magma_dsyevdx_2stage( jobv, MagmaRangeAll, MagmaLower , n,
                      h_vectors   , n, vl, vu, il, iu, &m, h_values, work, lwork,
                       iwork, liwork, &info);
+//finish = std::chrono::high_resolution_clock::now();
+//elapsed = finish - start;
+//std::cout << "1 GPU: magma_dsyevdx_2stage =    " << elapsed.count() << "\n";
+
+
+
   } else {
      if (printInfo){
        std::cout << " About to begin multi-gpu dsyevdx_2stage eigendecomposition calculation. " << std::endl;
        std::cout << " Computation will use " << numgpus << " gpus. " << std::endl;
      }
 
+//start = std::chrono::high_resolution_clock::now();
       magma_dsyevdx_2stage_m(numgpus, jobv, MagmaRangeAll , MagmaLower , n,
                       h_vectors, n, vl, vu, il, iu, &m, h_values,
                       work, lwork, iwork, liwork, &info);
+//finish = std::chrono::high_resolution_clock::now();
+//elapsed = finish - start;
+//std::cout << "m GPU: magma_dsyevdx_2stage_m =    " << elapsed.count() << "\n";
+
+
+
   }
 
   if (printInfo){
@@ -234,6 +269,7 @@ int main( int argc, char** argv )
       return -1;
     }
 
+//start = std::chrono::high_resolution_clock::now();
     FILE* file = fopen(fnamevec.c_str() , "wb");
     if (file == NULL){
        std::cout << " Error: in magma_eigen. Binary file for eigenvectors has failed to open." << std::endl;
@@ -254,6 +290,10 @@ int main( int argc, char** argv )
 //  delete [] aux_iwork;
 
  magma_finalize();
+
+auto finish = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> elapsed = finish - start;
+std::cout << "Whole thing  =   " << elapsed.count() << "\n";
   
  return 0;
 

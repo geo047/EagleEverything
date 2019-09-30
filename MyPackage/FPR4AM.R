@@ -371,7 +371,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
                                                               ngpu=ngpu  )
 
 
-      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat,  ngpu=ngpu  )
+      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat   )
  
       P <- calculateP(H=H, X=currentX_null )
 

@@ -3,6 +3,9 @@
 #include "magma_lapack.h"
 #include<iostream>
 #include<fstream>
+#include<chrono>
+
+
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -84,9 +87,14 @@ char * memblock;
 
 std::ifstream bfile ( X.c_str() , std::ios::in|std::ios::binary|std::ios::ate);
 
-
+auto start = std::chrono::high_resolution_clock::now();
 size = bfile.tellg();
     std::cout << "size=" << size << "\n"; 
+auto finish = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> elapsed = finish - start;
+std::cout << "size = bfile.tellg() =  " << elapsed.count() << "\n";
+
+
 
 memblock = new char [size];
 bfile.seekg (0, std::ios::beg);
