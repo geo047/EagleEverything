@@ -478,7 +478,7 @@ if(length(indxNA_geno)>0){
       start <- Sys.time()
         MMt <- do.call(.calcMMt, Args)  
        end <- Sys.time()
-     cat(" .calcMMt ", end - start, "\n")
+#     cat(" .calcMMt ", end - start, "\n")
 
 
          if(!quiet)
@@ -487,7 +487,7 @@ if(length(indxNA_geno)>0){
   start <- Sys.time()
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
        end <- Sys.time()
-     cat(" invMMt  ", end - start, "\n")
+#     cat(" invMMt  ", end - start, "\n")
 
         #print("end")
         gc()
@@ -515,7 +515,7 @@ if(length(indxNA_geno)>0){
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
                        numberSNPselected=(itnum-1), quiet, gamma) 
       end <- Sys.time()
-     cat(" .calc_extBIC  ", end - start, "\n")
+#     cat(" .calc_extBIC  ", end - start, "\n")
 
     #print("end")
      gc()
@@ -539,7 +539,7 @@ if(length(indxNA_geno)>0){
  start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
       end <- Sys.time()
-     cat(" .find_qtl  ", end - start, "\n")
+#     cat(" .find_qtl  ", end - start, "\n")
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
@@ -562,7 +562,7 @@ if(length(indxNA_geno)>0){
 start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
       end <- Sys.time()
-     cat(" .find_qtl in else  ", end - start, "\n")
+#     cat(" .find_qtl in else  ", end - start, "\n")
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]

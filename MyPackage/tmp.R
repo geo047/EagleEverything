@@ -43,7 +43,7 @@ library(Rcpp)
             "print_results.R", 
             "find_qtl.R", 
             "fullpath.R", 
-            "misc.R",
+            "emma_misc.R",
             "emma_delta_ML_dLL_w_Z.R", 
             "emma_eigen_L_w_Z.R", 
             "emma_eigen_R_w_Z.R", 
