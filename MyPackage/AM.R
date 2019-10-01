@@ -23,11 +23,7 @@
 #' then the model building process is stopped when extBIC increases in value. 
 #' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
 #' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value. 
-#' @param solveCPU     a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
-#' run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
-#' This will force the use of the CPU-based solved which is slower but it can invert large matrices.
 #'
-
 #' @details
 #'
 #' This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
@@ -263,8 +259,7 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL, 
-               solveCPU=FALSE
+               gamma=NULL 
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -442,10 +437,19 @@ if(length(indxNA_geno)>0){
 #print("end")
 
 
- ## check currentX for solve(crossprod(X, X)) singularity
+# check currentX for solve(crossprod(X, X)) singularity
 #print(" check currentX for solve(crossprod(X, X)) singularity ")
- chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
-           error = function(err){
+# chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
+#           error = function(err){
+#            return(TRUE)
+#           })
+
+
+## check currentX for solve(crossprod(X, X)) singularity
+
+
+chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX, currentX) )) } ,
+            error = function(err){
             return(TRUE)
            })
 
@@ -453,11 +457,11 @@ if(length(indxNA_geno)>0){
 
   if(is.logical(chck)){
       if(chck){
-        message(" There is a problem with the effects in fformula.\n")
-        message(" These effects are causing computational instability. \n")
-        message(" This can occur when there is a strong dependency between the effects.\n")
-        message(" Try removing some of the effects in fformula. \n")
-        message("\n  AM has terminated with errors.\n")
+        message(" There is a problem with the effects in fformula.")
+        message(" These effects are causing computational instability. ")
+        message(" This can occur when there is a strong dependency between the effects.")
+        message(" Try removing some of the effects in fformula. ")
+        message("\n  AM has terminated with errors.")
         return(NULL)
       }
   }
@@ -492,18 +496,12 @@ if(length(indxNA_geno)>0){
         end <- Sys.time() 
         cat(" do.call(.calcMMt, Args) ", end - start, "\n")
 
-
-
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         
-        start <- Sys.time()
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-        end <- Sys.time() 
         cat("  chol2inv(chol(MMt))  ", end - start, "\n")
         
-        #print(" inverse Via R ")
-        #print(invMMt[1:3,1:3])
 
 
 
@@ -534,7 +532,7 @@ if(length(indxNA_geno)>0){
 
  start <- Sys.time()
      new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
-                       numberSNPselected=(itnum-1), quiet, gamma, ngpu=ngpu, solveCPU=solveCPU) 
+                       numberSNPselected=(itnum-1), quiet, gamma, ngpu=ngpu ) 
   end <- Sys.time()
      cat("  .calc_extBIC   ", end - start, "\n")
 

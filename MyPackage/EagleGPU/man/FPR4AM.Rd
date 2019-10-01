@@ -7,7 +7,7 @@
 FPR4AM(falseposrate = 0.05, trait = trait, numreps = 100,
   fformula = NULL, availmemGb = 8, numgammas = 20, geno = NULL,
   pheno = NULL, map = NULL, Zmat = NULL, ncpu = detectCores(),
-  ngpu = 1, seed = 101, solveCPU = FALSE)
+  ngpu = 1, seed = 101)
 }
 \arguments{
 \item{falseposrate}{the desired false positive rate.}
@@ -41,10 +41,6 @@ is to assume there are no gpu available.
 This option has not yet been implemented.}
 
 \item{seed}{a integer value for the starting seed for the permutations.}
-
-\item{solveCPU}{a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
-run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
-This will force the use of the CPU-based solved which is slower but it can invert large matrices.}
 }
 \value{
 A list with the following components:

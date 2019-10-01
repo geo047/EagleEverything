@@ -3,9 +3,6 @@
 #'     marker-trait associations found by \code{\link{AM}}
 #' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. 
 #' @param ngpu    number of gpu.
-#' @param solveCPU     a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
-#' run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
-#' This will force the use of the CPU-based solved which is slower but it can invert large matrices.
 #'
 #' @details
 #'
@@ -75,7 +72,7 @@
 #' 
 #' @seealso \code{\link{AM}}
 #'
-SummaryAM <- function(AMobj=NULL, ngpu=1, solveCPU=FALSE)
+SummaryAM <- function(AMobj=NULL, ngpu=1 )
 {
 
  if(is.null(AMobj)){
@@ -112,7 +109,7 @@ SummaryAM <- function(AMobj=NULL, ngpu=1, solveCPU=FALSE)
   MMt <- .calcMMt(AMobj$geno, AMobj$availmemGb, AMobj$ncpu, AMobj$Indx, AMobj$quiet)
 
   ## calculate variance components of LMM
-  eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100, ngpu=ngpu, solveCPU=solveCPU)
+  eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100, ngpu=ngpu )
 
  ## calculating p values of fixed marker effect via Wald statistic
  mrks <- AMobj$Mrk[-1]  ## its -1 to remove the NA for the null model 
@@ -124,8 +121,8 @@ SummaryAM <- function(AMobj=NULL, ngpu=1, solveCPU=FALSE)
  #Hinv <- try(solve(H))
  #beta <- try(solve( t(fullX) %*% Hinv %*% fullX) %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   )
 
- Hinv <- magmaSolve(Xmat=H, ngpu=ngpu)
- beta <-magmaSolve( Xmat= (t(fullX) %*% Hinv %*% fullX), ngpu=ngpu)     %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   
+ Hinv <- try( chol2inv(chol( H)) )
+ beta <- try( chol2inv(chol ( t(fullX) %*% Hinv %*% fullX) )     %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   )
  
 
 
@@ -187,10 +184,10 @@ for(ii in varnames){
   #          solve( L %*% solve(t(fullX) %*% Hinv %*% fullX) %*% t(L) ) %*%
   #          (L %*% beta)
 
-  W[which(ii==varnames)]  <- t(L %*% beta) %*%
-            magmaSolve( Xmat =   ( L %*% magmaSolve( Xmat=(t(fullX) %*% Hinv %*% fullX), ngpu=ngpu) %*% t(L) )  , ngpu=ngpu)  %*%
-            (L %*% beta)
 
+  W[which(ii==varnames)]  <- t(L %*% beta) %*%
+             chol2inv(chol( L %*% chol2inv(chol (t(fullX) %*% Hinv %*% fullX)) %*% t(L) ))      %*%
+            (L %*% beta)
 
 
 
@@ -219,7 +216,7 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
 
  MMt <- MMt/max(MMt) + 0.05 * diag(nrow(MMt))  
  # base model
- basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100, ngpu=ngpu, solveCPU=solveCPU)
+ basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100, ngpu=ngpu )
  base_logML <- basemod$ML
  # full model
   df_R <- NULL
@@ -233,7 +230,7 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
                                 currentX=fullX, loci_indx=loc,
                                dim_of_ascii_M=AMobj$geno[["dim_of_ascii_M"]],
                                map=AMobj$map)
-        fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100, ngpu=ngpu, solveCPU=solveCPU)
+        fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100, ngpu=ngpu )
         full_logML <- fullmod$ML
         Rsq <- 1 - exp(-2/nrow(MMt) * (full_logML - base_logML))
         message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))

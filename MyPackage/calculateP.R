@@ -24,9 +24,9 @@ calculateP  <- function(H=NULL, X=NULL, ngpu=1)
     return(NULL)
   }
 
- # Hinv <- chol2inv(chol(H))
- Hinv <- magmaSolve(Xmat=H, ngpu=ngpu, printInfo=FALSE)
- P <- Hinv - Hinv %*% X %*% magmaSolve( Xmat= (t(X) %*% Hinv %*% X ), ngpu=ngpu, printInfo=FALSE)  %*% t(X) %*% Hinv
+  Hinv <- chol2inv(chol(H))
+ #P <- Hinv - Hinv %*% X %*% magmaSolve( Xmat= (t(X) %*% Hinv %*% X ), ngpu=ngpu, printInfo=FALSE)  %*% t(X) %*% Hinv
+ P <- Hinv - Hinv %*% X %*% chol2inv(chol( t(X) %*% Hinv %*% X ))     %*% t(X) %*% Hinv
 
   return(P)
 

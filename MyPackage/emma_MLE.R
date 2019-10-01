@@ -1,6 +1,6 @@
 
 emma.MLE <- function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,
-    esp = 1e-10, eig.L = NULL, eig.R = NULL, ngpu=1, solveCPU=FALSE)
+    esp = 1e-10, eig.L = NULL, eig.R = NULL, ngpu=1 )
 {
     n <- length(y)
     t <- nrow(K)
@@ -61,7 +61,7 @@ emma.MLE <- function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,
             eig.L <- emma.eigen.L.w.Z(Z, K, ngpu)
         }
         if (is.null(eig.R)) {
-            eig.R <- emma.eigen.R.w.Z(Z, K, X, ngpu=ngpu, solveCPU=solveCPU)
+            eig.R <- emma.eigen.R.w.Z(Z, K, X, ngpu=ngpu )
         }
         etas <- crossprod(eig.R$vectors, y)
         etas.1 <- etas[1:(t - q)]

@@ -1,5 +1,5 @@
 
-emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0, solveCPU=FALSE)
+emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0 )
 {
     if (complete == FALSE) {
         vids <- colSums(Z) > 0
@@ -9,12 +9,10 @@ emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0, solveCPU=FALSE)
     n <- nrow(Z)
     t <- ncol(Z)
     q <- ncol(X)
-   if (solveCPU){
-     # matrix too large for GPU based code
-     SZ <- Z - X %*% solve(crossprod(X, X)) %*% crossprod(X, Z)
-    } else {
-     SZ <- Z - X %*% magmaSolve(Xmat = (crossprod(X, X)) %*% crossprod(X, Z), ngpu=ngpu, printInfo=FALSE)
-    }
+    # matrix too large for GPU based code
+     #SZ <- Z - X %*%   solve(crossprod(X, X))    %*% crossprod(X, Z)
+     SZ <- Z - X %*%    chol2inv(chol(crossprod(X, X)))    %*% crossprod(X, Z)
+
     #eig <- eigen(K %*% crossprod(Z, SZ), symmetric = FALSE, EISPACK = TRUE)
     eig <- magmaEigenNonsym(Xmat = (K %*% crossprod(Z, SZ) ) , ngpu=ngpu, printInfo=FALSE)
     if (is.complex(eig$values)) {

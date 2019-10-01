@@ -20,9 +20,6 @@
 #'               is to assume there are no gpu available.  
 #'               This option has not yet been implemented.
 #' @param seed  a integer value for the starting seed for the permutations. 
-#' @param solveCPU     a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
-#' run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
-#' This will force the use of the CPU-based solved which is slower but it can invert large matrices.
 #' 
 #' @details
 
@@ -120,8 +117,7 @@ FPR4AM <- function(
                Zmat = NULL,
                ncpu=detectCores(),
                ngpu=1,
-               seed=101,
-               solveCPU=FALSE
+               seed=101
                ){
   quiet <- TRUE   ## change to FALSE if additional error checking is needed. 
 
@@ -292,10 +288,16 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
 
  ## check currentX for solve(crossprod(X, X)) singularity
- chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
+
+ chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX_null, currentX_null) )) } ,
            error = function(err){
             return(TRUE)
            })
+
+# chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
+#           error = function(err){
+#            return(TRUE)
+#           })
 
   if(is.logical(chck)){
       if(chck){
@@ -320,8 +322,8 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
  if(!quiet)
    doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-# invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-invMMt <- magmaSolve(Xmat=MMt, ngpu=ngpu, printInfo=FALSE)
+
+ invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
 
 
  gc()
@@ -355,7 +357,7 @@ rep(NA, numreps)
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
 extBIC  <- .calc_extBIC(bigpheno[, 1], currentX_null,MMt, geno, Zmat,
-                       numberSNPselected=0 , quiet, gamma, ngpu=ngpu, solveCPU=solveCPU)
+                       numberSNPselected=0 , quiet, gamma, ngpu=ngpu )
 
 extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix of null extBIC values
 
@@ -448,7 +450,7 @@ for(ii in 1:numreps){
 
        ## Calculate extBIC
        extBIC_alternate[ii, ]   <- .calc_extBIC(bigpheno[, ii] , currentX, MMt, geno, Zmat,
-                                       numberSNPselected=1 , quiet, gamma, ngpu=ngpu, solveCPU=solveCPU)
+                                       numberSNPselected=1 , quiet, gamma, ngpu=ngpu )
 
 }
 

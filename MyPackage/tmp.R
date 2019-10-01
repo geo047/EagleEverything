@@ -1,7 +1,6 @@
 library(Rcpp)
     
  Rcpp.package.skeleton("EagleGPU", cpp_files=c(
-            "magma_solve.cpp"  ,
             "magma_qr.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "getRowColumn.cpp"  ,
@@ -24,7 +23,6 @@ library(Rcpp)
              ),    
     example_code=FALSE, code_files=c(
             "onAttach.R", 
-            "magmaSolve.R",
             "magmaEigen.R",
             "magmaEigenNonsym.R",
             "magmaQR.R",

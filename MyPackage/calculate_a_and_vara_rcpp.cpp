@@ -186,12 +186,15 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
             }
            //  ans_tmp  =  Mtd *  inv_MMt_sqrt  * a ;
              ans_tmp.noalias()  =   inv_MMt_sqrt  * a ;
-             ans_tmp.noalias() = Mt * ans_tmp;
+             ans_tmp = Mt * ans_tmp;
+
+
+
 
             // variance calculation
             // vt.noalias() =  Mtd *  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;
              vt1.noalias() =  dim_reduced_vara * inv_MMt_sqrt;
-             vt1.noalias() =  inv_MMt_sqrt * vt1;
+             vt1 =  inv_MMt_sqrt * vt1;
 
 
 

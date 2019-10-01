@@ -4,16 +4,12 @@
 \alias{SummaryAM}
 \title{Summary of multiple locus association mapping results}
 \usage{
-SummaryAM(AMobj = NULL, ngpu = 1, solveCPU = FALSE)
+SummaryAM(AMobj = NULL, ngpu = 1)
 }
 \arguments{
 \item{AMobj}{the (list) object obtained from running \code{\link{AM}}.}
 
 \item{ngpu}{number of gpu.}
-
-\item{solveCPU}{a boolean value. For sample sizes in the tens of thousands, the GPU-based solve may 
-run out of memory. If this occurs (there will be an error message for this), then set this parameter to TRUE. 
-This will force the use of the CPU-based solved which is slower but it can invert large matrices.}
 }
 \description{
 A summary function that provides additional information on the significant 

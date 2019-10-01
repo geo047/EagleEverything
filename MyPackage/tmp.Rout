@@ -20,7 +20,6 @@ Type 'q()' to quit R.
 > library(Rcpp)
 >     
 >  Rcpp.package.skeleton("EagleGPU", cpp_files=c(
-+             "magma_solve.cpp"  ,
 +             "magma_qr.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "getRowColumn.cpp"  ,
@@ -43,7 +42,6 @@ Type 'q()' to quit R.
 +              ),    
 +     example_code=FALSE, code_files=c(
 +             "onAttach.R", 
-+             "magmaSolve.R",
 +             "magmaEigen.R",
 +             "magmaEigenNonsym.R",
 +             "magmaQR.R",
@@ -110,7 +108,6 @@ Adding Rcpp settings
  >> added LinkingTo: Rcpp
  >> added useDynLib directive to NAMESPACE
  >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
- >> copied magma_solve.cpp to src directory
  >> copied magma_qr.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied getRowColumn.cpp to src directory
@@ -152,4 +149,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.708   0.118   0.898 
+  0.908   0.086   1.192 
