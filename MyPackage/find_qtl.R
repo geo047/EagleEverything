@@ -5,19 +5,23 @@
   {
     ##  internal function: use by   AM
 
-
+   print(" inside find.qtl")
 
  
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
-
+    print("H")
+    print(H)
 
 
 
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
+    print("currentX")
+    print(currentX)
 
     P <- calculateP(H=H, X=currentX ,  ngpu=ngpu )
+    print("P")
 
 
 
@@ -36,8 +40,10 @@
 
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                               ngpu=ngpu  )
-
-
+    print("MMt_sqrt_and_sqrtinv[[sqrt_MMt]]")
+    print(MMt_sqrt_and_sqrtinv[["sqrt_MMt"]])
+    print("MMt_sqrt_and_sqrtinv[[inverse_sqrt_MMt]]")
+    print(MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]]) 
     if(!quiet){
        doquiet(dat=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)")
        doquiet(dat=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)^-1")
@@ -50,6 +56,8 @@
     hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=trait, quiet = quiet , ngpu=ngpu )
+    print("hat_a")
+    print(hat_a)
 
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
