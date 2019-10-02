@@ -1,37 +1,49 @@
+# LD_PRELOAD=$CUDA_ROOT/lib64/libnvblas.so R
+
+
+
+
 # setup
 set.seed(104)
-n <- 5000
+n <- 2000
 ngpu <- 1
 res   <- matrix(sample(c(0,2), n*n, T), nrow=n)
- res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
 
+################
+## Eigen Nonsym
+###############
 
-
-
-## solve
-
-library(Eagle)
+library(EagleGPU)
 start <- Sys.time()
-invGPU <- magmaSolve(res, ngpu=ngpu, printInfo=TRUE)
+eigenGPU <- magmaEigenNonsym(res)
 end  <- Sys.time()
 print(end - start)
 
-
 start <- Sys.time()
-invCPU <- solve(res)
+eigenCPU <- eigen(res, symmetric=FALSE)
 end  <- Sys.time()
 print(end - start)
 
-print(sum(invGPU - invCPU))
+indx1 <- order(Re(eigenCPU$values))
+indx2 <- order(eigenGPU$values)
+print(sum(Re(eigenCPU$values[indx1]) - eigenGPU$values[indx2]))
+# abs because of the sign can be different
+
+print(sum(abs(Re(eigenCPU$vector[,indx1])) - abs(eigenGPU$vectors[,indx2])))
+
+
 
 
 ################
 ## Eigen -----
 ###############
 
+res  <- tcrossprod(res)  ## turns matrix into symmetric matrix
+
 library(EagleGPU)
 start <- Sys.time()
-eigenGPU <- magmaEigen(res, ngpu=ngpu, printInfo=TRUE)
+#eigenGPU <- magmaEigen(res, ngpu=ngpu, printInfo=TRUE)
+eigenGPU <- magmaEigen(res)
 end  <- Sys.time()
 print(end - start)
 
@@ -56,9 +68,16 @@ print(sum(abs(eigenCPU$vectors) - abs(eigenGPU$vectors)))
 
 
 ## Testing of magmaQR
-library(Eagle)
+# LD_PRELOAD=$CUDA_ROOT/lib64/libnvblas.so R
+
+set.seed(104)
+n <- 1000
+ngpu <- 4
+res   <- matrix(sample(c(0,2), n*n, T), nrow=n)
+
+library(EagleGPU)
 start <- Sys.time()
-qGPU  <- magmaQR(res, ngpu=ngpu, printInfo=TRUE)
+qGPU  <- magmaQR(res, ngpu=ngpu, printInfo=FALSE)
 end  <- Sys.time()
 print(end - start)
 

@@ -9,17 +9,30 @@ emma.eigen.R.wo.Z <-  function (K, X, ngpu=1)
     diag(S) <- diag(S) + 1
     diag(K) <- diag(K) + 1  ## old code: K + dn
     gc()
-    if(ngpu > 0){
+
+   doMagmaEigen <- FALSE
+   if (ngpu == 1) {
+     if ( nrow(K) > 4000 )
+           doMagmaEigen <- TRUE
+   } else if (ngpu == 2) {
+     if (nrow(K) > 4500 )
+           doMagmaEigen <- TRUE
+   } else if (ngpu == 3) {
+     if (nrow(K) > 4500 )
+           doMagmaEigen <- TRUE
+  } else if (ngpu > 3) {
+     if (nrow(K) > 6000)
+           doMagmaEigen <- TRUE
+  } else {
+    message(" Error: the number of gpu needs to be set to a sensible number. \n")
+    return(NULL)
+ }
+   if (doMagmaEigen){
        XX <-  (S %*% K  %*% S)
-
-     #  start <- Sys.time()
-       eig <- magmaEigen(Xmat = XX   , ngpu=ngpu, printInfo=TRUE)
-     #  end  <- Sys.time()
-     #  cat("  magmaEigen  ", end - start, "\n")
-
-    } else {
+       eig <- magmaEigen(Xmat = XX   , ngpu=ngpu, printInfo=FALSE)
+   } else {
        eig <- eigen(S %*% K %*% S, symmetric = TRUE)
-    }
+   }
 
 
     stopifnot(!is.complex(eig$values))

@@ -109,10 +109,11 @@ magmaEigenNonsym <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
 
 
   # need to change the order of the results to be consistent with R order
-  indx <- order(values, decreasing=TRUE)
+  # indx <- order(values, decreasing=TRUE)
 
 
-  return(list(vectors=vectors[,indx], values=values[indx]))
+  # return(list(vectors=vectors[,indx], values=values[indx]))
+  return(list(vectors=vectors, values=values))
 
 
  }

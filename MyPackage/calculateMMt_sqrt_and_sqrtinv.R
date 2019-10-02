@@ -22,8 +22,29 @@ calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
     return(NULL)
   } 
    res <- list()
+   doMagmaEigen <- FALSE
+   if (ngpu == 1) {
+     if ( nrow(MMt) > 4000 )
+           doMagmaEigen <- TRUE
+   } else if (ngpu == 2) {
+     if (nrow(MMt) > 4500 )
+           doMagmaEigen <- TRUE
+   } else if (ngpu == 3) {
+     if (nrow(MMt) > 4500 )
+           doMagmaEigen <- TRUE
+  } else if (ngpu > 3) {
+     if (nrow(MMt) > 6000)
+           doMagmaEigen <- TRUE
+  } else {
+    message(" Error: the number of gpu needs to be set to a sensible number. \n")
+    return(NULL)
+ }
+  
+   if (doMagmaEigen){
       MMt.eigen <- magmaEigen(Xmat=MMt, ngpu=ngpu)
-     # MMt.eigen <- eigen(MMt, symmetric=TRUE )
+   } else {
+      MMt.eigen <- eigen(MMt, symmetric=TRUE )
+   }
       sqrt_evals <- diag(sqrt(MMt.eigen$values))
       res[["sqrt"]] <- MMt.eigen$vectors %*% sqrt_evals %*% t(MMt.eigen$vectors)
       rm(MMt.eigen, sqrt_evals)
