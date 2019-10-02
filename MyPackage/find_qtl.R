@@ -4,15 +4,22 @@
                        currentX,  ncpu, quiet, trait, ngpu, itnum )
   {
     ##  internal function: use by   AM
+    print(" inside find.qtl")
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
+    print("H")
+    print(H)
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
     P <- calculateP(H=H, X=currentX , message=message)
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
+    print("P")
+    print(P)
     rm(H)
     gc()
+
+
 
 
     ## Looks at the stability of the MMt calculation especially if there are near identical rows of data in M
@@ -21,6 +28,10 @@
        error_checking <- TRUE
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                               ngpu=ngpu , message=message)
+    print("MMt_sqrt_and_sqrtinv[[sqrt_MMt]]")
+    print(MMt_sqrt_and_sqrtinv[["sqrt_MMt"]])
+   
+
     if(!quiet){
        doquiet(dat=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)")
        doquiet(dat=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)^-1")
@@ -33,6 +44,8 @@
                        y=trait, quiet = quiet , message=message)
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
+    print("hat_a")
+    print(hat_a)
 
 
      rm(P)
@@ -70,6 +83,9 @@
     ## outlier test statistic
     if (!quiet )
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
+    print(" checking tsq ")
+    print(a_and_vara[["a"]][1:5])
+    print(a_and_vara[["vara"]][1:5])
     tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")
