@@ -84,7 +84,7 @@ if (!quiet){
 
 if(mem_bytes_needed < max_memory_in_Gbytes){
  // calculation will fit into memory
-     Eigen::MatrixXd Mt = ReadBlock(fnamebin, 0, dims[1], dims[0]);
+     Eigen::MatrixXd Mt = ReadBlockBin(fnamebin, 0, dims[1], dims[0]);
 
 
    if(!R_IsNA(selected_loci(0))){
@@ -171,7 +171,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
             num_rows_in_block1 = dims[0] - start_row1;
 
 
-           Eigen::MatrixXd Mt = ReadBlock(fnamebin, start_row1, dims[1], num_rows_in_block1) ;
+           Eigen::MatrixXd Mt = ReadBlockBin(fnamebin, start_row1, dims[1], num_rows_in_block1) ;
 
 
 

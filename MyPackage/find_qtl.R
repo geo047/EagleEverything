@@ -99,6 +99,9 @@
     ## outlier test statistic
     if (!quiet )
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
+    print("tsq results ... ")
+    print( a_and_vara[["a"]][1:5])
+    print( a_and_vara[["vara"]][1:5])
     tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")

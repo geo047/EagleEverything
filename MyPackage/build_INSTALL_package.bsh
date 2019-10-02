@@ -47,9 +47,13 @@ echo  " Rcpp.package.skeleton(\"EagleGPU\", cpp_files=c(
             \"ReshapeM_rcpp.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
+            \"CreateBIN_PLINK.cpp\"  ,
             \"CreateASCIInospace.cpp\"  ,
+            \"CreateBIN.cpp\"  ,
             \"ReadBlock.cpp\"  ,
+            \"ReadBlockBin.cpp\"  ,
             \"createMt_ASCII_rcpp.cpp\"  ,
+            \"createMt_BIN_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"calculate_reduced_a_rcpp.cpp\"  ,
             \"removeRow.cpp\"  ,
@@ -58,6 +62,7 @@ echo  " Rcpp.package.skeleton(\"EagleGPU\", cpp_files=c(
             \"calculate_a_and_vara_rcpp.cpp\"  ,
             \"calculate_a_and_vara_batch_rcpp.cpp\"  ,
             \"createM_ASCII_rcpp.cpp\"  ,
+            \"createM_BIN_rcpp.cpp\"  ,
             \"extract_geno_rcpp.cpp\"  ,
             \"calculateMMt_rcpp.cpp\"  ,
             \"getNumColumns.cpp\"  ,
@@ -70,6 +75,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"magmaQR.R\",
             \"FPR4AM.R\",
             \"ReadMarker.R\",
+            \"ReadMarkerBin.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
             \"ReadPheno.R\",
@@ -114,6 +120,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"calculate_reduced_vara.R\", 
             \"check_inputs.R\", 
             \"create_ascii.R\", 
+            \"create_bin.R\", 
             \"extract_geno.R\", 
             \"constructX.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
@@ -187,6 +194,7 @@ cd $DIR
 # copy headers to src
 cp $DIR/readblock.h $DIR/EagleGPU/src/.
 cp $DIR/createM_ASCII_rcpp.h   $DIR/EagleGPU/src/.
+cp $DIR/createM_BIN_rcpp.h   $DIR/EagleGPU/src/.
 
 
 

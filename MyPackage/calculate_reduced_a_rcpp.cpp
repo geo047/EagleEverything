@@ -67,7 +67,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    Eigen::MatrixXd
                    Mt;
 
-   Mt = ReadBlock(fnamebin, 0, dims[0], dims[1]);
+   Mt = ReadBlockBin(fnamebin, 0, dims[0], dims[1]);
  //  Mt = ReadBlockFast(fnamebin, 0, dims[0], dims[1]);
 
   if(!R_IsNA(selected_loci(0))){
@@ -121,7 +121,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
           Eigen::MatrixXd
                   Mt;
-            Mt = ReadBlock(fnamebin, start_row1, dims[0], num_rows_in_block1) ;
+            Mt = ReadBlockBin(fnamebin, start_row1, dims[0], num_rows_in_block1) ;
         //   Mt = ReadBlockFast(fnamebin, start_row1, dims[0], num_rows_in_block1) ;
 
          Eigen::MatrixXd

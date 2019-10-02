@@ -5,6 +5,10 @@ ReadBlock <- function(asciifname, start_row, numcols, numrows_in_block) {
     .Call('_EagleGPU_ReadBlock', asciifname, start_row, numcols, numrows_in_block)
 }
 
+ReadBlockBin <- function(binfname, start_row, numcols, numrows_in_block) {
+    .Call('_EagleGPU_ReadBlockBin', binfname, start_row, numcols, numrows_in_block)
+}
+
 ReshapeM_rcpp <- function(fnameM, fnameMt, indxNA, dims) {
     .Call('_EagleGPU_ReshapeM_rcpp', fnameM, fnameMt, indxNA, dims)
 }
@@ -29,8 +33,16 @@ createM_ASCII_rcpp <- function(f_name, f_name_ascii, type, AA, AB, BB, max_memor
     .Call('_EagleGPU_createM_ASCII_rcpp', f_name, f_name_ascii, type, AA, AB, BB, max_memory_in_Gbytes, dims, quiet, message, missing)
 }
 
+createM_BIN_rcpp <- function(f_name, f_name_bin, type, AA, AB, BB, max_memory_in_Gbytes, dims, quiet, message, missing) {
+    .Call('_EagleGPU_createM_BIN_rcpp', f_name, f_name_bin, type, AA, AB, BB, max_memory_in_Gbytes, dims, quiet, message, missing)
+}
+
 createMt_ASCII_rcpp <- function(f_name, f_name_ascii, type, max_memory_in_Gbytes, dims, quiet, message) {
     invisible(.Call('_EagleGPU_createMt_ASCII_rcpp', f_name, f_name_ascii, type, max_memory_in_Gbytes, dims, quiet, message))
+}
+
+createMt_BIN_rcpp <- function(f_name, f_name_bin, type, max_memory_in_Gbytes, dims, quiet, message) {
+    invisible(.Call('_EagleGPU_createMt_BIN_rcpp', f_name, f_name_bin, type, max_memory_in_Gbytes, dims, quiet, message))
 }
 
 extract_geno_rcpp <- function(f_name_ascii, max_memory_in_Gbytes, selected_locus, dims) {

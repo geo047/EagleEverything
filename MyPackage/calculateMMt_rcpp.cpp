@@ -79,13 +79,14 @@ double
 //-------------------------
 if(max_memory_in_Gbytes > memory_needed_in_Gb ){
    // reading entire data file into memory
-     Eigen::MatrixXd genoMat = ReadBlock(fnamebin,  0, dims[1], dims[0] );
+     Eigen::MatrixXd genoMat = ReadBlockBin(fnamebin,  0, dims[1], dims[0] );
   //   Eigen::MatrixXd genoMat = ReadBlockFast(fnamebin,  0, dims[1], dims[0] );
    if(!R_IsNA(selected_loci(0))){
      // setting columns to 0
      for(long ii=0; ii < selected_loci.size() ; ii++)
        genoMat.col(selected_loci(ii)).setZero();
    }
+
 
 
 
@@ -126,7 +127,7 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
                      num_rows_in_block1 = dims[0] - start_row1;
 
                 Eigen::MatrixXd
-                     genoMat_block1 ( ReadBlock(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
+                     genoMat_block1 ( ReadBlockBin(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
 
               Eigen::MatrixXd
                    MMtsub(Eigen::MatrixXd(num_rows_in_block1, num_rows_in_block1).setZero());
@@ -146,7 +147,7 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
                    if ((start_row2 + num_rows_in_block2) > dims[0])
                           num_rows_in_block2 = dims[0] - start_row2;
                      Eigen::MatrixXd
-                        genoMat_block2 ( ReadBlock(fnamebin,  start_row2, dims[1], num_rows_in_block2)) ;
+                        genoMat_block2 ( ReadBlockBin(fnamebin,  start_row2, dims[1], num_rows_in_block2)) ;
 
 
 

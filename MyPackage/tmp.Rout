@@ -24,9 +24,13 @@ Type 'q()' to quit R.
 +             "ReshapeM_rcpp.cpp"  ,
 +             "getRowColumn.cpp"  ,
 +             "CreateASCIInospace_PLINK.cpp"  ,
++             "CreateBIN_PLINK.cpp"  ,
 +             "CreateASCIInospace.cpp"  ,
++             "CreateBIN.cpp"  ,
 +             "ReadBlock.cpp"  ,
++             "ReadBlockBin.cpp"  ,
 +             "createMt_ASCII_rcpp.cpp"  ,
++             "createMt_BIN_rcpp.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "calculate_reduced_a_rcpp.cpp"  ,
 +             "removeRow.cpp"  ,
@@ -35,6 +39,7 @@ Type 'q()' to quit R.
 +             "calculate_a_and_vara_rcpp.cpp"  ,
 +             "calculate_a_and_vara_batch_rcpp.cpp"  ,
 +             "createM_ASCII_rcpp.cpp"  ,
++             "createM_BIN_rcpp.cpp"  ,
 +             "extract_geno_rcpp.cpp"  ,
 +             "calculateMMt_rcpp.cpp"  ,
 +             "getNumColumns.cpp"  ,
@@ -47,6 +52,7 @@ Type 'q()' to quit R.
 +             "magmaQR.R",
 +             "FPR4AM.R",
 +             "ReadMarker.R",
++             "ReadMarkerBin.R",
 +             "ReadMap.R",
 +             "ReadZmat.R",
 +             "ReadPheno.R",
@@ -91,6 +97,7 @@ Type 'q()' to quit R.
 +             "calculate_reduced_vara.R", 
 +             "check_inputs.R", 
 +             "create_ascii.R", 
++             "create_bin.R", 
 +             "extract_geno.R", 
 +             "constructX.R", 
 +             "summary_am.R"   ) ) 
@@ -112,9 +119,13 @@ Adding Rcpp settings
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied getRowColumn.cpp to src directory
  >> copied CreateASCIInospace_PLINK.cpp to src directory
+ >> copied CreateBIN_PLINK.cpp to src directory
  >> copied CreateASCIInospace.cpp to src directory
+ >> copied CreateBIN.cpp to src directory
  >> copied ReadBlock.cpp to src directory
+ >> copied ReadBlockBin.cpp to src directory
  >> copied createMt_ASCII_rcpp.cpp to src directory
+ >> copied createMt_BIN_rcpp.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied calculate_reduced_a_rcpp.cpp to src directory
  >> copied removeRow.cpp to src directory
@@ -123,6 +134,7 @@ Adding Rcpp settings
  >> copied calculate_a_and_vara_rcpp.cpp to src directory
  >> copied calculate_a_and_vara_batch_rcpp.cpp to src directory
  >> copied createM_ASCII_rcpp.cpp to src directory
+ >> copied createM_BIN_rcpp.cpp to src directory
  >> copied extract_geno_rcpp.cpp to src directory
  >> copied calculateMMt_rcpp.cpp to src directory
  >> copied getNumColumns.cpp to src directory
@@ -142,6 +154,7 @@ Writing FPR4AM.Rd
 Writing OpenGUI.Rd
 Writing ReadMap.Rd
 Writing ReadMarker.Rd
+Writing ReadMarkerBin.Rd
 Writing ReadPheno.Rd
 Writing ReadZmat.Rd
 Writing SummaryAM.Rd
@@ -149,4 +162,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.734   0.119   0.929 
+  0.828   0.098   1.014 

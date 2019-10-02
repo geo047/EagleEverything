@@ -19,6 +19,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ReadBlockBin
+Eigen::MatrixXd ReadBlockBin(std::string binfname, long start_row, long numcols, long numrows_in_block);
+RcppExport SEXP _EagleGPU_ReadBlockBin(SEXP binfnameSEXP, SEXP start_rowSEXP, SEXP numcolsSEXP, SEXP numrows_in_blockSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type binfname(binfnameSEXP);
+    Rcpp::traits::input_parameter< long >::type start_row(start_rowSEXP);
+    Rcpp::traits::input_parameter< long >::type numcols(numcolsSEXP);
+    Rcpp::traits::input_parameter< long >::type numrows_in_block(numrows_in_blockSEXP);
+    rcpp_result_gen = Rcpp::wrap(ReadBlockBin(binfname, start_row, numcols, numrows_in_block));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ReshapeM_rcpp
 std::vector <long> ReshapeM_rcpp(Rcpp::CharacterVector fnameM, Rcpp::CharacterVector fnameMt, std::vector <long> indxNA, std::vector <long> dims);
 RcppExport SEXP _EagleGPU_ReshapeM_rcpp(SEXP fnameMSEXP, SEXP fnameMtSEXP, SEXP indxNASEXP, SEXP dimsSEXP) {
@@ -129,6 +143,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// createM_BIN_rcpp
+bool createM_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin, Rcpp::CharacterVector type, std::string AA, std::string AB, std::string BB, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message, std::string missing);
+RcppExport SEXP _EagleGPU_createM_BIN_rcpp(SEXP f_nameSEXP, SEXP f_name_binSEXP, SEXP typeSEXP, SEXP AASEXP, SEXP ABSEXP, SEXP BBSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP quietSEXP, SEXP messageSEXP, SEXP missingSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name(f_nameSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name_bin(f_name_binSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< std::string >::type AA(AASEXP);
+    Rcpp::traits::input_parameter< std::string >::type AB(ABSEXP);
+    Rcpp::traits::input_parameter< std::string >::type BB(BBSEXP);
+    Rcpp::traits::input_parameter< double >::type max_memory_in_Gbytes(max_memory_in_GbytesSEXP);
+    Rcpp::traits::input_parameter< std::vector <long> >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
+    Rcpp::traits::input_parameter< std::string >::type missing(missingSEXP);
+    rcpp_result_gen = Rcpp::wrap(createM_BIN_rcpp(f_name, f_name_bin, type, AA, AB, BB, max_memory_in_Gbytes, dims, quiet, message, missing));
+    return rcpp_result_gen;
+END_RCPP
+}
 // createMt_ASCII_rcpp
 void createMt_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_ascii, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message);
 RcppExport SEXP _EagleGPU_createMt_ASCII_rcpp(SEXP f_nameSEXP, SEXP f_name_asciiSEXP, SEXP typeSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP quietSEXP, SEXP messageSEXP) {
@@ -142,6 +177,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
     Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
     createMt_ASCII_rcpp(f_name, f_name_ascii, type, max_memory_in_Gbytes, dims, quiet, message);
+    return R_NilValue;
+END_RCPP
+}
+// createMt_BIN_rcpp
+void createMt_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message);
+RcppExport SEXP _EagleGPU_createMt_BIN_rcpp(SEXP f_nameSEXP, SEXP f_name_binSEXP, SEXP typeSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP quietSEXP, SEXP messageSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name(f_nameSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name_bin(f_name_binSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< double >::type max_memory_in_Gbytes(max_memory_in_GbytesSEXP);
+    Rcpp::traits::input_parameter< std::vector <long> >::type dims(dimsSEXP);
+    Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
+    createMt_BIN_rcpp(f_name, f_name_bin, type, max_memory_in_Gbytes, dims, quiet, message);
     return R_NilValue;
 END_RCPP
 }
@@ -198,13 +249,16 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_EagleGPU_ReadBlock", (DL_FUNC) &_EagleGPU_ReadBlock, 4},
+    {"_EagleGPU_ReadBlockBin", (DL_FUNC) &_EagleGPU_ReadBlockBin, 4},
     {"_EagleGPU_ReshapeM_rcpp", (DL_FUNC) &_EagleGPU_ReshapeM_rcpp, 4},
     {"_EagleGPU_calculateMMt_rcpp", (DL_FUNC) &_EagleGPU_calculateMMt_rcpp, 7},
     {"_EagleGPU_calculate_a_and_vara_batch_rcpp", (DL_FUNC) &_EagleGPU_calculate_a_and_vara_batch_rcpp, 10},
     {"_EagleGPU_calculate_a_and_vara_rcpp", (DL_FUNC) &_EagleGPU_calculate_a_and_vara_rcpp, 9},
     {"_EagleGPU_calculate_reduced_a_rcpp", (DL_FUNC) &_EagleGPU_calculate_reduced_a_rcpp, 9},
     {"_EagleGPU_createM_ASCII_rcpp", (DL_FUNC) &_EagleGPU_createM_ASCII_rcpp, 11},
+    {"_EagleGPU_createM_BIN_rcpp", (DL_FUNC) &_EagleGPU_createM_BIN_rcpp, 11},
     {"_EagleGPU_createMt_ASCII_rcpp", (DL_FUNC) &_EagleGPU_createMt_ASCII_rcpp, 7},
+    {"_EagleGPU_createMt_BIN_rcpp", (DL_FUNC) &_EagleGPU_createMt_BIN_rcpp, 7},
     {"_EagleGPU_extract_geno_rcpp", (DL_FUNC) &_EagleGPU_extract_geno_rcpp, 4},
     {"_EagleGPU_fasttimer", (DL_FUNC) &_EagleGPU_fasttimer, 0},
     {"_EagleGPU_getRowColumn", (DL_FUNC) &_EagleGPU_getRowColumn, 1},

@@ -42,7 +42,7 @@ Eigen::VectorXi
 
 if(max_memory_in_Gbytes > memory_needed_in_Gb ){
    // reading entire data file into memory
-     Eigen::MatrixXd genoMat =  ReadBlock(fnamebin,  0, dims[1], dims[0]);
+     Eigen::MatrixXd genoMat =  ReadBlockBin(fnamebin,  0, dims[1], dims[0]);
 
    column_of_genos = genoMat.col(selected_locus).cast<int>() ;
 
@@ -63,7 +63,7 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
                      num_rows_in_block1 = dims[0] - start_row1  ;
 
               Eigen::MatrixXd
-                genoMat_block1 ( ReadBlock(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
+                genoMat_block1 ( ReadBlockBin(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
 
 
               // dealing with assigning column_of_genos when some values 
