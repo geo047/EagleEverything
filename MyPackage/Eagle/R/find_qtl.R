@@ -10,6 +10,8 @@
     print(H)
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
+    print(" currentX")
+    print(currentX)
 
     P <- calculateP(H=H, X=currentX , message=message)
     if(!quiet)
