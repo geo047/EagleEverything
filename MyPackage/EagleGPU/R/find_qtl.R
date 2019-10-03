@@ -5,25 +5,20 @@
   {
     ##  internal function: use by   AM
 
-   print(" inside find.qtl")
 
- 
+    print(" inside find.qtl ") 
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
     print("H")
     print(H)
 
 
-
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
-    print("currentX")
-    print(currentX)
 
     P <- calculateP(H=H, X=currentX ,  ngpu=ngpu )
     print("P")
-
-
+    print(P)
 
 
     if(!quiet)
@@ -40,10 +35,6 @@
 
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                               ngpu=ngpu  )
-    print("MMt_sqrt_and_sqrtinv[[sqrt_MMt]]")
-    print(MMt_sqrt_and_sqrtinv[["sqrt_MMt"]])
-    print("MMt_sqrt_and_sqrtinv[[inverse_sqrt_MMt]]")
-    print(MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]]) 
     if(!quiet){
        doquiet(dat=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)")
        doquiet(dat=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)^-1")
@@ -56,8 +47,6 @@
     hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=trait, quiet = quiet , ngpu=ngpu )
-    print("hat_a")
-    print(hat_a)
 
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
@@ -104,12 +93,12 @@
         doquiet(dat=a_and_vara[["vara"]], num_markers=5, lab="SE of BLUPs for full model")
      }
 
+
+
+
     ## outlier test statistic
     if (!quiet )
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
-    print("tsq results ... ")
-    print( a_and_vara[["a"]][1:5])
-    print( a_and_vara[["vara"]][1:5])
     tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")

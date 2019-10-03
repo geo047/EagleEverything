@@ -181,18 +181,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // createMt_BIN_rcpp
-void createMt_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message);
-RcppExport SEXP _EagleGPU_createMt_BIN_rcpp(SEXP f_nameSEXP, SEXP f_name_binSEXP, SEXP typeSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP quietSEXP, SEXP messageSEXP) {
+void createMt_BIN_rcpp(Rcpp::CharacterVector f_name_in, Rcpp::CharacterVector f_name_out, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message);
+RcppExport SEXP _EagleGPU_createMt_BIN_rcpp(SEXP f_name_inSEXP, SEXP f_name_outSEXP, SEXP typeSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP quietSEXP, SEXP messageSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name(f_nameSEXP);
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name_bin(f_name_binSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name_in(f_name_inSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name_out(f_name_outSEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type type(typeSEXP);
     Rcpp::traits::input_parameter< double >::type max_memory_in_Gbytes(max_memory_in_GbytesSEXP);
     Rcpp::traits::input_parameter< std::vector <long> >::type dims(dimsSEXP);
     Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
     Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
-    createMt_BIN_rcpp(f_name, f_name_bin, type, max_memory_in_Gbytes, dims, quiet, message);
+    createMt_BIN_rcpp(f_name_in, f_name_out, type, max_memory_in_Gbytes, dims, quiet, message);
     return R_NilValue;
 END_RCPP
 }

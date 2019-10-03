@@ -89,13 +89,19 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
 
 
+     Rcpp::Rcout << "genoMat M data " << std::endl;
+     Rcpp::Rcout << genoMat << std::endl;
+     Rcpp::Rcout << "-------------------------------------"  << std::endl;
 
 
 
 
      MMt.noalias() = genoMat * genoMat.transpose();
 
-
+     Rcpp::Rcout << "MMt  " << std::endl;
+     Rcpp::Rcout << MMt  << std::endl;
+     Rcpp::Rcout << "-------------------------------------"  << std::endl;
+     
 
 
 
@@ -128,6 +134,14 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
                 Eigen::MatrixXd
                      genoMat_block1 ( ReadBlockBin(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
+
+               Rcpp::Rcout << " block number " << i << " of " << num_blocks << std::endl; 
+               Rcpp::Rcout << "start_row " << start_row1 << "num of colums " << dims[1] << "num rows in block " << num_rows_in_block1 << std::endl;
+               Rcpp::Rcout << "genoMat_block1 - from M data in binary form extracted " << std::endl;
+               Rcpp::Rcout << genoMat_block1 << std::endl;
+               Rcpp::Rcout << "-------------------------------------"  << std::endl;
+
+
 
               Eigen::MatrixXd
                    MMtsub(Eigen::MatrixXd(num_rows_in_block1, num_rows_in_block1).setZero());

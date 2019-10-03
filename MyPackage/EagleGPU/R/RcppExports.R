@@ -41,8 +41,8 @@ createMt_ASCII_rcpp <- function(f_name, f_name_ascii, type, max_memory_in_Gbytes
     invisible(.Call('_EagleGPU_createMt_ASCII_rcpp', f_name, f_name_ascii, type, max_memory_in_Gbytes, dims, quiet, message))
 }
 
-createMt_BIN_rcpp <- function(f_name, f_name_bin, type, max_memory_in_Gbytes, dims, quiet, message) {
-    invisible(.Call('_EagleGPU_createMt_BIN_rcpp', f_name, f_name_bin, type, max_memory_in_Gbytes, dims, quiet, message))
+createMt_BIN_rcpp <- function(f_name_in, f_name_out, type, max_memory_in_Gbytes, dims, quiet, message) {
+    invisible(.Call('_EagleGPU_createMt_BIN_rcpp', f_name_in, f_name_out, type, max_memory_in_Gbytes, dims, quiet, message))
 }
 
 extract_geno_rcpp <- function(f_name_ascii, max_memory_in_Gbytes, selected_locus, dims) {

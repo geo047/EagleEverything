@@ -12,8 +12,8 @@ const size_t bits_in_int = std::numeric_limits<int>::digits;
 
 
 // [[Rcpp::export]]
-void  createMt_BIN_rcpp(Rcpp::CharacterVector f_name,
-                          Rcpp::CharacterVector f_name_bin,
+void  createMt_BIN_rcpp(Rcpp::CharacterVector f_name_in,
+                          Rcpp::CharacterVector f_name_out,
                           Rcpp::CharacterVector  type,
                               double  max_memory_in_Gbytes,  std::vector <long> dims,
                               bool  quiet, Rcpp::Function message )
@@ -22,8 +22,7 @@ void  createMt_BIN_rcpp(Rcpp::CharacterVector f_name,
 // read data from M.bin that has already been created and transpose this file
 
 std::string
-   token,
-   line;
+   token;
 
 std::ostringstream
       os;
@@ -34,8 +33,8 @@ long
 
 std::string
      ftype = Rcpp::as<std::string>(type),
-     fname = Rcpp::as<std::string>(f_name),
-     fnamebin = Rcpp::as<std::string>(f_name_bin);
+     fname_in = Rcpp::as<std::string>(f_name_in),
+     fname_out = Rcpp::as<std::string>(f_name_out);
 
 
 
@@ -52,8 +51,8 @@ double mem_bytes = 3.5 * dims[0] * dims[1] * (bits_in_int/8);  // assumes a 64 b
 
 
  // open  files
-std::ofstream fileOUT(fnamebin.c_str(), std::ios::out | std::ios::binary );
-std::ifstream fileIN(fname.c_str());
+std::ifstream fileIN(fname_in.c_str(),   std::ios::in | std::ios::binary );
+std::ofstream fileOUT(fname_out.c_str(), std::ios::out | std::ios::binary );
 
 //-----------------------------------------------------------------------
 //  Two situations
@@ -68,9 +67,10 @@ if(mem_bytes < max_mem_in_bytes){
      // Situation 1
      //-------------
 
-     // open ASCII file and check for its existence. 
+
+     // open bin file and check for its existence. 
      if(!fileIN.good()) {
-        os << "\n\nERROR: Could not open  " << fname << "\n\n" << std::endl;
+        os << "\n\nERROR: Could not open  " << fname_in << "\n\n" << std::endl;
         Rcpp::stop(os.str() );
 
      }
@@ -80,46 +80,29 @@ if(mem_bytes < max_mem_in_bytes){
           M(dims[0], dims[1]) ;
 
 
-    // reset position in data file
-    fileIN.clear();
-    fileIN.seekg(0, std::ios::beg);
+    long   numelem = dims[0] * dims[1];
 
-   // read values into matrix
-   long rowi=0;
-   while(getline(fileIN, line ))
-   {
+    char * buffer ;
+    buffer = new char[numelem];
 
-       // read a line of data from ASCII file
-       for(long coli=0; coli < dims[1]; coli++){
-           M(rowi, coli)  = line[coli] - '0'; // trick to removes ASCII character offset for numbers
-       }
-       rowi++;
-   }  // end while getline
-
-  // take transpose of matrix M
-  Eigen::MatrixXi Mt = M.transpose();
-
-  // write out contents fo Mt to file (no spaces)a
- std::vector<char> rowinfile( Mt.cols() );
- for(long i=0; i < Mt.cols() ; i++)
-    rowinfile[i] = '0';
+    char * bufferT;
+    bufferT = new char[numelem];
 
 
+   // read block into buffer
+   fileIN.read( buffer, numelem );
 
-  for(long rowi=0; rowi<Mt.rows(); rowi++){
-     for(long coli=0; coli<Mt.cols(); coli++){
-         // fileOUT << Mt(rowi, coli);
-        rowinfile[coli] =  Mt(rowi, coli) + '0'; // forming string row before writing to file
-     }
-// for(long ii=0; ii< Mt.cols() ; ii++){
-//     fileOUT << rowinfile[ii];
-//  }
 
-//     fileOUT << "\n";
-
-   fileOUT.write( (char *) &rowinfile[0], Mt.cols() * sizeof(char));
-
+   // Take transpose
+ for(long ii=0; ii < dims[0]; ii++){
+  for(long jj=0; jj < dims[1] ; jj++){
+    bufferT[ jj * dims[0] + ii]  =  buffer[ ii*dims[1] + jj ]  ;  
   }
+ }
+
+
+ fileOUT.write( (char *) &bufferT[0], dims[0] * dims[1]  * sizeof(char));
+
 
  fileIN.close();
  fileOUT.close();
@@ -158,65 +141,62 @@ if(mem_bytes < max_mem_in_bytes){
               end_val = dims[1];
 
          long ncols = end_val - start_val ;
-         Eigen::MatrixXi
-              M(dims[0], ncols );
 
 
-         // open ASCII file and check for its existence. 
+          long   numelem = dims[0] * ncols;
+
+          char * line ;
+          line = new char[ dims[1] ];  // entire row of data to fit in here
+
+          char * bufferT;
+          bufferT = new char[numelem];  // contains transposed block of data
+
+
+
+
+
+         //    long counter = 0;
+         for(long rowi=0; rowi<dims[0]; rowi++){
+          // read a line of data from binary M file
+          // read block into buffer
+          fileIN.read( line, dims[1] );
+
+         // open binary file and check for its existence. 
          if(!fileIN.good()) {
-              os << "ERROR: Could not open  " << fname << std::endl;
+              os << "ERROR: Could not open  " << fname_in << std::endl;
               Rcpp::stop(os.str() );
          }
-     //    long counter = 0;
-         if (!quiet ) {
-              message("\n\n");
-         }
-         for(long rowi=0; rowi<dims[0]; rowi++){
-               // read a line of data from ASCII file
-              getline(fileIN, line);
-              std::istringstream streamA(line);
 
-             long coli=0 ;
-             for(long ii=start_val; ii < end_val ; ii++){
-                M(rowi, coli)  = line[ii] - '0'; // trick to removes ASCII character offset for numbers
+              long coli=0 ;
+              for(long ii=start_val; ii < end_val ; ii++){
+                bufferT[ coli * dims[0] + rowi]  =  line[  ii ]  ;
                 coli++;
-             }
-        } // end for(rowi=0; rowi<dims[0]; rowi++)
-       // transpose M
+              }
+          }  // end for rowi
 
-
-       Eigen::MatrixXi Mt = M.transpose();
-
-
-      // write out contents fo Mt to file (no spaces)a
-std::vector<char> rowinfile( Mt.cols() ) ;
-
-
- for(long i=0; i < Mt.cols(); i++)
-    rowinfile[i] = '0';
-
-
-      for(long rowi=0; rowi<Mt.rows(); rowi++){
-         for(long coli=0; coli<Mt.cols(); coli++){
-             // fileOUT << Mt(rowi, coli);
-            rowinfile[coli] =  Mt(rowi, coli) + '0'; // forming string row before writing to file
-         }
-         //for(long ii=0; ii < Mt.cols(); ii++)
-         //   fileOUT << rowinfile[ii]; // writing entire row of data
-         //fileOUT << "\n";
-
-         fileOUT.write( (char *) &rowinfile[0], Mt.cols() * sizeof(char));
+//        Rcpp::Rcout << "bufferT " << std::endl;
+//        Rcpp::Rcout << "start col= " << start_val << " end col= " << end_val << std::endl;
+//       Rcpp::Rcout << " -------------------------- " << std::endl;
+//       for(int ii =0; ii < numelem ; ii++) 
+//          Rcpp::Rcout << (double) bufferT[ii] - '0'<< " " ;
+//       Rcpp::Rcout << std::endl;
+//       Rcpp::Rcout << " -------------------------- " << std::endl;
 
 
 
-      }
-
-
+       // write transposed block to binary file
+       fileOUT.write( (char *) &bufferT[0], dims[0] * ncols  * sizeof(char));
 
 
       // return to the beginning of the input file
       fileIN.clear();
       fileIN.seekg(0, std::ios::beg);
+
+      delete [] bufferT;
+      bufferT = NULL;
+     
+      delete [] line;
+      line = NULL;
 
      }     // end for blocks
 
@@ -236,7 +216,7 @@ fileOUT.close();
 message( "\n\n                    Summary of Marker File  " );
 message( "                   ~~~~~~~~~~~~~~~~~~~~~~~~   " );
 message( " File type:                   " , type  );
-message(" Reformatted ASCII file name:  " , fname  );
+message(" Reformatted ASCII file name:  " , fname_in  );
 message(" Number of individuals:        "     , dims[0] );
 if (ftype == "PLINK"  ){
 // message(" Number of loci:           "  , (dims[1] -6)/2.0   );

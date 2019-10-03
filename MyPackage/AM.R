@@ -491,16 +491,18 @@ chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX, currentX) )) } ,
         if(!quiet)
            message("  quiet=FALSE: calculating M %*% M^t. \n")
      
-        start <- Sys.time()
         MMt <- do.call(.calcMMt, Args)  
-        end <- Sys.time() 
-        cat(" do.call(.calcMMt, Args) ", end - start, "\n")
+        print(" MMt ")  
+        print(MMt[1:4,1:4])
+
+        
+
+
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-        cat("  chol2inv(chol(MMt))  ", end - start, "\n")
         
 
 

@@ -33,7 +33,7 @@ if (type=="text"){
        return(FALSE)
 
     message(" \n Taking transpose of marker data and writing untransposed and transposed data to disc ... \n") 
-    createMt_BIN_rcpp(f_name = binMfile, f_name_bin = binMtfile,   type=type,
+    createMt_BIN_rcpp(f_name_in = binMfile, f_name_out = binMtfile,   type=type,
                   max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet, message=message  )
     message("\n  Writing of marker data to disc is complete ... \n")
 } else {
@@ -50,7 +50,7 @@ if (type=="text"){
 
     dim_of_ascii_M[2] <- ncol ## setting back to number of cols in no-space ASCII file
     message(" \n Taking transpose of marker data and writing untransposed and transposed data to disc ... \n") 
-    createMt_BIN_rcpp(f_name = binMfile, f_name_bin = binMtfile,    type=type,
+    createMt_BIN_rcpp(f_name_in = binMfile, f_name_out = binMtfile,    type=type,
                   max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet, message=message  )
     message(" \n Writing of marker data to disc is complete ... \n")
 
