@@ -477,6 +477,9 @@ if(length(indxNA_geno)>0){
            message(" quiet=FALSE: calculating M %*% M^t. \n")
       start <- Sys.time()
         MMt <- do.call(.calcMMt, Args)  
+    print(" MMt ")
+    print(MMt[1:4,1:4])
+
        end <- Sys.time()
 #     cat(" .calcMMt ", end - start, "\n")
 
