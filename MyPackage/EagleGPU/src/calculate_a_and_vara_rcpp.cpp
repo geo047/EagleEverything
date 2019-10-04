@@ -160,9 +160,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
          if ((start_row1 + num_rows_in_block1) > dims[0])
             num_rows_in_block1 = dims[0] - start_row1;
 
-
            Eigen::MatrixXd Mt = ReadBlockBin(fnamebin, start_row1, dims[1], num_rows_in_block1) ;
-
 
 
         Eigen::MatrixXd

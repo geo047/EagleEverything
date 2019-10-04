@@ -76,8 +76,8 @@ if(mem_bytes < max_mem_in_bytes){
      }
 
     // create matrix structure to hold genotype data
-    Eigen::MatrixXi
-          M(dims[0], dims[1]) ;
+//    Eigen::MatrixXi
+//          M(dims[0], dims[1]) ;
 
 
     long   numelem = dims[0] * dims[1];
@@ -94,6 +94,9 @@ if(mem_bytes < max_mem_in_bytes){
 
 
    // Take transpose
+  #if defined(_OPENMP)
+     #pragma omp parallel for  
+  #endif
  for(long ii=0; ii < dims[0]; ii++){
   for(long jj=0; jj < dims[1] ; jj++){
     bufferT[ jj * dims[0] + ii]  =  buffer[ ii*dims[1] + jj ]  ;  
@@ -174,13 +177,6 @@ if(mem_bytes < max_mem_in_bytes){
               }
           }  // end for rowi
 
-//        Rcpp::Rcout << "bufferT " << std::endl;
-//        Rcpp::Rcout << "start col= " << start_val << " end col= " << end_val << std::endl;
-//       Rcpp::Rcout << " -------------------------- " << std::endl;
-//       for(int ii =0; ii < numelem ; ii++) 
-//          Rcpp::Rcout << (double) bufferT[ii] - '0'<< " " ;
-//       Rcpp::Rcout << std::endl;
-//       Rcpp::Rcout << " -------------------------- " << std::endl;
 
 
 

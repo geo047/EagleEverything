@@ -59,10 +59,12 @@ long
 
 std::vector<char> rowinfile( dims[1] );
 
-
+#pragma omp parallel 
+{
+ #pragma omp for
  for(long i=0; i < dims[1]; i++)
     rowinfile[i] = '0';
-
+}
 
 
 while(getline(fileIN, line ))
@@ -117,10 +119,6 @@ while(getline(fileIN, line ))
       message(" ReadMarkerData has terminated with errors");
       return false;
   }
- //  for(long ii=0; ii< number_of_columns; ii++){
- //    fileOUT << rowinfile[ii];
- //  }
- //  fileOUT << "\n";
 
    // writing vector to binary file
    fileOUT.write( (char *) &rowinfile[0], rowinfile.size() * sizeof(char));

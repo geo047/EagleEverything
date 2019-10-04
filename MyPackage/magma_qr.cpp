@@ -1,6 +1,10 @@
 #include <Rcpp.h>
 #include<magma_v2.h>
 
+#if defined(_OPENMP)
+#include <omp.h>
+#endif
+
 
 /* Author: Andrew W. George
    Date:   16 Sep, 2019
@@ -70,6 +74,9 @@
 
 
  // Assign data to CPU 
+  #if defined(_OPENMP)
+     #pragma omp parallel for  
+  #endif
   for (int j=0; j< n; j++){
     for (int i=0; i < n; i++){
         h_X[i+n*j] = X(i,j);
@@ -205,7 +212,10 @@
 
 
    // Form identify matrix - used for forming Q matrix in next step
-   for( magma_int_t col=0; col < n; col++){
+  #if defined(_OPENMP)
+     #pragma omp parallel for  
+  #endif
+  for( magma_int_t col=0; col < n; col++){
       for( magma_int_t row=0; row< n; row++){
       if( row == col){
           cmat[row + n * col] = 1;

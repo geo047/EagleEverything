@@ -6,10 +6,7 @@
     ##  internal function: use by   AM
 
 
-    print(" inside find.qtl ") 
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
-    print("H")
-    print(H)
 
 
     if(!quiet)
@@ -17,8 +14,6 @@
 
 
     P <- calculateP(H=H, X=currentX ,  ngpu=ngpu )
-    print("P")
-    print(P)
 
 
     if(!quiet)

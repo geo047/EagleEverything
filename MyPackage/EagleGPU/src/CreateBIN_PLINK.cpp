@@ -95,6 +95,7 @@ while(getline(fileIN, line ))
 
    // initialize alleles structure to first row of PLINK info
    if (counter == 0) {
+         #pragma omp parallel for
          for(long i=0; i < n_of_cols_in_geno ; i++){
             if( rowvec[ (2*i ) ] == '0' ||  rowvec[ (2*i + 1) ] == '0' || rowvec[ (2*i ) ] == '-' ||  rowvec[ (2*i + 1) ] == '-'){
                // missing allele
@@ -104,11 +105,15 @@ while(getline(fileIN, line ))
                alleles0[ i ] =  rowvec[ (2*i ) ];
                alleles1[ i ] =  rowvec[ (2*i + 1) ];
             } //end  if (rowvec 
-         }
+         }  // end for long
    }
 
    // turn allelic info from PLINK into genotype 0,1,2 data
      // also do some checks for more than 2 alleles, and 0 and - for missing data
+
+     long problemlocus = -1;
+     long problemind;
+     #pragma omp parallel for
      for(long i=0; i <  n_of_cols_in_geno; i++){
         // Checking for missing allelic information in PLINK file
 
@@ -153,12 +158,9 @@ while(getline(fileIN, line ))
                              alleles1[ i ] = rowvec[ (2*i + j) ];
                            } else {
                               // Error - we have more than two alleles segregating at a locus
-                            message("\n");
-                            message("Error:  PLINK file cannot contain more than two alleles at a locus.");
-                            message("        The error has occurred at snp locus " , i  + 1 , " for individual " , counter+1 );
-                            message("\n");
-                            message(" ReadMarkerData has terminated with errors");
-                            return false;
+                              // Had to do it this way because cannot break parallel for loops with returns. 
+                              problemlocus = i;
+                              problemind = counter;
                           } // end inner if else
 
                        } // end if (alleles1[i] == 'I')
@@ -193,9 +195,18 @@ while(getline(fileIN, line ))
 
   }  // end for(long i=0; i< n_of_cols_in_geno ; i++)
 
-//   fileOUT << rowinfile;
-//   fileOUT << "\n";
-  
+
+  // checking if an error occurred 
+  if(problemlocus > -1){
+    message("\n");
+    message("Error:  PLINK file cannot contain more than two alleles at a locus.");
+    message("        The error has occurred at snp locus " , problemlocus  + 1 , " for individual " , problemind+1 );
+    message("\n");
+    message(" ReadMarkerData has terminated with errors");
+    return false;
+  }
+
+ 
    // writing vector to binary file
    fileOUT.write( (char *) &rowinfile[0], rowinfile.size() * sizeof(char));
 

@@ -28,6 +28,8 @@ std::string
 long
   rowi = 0;
 
+
+
 Eigen::MatrixXd
       M(numrows_in_block, numcols) ;
 
@@ -54,26 +56,16 @@ buffer = new char[numelem];
    fileIN.read( buffer, numelem );
  
   // check 
-
+ Rcpp::Rcout << "Readblock parallelizing ... " << std::endl;
+ #pragma omp parallel for
  for(long ii=0; ii < numrows_in_block; ii++){
   for(long jj=0; jj < numcols ; jj++){
-    int tmp = buffer[ii] - '0';
-    M(start_row + ii , jj) = (double) ((buffer[ ii*numcols + jj ] - '0') - 1);  // converting data into -1, 0, 1 
+
+
+    // M(start_row + ii , jj) = (double) ((buffer[ ii*numcols + jj ] - '0') - 1);  // converting data into -1, 0, 1 
+    M( ii , jj) = (double) ((buffer[ ii*numcols + jj ] - '0') - 1);  // converting data into -1, 0, 1 
   } 
  }
-
-//   for(long rr=0; rr < (start_row + numrows_in_block) ; rr++){
-//      // read a line of data from ASCII file
-//      getline(fileIN, line);
-//      if(rr >= start_row){
-//          std::istringstream streamA(line);
-//          for(long ii=0; ii < numcols  ; ii++){
-//            int tmp  = line[ii] - '0'; // trick to removes ASCII character offset for numbers
-//            M(rowi, ii) = (double) tmp - 1;   // converting data to -1, 0, 1 
-//          }
-//          rowi++;
-//      } // end if rr
-//   } // end for(rr
 
 
 

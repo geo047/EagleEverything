@@ -72,15 +72,6 @@
     return -1;
   }
 
-/*
-
- // Assign data to CPU 
-  for (int j=0; j< n; j++){
-    for (int i=0; i < n; i++){
-        h_vectors[i+n*j] = X(i,j);
-    }
-  }
-*/
 
 std::streampos size;
 char * memblock;
@@ -101,46 +92,19 @@ bfile.seekg (0, std::ios::beg);
 bfile.read (memblock, size);
 bfile.close();
 
-std::cout << "the entire file content is in memory \n";
-//double* double_values = (double*)memblock;//reinterpret as doubles
-//
-//for(int i=0; i<=10; i++)
-//{
-//double value = double_values[i];
-//std::cout << "value ("<<i<<")=" << value << "\n";
-//}
 h_vectors =  (double*)memblock;  //reinterpret as doubles
 
 
  double *A;
  magma_dmalloc_cpu(&A, n2);   // to house data that will be lost 
+
+  #if defined(_OPENMP)
+     #pragma omp parallel for  
+  #endif
  for(int i=0; i<n2; i++){
      A[i] = h_vectors[i];
  }
 
-
-
-// FILE *pBinFile;
-// size_t result;
-// pBinFile = fopen ( X.c_str()   , "rb" );
-// result  = fread (h_vectors ,n2, 1    ,pBinFile);
-// std::cout << n2 << std::endl;
-
- std::cout << h_vectors[250000-4] << std::endl;
- std::cout << h_vectors[250000-3] << std::endl;
- std::cout << h_vectors[250000-2] << std::endl;
- std::cout << h_vectors[250000-1] << std::endl;
- std::cout << h_vectors[250000] << std::endl;
-
-
-
-// if (result != n2) {
-//    message(" Error: magma_eigen() fread of matrix data has failed. \n");
-//    return -1;
-// }
-// std::cout << "result = " << result << std::endl;
-  std::cout << "This should e the contents of the X matrix " << std::endl;
-  magma_dprint(5,5, h_vectors, n);
 
 
 
