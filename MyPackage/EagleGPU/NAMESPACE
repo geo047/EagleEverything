@@ -16,7 +16,6 @@ export(
    magmaQR,
    FPR4AM,
    ReadPheno,
-   ReadMarker,
    ReadMarkerBin,
    ReadMap,
    ReadZmat,

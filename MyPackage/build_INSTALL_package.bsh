@@ -74,7 +74,6 @@ echo  "    example_code=FALSE, code_files=c(
             \"magmaEigenNonsym.R\",
             \"magmaQR.R\",
             \"FPR4AM.R\",
-            \"ReadMarker.R\",
             \"ReadMarkerBin.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",

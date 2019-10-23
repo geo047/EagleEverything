@@ -51,7 +51,6 @@ Type 'q()' to quit R.
 +             "magmaEigenNonsym.R",
 +             "magmaQR.R",
 +             "FPR4AM.R",
-+             "ReadMarker.R",
 +             "ReadMarkerBin.R",
 +             "ReadMap.R",
 +             "ReadZmat.R",
@@ -153,7 +152,6 @@ Writing AM.Rd
 Writing FPR4AM.Rd
 Writing OpenGUI.Rd
 Writing ReadMap.Rd
-Writing ReadMarker.Rd
 Writing ReadMarkerBin.Rd
 Writing ReadPheno.Rd
 Writing ReadZmat.Rd
@@ -162,4 +160,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.840   0.091   1.023 
+  0.810   0.092   0.991 
