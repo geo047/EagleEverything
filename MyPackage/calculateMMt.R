@@ -1,6 +1,6 @@
 
 
-calculateMMt <- function(geno=NULL, availmemGb, ncpu, selected_loci=NA, dim_of_ascii_M=NULL, quiet = TRUE, message=message)
+calculateMMt <- function(geno=NULL, availmemGb, ncpu, selected_loci=NA, dim_of_ascii_M=NULL, quiet = TRUE )
 {  
  ## internal function to AM
  ## R interface to Rcpp code to calculate M %*% t(M)

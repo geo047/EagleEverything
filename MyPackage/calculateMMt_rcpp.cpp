@@ -8,9 +8,7 @@
 #endif
 
 
-
-
-
+using Eigen::SelfAdjointEigenSolver;
 
 
 
@@ -56,7 +54,6 @@ Eigen::MatrixXd
 
 
 
-
 //-----------------------------------
 // Calculate amount of memory needed
 //-----------------------------------
@@ -82,7 +79,7 @@ double
 //-------------------------
 if(max_memory_in_Gbytes > memory_needed_in_Gb ){
    // reading entire data file into memory
-     Eigen::MatrixXd genoMat = ReadBlock(fnamebin,  0, dims[1], dims[0] );
+     Eigen::MatrixXd genoMat = ReadBlockBin(fnamebin,  0, dims[1], dims[0] );
   //   Eigen::MatrixXd genoMat = ReadBlockFast(fnamebin,  0, dims[1], dims[0] );
    if(!R_IsNA(selected_loci(0))){
      // setting columns to 0
@@ -91,7 +88,11 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
    }
 
 
-    MMt.noalias() = genoMat * genoMat.transpose();
+
+
+     MMt.noalias() = genoMat * genoMat.transpose();
+
+     
 
 
 
@@ -115,7 +116,6 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
           if (dims[0] % num_rows_in_block)
                  num_blocks++;
 
-
           for(long i=0; i < num_blocks; i++){
               long start_row1 = i * num_rows_in_block;
               long num_rows_in_block1 = num_rows_in_block;
@@ -123,7 +123,9 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
                      num_rows_in_block1 = dims[0] - start_row1;
 
                 Eigen::MatrixXd
-                     genoMat_block1 ( ReadBlock(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
+                     genoMat_block1 ( ReadBlockBin(fnamebin,  start_row1, dims[1], num_rows_in_block1)) ;
+
+
 
               Eigen::MatrixXd
                    MMtsub(Eigen::MatrixXd(num_rows_in_block1, num_rows_in_block1).setZero());
@@ -143,7 +145,7 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
                    if ((start_row2 + num_rows_in_block2) > dims[0])
                           num_rows_in_block2 = dims[0] - start_row2;
                      Eigen::MatrixXd
-                        genoMat_block2 ( ReadBlock(fnamebin,  start_row2, dims[1], num_rows_in_block2)) ;
+                        genoMat_block2 ( ReadBlockBin(fnamebin,  start_row2, dims[1], num_rows_in_block2)) ;
 
 
 
