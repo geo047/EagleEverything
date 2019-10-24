@@ -1,7 +1,6 @@
 library(Rcpp)
     
- Rcpp.package.skeleton("EagleGPU", cpp_files=c(
-            "magma_qr.cpp"  ,
+ Rcpp.package.skeleton("Eagle", cpp_files=c(
             "ReshapeM_rcpp.cpp"  ,
             "getRowColumn.cpp"  ,
             "CreateASCIInospace_PLINK.cpp"  ,
@@ -80,6 +79,6 @@ library(Rcpp)
             "summary_am.R"   ) ) 
   ## running roxygen2  
  library(roxygen2) 
- setwd("./EagleGPU")  
+ setwd("./Eagle")  
   roxygenise() 
   
