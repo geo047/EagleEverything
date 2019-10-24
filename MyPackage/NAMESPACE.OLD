@@ -11,9 +11,6 @@ import(ggthemes)
 import(shinyFiles, shiny,  shinythemes,  stats, utils) 
 
 export(
-   magmaEigenNonsym,
-   magmaEigen,
-   magmaQR,
    FPR4AM,
    ReadPheno,
    ReadMarkerBin,

@@ -123,7 +123,7 @@ R CMD BATCH ./tmp.R
 
 # copy Makevars to Eagle
 echo " Copy my own Makevars and Makevars.win to Eagle directory "
-# AWG 2019 cp $DIR/Makevars $DIR/Eagle/src
+cp $DIR/Makevars $DIR/Eagle/src
 cp $DIR/Makevars.win $DIR/Eagle/src
 
 
@@ -247,16 +247,7 @@ R CMD build Eagle
 R CMD INSTALL Eagle -l ~/RLibs
 
 
-# rm tmp.R  tmp.Rout 
-
-# copy to git area ready to upload to github/Eagle and eventual install via devtools pipeline
-cp Eagle_1.6.0.tar.gz ~/Eagle/Eagle/.
-cd ~/Eagle/Eagle/
-tar xfz Eagle_1.6.0.tar.gz
-cp -rf ./Eagle/* .
-rm -rf ./Eagle
-cd /home/geo047/EagleEverything/MyPackage
-
+ rm tmp.R  tmp.Rout 
 
 
 
