@@ -1,12 +1,17 @@
 library(Rcpp)
     
- Rcpp.package.skeleton("Eagle", cpp_files=c(
+ Rcpp.package.skeleton("EagleGPU", cpp_files=c(
+            "magma_qr.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "getRowColumn.cpp"  ,
             "CreateASCIInospace_PLINK.cpp"  ,
+            "CreateBIN_PLINK.cpp"  ,
             "CreateASCIInospace.cpp"  ,
+            "CreateBIN.cpp"  ,
             "ReadBlock.cpp"  ,
+            "ReadBlockBin.cpp"  ,
             "createMt_ASCII_rcpp.cpp"  ,
+            "createMt_BIN_rcpp.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "calculate_reduced_a_rcpp.cpp"  ,
             "removeRow.cpp"  ,
@@ -15,6 +20,7 @@ library(Rcpp)
             "calculate_a_and_vara_rcpp.cpp"  ,
             "calculate_a_and_vara_batch_rcpp.cpp"  ,
             "createM_ASCII_rcpp.cpp"  ,
+            "createM_BIN_rcpp.cpp"  ,
             "extract_geno_rcpp.cpp"  ,
             "calculateMMt_rcpp.cpp"  ,
             "getNumColumns.cpp"  ,
@@ -23,7 +29,7 @@ library(Rcpp)
     example_code=FALSE, code_files=c(
             "onAttach.R", 
             "FPR4AM.R",
-            "ReadMarker.R",
+            "ReadMarkerBin.R",
             "ReadMap.R",
             "ReadZmat.R",
             "ReadPheno.R",
@@ -43,7 +49,6 @@ library(Rcpp)
             "print_results.R", 
             "find_qtl.R", 
             "fullpath.R", 
-            "emma_misc.R",
             "emma_delta_ML_dLL_w_Z.R", 
             "emma_eigen_L_w_Z.R", 
             "emma_eigen_R_w_Z.R", 
@@ -54,6 +59,7 @@ library(Rcpp)
             "emma_delta_ML_LL_wo_Z.R", 
             "emma_eigen_L_wo_Z.R", 
             "emma_eigen_R_wo_Z.R", 
+            "emma_misc.R", 
             "emma_delta_ML_LL_w_Z.R", 
             "check_for_NA_in_trait.R", 
             "check_inputs_mlam.R", 
@@ -68,11 +74,12 @@ library(Rcpp)
             "calculate_reduced_vara.R", 
             "check_inputs.R", 
             "create_ascii.R", 
+            "create_bin.R", 
             "extract_geno.R", 
             "constructX.R", 
             "summary_am.R"   ) ) 
   ## running roxygen2  
  library(roxygen2) 
- setwd("./Eagle")  
+ setwd("./EagleGPU")  
   roxygenise() 
   

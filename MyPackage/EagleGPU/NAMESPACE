@@ -1,0 +1,20 @@
+useDynLib(Eagle)
+importFrom(parallel, detectCores)
+importFrom(data.table, fread)
+importFrom(matrixcalc, is.positive.definite)
+importFrom(shinyjs, useShinyjs)
+importFrom(shinyBS, bsButton)
+importFrom(shinyBS, bsTooltip)
+import(ggplot2)
+import(ggthemes)
+import(shinyFiles, shiny,  shinythemes,  stats, utils) 
+
+export(
+   FPR4AM,
+   ReadPheno,
+   ReadMarkerBin,
+   ReadMap,
+   ReadZmat,
+   AM,
+   OpenGUI,
+   SummaryAM)

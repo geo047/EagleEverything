@@ -21,13 +21,18 @@ Type 'q()' to quit R.
 
 > library(Rcpp)
 >     
->  Rcpp.package.skeleton("Eagle", cpp_files=c(
+>  Rcpp.package.skeleton("EagleGPU", cpp_files=c(
++             "magma_qr.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "getRowColumn.cpp"  ,
 +             "CreateASCIInospace_PLINK.cpp"  ,
++             "CreateBIN_PLINK.cpp"  ,
 +             "CreateASCIInospace.cpp"  ,
++             "CreateBIN.cpp"  ,
 +             "ReadBlock.cpp"  ,
++             "ReadBlockBin.cpp"  ,
 +             "createMt_ASCII_rcpp.cpp"  ,
++             "createMt_BIN_rcpp.cpp"  ,
 +             "ReshapeM_rcpp.cpp"  ,
 +             "calculate_reduced_a_rcpp.cpp"  ,
 +             "removeRow.cpp"  ,
@@ -36,6 +41,7 @@ Type 'q()' to quit R.
 +             "calculate_a_and_vara_rcpp.cpp"  ,
 +             "calculate_a_and_vara_batch_rcpp.cpp"  ,
 +             "createM_ASCII_rcpp.cpp"  ,
++             "createM_BIN_rcpp.cpp"  ,
 +             "extract_geno_rcpp.cpp"  ,
 +             "calculateMMt_rcpp.cpp"  ,
 +             "getNumColumns.cpp"  ,
@@ -44,7 +50,7 @@ Type 'q()' to quit R.
 +     example_code=FALSE, code_files=c(
 +             "onAttach.R", 
 +             "FPR4AM.R",
-+             "ReadMarker.R",
++             "ReadMarkerBin.R",
 +             "ReadMap.R",
 +             "ReadZmat.R",
 +             "ReadPheno.R",
@@ -64,7 +70,6 @@ Type 'q()' to quit R.
 +             "print_results.R", 
 +             "find_qtl.R", 
 +             "fullpath.R", 
-+             "emma_misc.R",
 +             "emma_delta_ML_dLL_w_Z.R", 
 +             "emma_eigen_L_w_Z.R", 
 +             "emma_eigen_R_w_Z.R", 
@@ -75,6 +80,7 @@ Type 'q()' to quit R.
 +             "emma_delta_ML_LL_wo_Z.R", 
 +             "emma_eigen_L_wo_Z.R", 
 +             "emma_eigen_R_wo_Z.R", 
++             "emma_misc.R", 
 +             "emma_delta_ML_LL_w_Z.R", 
 +             "check_for_NA_in_trait.R", 
 +             "check_inputs_mlam.R", 
@@ -89,6 +95,7 @@ Type 'q()' to quit R.
 +             "calculate_reduced_vara.R", 
 +             "check_inputs.R", 
 +             "create_ascii.R", 
++             "create_bin.R", 
 +             "extract_geno.R", 
 +             "constructX.R", 
 +             "summary_am.R"   ) ) 
@@ -99,19 +106,24 @@ Creating Read-and-delete-me ...
 Copying code files ...
 Making help files ...
 Done.
-Further steps are described in './Eagle/Read-and-delete-me'.
+Further steps are described in './EagleGPU/Read-and-delete-me'.
 
 Adding Rcpp settings
  >> added Imports: Rcpp
  >> added LinkingTo: Rcpp
  >> added useDynLib directive to NAMESPACE
  >> added importFrom(Rcpp, evalCpp) directive to NAMESPACE
+ >> copied magma_qr.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied getRowColumn.cpp to src directory
  >> copied CreateASCIInospace_PLINK.cpp to src directory
+ >> copied CreateBIN_PLINK.cpp to src directory
  >> copied CreateASCIInospace.cpp to src directory
+ >> copied CreateBIN.cpp to src directory
  >> copied ReadBlock.cpp to src directory
+ >> copied ReadBlockBin.cpp to src directory
  >> copied createMt_ASCII_rcpp.cpp to src directory
+ >> copied createMt_BIN_rcpp.cpp to src directory
  >> copied ReshapeM_rcpp.cpp to src directory
  >> copied calculate_reduced_a_rcpp.cpp to src directory
  >> copied removeRow.cpp to src directory
@@ -120,25 +132,32 @@ Adding Rcpp settings
  >> copied calculate_a_and_vara_rcpp.cpp to src directory
  >> copied calculate_a_and_vara_batch_rcpp.cpp to src directory
  >> copied createM_ASCII_rcpp.cpp to src directory
+ >> copied createM_BIN_rcpp.cpp to src directory
  >> copied extract_geno_rcpp.cpp to src directory
  >> copied calculateMMt_rcpp.cpp to src directory
  >> copied getNumColumns.cpp to src directory
  >> copied getNumRows.cpp to src directory
  >> compiled Rcpp attributes 
-Warning message:
-The following packages are referenced using Rcpp::depends attributes however are not listed in the Depends, Imports or LinkingTo fields of the package DESCRIPTION file: RcppEigen 
+Warning messages:
+1: In file.copy(file, src) :
+  problem copying ./magma_qr.cpp to ./EagleGPU/src/magma_qr.cpp: No such file or directory
+2: In file.copy(file, src) :
+  problem copying ./CreateBIN_PLINK.cpp to ./EagleGPU/src/CreateBIN_PLINK.cpp: No such file or directory
+3: In file.copy(file, src) :
+  problem copying ./CreateBIN.cpp to ./EagleGPU/src/CreateBIN.cpp: No such file or directory
+4: The following packages are referenced using Rcpp::depends attributes however are not listed in the Depends, Imports or LinkingTo fields of the package DESCRIPTION file: RcppEigen 
 >   ## running roxygen2  
 >  library(roxygen2) 
->  setwd("./Eagle")  
+>  setwd("./EagleGPU")  
 >   roxygenise() 
 First time using roxygen2. Upgrading automatically...
-Updating roxygen version in /home/geo047/EagleEverything/MyPackage/Eagle/DESCRIPTION
+Updating roxygen version in /home/geo047/EagleEverything/MyPackage/EagleGPU/DESCRIPTION
 Warning: The existing 'NAMESPACE' file was not generated by roxygen2, and will not be overwritten.
 Writing AM.Rd
 Writing FPR4AM.Rd
 Writing OpenGUI.Rd
 Writing ReadMap.Rd
-Writing ReadMarker.Rd
+Writing ReadMarkerBin.Rd
 Writing ReadPheno.Rd
 Writing ReadZmat.Rd
 Writing SummaryAM.Rd
@@ -146,4 +165,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  1.177   0.126   1.455 
+  1.469   0.167   2.577 
