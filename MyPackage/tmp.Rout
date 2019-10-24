@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+Warning: namespace ‘Eagle’ is not available and has been replaced
+by .GlobalEnv when processing object ‘res’
 [Previously saved workspace restored]
 
 > library(Rcpp)
@@ -165,4 +167,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  1.469   0.167   2.577 
+  0.888   0.082   1.171 
