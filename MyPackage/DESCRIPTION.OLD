@@ -29,6 +29,7 @@ License: GPL-3
 Depends:
    R (>= 3.4), shinyFiles, ggplot2, ggthemes
 Imports: 
+   mmap,
    matrixcalc,
    shiny,
    shinythemes,
