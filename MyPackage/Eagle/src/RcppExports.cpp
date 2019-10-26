@@ -196,6 +196,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// extract_geno_Mt_rcpp
+Eigen::VectorXi extract_geno_Mt_rcpp(Rcpp::CharacterVector f_name, long selected_locus, std::vector<long> dims);
+RcppExport SEXP _Eagle_extract_geno_Mt_rcpp(SEXP f_nameSEXP, SEXP selected_locusSEXP, SEXP dimsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type f_name(f_nameSEXP);
+    Rcpp::traits::input_parameter< long >::type selected_locus(selected_locusSEXP);
+    Rcpp::traits::input_parameter< std::vector<long> >::type dims(dimsSEXP);
+    rcpp_result_gen = Rcpp::wrap(extract_geno_Mt_rcpp(f_name, selected_locus, dims));
+    return rcpp_result_gen;
+END_RCPP
+}
 // extract_geno_rcpp
 Eigen::VectorXi extract_geno_rcpp(Rcpp::CharacterVector f_name_ascii, double max_memory_in_Gbytes, long selected_locus, std::vector<long> dims);
 RcppExport SEXP _Eagle_extract_geno_rcpp(SEXP f_name_asciiSEXP, SEXP max_memory_in_GbytesSEXP, SEXP selected_locusSEXP, SEXP dimsSEXP) {
@@ -244,6 +257,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Eagle_createM_BIN_rcpp", (DL_FUNC) &_Eagle_createM_BIN_rcpp, 11},
     {"_Eagle_createMt_ASCII_rcpp", (DL_FUNC) &_Eagle_createMt_ASCII_rcpp, 7},
     {"_Eagle_createMt_BIN_rcpp", (DL_FUNC) &_Eagle_createMt_BIN_rcpp, 7},
+    {"_Eagle_extract_geno_Mt_rcpp", (DL_FUNC) &_Eagle_extract_geno_Mt_rcpp, 3},
     {"_Eagle_extract_geno_rcpp", (DL_FUNC) &_Eagle_extract_geno_rcpp, 4},
     {"_Eagle_fasttimer", (DL_FUNC) &_Eagle_fasttimer, 0},
     {"_Eagle_getRowColumn", (DL_FUNC) &_Eagle_getRowColumn, 1},

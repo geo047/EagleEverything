@@ -305,7 +305,8 @@ ReadMarkerBin <- function( filename=NULL, type='text', missing=NULL,
   }  ## end if else nargs()==1  (PLINK case)
 
   geno <- list("asciifileM"=asciifileM, "asciifileMt"=asciifileMt,
-               "dim_of_ascii_M" = dim_of_ascii_M)
+               "dim_of_ascii_M" = dim_of_ascii_M,       
+               "dim_of_ascii_Mt" = c(dim_of_ascii_M[2], dim_of_ascii_M[1]) )
 
   if(.Platform$OS.type == "unix") {
        RDatafile <- paste(tempdir() , "/", "M.RData", sep="")

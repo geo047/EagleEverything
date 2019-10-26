@@ -458,10 +458,10 @@ for(ii in 1:numreps){
 
        # Fit alternate model
        currentX <- currentX_null # initialising to base model  
-       currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, 
+       currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, 
                               loci_indx=new_selected_locus,
-                              dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                              map=map, availmemGb = availmemGb)
+                              dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+                              map=map )
 
 
 

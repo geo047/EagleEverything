@@ -45,6 +45,10 @@ createMt_BIN_rcpp <- function(f_name_in, f_name_out, type, max_memory_in_Gbytes,
     invisible(.Call('_Eagle_createMt_BIN_rcpp', f_name_in, f_name_out, type, max_memory_in_Gbytes, dims, quiet, message))
 }
 
+extract_geno_Mt_rcpp <- function(f_name, selected_locus, dims) {
+    .Call('_Eagle_extract_geno_Mt_rcpp', f_name, selected_locus, dims)
+}
+
 extract_geno_rcpp <- function(f_name_ascii, max_memory_in_Gbytes, selected_locus, dims) {
     .Call('_Eagle_extract_geno_rcpp', f_name_ascii, max_memory_in_Gbytes, selected_locus, dims)
 }

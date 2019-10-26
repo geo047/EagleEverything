@@ -97,9 +97,9 @@ SummaryAM <- function(AMobj=NULL)
   ## add genetic marker effects 
   fullX <- baseX
   for(loc in AMobj$Indx){
-           fullX <- constructX(fnameM=AMobj$geno[["asciifileM"]], 
+           fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]], 
                               currentX=fullX, loci_indx=loc,
-                               dim_of_ascii_M=AMobj$geno[["dim_of_ascii_M"]],
+                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
                                 map=AMobj$map)
   }  ## end for loc
 
@@ -211,9 +211,9 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
   message("          a SNP at a time.\n ")
   message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
   for(loc in AMobj$Indx[-1]){
-        fullX <- constructX(fnameM=AMobj$geno[["asciifileM"]],
+        fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
                                 currentX=fullX, loci_indx=loc,
-                               dim_of_ascii_M=AMobj$geno[["dim_of_ascii_M"]],
+                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
                                map=AMobj$map)
         fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
         full_logML <- fullmod$ML

@@ -4,20 +4,13 @@
                        currentX,  ncpu, quiet, trait, ngpu, itnum )
   {
     ##  internal function: use by   AM
-    print(" inside find.qtl")
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
-    print("H")
-    print(H)
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
-    print(" currentX")
-    print(currentX)
 
     P <- calculateP(H=H, X=currentX , message=message)
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
-    print("P")
-    print(P)
     rm(H)
     gc()
 
@@ -30,8 +23,6 @@
        error_checking <- TRUE
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                               ngpu=ngpu , message=message)
-    print("MMt_sqrt_and_sqrtinv[[sqrt_MMt]]")
-    print(MMt_sqrt_and_sqrtinv[["sqrt_MMt"]])
    
 
     if(!quiet){
@@ -46,8 +37,6 @@
                        y=trait, quiet = quiet , message=message)
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
-    print("hat_a")
-    print(hat_a)
 
 
      rm(P)

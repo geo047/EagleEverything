@@ -461,9 +461,9 @@ if(length(indxNA_geno)>0){
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
     # print(" forming currentX")
-     currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
-                          dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                          map=map, availmemGb = availmemGb)  
+     currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, loci_indx=new_selected_locus,
+                          dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+                          map=map )  
     # print("end")
 
 

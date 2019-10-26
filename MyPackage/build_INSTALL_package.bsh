@@ -53,6 +53,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"createM_ASCII_rcpp.cpp\"  ,
             \"createM_BIN_rcpp.cpp\"  ,
             \"extract_geno_rcpp.cpp\"  ,
+            \"extract_geno_Mt_rcpp.cpp\"  ,
             \"calculateMMt_rcpp.cpp\"  ,
             \"getNumColumns.cpp\"  ,
             \"getNumRows.cpp\"  
@@ -107,6 +108,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"create_ascii.R\", 
             \"create_bin.R\", 
             \"extract_geno.R\", 
+            \"extract_geno_Mt.R\", 
             \"constructX.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
