@@ -1,5 +1,5 @@
 
-check.inputs.mlam <- function (ncpu, availmemGb, colname.trait, map, pheno,
+check.inputs.mlam <- function (ncpu,  colname.trait, map, pheno,
                   geno, Zmat, gamma, falseposrate=NULL )
 {
   ## internal function for AM
@@ -80,7 +80,7 @@ if(!is.data.frame(pheno)){
 
 
 nms <- names(geno)
-indx <- match(nms, c("asciifileM", "asciifileMt", "dim_of_ascii_M" , "dim_of_ascii_Mt"))
+indx <- match(nms, c("asciifileM", "asciifileMt", "dim_of_ascii_M" , "dim_of_ascii_Mt", "availmemGb"))
 if(any(is.na(indx))){
   message("Error: there is a problem with the list structure of the geno object. ")
   message("       It should contain the elements asciifileM, asciifileMt, and dim_of_ascii_M. ")

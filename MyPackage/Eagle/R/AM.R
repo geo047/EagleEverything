@@ -6,8 +6,6 @@
 #' @param fformula   the right hand side formula for the fixed effects.   See below for details. 
 #'                        If
 #'                        not specified, only an overall mean will be fitted.
-#' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
-#' This should be set to the maximum practical value of available memory for the analysis. If not specified, 8 GBytes is assumed. 
 #' @param geno   the R  object obtained from running \code{\link{ReadMarker}}. This must be specified. 
 #' @param pheno  the R  object  obtained  from running \code{\link{ReadPheno}}. This must be specified.
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
@@ -98,11 +96,11 @@
 #'
 #'   # FPR4AM calculates the gamma value corresponding to a desired false positive rate of 5\%
 #'   ans <- FPR4AM(falseposrate=0.05, numreps=100, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, availmemGb=32)
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj)
 #'
 #'   # performs association mapping with a 5\% false positive rate
 #'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, availmemGb=32, gamma=ans$setgamma)
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj,  gamma=ans$setgamma)
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
@@ -143,7 +141,7 @@
 #'   Zmat_obj  <- ReadZmat(filename='/my/dir/Zmatrix.txt')
 #'
 #'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat=Zmat_obj, availmemGb=32)
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat=Zmat_obj )
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
@@ -245,12 +243,11 @@
 #'                            fformula=c('cov1+cov2'),
 #'                            map = map_obj,
 #'                            pheno = pheno_obj,
-#'                            geno = geno_obj, availmemGb=8)
+#'                            geno = geno_obj )
 #' }
 #'
 AM <- function(trait=NULL, 
                fformula  = NULL,
-               availmemGb=8, 
                geno=NULL, 
                pheno=NULL, 
                map = NULL,
@@ -281,7 +278,7 @@ AM <- function(trait=NULL,
 
 
 
- error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait, 
+ error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait, 
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=gamma )
  if(error.code){
    message("\n The Eagle function AM has terminated with errors.\n")
@@ -468,7 +465,7 @@ if(length(indxNA_geno)>0){
 
 
      ## calculate Ve and Vg
-     Args <- list(geno=geno,availmemGb=availmemGb,
+     Args <- list(geno=geno,availmemGb=geno[["availmemGb"]],
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
@@ -519,7 +516,7 @@ if(length(indxNA_geno)>0){
     if (fixit){
        if (itnum <= maxit){
            ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                  ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
           ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
@@ -538,7 +535,7 @@ if(length(indxNA_geno)>0){
         ## Select new locus if extBIC is still decreasing 
         if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
            ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
+           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
                      MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
            #print("inner  find_qtl")
@@ -569,7 +566,7 @@ start <- Sys.time()
          ## under this new model. 
          .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
          sigres <- .form_results(trait, selected_loci[-length(selected_loci)],   fformula, 
-                     indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet,  extBIC, gamma, 
+                     indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet,  extBIC, gamma, 
                      geno, pheno, map, Zmat, outlierstat )   
     }
  
@@ -579,7 +576,7 @@ if( itnum > maxit){
     .print_header()
     .print_final(selected_loci, map,  extBIC, gamma)
     sigres <- .form_results(trait, selected_loci,   fformula, 
-                     indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet,  extBIC, gamma,
+                     indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet,  extBIC, gamma,
                      geno, pheno, map, Zmat, outlierstat )   
 
 } else {
@@ -590,14 +587,14 @@ if( itnum > maxit){
                      map, 
                      extBIC[-length(selected_loci)], gamma )
         sigres <- .form_results(trait, selected_loci[-length(selected_loci)],   fformula, 
-                         indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet, 
+                         indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet, 
                          extBIC[-length(selected_loci)], gamma, 
                          geno, pheno, map, Zmat, outlierstat )   
     } else {
         .print_header()
         .print_final(selected_loci, map, extBIC, gamma )
         sigres <- .form_results(trait, selected_loci,   fformula, 
-                         indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet, extBIC, gamma, 
+                         indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet, extBIC, gamma, 
                          geno, pheno, map, Zmat, outlierstat )   
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)
