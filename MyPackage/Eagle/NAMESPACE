@@ -13,7 +13,7 @@ import(shinyFiles, shiny,  shinythemes,  stats, utils)
 export(
    FPR4AM,
    ReadPheno,
-   ReadMarkerBin,
+   ReadMarker,
    ReadMap,
    ReadZmat,
    AM,

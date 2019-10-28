@@ -7,6 +7,8 @@
 #endif
 
 
+// This code needs to be modified to be binary compliant. 
+// Read a line buffer at a time, and write result to new temporary file.
 
 
 

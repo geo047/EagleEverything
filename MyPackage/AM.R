@@ -81,9 +81,8 @@
 #' The file is located in /my/dir.}
 #' \item{}{the map data is contained in the file map.txt, is also located in 
 #'  /my/dir, and the first row has the column headings.}
-#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-#' and the available memory is set to 32 gigabytes.}
+#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, and
+#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, }
 #' } 
 #'
 #'  To analyse these data, we would run the following:
@@ -95,7 +94,7 @@
 #'   map_obj   <- ReadMap(filename='/my/dir/map.txt')
 #'
 #'   # FPR4AM calculates the gamma value corresponding to a desired false positive rate of 5\%
-#'   ans <- FPR4AM(falseposrate=0.05, numreps=100, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
+#'   ans <- FPR4AM(falseposrate=0.05, numreps=200, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
 #'             geno=geno_obj, pheno=pheno_obj, map=map_obj)
 #'
 #'   # performs association mapping with a 5\% false positive rate
@@ -125,9 +124,8 @@
 #' the individual's trait value to their corresponding genotype.}
 #' \item{}{the map data is contained in the file map.txt, is also located in 
 #'  /my/dir, and the first row has the column headings.}
-#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-#' and the available memory is set to 32 gigabytes.}
+#' \item{}{An 'AM' analysis is performed where the trait of interest is y2,  and
+#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2.}
 #' } 
 #'
 #'  To analyse these data, we would run the following:
@@ -263,7 +261,6 @@ AM <- function(trait=NULL,
  ## Core function for performing whole genome association mapping with EMMA
  ## Args
  ## ncpu        number of cores available for computation
- ## memoryGb        maximum amount of working memory available for computation
  ## pheno           data frame 
  ##                 remaining columns are explanatory variables to include in the model. If a numeric vector, then it 
  ##                 is only a response to be fitted. 
@@ -401,7 +398,7 @@ if(!is.null(Zmat)){
 
 
 
-## create a new M.ascii and Mt.ascii if length(indxNA) is non-zero 
+## create a new M.ascii and Mt.ascii if length(indxNA_geno) is non-zero 
 ## remove rows in M.ascii and columns in Mt.ascii of those individuals listed in indxNA 
 if(length(indxNA_geno)>0){
     res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
@@ -423,7 +420,8 @@ if(length(indxNA_geno)>0){
 }
 
 
-
+# AWG Need to check for Z chase - am I removing the correct rows with indxNA_pheno if 
+# there are multiple rows to remove ???????????
 
  ## build design matrix currentX
 #print(" build design matrix currentX ")
@@ -465,7 +463,7 @@ if(length(indxNA_geno)>0){
 
 
      ## calculate Ve and Vg
-     Args <- list(geno=geno,availmemGb=geno[["availmemGb"]],
+     Args <- list(geno=geno,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
@@ -540,10 +538,7 @@ if(length(indxNA_geno)>0){
                      ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
            #print("inner  find_qtl")
           #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
-      end <- Sys.time()
-#     cat(" .find_qtl in else  ", end - start, "\n")
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]

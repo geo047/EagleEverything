@@ -14,7 +14,6 @@ emma.MLE <- function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,
     if (is.null(Z)) {
         if (is.null(eig.L)) {
             eig.L <- emma.eigen.L.wo.Z(K, ngpu)
-            print(" ------------------------------------------------------------------ ")
         }
         if (is.null(eig.R)) {
             eig.R <- emma.eigen.R.wo.Z(K, X, ngpu)

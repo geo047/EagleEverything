@@ -4,10 +4,9 @@
 \alias{FPR4AM}
 \title{Set the false positive rate for \code{AM}}
 \usage{
-FPR4AM(falseposrate = 0.05, trait = trait, numreps = 100,
-  fformula = NULL, availmemGb = 8, numgammas = 20, geno = NULL,
-  pheno = NULL, map = NULL, Zmat = NULL, ncpu = detectCores(),
-  ngpu = 0, seed = 101)
+FPR4AM(falseposrate = 0.05, trait = trait, numreps = 200,
+  fformula = NULL, numgammas = 20, geno = NULL, pheno = NULL,
+  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0, seed = 101)
 }
 \arguments{
 \item{falseposrate}{the desired false positive rate.}
@@ -15,12 +14,9 @@ FPR4AM(falseposrate = 0.05, trait = trait, numreps = 100,
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.  This parameter must be specified.}
 
 \item{numreps}{the number of replicates upon which to base the calculation of the false 
-positive rate. We have found 100 replicates to be sufficient.}
+positive rate. We have found 200 replicates to be sufficient but more is better.}
 
 \item{fformula}{the right hand side formula for the fixed effects part of the model.}
-
-\item{availmemGb}{a numeric value. It specifies the amount of available memory (in Gigabytes). 
-This should be set to the maximum practical value of available memory for the analysis.}
 
 \item{numgammas}{the number of equidistant gamma values from 0 to 1 for which to calculate the false positive rate of the model building process. This should not need 
 adjusting.}

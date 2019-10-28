@@ -1,4 +1,4 @@
-calculate_a_and_vara <- function(geno=NULL, maxmemGb=8,
+calculate_a_and_vara <- function(geno=NULL, 
                          selectedloci = NA,
                          invMMtsqrt=NULL, transformed_a=NULL, transformed_vara=NULL,
                          quiet = TRUE, message=message)
@@ -26,7 +26,7 @@ calculate_a_and_vara <- function(geno=NULL, maxmemGb=8,
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,
                     dim_reduced_vara = transformed_vara,
-                    max_memory_in_Gbytes=maxmemGb,
+                    max_memory_in_Gbytes=geno[["availmemGb"]],
                     dims=dimsMt,
                     a = transformed_a,
                     quiet = quiet, message=message)

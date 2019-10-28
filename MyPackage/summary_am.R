@@ -104,7 +104,7 @@ SummaryAM <- function(AMobj=NULL)
   }  ## end for loc
 
   ## calculate MMt
-  MMt <- .calcMMt(AMobj$geno, AMobj$availmemGb, AMobj$ncpu, AMobj$Indx, AMobj$quiet)
+  MMt <- .calcMMt(AMobj$geno,  AMobj$ncpu, AMobj$Indx, AMobj$quiet)
 
   ## calculate variance components of LMM
   eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)

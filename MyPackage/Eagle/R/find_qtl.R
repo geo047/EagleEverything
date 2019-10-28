@@ -60,7 +60,6 @@
     }
 
      a_and_vara  <- calculate_a_and_vara(geno = geno,
-                                         maxmemGb=availmemGb,
                                             selectedloci = selected_loci,
                                             invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                             transformed_a=hat_a,

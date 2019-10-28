@@ -1,4 +1,4 @@
-calculate_a_and_vara_batch <- function(numreps=100, geno=NULL, maxmemGb=8,
+calculate_a_and_vara_batch <- function(numreps=100, geno=NULL, 
                          selectedloci = NA,
                          invMMtsqrt=NULL, transformed_a=NULL, transformed_vara=NULL,
                          quiet = TRUE, message=message)
@@ -7,7 +7,6 @@ calculate_a_and_vara_batch <- function(numreps=100, geno=NULL, maxmemGb=8,
  ## an Rcpp function to take dimension reduced a (BLUP) values 
  ## and transform them into the original a (BLUP) values and their variances 
  ## Args:
- ##   maxmemGb         maximum available memory (in Gigabytes) that are available for use
  ##   dims             a 2 element numeric vector with the number of rows,columns in M 
  ##   invMMtsqrt       a matrix object of the form (M %*% M^T)^{-0.5}
  ##   transformed_a    a numeric vector of the dimension reduced BLUP or a values
@@ -27,7 +26,7 @@ calculate_a_and_vara_batch <- function(numreps=100, geno=NULL, maxmemGb=8,
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,
                     dim_reduced_vara = transformed_vara,
-                    max_memory_in_Gbytes=maxmemGb,
+                    max_memory_in_Gbytes=geno[["availmemGb"]],
                     dims=dimsMt,
                     a = transformed_a,
                     quiet = quiet, message=message)

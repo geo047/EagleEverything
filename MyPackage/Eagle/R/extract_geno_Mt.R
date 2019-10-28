@@ -8,9 +8,6 @@ extract_geno_Mt <- function(fnameMt=NULL, colnum=NULL, dim_of_Mt=NULL)
     genodata <- extract_geno_Mt_rcpp(f_name=fnameMt,
                               selected_locus=selected_locus, dims=dim_of_Mt)
 
-   print(class(genodata))
-  print(length(genodata))
-  print(table(genodata))
 
     return(genodata)
 

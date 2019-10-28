@@ -3,11 +3,9 @@
 #' building process. This function uses permutation to  find the gamma value for a desired false positive rate. 
 #' @param  falseposrate the desired false positive rate.
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
-#'                   positive rate. We have found 100 replicates to be sufficient.  
+#'                   positive rate. We have found 200 replicates to be sufficient but more is better.   
 #' @param trait  the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.  This parameter must be specified. 
 #' @param fformula   the right hand side formula for the fixed effects part of the model. 
-#' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
-#' This should be set to the maximum practical value of available memory for the analysis. 
 #' @param geno   the R  object obtained from running \code{\link{ReadMarker}}. This must be specified. 
 #' @param pheno  the R  object  obtained  from running \code{\link{ReadPheno}}. This must be specified.
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
@@ -107,9 +105,8 @@
 FPR4AM <- function(
                falseposrate = 0.05,
                trait=trait,
-               numreps = 100,
+               numreps = 200,
                fformula  = NULL,
-               availmemGb=8,
                numgammas = 20,
                geno=NULL,
                pheno=NULL,
@@ -119,12 +116,15 @@ FPR4AM <- function(
                ngpu=0,
                seed=101 
                ){
+
   quiet <- TRUE   ## change to FALSE if additional error checking is needed. 
 
   set.seed(seed)
- # need some checks in here ... 
-error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
+
+  # need some checks in here ... 
+  error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait,
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL, falseposrate=falseposrate )
+
  if(error.code){
    message("\n The Eagle function FPR4AM has terminated with errors.\n")
    return(NULL)
@@ -140,11 +140,9 @@ error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait
                      Pos=1:geno[["dim_of_ascii_M"]][2])
   }
 
-selected_loci <- NA
+ selected_loci <- NA
  new_selected_locus <- NA
  extBIC <- vector("numeric", 0)
- ## assign trait 
-# trait <-  pheno[[trait]]
 
 
  ## Turn fformula  into class formula with some checks
@@ -168,7 +166,7 @@ if(!is.null(fformula)){
     message("\n CalculateFPR has terminated with errors.\n")
     return(NULL)
   }  ## if length grep
- } ## end if(!is.null(fformula))
+} ## end if(!is.null(fformula))
 
   ## check that terms in  formula are in pheno file
  if(!is.null(fformula)){
@@ -307,7 +305,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
 
  ## calculate Ve and Vg
- Args <- list(geno=geno,availmemGb=availmemGb,
+ Args <- list(geno=geno,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
  if(!quiet)
@@ -326,10 +324,15 @@ gamma <- seq(0,1,length.out=numgammas)
 vc <- list()
 best_ve <- rep(NA, numreps)
 best_vg <- rep(NA, numreps)
+MaxLike <- rep(NA, numreps)
 extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
-vc <- .calcVC(trait=pheno[, "residuals"], Zmat=Zmat, currentX=currentX_null,MMt=MMt, ngpu=ngpu)
+# MLE approach 
+#vc <- .calcVC(trait=pheno[, "residuals"], Zmat=Zmat, currentX=currentX_null,MMt=MMt, ngpu=ngpu)
 
+# Found that REML step gives better results, at least for small sample size
+res_full <- emma.REMLE(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu)
+vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
 
 rep(NA, numreps)
 
@@ -338,8 +341,13 @@ rep(NA, numreps)
    #gc()
    #best_ve[ii] <- vc[[ii]][["ve"]]
    #best_vg[ii] <- vc[[ii]][["vg"]]
+   #MaxLike[ii] <- vc[[ii]][["ML"]]
+
+   # Approximation step here - vc being computed once on the original unpermuted trait (residuals). 
+   # Exact code is what is commented out above where vc computed on each permutation of residuals.  
    best_ve[ii] <- vc[["ve"]]
    best_vg[ii] <- vc[["vg"]]
+   #MaxLike[ii] <- vc[["ML"]]
    gc()
  } ## for ii
 
@@ -347,8 +355,14 @@ rep(NA, numreps)
 # Since there are no fixed effects and we have permuted Y, then 
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
-extBIC  <- .calc_extBIC(bigpheno[, 1], currentX_null,MMt, geno, Zmat,
-                       numberSNPselected=0 , quiet, gamma)
+#extBIC  <- .calc_extBIC(ML=MaxLike[ii] , trait=bigpheno[, 1], currentX=currentX_null,geno=geno, Zmat=Zmat,
+#                       numberSNPselected=0 , quiet=quiet, gamma=gamma)
+extBIC  <- .calc_extBIC_MLE(trait=bigpheno[, 1], MMt=MMt, currentX=currentX_null,geno=geno, Zmat=Zmat,
+                       numberSNPselected=0 , quiet=quiet, gamma=gamma)
+
+
+
+
 
 extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix of null extBIC values
 
@@ -384,7 +398,6 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
 
       a_and_vara  <- calculate_a_and_vara_batch(numreps = numreps, 
                                           geno = geno,
-                                          maxmemGb=availmemGb,
                                           selectedloci = selected_loci,
                                           invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                           transformed_a=hat_a ,
@@ -395,7 +408,6 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
 
 
 for(ii in 1:numreps){
-#      message(" Performing permutation ", ii, "of ", numreps, "\r") 
        if(ii %% 4 == 0 )
           message("-", appendLF=FALSE)
        if(ii %% 4 == 1 )
@@ -410,33 +422,9 @@ for(ii in 1:numreps){
       # Select new locus : find_qtl function but with calculateMMt_sqrt_and_sqrtinv
       # moved outside the function for computational gain with permuted samples
      
-#      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
- 
-#      P <- calculateP(H=H, X=currentX_null , message=message)
-
-#      hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg[ii], P=P,
-#                       MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-#                       y=bigpheno[, ii] , quiet = quiet , message=message)
-
-#      var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
-#                                             varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
-#                                             MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-#                                             quiet = quiet, message=message )
-
-#      a_and_vara  <- calculate_a_and_vara(geno = geno,
-#                                          maxmemGb=availmemGb,
-#                                          selectedloci = selected_loci,
-#                                          invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
-#                                          transformed_a=hat_a ,
-#                                          transformed_vara=var_hat_a,
-#                                          quiet=quiet, message=message)
-
-
-
-
 
       ## outlier test statistic
-###        tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
+###   tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
       tsq <- a_and_vara[["a"]][, ii]**2/a_and_vara[["vara"]]
 
       indx <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. 
@@ -463,11 +451,14 @@ for(ii in 1:numreps){
                               dim_of_Mt=geno[["dim_of_ascii_Mt"]],
                               map=map )
 
-
+        # perform ML estimation of alternate model
+   #     vcalt <- .calcVC(trait=bigpheno[, ii] , Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu)
 
        ## Calculate extBIC
-       extBIC_alternate[ii, ]   <- .calc_extBIC(bigpheno[, ii] , currentX, MMt, geno, Zmat,
-                                       numberSNPselected=1 , quiet, gamma)
+  #    extBIC_alternate[ii, ]   <- .calc_extBIC(ML=vcalt[["ML"]],   trait=bigpheno[, ii] , currentX=currentX, geno=geno, Zmat=Zmat,
+  #                                     numberSNPselected=1 , quiet=quiet, gamma=gamma)
+      extBIC_alternate[ii, ]   <- .calc_extBIC_MLE( trait=bigpheno[, ii] , MMt=MMt, currentX=currentX, geno=geno, Zmat=Zmat,
+                                       numberSNPselected=1 , quiet=quiet, gamma=gamma)
 
 }
 

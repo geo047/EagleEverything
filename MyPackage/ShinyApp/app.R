@@ -616,7 +616,7 @@ placement="right", trigger="hover",
                                                   )  ## wellPanel
                                              ) ## end column
                                            
-                                         ), ## end fluidRow specify amout of memory
+                                         ), ## end fluidRow 
                                         
 
                                          fluidRow(
@@ -631,7 +631,7 @@ placement="right", trigger="hover",
                                                   )  ## wellPanel
                                              ) ## end column
 
-                                         ), ## end fluidRow specify amout of memory
+                                         ), ## end fluidRow 
 
                                       fluidRow(column(12,
                                         wellPanel(
@@ -986,7 +986,7 @@ placement="right", trigger="hover",
                                                   )  ## wellPanel
                                              ) ## end column
                                            
-                                         ), ## end fluidRow specify amout of memory
+                                         ), ## end fluidRow 
                                         
 
 
@@ -1168,7 +1168,7 @@ placement="right", trigger="hover",
                                                   )  ## wellPanel
                                              ) ## end column
 
-                                         ) ## end fluidRow specify amout of memory
+                                         ) ## end fluidRow 
                                 ) ## ene fluidPage
                          ),  ## end column
                           column(8, 
@@ -1668,7 +1668,7 @@ setgamma <- 1
 
         withCallingHandlers({
                   shinyjs::html("AM", "")
-                  res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
+                  res <<- AM(trait=input$nmst , fformula=fform , 
                              gamma=input$analyse_setgamma,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
                   setgamma <<- input$analyse_setgamma 
@@ -1688,13 +1688,13 @@ setgamma <- 1
                  shinyjs::html("AM", "")
  
                  res <<- FPR4AM(numreps = input$analyse_numreps,  falseposrate=input$analyse_fpr,
-                            trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
+                            trait=input$nmst , fformula=fform , 
                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat = Zmat) 
          
                   if(!is.null(res)){ 
                     setgamma <<- res$setgamma
                  
-                    res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
+                    res <<- AM(trait=input$nmst , fformula=fform , 
                              gamma=res$setgamma,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
                   }

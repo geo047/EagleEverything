@@ -1,0 +1,138 @@
+
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(Eagle)
+Loading required package: shinyFiles
+Loading required package: ggplot2
+Loading required package: ggthemes
+> 
+> geno <- ReadMarker(filename="./genoDemo.dat", type="text", AA=0, AB=1, BB=2)
+ Getting number of individuals and snp from file ... 
+ Beginning creation of reformatted file ... 
+ Reading marker data ... 
+
+0% read of text file.       0.666667% read of text file.       1.33333% read of text file.       2% read of text file.       2.66667% read of text file.       3.33333% read of text file.       4% read of text file.       4.66667% read of text file.       5.33333% read of text file.       6% read of text file.       6.66667% read of text file.       7.33333% read of text file.       8% read of text file.       8.66667% read of text file.       9.33333% read of text file.       10% read of text file.       10.6667% read of text file.       11.3333% read of text file.       12% read of text file.       12.6667% read of text file.       13.3333% read of text file.       14% read of text file.       14.6667% read of text file.       15.3333% read of text file.       16% read of text file.       16.6667% read of text file.       17.3333% read of text file.       18% read of text file.       18.6667% read of text file.       19.3333% read of text file.       20% read of text file.       20.6667% read of text file.       21.3333% read of text file.       22% read of text file.       22.6667% read of text file.       23.3333% read of text file.       24% read of text file.       24.6667% read of text file.       25.3333% read of text file.       26% read of text file.       26.6667% read of text file.       27.3333% read of text file.       28% read of text file.       28.6667% read of text file.       29.3333% read of text file.       30% read of text file.       30.6667% read of text file.       31.3333% read of text file.       32% read of text file.       32.6667% read of text file.       33.3333% read of text file.       34% read of text file.       34.6667% read of text file.       35.3333% read of text file.       36% read of text file.       36.6667% read of text file.       37.3333% read of text file.       38% read of text file.       38.6667% read of text file.       39.3333% read of text file.       40% read of text file.       40.6667% read of text file.       41.3333% read of text file.       42% read of text file.       42.6667% read of text file.       43.3333% read of text file.       44% read of text file.       44.6667% read of text file.       45.3333% read of text file.       46% read of text file.       46.6667% read of text file.       47.3333% read of text file.       48% read of text file.       48.6667% read of text file.       49.3333% read of text file.       50% read of text file.       50.6667% read of text file.       51.3333% read of text file.       52% read of text file.       52.6667% read of text file.       53.3333% read of text file.       54% read of text file.       54.6667% read of text file.       55.3333% read of text file.       56% read of text file.       56.6667% read of text file.       57.3333% read of text file.       58% read of text file.       58.6667% read of text file.       59.3333% read of text file.       60% read of text file.       60.6667% read of text file.       61.3333% read of text file.       62% read of text file.       62.6667% read of text file.       63.3333% read of text file.       64% read of text file.       64.6667% read of text file.       65.3333% read of text file.       66% read of text file.       66.6667% read of text file.       67.3333% read of text file.       68% read of text file.       68.6667% read of text file.       69.3333% read of text file.       70% read of text file.       70.6667% read of text file.       71.3333% read of text file.       72% read of text file.       72.6667% read of text file.       73.3333% read of text file.       74% read of text file.       74.6667% read of text file.       75.3333% read of text file.       76% read of text file.       76.6667% read of text file.       77.3333% read of text file.       78% read of text file.       78.6667% read of text file.       79.3333% read of text file.       80% read of text file.       80.6667% read of text file.       81.3333% read of text file.       82% read of text file.       82.6667% read of text file.       83.3333% read of text file.       84% read of text file.       84.6667% read of text file.       85.3333% read of text file.       86% read of text file.       86.6667% read of text file.       87.3333% read of text file.       88% read of text file.       88.6667% read of text file.       89.3333% read of text file.       90% read of text file.       90.6667% read of text file.       91.3333% read of text file.       92% read of text file.       92.6667% read of text file.       93.3333% read of text file.       94% read of text file.       94.6667% read of text file.       95.3333% read of text file.       96% read of text file.       96.6667% read of text file.       97.3333% read of text file.       98% read of text file.       98.6667% read of text file.       99.3333% read of text file.        
+ 
+ First 5 lines and 12 columns of the marker text  file. 
+1 0 0 1 0 0 1 1 2 1 2 2 
+1 0 0 0 1 0 1 1 2 1 0 2 
+1 0 0 1 1 0 1 1 2 0 2 2 
+1 0 2 1 1 0 1 2 2 1 2 2 
+1 0 0 1 1 0 1 0 0 1 0 1 
+ 
+ Taking transpose of marker data and writing untransposed and transposed data to disc ... 
+
+
+
+                    Summary of Marker File  
+                   ~~~~~~~~~~~~~~~~~~~~~~~~   
+ File type:                   text
+ Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpBjr6pF/M.bin
+ Number of individuals:        150
+ Number of loci:               4998
+ File size (gigabytes):       0.00787185
+ Available memory (gigabytes): 16
+
+
+
+
+  Writing of marker data to disc is complete ... 
+
+> 
+> pheno <- ReadPheno(filename = "./phenoDemo.dat")
+
+
+ Loading Phenotype file ... 
+
+
+               Summary of Phenotype File  
+
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   ./phenoDemo.dat
+
+ Number of individuals:       150
+
+ Number of columns:           6
+
+
+ First 5 rows of the phenotype file are 
+
+23.1142863322389 -0.082271 -0.064875 19 9.08161236093003 4
+8.30074276066739 -0.079114 -0.068167 40 3.51477482977412 4
+20.0855313237688 -0.081068 -0.056846 21 10.4064453968186 4
+10.075239046444 -0.082542 -0.063059 27 10.3809801451631 4
+13.2050016517253 -0.0786 -0.064641 37 8.63669697290398 4
+
+ Column classes are  
+
+              trait1           numeric
+
+                 pc1           numeric
+
+                 pc2           numeric
+
+                 age           integer
+
+              trait2           numeric
+
+           eyecolour            factor
+
+The phenotype file has been loaded.
+> 
+> map <- ReadMap(filename = "./mapDemo.dat")
+
+
+ Loading map file ... 
+
+
+                    Summary of Map File  
+
+                   ~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   ./mapDemo.dat
+
+ Number of marker loci:       4998
+
+ Number of columns:           3
+
+ Number of chromosomes:       3
+
+
+ First 5 markers of the map file are 
+
+rs78200054 21 14005
+rs375645574 21 72920
+rs147075201 21 80442
+rs78779316 21 146642
+rs67161561 21 190036
+The map file has been loaded.
+
+
+
+> 
+> 
+> res <- FPR4AM(trait="trait1", fformula="pc1+pc2", map=map, geno=geno, pheno=pheno, falseposrate=0.05, numreps=250)
+ Number of cores being used for calculation is .. 28
+Error in .calc_extBIC(vc$ML, bigpheno[, 1], currentX_null, MMt, geno,  : 
+  unused argument (gamma)
+Calls: FPR4AM
+Execution halted

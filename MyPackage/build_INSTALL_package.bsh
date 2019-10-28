@@ -75,6 +75,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"build_design_matrix.R\", 
             \"calcMMt.R\", 
             \"calc_extBIC.R\", 
+            \"calc_extBIC_MLE.R\", 
             \"calcVC.R\", 
             \"print_header.R\", 
             \"print_final.R\", 
@@ -243,7 +244,7 @@ R CMD build Eagle
 
 
 
-#  R CMD check --as-cran Eagle_1.6.0.tar.gz 
+#  R CMD check --as-cran Eagle_2.0.0.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

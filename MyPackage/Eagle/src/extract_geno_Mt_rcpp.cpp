@@ -30,8 +30,6 @@ Eigen::VectorXi  extract_geno_Mt_rcpp(Rcpp::CharacterVector f_name,
    // row_of_genos = ReadBlockBin(fnamebin, selected_locus, dims[1], 1);
    Eigen::MatrixXd genoMat =  ReadBlockBin(fnamebin,  selected_locus, dims[1], 1);
 
-    Rcpp::Rcout << genoMat.rows() << std::endl;
-    Rcpp::Rcout << genoMat.cols() << std::endl;
     
 
    row_of_genos = genoMat.row(0).cast<int>() ;

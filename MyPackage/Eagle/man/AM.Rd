@@ -121,9 +121,8 @@ labeled pc1 and pc2. The file contains missing data that are coded as 99.
 The file is located in /my/dir.}
 \item{}{the map data is contained in the file map.txt, is also located in 
  /my/dir, and the first row has the column headings.}
-\item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-and the available memory is set to 32 gigabytes.}
+\item{}{An 'AM' analysis is performed where the trait of interest is y2, and
+the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, }
 } 
 
  To analyse these data, we would run the following:
@@ -135,7 +134,7 @@ and the available memory is set to 32 gigabytes.}
   map_obj   <- ReadMap(filename='/my/dir/map.txt')
 
   # FPR4AM calculates the gamma value corresponding to a desired false positive rate of 5\%
-  ans <- FPR4AM(falseposrate=0.05, numreps=100, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
+  ans <- FPR4AM(falseposrate=0.05, numreps=200, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
             geno=geno_obj, pheno=pheno_obj, map=map_obj)
 
   # performs association mapping with a 5\% false positive rate
@@ -165,9 +164,8 @@ a design matrix that only contains zeros and ones where each row must contain on
 the individual's trait value to their corresponding genotype.}
 \item{}{the map data is contained in the file map.txt, is also located in 
  /my/dir, and the first row has the column headings.}
-\item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-and the available memory is set to 32 gigabytes.}
+\item{}{An 'AM' analysis is performed where the trait of interest is y2,  and
+the fixed effects part of the model is cov1 + cov2 + pc1 + pc2.}
 } 
 
  To analyse these data, we would run the following:

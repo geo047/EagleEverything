@@ -190,7 +190,7 @@
 #'   print(geno_obj)
 #'
 #'
-ReadMarkerBin <- function( filename=NULL, type='text', missing=NULL,
+ReadMarker <- function( filename=NULL, type='text', missing=NULL,
                            AA=NULL, AB=NULL, BB=NULL, 
                            availmemGb=16, 
                            quiet=TRUE ){
