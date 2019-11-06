@@ -25,8 +25,6 @@ std::ostringstream
 std::string
    line;
 
-long
-  rowi = 0;
 
 
 
