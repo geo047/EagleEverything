@@ -7,12 +7,12 @@ check.for.NA.in.trait <- function(trait=NULL)
        ## check for NA's in trait
         indxNA <- which(is.na(trait))
         if(length(indxNA)==0){
-          indxNA <- vector("numeric", 0)
+          indxNA <- NA
         } else {
           ## place in reverse order
           indxNA <- sort(indxNA, decreasing = TRUE)
-message(cat("\n\n WARNING!!!! The individuals in rows ", indxNA, " either have missing trait data "))
-message("             and/or missing explanatory variable values. These individuals have ")
+message(cat("\n\n WARNING!!!! The phenotypic data in rows ", indxNA, " either have missing trait data "))
+message("             and/or missing explanatory variable values. These rows of data have ")
 message(cat("             been removed from the analysis.  \n"))
           if(any(is.na(indxNA))){
             message("Error:  (internal).  indxNA contains NA values. ")

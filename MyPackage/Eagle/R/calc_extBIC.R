@@ -1,5 +1,4 @@
- #.calc_extBIC <- function(trait=NULL, currentX=NULL, MMt=NULL,  geno=NULL, Zmat=NULL, numberSNPselected=0, quiet=TRUE, gamma=NULL)
- .calc_extBIC <- function( ML=0 , trait=NULL, currentX=NULL,   geno=NULL, Zmat=NULL, numberSNPselected=0, quiet=TRUE, gamma=NULL)
+ .calc_extBIC <- function( ML=0 , trait=NULL, currentX=NULL,   geno=NULL,  numberSNPselected=0, quiet=TRUE, gamma=NULL)
  {
    ## internal function: used by AM 
    ## smallest extBIC and BIC is best

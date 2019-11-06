@@ -28,7 +28,7 @@ Description: An implementation of multiple-locus association mapping on a genome
 License: GPL-3
 Depends: R (>= 3.4), shinyFiles, ggplot2, ggthemes
 Imports: mmap, matrixcalc, shiny, shinythemes, shinyBS, shinyjs, stats,
-        utils, parallel, data.table
+        utils, parallel, data.table, R.utils
 LinkingTo: RcppEigen, Rcpp
 Roxygen: list(wrap=FALSE)
 LazyData: true

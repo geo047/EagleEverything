@@ -57,7 +57,7 @@
 #'                            fformula=c("cov1 + cov2"),
 #'                            map = map_obj,
 #'                            pheno = pheno_obj,
-#'                            geno = geno_obj, availmemGb=8)
+#'                            geno = geno_obj)
 #'
 #'   #-----------------------------------------
 #'   # Produce additional summary information 
@@ -73,8 +73,13 @@
 SummaryAM <- function(AMobj=NULL)
 {
 
+ indxNA_pheno <- AMobj$indxNA_pheno
+ indxNA_geno <- AMobj$indxNA_geno
+ ngpu <- AMobj$ngpu
+
+
  if(is.null(AMobj)){
-    message(" SummaryAM function requires AMobj object to be specified.")
+    message(" SummaryAM function requires AMobj object to be specified. This object is obtained by running AM().")
     return(NULL)
     }
  if(!is.list(AMobj)){
@@ -89,15 +94,27 @@ SummaryAM <- function(AMobj=NULL)
    return()
  }
 
+
+
+
   ## build environmental effects design matrix
-  baseX <- .build_design_matrix(pheno=AMobj$pheno,  indxNA=AMobj$indxNA_pheno, 
+ if (any(is.na(indxNA_pheno))){
+  baseX <- .build_design_matrix(pheno=AMobj$pheno,  
                                     fformula=AMobj$fformula,
                                    quiet=AMobj$quiet)
+ } else {
+  baseX <- .build_design_matrix(pheno=AMobj$pheno[-AMobj$indxNA_pheno,] ,  
+                                    fformula=AMobj$fformula,
+                                   quiet=AMobj$quiet)
+
+
+ }  ## end if any
 
   ## add genetic marker effects 
   fullX <- baseX
   for(loc in AMobj$Indx){
-           fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]], 
+
+           fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]], 
                               currentX=fullX, loci_indx=loc,
                                dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
                                 map=AMobj$map)
@@ -107,7 +124,50 @@ SummaryAM <- function(AMobj=NULL)
   MMt <- .calcMMt(AMobj$geno,  AMobj$ncpu, AMobj$Indx, AMobj$quiet)
 
   ## calculate variance components of LMM
-  eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)
+  if ( any(is.na(indxNA_pheno)) ) {
+         Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt, ngpu=ngpu)
+     }  else {
+       if (is.null(AMobj$Zmat)){
+         # no Z 
+         Args <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,]  , Z=NULL,
+                    K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+       }  else {
+         # Have to deal with Z and repeated measures
+         # Case 1:  missing pheno but no missing geno
+         # Case 2:  missing pheno and geno data
+
+         # Case 1: missing pheno but no missing geno
+         if (  !any(is.na(indxNA_pheno)) & any(is.na(indxNA_geno))  ){
+            # check for situation where nrow(Z) is same as nrow(MMt)
+            # this causes issues for EMMA later
+            if (  !any(colSums(AMobj$Zmat[-indxNA_pheno, ] )> 1) ){
+                Args  <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,] , Z=NULL,
+                              K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+            } else {
+              Args <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,] , Z=AMobj$Zmat[-indxNA_pheno, ],
+                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+            }  ## end if nrow(AMobj$Zmat) == nrow(MMt)
+          }   ## end if Case 1
+       # Case 2:  missing pheno and missing geno 
+       if (  !any(colSums(AMobj$Zmat[-indxNA_pheno, -indxNA_geno] )> 1) ){
+             # this captures case of Z turning into an identify matrix
+             Args  <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,] , Z=NULL ,
+                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+          } else {
+             Args  <- list(y=AMobj$trait[-indxNA_pheno ], X= fullX[-indxNA_pheno,]  ,
+                           Z=AMobj$Zmat[-indxNA_pheno, -indxNA_geno]  , K=MMt[-indxNA_geno, -indxNA_geno],
+                           ngpu=ngpu)
+         } ## end if  Case 2
+       }  ## end  if (is.null(AMobj$Zmat))
+     } # end  if ( any(is.na(indxNA_pheno)) )
+
+  #eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)
+  eR <-  do.call(emma.MLE, Args)
+
+
+
+
+
 
  ## calculating p values of fixed marker effect via Wald statistic
  mrks <- AMobj$Mrk[-1]  ## its -1 to remove the NA for the null model 
@@ -201,7 +261,13 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
 
  MMt <- MMt/max(MMt) + 0.05 * diag(nrow(MMt))  
  # base model
- basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
+ # Note - baseX = fullX so okay to leave Args as is
+ #basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
+ Args[["X"]] <- baseX
+ basemod  <-  do.call(emma.MLE, Args)
+
+
+
  base_logML <- basemod$ML
  # full model
   df_R <- NULL
@@ -211,12 +277,30 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
   message("          a SNP at a time.\n ")
   message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
   for(loc in AMobj$Indx[-1]){
-        fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
+        if ( any(is.na(indxNA_pheno)) ) {
+               fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
                                 currentX=fullX, loci_indx=loc,
                                dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
                                map=AMobj$map)
-        fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
+         }  else {
+               fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
+                                currentX=fullX[-indxNA_pheno,] , loci_indx=loc,
+                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
+                               map=AMobj$map)
+
+         } # end  if ( any(is.na(indxNA_pheno)) )
+
+     #   fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
+     #                           currentX=fullX, loci_indx=loc,
+     #                          dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
+     #                          map=AMobj$map)
+
+        # fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
+        ## calculate variance components of LMM
+        Args[["X"]]  <-  fullX 
+        fullmod  <-  do.call(emma.MLE, Args)
         full_logML <- fullmod$ML
+
         Rsq <- 1 - exp(-2/nrow(MMt) * (full_logML - base_logML))
         message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
         df_R <- rbind.data.frame(df_R, data.frame("Marker_name"=paste("+",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])),

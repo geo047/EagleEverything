@@ -181,8 +181,9 @@
 #' \describe{
 #'\item{trait:}{column name of the trait being used by 'AM'.}
 #'\item{fformula:}{the fixed effects part of the linear mixed model.}
-#'\item{indxNA:}{a vector containing the row indexes of those individuals, whose trait and fixed effects data contain
-#' missing values and have been removed from the analysis.}
+#'\item{indxNA_pheno:}{a vector containing the row indexes of the phenotyic data  that have been removed from the analysis.}
+#'\item{indxNA_geno:}{a vector containing the row indexes of those genotypes that have been removed from the analysis 
+#' due to missing data. }
 #' \item{Mrk:}{a vector with the names of the snp in strongest and significant association with the trait.If no loci are found to be 
 #' significant, then this component is \code{NA}.}
 #' \item{Chr:}{the chromosomes on which the identified snp lie.}
@@ -295,7 +296,8 @@ AM <- function(trait=NULL,
                      Pos=1:geno[["dim_of_ascii_M"]][2])
   }
 
-
+ indxNA_pheno <- NA
+ indxNA_geno <- NA
  selected_loci <- NA
  new_selected_locus <- NA
  extBIC <- vector("numeric", 0)
@@ -365,76 +367,78 @@ if(!is.null(fformula)){
   }
  }
 
- ## check for NA's in trait
-#print(" check.for.NA.in.trait(trait=trait) ")
+ ## check for NA's in trait 
  indxNA_pheno <- check.for.NA.in.trait(trait=trait)
- indxNA_geno <- indxNA_pheno  
-#print("end")
 
  ## remove missing observations from trait  
-#print(" remove missing obs form trait ")
- if(length(indxNA_pheno)>0){
-    trait <- trait[-indxNA_pheno]
-
-    if(!quiet ){
-     message(" The following rows are being removed from pheno due to missing data: \n")
-     message(cat("             ", indxNA_pheno, "\n\n"))
-    }
-
-}
-#print("end")
+ #if(length(indxNA_pheno)>0){
+ #   trait <- trait[-indxNA_pheno]
+#
+#    if(!quiet ){
+#     message(" The following rows are being removed from pheno due to missing data: \n")
+#     message(cat("             ", indxNA_pheno, "\n\n"))
+#    }
+#
+#}
 
 
 
 ## If Z matrix is present, then we may not need to remove genotypes (i.e. indxNA_geno)
+## check if any genotypes need to be removed. 
 if(!is.null(Zmat)){
-      Zmat <- Zmat[-indxNA_pheno,]
       # check for columns with 0 sums. 
-      s <- colSums(Zmat)
-      indxNA_geno <- which(s==0) 
-      if (length(indxNA_geno) > 0)
-          Zmat <- Zmat[, -indxNA_geno ]
+      if(!any(is.na(indxNA_pheno))){
+          s  <- colSums(Zmat[-indxNA_pheno,])
+          indx <- which(s==0)
+          if (length(indx)  > 0 )
+          indxNA_geno <- indx 
+       }
+} else {
+  indxNA_geno <- indxNA_pheno  
 }
+
 
 
 
 ## create a new M.ascii and Mt.ascii if length(indxNA_geno) is non-zero 
 ## remove rows in M.ascii and columns in Mt.ascii of those individuals listed in indxNA 
-if(length(indxNA_geno)>0){
-    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
-    message(cat("new dimensions of reshaped M", res, "\n"))
+#if(length(indxNA_geno)>0){
+#    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
+#    message(cat("new dimensions of reshaped M", res, "\n"))
+#
+#     if(.Platform$OS.type == "unix") {
+#       geno$asciifileM <- paste(tempdir() , "/", "M.asciitmp", sep="")
+#     } else {
+#       geno$asciifileM <- paste( tempdir() , "\\", "M.asciitmp", sep="")
+#     }
+#
+#     if(.Platform$OS.type == "unix") {
+#       geno$asciifileMt <- paste( tempdir() , "/", "Mt.asciitmp", sep="")
+#     } else {
+#       geno$asciifileMt <- paste( tempdir() , "\\", "Mt.asciitmp", sep="")
+#     }
+#
+#    geno$dim_of_ascii_M <- res
+#}
 
-     if(.Platform$OS.type == "unix") {
-       geno$asciifileM <- paste(tempdir() , "/", "M.asciitmp", sep="")
-     } else {
-       geno$asciifileM <- paste( tempdir() , "\\", "M.asciitmp", sep="")
-     }
 
-     if(.Platform$OS.type == "unix") {
-       geno$asciifileMt <- paste( tempdir() , "/", "Mt.asciitmp", sep="")
-     } else {
-       geno$asciifileMt <- paste( tempdir() , "\\", "Mt.asciitmp", sep="")
-     }
-
-    geno$dim_of_ascii_M <- res
-}
-
-
-# AWG Need to check for Z chase - am I removing the correct rows with indxNA_pheno if 
-# there are multiple rows to remove ???????????
 
  ## build design matrix currentX
-#print(" build design matrix currentX ")
- currentX <- .build_design_matrix(pheno=pheno, indxNA=indxNA_pheno, fformula=fformula, quiet=quiet )
-#print("end")
-
+ currentX <- .build_design_matrix(pheno=pheno, fformula=fformula, quiet=quiet )
+ currentX <- as.matrix(currentX)
 
  ## check currentX for solve(crossprod(X, X)) singularity
-#print(" check currentX for solve(crossprod(X, X)) singularity ")
- chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
+ if (any(is.na(indxNA_geno))) {
+   chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
            error = function(err){
             return(TRUE)
            })
+  } else {
+   chck <- tryCatch({ans <- solve(crossprod(currentX[-indxNA_pheno,], currentX[-indxNA_pheno,]))},
+           error = function(err){
+            return(TRUE)
+           })
+  }
 
   if(is.logical(chck)){
       if(chck){
@@ -446,21 +450,19 @@ if(length(indxNA_geno)>0){
         return(NULL)
       }
   }
-#print("end")
 
+
+  
  ## Initialization
-
  continue <- TRUE
  itnum <- 1
  outlierstat <- list()
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
-    # print(" forming currentX")
      currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_Mt=geno[["dim_of_ascii_Mt"]],
                           map=map )  
-    # print("end")
-
+     currentX <- as.matrix(currentX)
 
      ## calculate Ve and Vg
      Args <- list(geno=geno,
@@ -472,7 +474,6 @@ if(length(indxNA_geno)>0){
            message(" quiet=FALSE: calculating M %*% M^t. \n")
            MMt <- do.call(.calcMMt, Args)  
 
-
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
@@ -482,24 +483,78 @@ if(length(indxNA_geno)>0){
 
         gc()
      }  
-   
+
+
  
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt,  ngpu=ngpu) 
+     if ( any(is.na(indxNA_pheno)) ) {
+         vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt,  ngpu=ngpu) 
+     }  else {
+       if (is.null(Zmat)){
+         # no Z 
+         vc <- .calcVC(trait=trait[-indxNA_pheno],  currentX=as.matrix(currentX[-indxNA_pheno,]),  Zmat = NULL,
+                       MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+       }  else {
+         # Have to deal with Z and repeated measures
+         # Case 1:  missing pheno but no missing geno
+         # Case 2:  missing pheno and geno data
+
+         # Case 1: missing pheno but no missing geno
+         if (  !any(is.na(indxNA_pheno)) & any(is.na(indxNA_geno))  ){
+            # check for situation where nrow(Z) is same as nrow(MMt)
+            # this causes issues for EMMA later
+           # if (nrow(Zmat) == nrow(MMt)){
+            if (  !any(colSums(Zmat[-indxNA_pheno, ] )> 1) ){
+               vc <- .calcVC(trait=trait[-indxNA_pheno],  currentX=as.matrix(currentX[-indxNA_pheno,]),  Zmat=NULL,
+                       MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+            } else {
+                 vc <- .calcVC(trait=trait[-indxNA_pheno], Zmat=Zmat[-indxNA_pheno, ], 
+                              currentX=as.matrix(currentX[-indxNA_pheno,]) , MMt=MMt,  ngpu=ngpu) 
+            }  ## end if nrow(Zmat) == nrow(MMt)
+
+          }   ## end if Case 1
+
+          # Case 2:  missing pheno and missing geno 
+          #if (nrow( Zmat[-indxNA_pheno, -indxNA_geno] ) == nrow( MMt[-indxNA_geno, -indxNA_geno] )){
+
+          if (  !any(colSums(Zmat[-indxNA_pheno, -indxNA_geno] )> 1) ){
+             # this captures case of Z turning into an identify matrix
+             vc <- .calcVC(trait=trait[-indxNA_pheno],  Zmat = NULL,
+                   currentX=as.matrix(currentX[-indxNA_pheno,]), MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+
+          } else {
+             vc <- .calcVC(trait=trait[-indxNA_pheno], Zmat=Zmat[-indxNA_pheno, -indxNA_geno], 
+                   currentX=as.matrix(currentX[-indxNA_pheno,]), MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+         } ## end if  Case 2
+
+         
 
 
-     #print("end")
+       }  ## end  if (is.null(Zmat))
+
+
+     } # end  if ( any(is.na(indxNA_pheno)) )
+
+
+
+
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
-
-     ## Calculate extBIC
-     #new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
-     #                  numberSNPselected=(itnum-1), quiet, gamma) 
-     new_extBIC <- .calc_extBIC(vc$ML , trait, currentX, geno, Zmat, 
+ 
+     ## Calculate extBIC, accounting for different NA conditions
+     ## Only have to worry about missing phenotype data because 
+     ## even though geno is needed, it is only the number of snp. 
+     if (any(is.na(indxNA_pheno))){
+         new_extBIC <- .calc_extBIC(vc$ML , trait, currentX, geno, 
                        numberSNPselected=(itnum-1), quiet, gamma) 
+     }
+     if ( !any(is.na(indxNA_pheno)) ){
+         new_extBIC <- .calc_extBIC(vc$ML , trait[-indxNA_pheno], as.matrix(currentX[-indxNA_pheno,]), geno, 
+                       numberSNPselected=(itnum-1), quiet, gamma) 
+     }
 
      gc()
 
@@ -514,9 +569,31 @@ if(length(indxNA_geno)>0){
     if (fixit){
        if (itnum <= maxit){
            ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
-                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
+
+     if (  any(is.na(indxNA_pheno)) ){
+        ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX),
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum)
+
+     }
+     if ( !any(is.na(indxNA_pheno))  &  any(is.na(indxNA_geno)) ){
+        ARgs <- list(Zmat=Zmat[-indxNA_pheno,], geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX[-indxNA_pheno,]),
+                 ncpu=ncpu, quiet=quiet, trait=trait[-indxNA_pheno], ngpu=ngpu, itnum=itnum)
+
+     }
+     if ( !any(is.na(indxNA_pheno))  & !any(is.na(indxNA_geno))  ){
+        ARgs <- list(Zmat=Zmat[-indxNA_pheno,], geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt,
+                 best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX[-indxNA_pheno,]),
+                 ncpu=ncpu, quiet=quiet, trait=trait[-indxNA_pheno], ngpu=ngpu, itnum=itnum, indxNA_geno=indxNA_geno)
+
+     }
+
+
+
+
+
           ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
 
@@ -532,12 +609,24 @@ if(length(indxNA_geno)>0){
 
         ## Select new locus if extBIC is still decreasing 
         if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
+
            ## find QTL
+        if (  any(is.na(indxNA_pheno)) ){
+           # no missing data
            ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
-                     MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
-           #print("inner  find_qtl")
-          #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX),
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum)
+
+        } else {
+
+           ARgs <- list(Zmat=Zmat[-indxNA_pheno,], geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt,
+                 best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX[-indxNA_pheno,]),
+                 ncpu=ncpu, quiet=quiet, trait=trait[-indxNA_pheno], ngpu=ngpu, itnum=itnum, indxNA_geno=indxNA_geno)
+        }
+
+
+
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
 
           new_selected_locus <- fq[["orig_indx"]]

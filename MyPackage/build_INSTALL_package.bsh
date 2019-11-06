@@ -138,6 +138,8 @@ cp $DIR/Makevars.win $DIR/Eagle/src
 echo " Replace NAMESPACE and DESCRIPTION with my own version "
 cp ./NAMESPACE.OLD ./Eagle/NAMESPACE
 cp ./DESCRIPTION.OLD ./Eagle/DESCRIPTION
+cp ./NEWS  ./Eagle/.
+
 
 
 
@@ -244,7 +246,7 @@ R CMD build Eagle
 
 
 
-#  R CMD check --as-cran Eagle_2.0.0.tar.gz 
+ R CMD check --as-cran Eagle_2.0.0.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

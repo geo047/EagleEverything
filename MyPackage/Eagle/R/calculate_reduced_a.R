@@ -3,8 +3,7 @@ calculate_reduced_a <- function(Zmat=NULL, varG=NULL, P=NULL, MMtsqrt=NULL, y=NU
 
   ## internal function to AM
   if( !(nrow(P) ==  length(y))){
-    message(" Error:  there is a problem with the  dimensions of  P, and/or the vector y.")
-    message("         They should  be of the dimension (n x n), and a vector of length n.")
+    message(" Error:  there is a problem with the  dimensions of  P, and/or the vector  y.")
     message(" The dimensions are: \n")
     message(" dim(P)      = ", dim(P), "\n")
     message(" length(y)   = ", length(y), "\n")

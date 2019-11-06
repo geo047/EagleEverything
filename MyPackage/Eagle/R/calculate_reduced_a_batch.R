@@ -3,11 +3,11 @@ calculate_reduced_a_batch <- function(Zmat=NULL, varG=NULL, P=NULL, MMtsqrt=NULL
 
   ## internal function to AM
   if( !(nrow(P) ==  nrow(y))){
-    message(" Error:  there is a problem with the  dimensions of  P, and/or the vector y.")
-    message("         They should  be of the dimension (n x n), and a vector of length n.")
+    message(" Error:  there is a problem with the  dimensions of  P, and/or the matrix y.")
+    message("         They should have the same number of rows ")
     message(" The dimensions are: \n")
     message(" dim(P)      = ", dim(P), "\n")
-    message(" length(y)   = ", nrow(y), "\n")
+    message(" dim(y)   = ", dim(y), "\n")
     return(NULL)
 
   }
@@ -33,6 +33,7 @@ calculate_reduced_a_batch <- function(Zmat=NULL, varG=NULL, P=NULL, MMtsqrt=NULL
   } else {
     a <- varG * MMtsqrt %*% t(Zmat) %*% P %*% y
   }
+
 return(a)
 
 }

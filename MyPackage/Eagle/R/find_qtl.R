@@ -1,16 +1,22 @@
   #.find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
   #                     currentX,  ncpu, quiet, trait, ngpu  )
   .find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-                       currentX,  ncpu, quiet, trait, ngpu, itnum )
+                       currentX,  ncpu, quiet, trait, ngpu, itnum, indxNA_geno=NA)
   {
     ##  internal function: use by   AM
+
+    # Calculate H
+
+
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
     P <- calculateP(H=H, X=currentX , message=message)
+
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
+
     rm(H)
     gc()
 
@@ -23,7 +29,10 @@
        error_checking <- TRUE
     MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                               ngpu=ngpu , message=message)
-   
+
+
+
+
 
     if(!quiet){
        doquiet(dat=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]], num_markers=5, lab="sqrt(M %*% M^t)")
@@ -32,9 +41,13 @@
     if(!quiet ){
       message(" quiet =", quiet, ": beginning calculation of the BLUP estimates for dimension reduced model. \n")
     }
-    hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
+
+       hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=trait, quiet = quiet , message=message)
+
+
+
     if(!quiet)
        doquiet(dat=hat_a, num_markers=5, lab="BLUPs")
 
@@ -46,9 +59,14 @@
       message(" quiet = ", quiet, ": beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. \n")
     }
 
-    var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX, varE=best_ve, varG=best_vg, invMMt=invMMt,
-                                                MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                                quiet = quiet, message=message )
+    var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX, varE=best_ve, varG=best_vg, 
+                       invMMt=invMMt,
+                       MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
+                       quiet = quiet, message=message )
+
+
+
+
     if(!quiet)
              doquiet(dat=var_hat_a, num_markers=5, lab="SE of BLUPs")
 
@@ -59,12 +77,20 @@
       message(" quiet = ", quiet, ": beginning calculation of BLUPS and their standard errors for full model. \n")
     }
 
+
+     # when there are missing samples, this bit becomes tricky. 
+     # I am purposely returning the dimensions of hat_a and var_hat_a back to 
+     # n_g and keeping invMMtsqrt at n_g. I'll deal with indxNA_geno 
+     # inside calculate_a_vara.
+
+   
      a_and_vara  <- calculate_a_and_vara(geno = geno,
-                                            selectedloci = selected_loci,
-                                            invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
-                                            transformed_a=hat_a,
-                                            transformed_vara=var_hat_a,
-                                            quiet=quiet, message=message)
+                       selectedloci = selected_loci,
+                       invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
+                       transformed_a=hat_a,
+                       transformed_vara=var_hat_a,
+                       quiet=quiet, message=message, indxNA_geno=indxNA_geno)
+
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
         doquiet(dat=a_and_vara[["vara"]], num_markers=5, lab="SE of BLUPs for full model")

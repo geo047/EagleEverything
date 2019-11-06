@@ -26,7 +26,8 @@ Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
                                     std::vector <long> dims,
                                     Eigen::VectorXd  a,
                                     bool  quiet,
-                                    Rcpp::Function message)
+                                    Rcpp::Function message, 
+                                    Rcpp::NumericVector indxNA_geno)
 {
 // Purpose: to calculate the untransformed BLUP (a) and var(a) values from the 
 //          dimension reduced BLUP and var value estimates. 
@@ -37,6 +38,10 @@ Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
 // Note:
 //      1. dims is the row, column dimension of the Mt matrix
 
+//    dims[0] -----> number of SNP
+//    dims[1] -----> number of genotypes
+
+
 
 
 std::ostringstream
@@ -46,7 +51,7 @@ std::string
      fnamebin = Rcpp::as<std::string>(f_name_ascii);
 
  Eigen::MatrixXd
-       ans(dims[0],1);
+        ans(dims[0],1);
 
 Eigen::MatrixXd
              ans_tmp,
@@ -77,16 +82,25 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
    if(!R_IsNA(selected_loci(0))){
-   // setting columns to 0
+   // setting rows to 0
    for(long ii=0; ii < selected_loci.size() ; ii++){
            Mt.row(selected_loci(ii)).setZero();
     }
    }
 
 
+   if( !R_IsNA(indxNA_geno(0))    ){
+   // setting cols to 0
+   for(long ii=0; ii < indxNA_geno.size() ; ii++){
+           Mt.col(indxNA_geno(ii)).setZero();
+    }
+   }
+  
 
     Eigen::MatrixXd  ans_part1;
     ans_part1.noalias() = inv_MMt_sqrt * a;
+
+
     ans.noalias() =   Mt  * ans_part1;
 
 
@@ -194,10 +208,18 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
                    }
                 }
             }
+
+            if( !R_IsNA(indxNA_geno(0))    ){
+
+               // setting cols to 0
+               for(long ii=0; ii < indxNA_geno.size() ; ii++){
+                       Mt.col(indxNA_geno(ii)).setZero();
+                }
+               }
+
            //  ans_tmp  =  Mtd *  inv_MMt_sqrt  * a ;
              ans_tmp.noalias()  =   inv_MMt_sqrt  * a ;
              ans_tmp = Mt * ans_tmp;
-
 
 
 
@@ -219,7 +241,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 #if defined(_OPENMP)
            #pragma omp parallel for
 #endif
-
             for(long j=0; j < num_rows_in_block1; j++){
                       var_ans_tmp(j,0)  =   vt.row(j)  * ((Mt.row(j)).transpose()) ;
             }
