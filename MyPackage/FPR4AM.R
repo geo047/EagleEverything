@@ -3,11 +3,9 @@
 #' building process. This function uses permutation to  find the gamma value for a desired false positive rate. 
 #' @param  falseposrate the desired false positive rate.
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
-#'                   positive rate. We have found 100 replicates to be sufficient.  
+#'                   positive rate. We have found 200 replicates to be sufficient but more is better.   
 #' @param trait  the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.  This parameter must be specified. 
 #' @param fformula   the right hand side formula for the fixed effects part of the model. 
-#' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
-#' This should be set to the maximum practical value of available memory for the analysis. 
 #' @param geno   the R  object obtained from running \code{\link{ReadMarker}}. This must be specified. 
 #' @param pheno  the R  object  obtained  from running \code{\link{ReadPheno}}. This must be specified.
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
@@ -61,7 +59,7 @@
 #'   # File is a plain space separated text file with the first row 
 #'   # the column headings
 #'   complete.name <- system.file('extdata', 'map.txt', 
-#'                                    package='EagleGPU')
+#'                                    package='Eagle')
 #'   map_obj <- ReadMap(filename=complete.name) 
 #'
 #'   # read marker data
@@ -69,7 +67,7 @@
 #'   # Reading in a PLINK ped file 
 #'   # and setting the available memory on the machine for the reading of the data to 8  gigabytes
 #'   complete.name <- system.file('extdata', 'geno.ped', 
-#'                                      package='EagleGPU')
+#'                                      package='Eagle')
 #'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
 #'  
 #'   # read phenotype data
@@ -77,7 +75,7 @@
 #'
 #'   # Read in a plain text file with data on a single trait and two covariates
 #'   # The first row of the text file contains the column names y, cov1, and cov2. 
-#'   complete.name <- system.file('extdata', 'pheno.txt', package='EagleGPU')
+#'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
 #'   
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
@@ -107,26 +105,27 @@
 FPR4AM <- function(
                falseposrate = 0.05,
                trait=trait,
-               numreps = 100,
+               numreps = 200,
                fformula  = NULL,
-               availmemGb=8,
                numgammas = 20,
                geno=NULL,
                pheno=NULL,
                map = NULL,
                Zmat = NULL,
                ncpu=detectCores(),
-               ngpu=1,
-               seed=101
+               ngpu=0,
+               seed=101 
                ){
+
   quiet <- TRUE   ## change to FALSE if additional error checking is needed. 
 
   set.seed(seed)
- # need some checks in here ... 
-error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait,
+  # need some checks in here ... 
+  error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait,
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL, falseposrate=falseposrate )
+
  if(error.code){
-   message("\n The EagleGPU function FPR4AM has terminated with errors.\n")
+   message("\n The Eagle function FPR4AM has terminated with errors.\n")
    return(NULL)
  }
 
@@ -140,11 +139,11 @@ error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait
                      Pos=1:geno[["dim_of_ascii_M"]][2])
   }
 
-selected_loci <- NA
+ indxNA_pheno <- NA
+ indxNA_geno <- NA
+ selected_loci <- NA
  new_selected_locus <- NA
  extBIC <- vector("numeric", 0)
- ## assign trait 
-# trait <-  pheno[[trait]]
 
 
  ## Turn fformula  into class formula with some checks
@@ -168,7 +167,7 @@ if(!is.null(fformula)){
     message("\n CalculateFPR has terminated with errors.\n")
     return(NULL)
   }  ## if length grep
- } ## end if(!is.null(fformula))
+} ## end if(!is.null(fformula))
 
   ## check that terms in  formula are in pheno file
  if(!is.null(fformula)){
@@ -206,50 +205,34 @@ if(!is.null(fformula)){
 
  ## check for NA's in trait
  indxNA_pheno <- check.for.NA.in.trait(trait=pheno[, trait])
- indxNA_geno <- indxNA_pheno
 
 
 
  ## remove missing observations from pheno  
- if(length(indxNA_pheno)>0){
-    pheno <- pheno[-indxNA_pheno, ]
-    message(" The following rows are being removed from phenotypic data  due to missing trait data: \n")
-    message(cat("             ", indxNA_pheno, "\n\n"))
- }
+# if(length(indxNA_pheno)>0){
+#    pheno <- pheno[-indxNA_pheno, ]
+#    message(" The following rows are being removed from phenotypic data  due to missing trait data: \n")
+#    message(cat("             ", indxNA_pheno, "\n\n"))
+# }
 
 
 
 ## If Z matrix is present, then we may not need to remove genotypes (i.e. indxNA_geno)
+## check if any genotypes need to be removed. 
 if(!is.null(Zmat)){
-      Zmat <- Zmat[-indxNA_pheno,]
       # check for columns with 0 sums. 
-      s <- colSums(Zmat)
-      indxNA_geno <- which(s==0)
-      if (length(indxNA_geno) > 0)
-          Zmat <- Zmat[, -indxNA_geno ]
+      if(!any(is.na(indxNA_pheno))){
+          s  <- colSums(Zmat[-indxNA_pheno,])
+          indx <- which(s==0)
+          if (length(indx)  > 0 )
+          indxNA_geno <- indx
+       }
+} else {
+  indxNA_geno <- indxNA_pheno
 }
 
 
-## create a new M.ascii and Mt.ascii if length(indxNA) is non-zero 
-## remove rows in M.ascii and columns in Mt.ascii of those individuals listed in indxNA 
-if(length(indxNA_geno)>0){
-    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
-    message(cat("New dimensions of reshaped marker matrix", res, "\n"))
 
-     if(.Platform$OS.type == "unix") {
-       geno$asciifileM <- paste(tempdir() , "/", "M.asciitmp", sep="")
-     } else {
-       geno$asciifileM <- paste( tempdir() , "\\", "M.asciitmp", sep="")
-     }
-
-     if(.Platform$OS.type == "unix") {
-       geno$asciifileMt <- paste( tempdir() , "/", "Mt.asciitmp", sep="")
-     } else {
-       geno$asciifileMt <- paste( tempdir() , "\\", "Mt.asciitmp", sep="")
-     }
-
-    geno$dim_of_ascii_M <- res
-}
 
 
 
@@ -257,6 +240,7 @@ if(length(indxNA_geno)>0){
 
 
  # fit null model and find residuals
+ # i.e Y = XB + e   calculate \hat{e}.
  pheno[, "trait"] <- pheno[, trait]  ## name change
  if(is.null(fformula)){
    ff <- as.formula("trait ~ 1")
@@ -266,38 +250,58 @@ if(length(indxNA_geno)>0){
     ff <- paste("trait ~ ", fformula, sep=" ")
     ff <- as.formula(ff)
  }
-
- mod <- lm( ff , data=pheno)
+ mod <- lm( formula=ff , data=pheno )
  res <- residuals(mod)
- pheno[, "residuals"] <- res
+
+ if (any(is.na(indxNA_pheno))){
+    pheno[, "residuals"] <- res
+ } else {
+    pheno[, "residuals"] <- NA
+    pheno[-indxNA_pheno, "residuals"] <- res
+ }
 
  # create big pheno: contains all permutations 
-bigpheno <- matrix(data=NA, nrow=nrow(pheno), ncol=numreps)
+bigpheno <- matrix(data=NA, nrow=length(res) , ncol=numreps)
 for(ii in 1:numreps){
-  indx <- which(!is.na(pheno[, "residuals"]))
-  sperm <- pheno[indx, "residuals"]
+  #sperm <- pheno[, "residuals"]
+  sperm <- res
   sperm <- sperm[sample(1:length(sperm), length(sperm), FALSE)]
-  bigpheno[indx, ii] <- sperm 
+  bigpheno[, ii] <- sperm 
 }
 colnames(bigpheno) <- paste0("res", 1:numreps)
 
+# bigpheno will be of the wrong dimension if there is mising 
+# phenotype data (indxNA_geno)
+# Need to put back these 
+
+if (!any(is.na(indxNA_pheno))){
+  # lm removes missing data by default. 
+  # Therefore, bigpheno is missing rows. 
+  # Adding in rows of NA's here
+  id <- 1:nrow(pheno)  # size of data, including missing obs 
+  id <- id[-indxNA_pheno]
+  tmp <- matrix( data = NA,  nrow= nrow(pheno), ncol=ncol(bigpheno) )
+  tmp[id, ] <- bigpheno
+  bigpheno <- tmp
+}
 
 
  ## build design matrix currentX
- currentX_null <- .build_design_matrix(pheno=bigpheno, indxNA=NULL , fformula=NULL, quiet=quiet )
-
+ currentX_null <- .build_design_matrix(pheno=bigpheno,  fformula=NULL, quiet=quiet )
 
  ## check currentX for solve(crossprod(X, X)) singularity
-
- chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX_null, currentX_null) )) } ,
+ if (any(is.na(indxNA_geno))) {
+   chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
            error = function(err){
             return(TRUE)
            })
+  } else {
+   chck <- tryCatch({ans <- solve(crossprod(currentX_null[-indxNA_pheno,], currentX_null[-indxNA_pheno,]))},
+           error = function(err){
+            return(TRUE)
+           })
+  }
 
-# chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
-#           error = function(err){
-#            return(TRUE)
-#           })
 
   if(is.logical(chck)){
       if(chck){
@@ -313,7 +317,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
 
  ## calculate Ve and Vg
- Args <- list(geno=geno,availmemGb=availmemGb,
+ Args <- list(geno=geno,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
  if(!quiet)
@@ -322,10 +326,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
  if(!quiet)
    doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-
  invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-
-
  gc()
 
 gamma <- seq(0,1,length.out=numgammas)
@@ -335,10 +336,69 @@ gamma <- seq(0,1,length.out=numgammas)
 vc <- list()
 best_ve <- rep(NA, numreps)
 best_vg <- rep(NA, numreps)
+MaxLike <- rep(NA, numreps)
 extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
-vc <- .calcVC(trait=pheno[, "residuals"], Zmat=Zmat, currentX=currentX_null,MMt=MMt, ngpu=ngpu)
+# Found that REML step gives better results, at least for small sample size
 
+     if ( any(is.na(indxNA_pheno)) ) {
+
+         Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu)
+
+     }  else {
+       if (is.null(Zmat)){
+         # no Z 
+         Args <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=NULL, 
+                    K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+
+
+       }  else {
+         # Have to deal with Z and repeated measures
+         # Case 1:  missing pheno but no missing geno
+         # Case 2:  missing pheno and geno data
+
+         # Case 1: missing pheno but no missing geno
+         if (  !any(is.na(indxNA_pheno)) & any(is.na(indxNA_geno))  ){
+            # check for situation where nrow(Z) is same as nrow(MMt)
+            # this causes issues for EMMA later
+            if (  !any(colSums(Zmat[-indxNA_pheno, ] )> 1) ){
+                Args  <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=NULL, 
+                              K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+
+
+            } else {
+              Args <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=Zmat[-indxNA_pheno, ],
+                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+
+            }  ## end if nrow(Zmat) == nrow(MMt)
+
+          }   ## end if Case 1
+
+          # Case 2:  missing pheno and missing geno 
+          if (  !any(colSums(Zmat[-indxNA_pheno, -indxNA_geno] )> 1) ){
+             # this captures case of Z turning into an identify matrix
+             Args  <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=NULL ,
+                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
+
+
+
+          } else {
+             Args  <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1)  , 
+                           Z=Zmat[-indxNA_pheno, -indxNA_geno]  , K=MMt[-indxNA_geno, -indxNA_geno], 
+                           ngpu=ngpu)
+         } ## end if  Case 2
+
+
+
+
+       }  ## end  if (is.null(Zmat))
+
+
+     } # end  if ( any(is.na(indxNA_pheno)) )
+
+
+   res_full  <- do.call(emma.REMLE, Args)
+   vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
 
 rep(NA, numreps)
 
@@ -347,8 +407,15 @@ rep(NA, numreps)
    #gc()
    #best_ve[ii] <- vc[[ii]][["ve"]]
    #best_vg[ii] <- vc[[ii]][["vg"]]
+   #MaxLike[ii] <- vc[[ii]][["ML"]]
+
+
+
+   # Approximation step here - vc being computed once on the original unpermuted trait (residuals). 
+   # Exact code is what is commented out above where vc computed on each permutation of residuals.  
    best_ve[ii] <- vc[["ve"]]
    best_vg[ii] <- vc[["vg"]]
+   #MaxLike[ii] <- vc[["ML"]]
    gc()
  } ## for ii
 
@@ -356,8 +423,33 @@ rep(NA, numreps)
 # Since there are no fixed effects and we have permuted Y, then 
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
-extBIC  <- .calc_extBIC(bigpheno[, 1], currentX_null,MMt, geno, Zmat,
-                       numberSNPselected=0 , quiet, gamma, ngpu=ngpu )
+ if (  any(is.na(indxNA_pheno)) ){
+ Args <- list("trait"= bigpheno[,1], "currentX"=currentX_null, "geno"=geno, "MMt"=MMt,
+                       "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
+ }
+  if ( !any(is.na(indxNA_pheno))  &  any(is.na(indxNA_geno)) ){
+    if ( all(colSums( Zmat[-indxNA_pheno,]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno,]) == 1 ) ){
+          Zmatrix = NULL
+    } else {
+      Zmatrix = Zmat[-indxNA_pheno,]
+    }
+    Args <- list("trait"= bigpheno[-indxNA_pheno ,1], "currentX"=matrix(data=currentX_null[-indxNA_pheno,], ncol=1)  , "geno"=geno, "MMt"=MMt,
+                       "Zmat"=Zmatrix , "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
+  }
+
+ if ( !any(is.na(indxNA_pheno))  & !any(is.na(indxNA_geno))  ){
+    if ( all(colSums( Zmat[-indxNA_pheno, -indxNA_geno]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno, -indxNA_geno]) == 1 ) ){
+          Zmatrix = NULL
+    } else {
+      Zmatrix = Zmat[-indxNA_pheno, -indxNA_geno]
+    }
+    Args <- list("trait"= bigpheno[-indxNA_pheno ,1], "currentX"=matrix(data=currentX_null[-indxNA_pheno,], ncol=1)  , "geno"=geno, "MMt"=MMt[-indxNA_geno, -indxNA_geno],
+                       "Zmat"=Zmatrix, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
+ }
+
+
+ extBIC <-     do.call(.calc_extBIC_MLE, Args)
+     gc()
 
 extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix of null extBIC values
 
@@ -366,45 +458,50 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
  ## => only need to do once. 
  ## Looks at the stability of the MMt calculation especially if there are near identical rows of data in M
  error_checking <- FALSE
- if (!quiet )
-       error_checking <- TRUE
+ if (!quiet ) error_checking <- TRUE
 
-       MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                                                              ngpu=ngpu  )
+ MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
+                                                              ngpu=ngpu , message=message)
 
-
-      H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat   )
- 
-      P <- calculateP(H=H, X=currentX_null )
-
-
-
+      if (  any(is.na(indxNA_pheno)) ){
+         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
+         P <- calculateP(H=H, X=currentX_null , message=message)
       hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=bigpheno , quiet = quiet )
-
+                       y=bigpheno , quiet = quiet , message=message)
       var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                             quiet = quiet,  ngpu=ngpu  )
+                                             quiet = quiet, message=message )
+      } else {
 
+         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat[-indxNA_pheno, ], message=message )
+         P <- calculateP(H=H, X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) , message=message)
+      hat_a <- calculate_reduced_a_batch(Zmat=Zmat[-indxNA_pheno, ] , varG=best_vg[ii], P=P,
+                       MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
+                       y=bigpheno[-indxNA_pheno,  ]  , quiet = quiet , message=message)
 
+      var_hat_a    <- calculate_reduced_vara(Zmat=Zmat[-indxNA_pheno, ], X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) , 
+                                             varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
+                                             MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
+                                             quiet = quiet, message=message )
 
+      }
+ 
 
+   
       a_and_vara  <- calculate_a_and_vara_batch(numreps = numreps, 
                                           geno = geno,
-                                          maxmemGb=availmemGb,
                                           selectedloci = selected_loci,
                                           invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                           transformed_a=hat_a ,
                                           transformed_vara=var_hat_a,
-                                          quiet=quiet )
+                                          quiet=quiet, message=message,  indxNA_geno = indxNA_geno)
 
 
 
 
 for(ii in 1:numreps){
-#      message(" Performing permutation ", ii, "of ", numreps, "\r") 
        if(ii %% 4 == 0 )
           message("-", appendLF=FALSE)
        if(ii %% 4 == 1 )
@@ -416,10 +513,12 @@ for(ii in 1:numreps){
  
 
 
-
+      # Select new locus : find_qtl function but with calculateMMt_sqrt_and_sqrtinv
+      # moved outside the function for computational gain with permuted samples
+     
 
       ## outlier test statistic
-###        tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
+###   tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
       tsq <- a_and_vara[["a"]][, ii]**2/a_and_vara[["vara"]]
 
       indx <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. 
@@ -438,19 +537,53 @@ for(ii in 1:numreps){
        new_selected_locus <- new_selected_locus[indx]
 
    
-
        # Fit alternate model
        currentX <- currentX_null # initialising to base model  
-       currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, 
+#       if (  any(is.na(indxNA_pheno)) ){
+       currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, 
                               loci_indx=new_selected_locus,
-                              dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                              map=map, availmemGb = availmemGb)
+                              dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+                              map=map )
+#       } else {
+#       currentX <- constructX(Zmat=Zmat , fnameMt=geno[["asciifileMt"]], currentX=currentX , 
+#                              loci_indx=new_selected_locus,
+#                              dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+#                              map=map )
+#
+#      }
+
+
+     if (  any(is.na(indxNA_pheno)) ){
+            Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
+                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
+     }
+     if ( !any(is.na(indxNA_pheno))  &  any(is.na(indxNA_geno)) ){
+    if ( all(colSums( Zmat[-indxNA_pheno,]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno,]) == 1 ) ){
+          Zmatrix = NULL
+    } else {
+      Zmatrix = Zmat[-indxNA_pheno,]
+    }
+
+             Args <- list("trait"= bigpheno[-indxNA_pheno ,ii], "currentX"=currentX[-indxNA_pheno,]  , "geno"=geno, "MMt"=MMt,
+                       "Zmat"=Zmatrix, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
+      }
+
+     if ( !any(is.na(indxNA_pheno))  & !any(is.na(indxNA_geno))  ){
+    if ( all(colSums( Zmat[-indxNA_pheno,-indxNA_geno]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno,-indxNA_geno]) == 1 ) ){
+          Zmatrix = NULL
+    } else {
+      Zmatrix = Zmat[-indxNA_pheno,-indxNA_geno]
+    }
+
+             Args <- list("trait"= bigpheno[-indxNA_pheno ,ii], "currentX"=currentX[-indxNA_pheno,]  , "geno"=geno, "MMt"=MMt[-indxNA_geno, -indxNA_geno],
+                       "Zmat"=Zmatrix, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
+      }
 
 
 
-       ## Calculate extBIC
-       extBIC_alternate[ii, ]   <- .calc_extBIC(bigpheno[, ii] , currentX, MMt, geno, Zmat,
-                                       numberSNPselected=1 , quiet, gamma, ngpu=ngpu )
+
+
+ extBIC_alternate[ii, ] <-     do.call(.calc_extBIC_MLE, Args)
 
 }
 
@@ -474,7 +607,7 @@ cat(" ----------------------------- \n")
 d <- abs(falsepos - falseposrate)
 indx <- which(min(d) == d)
 if(length(indx) > 1){
-   indx <- max(indx)   ## picking most conservative value if there are multiple values
+    indx <- max(indx)   ## picking most conservative value if there are multiple values
 }
  setgamma <- gamma[indx]
 

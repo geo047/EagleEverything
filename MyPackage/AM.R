@@ -6,8 +6,6 @@
 #' @param fformula   the right hand side formula for the fixed effects.   See below for details. 
 #'                        If
 #'                        not specified, only an overall mean will be fitted.
-#' @param availmemGb a numeric value. It specifies the amount of available memory (in Gigabytes). 
-#' This should be set to the maximum practical value of available memory for the analysis. If not specified, 8 GBytes is assumed. 
 #' @param geno   the R  object obtained from running \code{\link{ReadMarker}}. This must be specified. 
 #' @param pheno  the R  object  obtained  from running \code{\link{ReadPheno}}. This must be specified.
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
@@ -15,7 +13,7 @@
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
-#'               is to assume there are no gpu available.  
+#'               is to assume there are no gpu available.  This option has not yet been implemented.
 #' @param  quiet      a logical value. If set to \code{FALSE}, additional runtime output is printed. 
 #' This is useful for error checking and monitoring the progress of a large analysis. 
 #' @param maxit     an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting. 
@@ -24,6 +22,7 @@
 #' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
 #' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value. 
 #'
+
 #' @details
 #'
 #' This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
@@ -82,9 +81,8 @@
 #' The file is located in /my/dir.}
 #' \item{}{the map data is contained in the file map.txt, is also located in 
 #'  /my/dir, and the first row has the column headings.}
-#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-#' and the available memory is set to 32 gigabytes.}
+#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, and
+#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, }
 #' } 
 #'
 #'  To analyse these data, we would run the following:
@@ -96,12 +94,12 @@
 #'   map_obj   <- ReadMap(filename='/my/dir/map.txt')
 #'
 #'   # FPR4AM calculates the gamma value corresponding to a desired false positive rate of 5\%
-#'   ans <- FPR4AM(falseposrate=0.05, numreps=100, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, availmemGb=32)
+#'   ans <- FPR4AM(falseposrate=0.05, numreps=200, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj)
 #'
 #'   # performs association mapping with a 5\% false positive rate
 #'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, availmemGb=32, gamma=ans$setgamma)
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj,  gamma=ans$setgamma)
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
@@ -126,9 +124,8 @@
 #' the individual's trait value to their corresponding genotype.}
 #' \item{}{the map data is contained in the file map.txt, is also located in 
 #'  /my/dir, and the first row has the column headings.}
-#' \item{}{An 'AM' analysis is performed where the trait of interest is y2, 
-#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, 
-#' and the available memory is set to 32 gigabytes.}
+#' \item{}{An 'AM' analysis is performed where the trait of interest is y2,  and
+#' the fixed effects part of the model is cov1 + cov2 + pc1 + pc2.}
 #' } 
 #'
 #'  To analyse these data, we would run the following:
@@ -142,7 +139,7 @@
 #'   Zmat_obj  <- ReadZmat(filename='/my/dir/Zmatrix.txt')
 #'
 #'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat=Zmat_obj, availmemGb=32)
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj, Zmat=Zmat_obj )
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
@@ -151,7 +148,7 @@
 #'
 #' \code{AM} can tolerate some missing marker data. However, ideally, 
 #' a specialized genotype imputation program such as  'BEAGLE'  or 'PHASE2', should be 
-#' used to impute the missing marker data before being read into 'EagleGPU'.  
+#' used to impute the missing marker data before being read into 'Eagle'.  
 #'
 #' }
 #'
@@ -184,8 +181,9 @@
 #' \describe{
 #'\item{trait:}{column name of the trait being used by 'AM'.}
 #'\item{fformula:}{the fixed effects part of the linear mixed model.}
-#'\item{indxNA:}{a vector containing the row indexes of those individuals, whose trait and fixed effects data contain
-#' missing values and have been removed from the analysis.}
+#'\item{indxNA_pheno:}{a vector containing the row indexes of the phenotyic data  that have been removed from the analysis.}
+#'\item{indxNA_geno:}{a vector containing the row indexes of those genotypes that have been removed from the analysis 
+#' due to missing data. }
 #' \item{Mrk:}{a vector with the names of the snp in strongest and significant association with the trait.If no loci are found to be 
 #' significant, then this component is \code{NA}.}
 #' \item{Chr:}{the chromosomes on which the identified snp lie.}
@@ -214,7 +212,7 @@
 #'   # File is a plain space separated text file with the first row 
 #'   # the column headings
 #'   complete.name <- system.file('extdata', 'map.txt', 
-#'                                    package='EagleGPU')
+#'                                    package='Eagle')
 #'   map_obj <- ReadMap(filename=complete.name) 
 #'
 #'   # read marker data
@@ -222,7 +220,7 @@
 #'   # Reading in a PLINK ped file 
 #'   # and setting the available memory on the machine for the reading of the data to 8  gigabytes
 #'   complete.name <- system.file('extdata', 'geno.ped', 
-#'                                      package='EagleGPU')
+#'                                      package='Eagle')
 #'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
 #'  
 #'   # read phenotype data
@@ -230,7 +228,7 @@
 #'
 #'   # Read in a plain text file with data on a single trait and two covariates
 #'   # The first row of the text file contains the column names y, cov1, and cov2. 
-#'   complete.name <- system.file('extdata', 'pheno.txt', package='EagleGPU')
+#'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
 #'   
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
@@ -244,12 +242,11 @@
 #'                            fformula=c('cov1+cov2'),
 #'                            map = map_obj,
 #'                            pheno = pheno_obj,
-#'                            geno = geno_obj, availmemGb=8)
+#'                            geno = geno_obj )
 #' }
 #'
 AM <- function(trait=NULL, 
                fformula  = NULL,
-               availmemGb=8, 
                geno=NULL, 
                pheno=NULL, 
                map = NULL,
@@ -265,7 +262,6 @@ AM <- function(trait=NULL,
  ## Core function for performing whole genome association mapping with EMMA
  ## Args
  ## ncpu        number of cores available for computation
- ## memoryGb        maximum amount of working memory available for computation
  ## pheno           data frame 
  ##                 remaining columns are explanatory variables to include in the model. If a numeric vector, then it 
  ##                 is only a response to be fitted. 
@@ -280,10 +276,10 @@ AM <- function(trait=NULL,
 
 
 
- error.code <- check.inputs.mlam(ncpu=ncpu , availmemGb=availmemGb, colname.trait=trait, 
+ error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait, 
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=gamma )
  if(error.code){
-   message("\n The EagleGPU function AM has terminated with errors.\n")
+   message("\n The Eagle function AM has terminated with errors.\n")
    return(NULL)
  }
 
@@ -300,7 +296,8 @@ AM <- function(trait=NULL,
                      Pos=1:geno[["dim_of_ascii_M"]][2])
   }
 
-
+ indxNA_pheno <- NA
+ indxNA_geno <- NA
  selected_loci <- NA
  new_selected_locus <- NA
  extBIC <- vector("numeric", 0)
@@ -356,10 +353,6 @@ if(!is.null(fformula)){
 
 
 
-
-
-
-
  
  ## check for NA's in explanatory variables 
  ## If any, set individual's trait value to NA
@@ -374,169 +367,194 @@ if(!is.null(fformula)){
   }
  }
 
- ## check for NA's in trait
-#print(" check.for.NA.in.trait(trait=trait) ")
+ ## check for NA's in trait 
  indxNA_pheno <- check.for.NA.in.trait(trait=trait)
- indxNA_geno <- indxNA_pheno  
-#print("end")
 
  ## remove missing observations from trait  
-#print(" remove missing obs form trait ")
- if(length(indxNA_pheno)>0){
-    trait <- trait[-indxNA_pheno]
-
-    if(!quiet ){
-     message(" The following rows are being removed from pheno due to missing data: \n")
-     message(cat("             ", indxNA_pheno, "\n\n"))
-    }
-
-}
-#print("end")
+ #if(length(indxNA_pheno)>0){
+ #   trait <- trait[-indxNA_pheno]
+#
+#    if(!quiet ){
+#     message(" The following rows are being removed from pheno due to missing data: \n")
+#     message(cat("             ", indxNA_pheno, "\n\n"))
+#    }
+#
+#}
 
 
 
 ## If Z matrix is present, then we may not need to remove genotypes (i.e. indxNA_geno)
+## check if any genotypes need to be removed. 
 if(!is.null(Zmat)){
-      Zmat <- Zmat[-indxNA_pheno,]
       # check for columns with 0 sums. 
-      s <- colSums(Zmat)
-      indxNA_geno <- which(s==0) 
-      if (length(indxNA_geno) > 0)
-          Zmat <- Zmat[, -indxNA_geno ]
+      if(!any(is.na(indxNA_pheno))){
+          s  <- colSums(Zmat[-indxNA_pheno,])
+          indx <- which(s==0)
+          if (length(indx)  > 0 )
+          indxNA_geno <- indx 
+       }
+} else {
+  indxNA_geno <- indxNA_pheno  
 }
 
 
 
-## create a new M.ascii and Mt.ascii if length(indxNA) is non-zero 
+
+## create a new M.ascii and Mt.ascii if length(indxNA_geno) is non-zero 
 ## remove rows in M.ascii and columns in Mt.ascii of those individuals listed in indxNA 
-if(length(indxNA_geno)>0){
-    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
-    message(cat("new dimensions of reshaped M", res, "\n"))
-
-     if(.Platform$OS.type == "unix") {
-       geno$asciifileM <- paste(tempdir() , "/", "M.asciitmp", sep="")
-     } else {
-       geno$asciifileM <- paste( tempdir() , "\\", "M.asciitmp", sep="")
-     }
-
-     if(.Platform$OS.type == "unix") {
-       geno$asciifileMt <- paste( tempdir() , "/", "Mt.asciitmp", sep="")
-     } else {
-       geno$asciifileMt <- paste( tempdir() , "\\", "Mt.asciitmp", sep="")
-     }
-
-    geno$dim_of_ascii_M <- res
-}
-
+#if(length(indxNA_geno)>0){
+#    res <- ReshapeM(fnameM=geno$asciifileM, fnameMt=geno$asciifileMt, indxNA=indxNA_geno, dims=geno$dim_of_ascii_M)
+#    message(cat("new dimensions of reshaped M", res, "\n"))
+#
+#     if(.Platform$OS.type == "unix") {
+#       geno$asciifileM <- paste(tempdir() , "/", "M.asciitmp", sep="")
+#     } else {
+#       geno$asciifileM <- paste( tempdir() , "\\", "M.asciitmp", sep="")
+#     }
+#
+#     if(.Platform$OS.type == "unix") {
+#       geno$asciifileMt <- paste( tempdir() , "/", "Mt.asciitmp", sep="")
+#     } else {
+#       geno$asciifileMt <- paste( tempdir() , "\\", "Mt.asciitmp", sep="")
+#     }
+#
+#    geno$dim_of_ascii_M <- res
+#}
 
 
 
  ## build design matrix currentX
-#print(" build design matrix currentX ")
- currentX <- .build_design_matrix(pheno=pheno, indxNA=indxNA_pheno, fformula=fformula, quiet=quiet )
-#print("end")
+ currentX <- .build_design_matrix(pheno=pheno, fformula=fformula, quiet=quiet )
+ currentX <- as.matrix(currentX)
 
-
-# check currentX for solve(crossprod(X, X)) singularity
-#print(" check currentX for solve(crossprod(X, X)) singularity ")
-# chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
-#           error = function(err){
-#            return(TRUE)
-#           })
-
-
-## check currentX for solve(crossprod(X, X)) singularity
-
-
-chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX, currentX) )) } ,
-            error = function(err){
+ ## check currentX for solve(crossprod(X, X)) singularity
+ if (any(is.na(indxNA_geno))) {
+   chck <- tryCatch({ans <- solve(crossprod(currentX, currentX))},
+           error = function(err){
             return(TRUE)
            })
-
-
+  } else {
+   chck <- tryCatch({ans <- solve(crossprod(currentX[-indxNA_pheno,], currentX[-indxNA_pheno,]))},
+           error = function(err){
+            return(TRUE)
+           })
+  }
 
   if(is.logical(chck)){
       if(chck){
-        message(" There is a problem with the effects in fformula.")
-        message(" These effects are causing computational instability. ")
-        message(" This can occur when there is a strong dependency between the effects.")
-        message(" Try removing some of the effects in fformula. ")
-        message("\n  AM has terminated with errors.")
+        message(" There is a problem with the effects in fformula.\n")
+        message(" These effects are causing computational instability. \n")
+        message(" This can occur when there is a strong dependency between the effects.\n")
+        message(" Try removing some of the effects in fformula. \n")
+        message("\n  AM has terminated with errors.\n")
         return(NULL)
       }
   }
 
+
+  
  ## Initialization
-
-
-
-
-
  continue <- TRUE
  itnum <- 1
  outlierstat <- list()
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
-     #print(" forming currentX")
-     currentX <- constructX(Zmat=Zmat, fnameM=geno[["asciifileM"]], currentX=currentX, loci_indx=new_selected_locus,
-                          dim_of_ascii_M=geno[["dim_of_ascii_M"]],
-                          map=map, availmemGb = availmemGb)  
+     currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, loci_indx=new_selected_locus,
+                          dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+                          map=map )  
+     currentX <- as.matrix(currentX)
 
      ## calculate Ve and Vg
-     Args <- list(geno=geno,availmemGb=availmemGb,
+     Args <- list(geno=geno,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
      if(itnum==1){
         if(!quiet)
-           message("  quiet=FALSE: calculating M %*% M^t. \n")
-     
-        MMt <- do.call(.calcMMt, Args)  
-        print(" MMt ")  
-        print(MMt[1:4,1:4])
-
-        
-
-
+           message(" quiet=FALSE: calculating M %*% M^t. \n")
+           MMt <- do.call(.calcMMt, Args)  
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-        
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-        
+
 
 
 
         gc()
      }  
-    
 
 
- 
  
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-     #print("start calcVC")
-     start <- Sys.time()
-     vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=currentX,MMt=MMt, ngpu=ngpu) 
-     end <- Sys.time()
-     cat("  .calcVC  ", end - start, "\n")
- 
-     #print(" end")
+     if ( any(is.na(indxNA_pheno)) ) {
+         vc <- .calcVC(trait=trait, Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt,  ngpu=ngpu) 
+     }  else {
+       if (is.null(Zmat)){
+         # no Z 
+         vc <- .calcVC(trait=trait[-indxNA_pheno],  currentX=as.matrix(currentX[-indxNA_pheno,]),  Zmat = NULL,
+                       MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+       }  else {
+         # Have to deal with Z and repeated measures
+         # Case 1:  missing pheno but no missing geno
+         # Case 2:  missing pheno and geno data
+
+         # Case 1: missing pheno but no missing geno
+         if (  !any(is.na(indxNA_pheno)) & any(is.na(indxNA_geno))  ){
+            # check for situation where nrow(Z) is same as nrow(MMt)
+            # this causes issues for EMMA later
+           # if (nrow(Zmat) == nrow(MMt)){
+            if (  !any(colSums(Zmat[-indxNA_pheno, ] )> 1) ){
+               vc <- .calcVC(trait=trait[-indxNA_pheno],  currentX=as.matrix(currentX[-indxNA_pheno,]),  Zmat=NULL,
+                       MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+            } else {
+                 vc <- .calcVC(trait=trait[-indxNA_pheno], Zmat=Zmat[-indxNA_pheno, ], 
+                              currentX=as.matrix(currentX[-indxNA_pheno,]) , MMt=MMt,  ngpu=ngpu) 
+            }  ## end if nrow(Zmat) == nrow(MMt)
+
+          }   ## end if Case 1
+
+          # Case 2:  missing pheno and missing geno 
+          #if (nrow( Zmat[-indxNA_pheno, -indxNA_geno] ) == nrow( MMt[-indxNA_geno, -indxNA_geno] )){
+
+          if (  !any(colSums(Zmat[-indxNA_pheno, -indxNA_geno] )> 1) ){
+             # this captures case of Z turning into an identify matrix
+             vc <- .calcVC(trait=trait[-indxNA_pheno],  Zmat = NULL,
+                   currentX=as.matrix(currentX[-indxNA_pheno,]), MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+
+          } else {
+             vc <- .calcVC(trait=trait[-indxNA_pheno], Zmat=Zmat[-indxNA_pheno, -indxNA_geno], 
+                   currentX=as.matrix(currentX[-indxNA_pheno,]), MMt=MMt[-indxNA_geno, -indxNA_geno],  ngpu=ngpu) 
+         } ## end if  Case 2
+
+         
+
+
+       }  ## end  if (is.null(Zmat))
+
+
+     } # end  if ( any(is.na(indxNA_pheno)) )
+
+
+
+
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
-
-     ## Calculate extBIC
-
-    print(" .calc_extBIC ")
-
- start <- Sys.time()
-     new_extBIC <- .calc_extBIC(trait, currentX,MMt, geno, Zmat, 
-                       numberSNPselected=(itnum-1), quiet, gamma, ngpu=ngpu ) 
-  end <- Sys.time()
-     cat("  .calc_extBIC   ", end - start, "\n")
+ 
+     ## Calculate extBIC, accounting for different NA conditions
+     ## Only have to worry about missing phenotype data because 
+     ## even though geno is needed, it is only the number of snp. 
+     if (any(is.na(indxNA_pheno))){
+         new_extBIC <- .calc_extBIC(vc$ML , trait, currentX, geno, 
+                       numberSNPselected=(itnum-1), quiet, gamma) 
+     }
+     if ( !any(is.na(indxNA_pheno)) ){
+         new_extBIC <- .calc_extBIC(vc$ML , trait[-indxNA_pheno], as.matrix(currentX[-indxNA_pheno,]), geno, 
+                       numberSNPselected=(itnum-1), quiet, gamma) 
+     }
 
      gc()
 
@@ -551,18 +569,33 @@ chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX, currentX) )) } ,
     if (fixit){
        if (itnum <= maxit){
            ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
-                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum )
-          #print(" do.call find_qtl ")
+
+     if (  any(is.na(indxNA_pheno)) ){
+        ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX),
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum)
+
+     }
+     if ( !any(is.na(indxNA_pheno))  &  any(is.na(indxNA_geno)) ){
+        ARgs <- list(Zmat=Zmat[-indxNA_pheno,], geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX[-indxNA_pheno,]),
+                 ncpu=ncpu, quiet=quiet, trait=trait[-indxNA_pheno], ngpu=ngpu, itnum=itnum)
+
+     }
+     if ( !any(is.na(indxNA_pheno))  & !any(is.na(indxNA_geno))  ){
+        ARgs <- list(Zmat=Zmat[-indxNA_pheno,], geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt,
+                 best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX[-indxNA_pheno,]),
+                 ncpu=ncpu, quiet=quiet, trait=trait[-indxNA_pheno], ngpu=ngpu, itnum=itnum, indxNA_geno=indxNA_geno)
+
+     }
+
+
+
+
+
           ## new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
-
-          start <- Sys.time()
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
-  end <- Sys.time()
-     cat("  .find_qtl   ", end - start, "\n")
-
-
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
@@ -576,18 +609,25 @@ chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX, currentX) )) } ,
 
         ## Select new locus if extBIC is still decreasing 
         if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
+
            ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=availmemGb, selected_loci=selected_loci,
-                     MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=currentX,
-                     ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum  )
-           #print("inner  find_qtl")
-          #new_selected_locus <- do.call(.find_qtl, ARgs)  ## memory blowing up here !!!! 
+        if (  any(is.na(indxNA_pheno)) ){
+           # no missing data
+           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX),
+                 ncpu=ncpu, quiet=quiet, trait=trait, ngpu=ngpu, itnum=itnum)
 
-  start <- Sys.time()
+        } else {
+
+           ARgs <- list(Zmat=Zmat[-indxNA_pheno,], geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+                 MMt=MMt, invMMt=invMMt,
+                 best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX[-indxNA_pheno,]),
+                 ncpu=ncpu, quiet=quiet, trait=trait[-indxNA_pheno], ngpu=ngpu, itnum=itnum, indxNA_geno=indxNA_geno)
+        }
+
+
+
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
- end <- Sys.time()
-     cat("  .find_qtl in else    ", end - start, "\n")
-
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
@@ -610,7 +650,7 @@ chck <-    tryCatch( {ans <- chol2inv(chol( crossprod(currentX, currentX) )) } ,
          ## under this new model. 
          .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
          sigres <- .form_results(trait, selected_loci[-length(selected_loci)],   fformula, 
-                     indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet,  extBIC, gamma, 
+                     indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet,  extBIC, gamma, 
                      geno, pheno, map, Zmat, outlierstat )   
     }
  
@@ -620,7 +660,7 @@ if( itnum > maxit){
     .print_header()
     .print_final(selected_loci, map,  extBIC, gamma)
     sigres <- .form_results(trait, selected_loci,   fformula, 
-                     indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet,  extBIC, gamma,
+                     indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet,  extBIC, gamma,
                      geno, pheno, map, Zmat, outlierstat )   
 
 } else {
@@ -631,14 +671,14 @@ if( itnum > maxit){
                      map, 
                      extBIC[-length(selected_loci)], gamma )
         sigres <- .form_results(trait, selected_loci[-length(selected_loci)],   fformula, 
-                         indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet, 
+                         indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet, 
                          extBIC[-length(selected_loci)], gamma, 
                          geno, pheno, map, Zmat, outlierstat )   
     } else {
         .print_header()
         .print_final(selected_loci, map, extBIC, gamma )
         sigres <- .form_results(trait, selected_loci,   fformula, 
-                         indxNA_pheno, indxNA_geno, ncpu, availmemGb, quiet, extBIC, gamma, 
+                         indxNA_pheno, indxNA_geno, ncpu, geno[["availmemGb"]], quiet, extBIC, gamma, 
                          geno, pheno, map, Zmat, outlierstat )   
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)

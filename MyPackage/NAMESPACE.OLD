@@ -5,18 +5,19 @@ importFrom(matrixcalc, is.positive.definite)
 importFrom(shinyjs, useShinyjs)
 importFrom(shinyBS, bsButton)
 importFrom(shinyBS, bsTooltip)
+importFrom(R.utils, insert )
 importFrom(mmap, sizeof)
 import(ggplot2)
 import(ggthemes)
 import(shinyFiles, shiny,  shinythemes,  stats, utils) 
 
 export(
-   magmaEigenNonsym,
-   magmaEigen,
-   magmaQR,
+  magmaEigenNonsym,                                          
+   magmaEigen,                                                
+   magmaQR,      
    FPR4AM,
    ReadPheno,
-   ReadMarkerBin,
+   ReadMarker,
    ReadMap,
    ReadZmat,
    AM,

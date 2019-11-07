@@ -56,7 +56,6 @@ buffer = new char[numelem];
    fileIN.read( buffer, numelem );
  
   // check 
- Rcpp::Rcout << "Readblock parallelizing ... " << std::endl;
  #pragma omp parallel for
  for(long ii=0; ii < numrows_in_block; ii++){
   for(long jj=0; jj < numcols ; jj++){
