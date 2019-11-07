@@ -1,6 +1,6 @@
 library(Rcpp)
     
- Rcpp.package.skeleton("EagleGPU", cpp_files=c(
+ Rcpp.package.skeleton("Lion", cpp_files=c(
             "magma_qr.cpp"  ,
             "ReshapeM_rcpp.cpp"  ,
             "getRowColumn.cpp"  ,
@@ -22,6 +22,7 @@ library(Rcpp)
             "createM_ASCII_rcpp.cpp"  ,
             "createM_BIN_rcpp.cpp"  ,
             "extract_geno_rcpp.cpp"  ,
+            "extract_geno_Mt_rcpp.cpp"  ,
             "calculateMMt_rcpp.cpp"  ,
             "getNumColumns.cpp"  ,
             "getNumRows.cpp"  
@@ -46,6 +47,7 @@ library(Rcpp)
             "build_design_matrix.R", 
             "calcMMt.R", 
             "calc_extBIC.R", 
+            "calc_extBIC_MLE.R", 
             "calcVC.R", 
             "print_header.R", 
             "print_final.R", 
@@ -79,10 +81,11 @@ library(Rcpp)
             "create_ascii.R", 
             "create_bin.R", 
             "extract_geno.R", 
+            "extract_geno_Mt.R", 
             "constructX.R", 
             "summary_am.R"   ) ) 
   ## running roxygen2  
  library(roxygen2) 
- setwd("./EagleGPU")  
+ setwd("./Lion")  
   roxygenise() 
   

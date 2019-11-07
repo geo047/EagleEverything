@@ -1,4 +1,4 @@
-library(Eagle)
+library(Lion)
 
 geno <- ReadMarker(filename="./genoDemo.dat", type="text", AA=0, AB=1, BB=2)
 

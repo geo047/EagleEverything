@@ -1,3 +1,3 @@
 ## ----include = FALSE-----------------------------------------------------
-library(Eagle)
+library(Lion)
 

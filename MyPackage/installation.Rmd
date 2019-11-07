@@ -10,19 +10,19 @@ vignette: >
 
 
 ```{r include = FALSE}
-library(Eagle)
+library(Lion)
 ```
 
-## How to install Eagle
+## How to install Lion
 
-1. Can install Eagle_1.0.0.tar.gz using R CMD INSTALL Eagle_1.0.0.tar.gz
+1. Can install Lion_1.0.0.tar.gz using R CMD INSTALL Lion_1.0.0.tar.gz
    but need to install dependent packages Rcpp RcppEigen shiny first. 
 2. Go into R. 
-   use install.packages("Eagle_1.0.0.tar.gz", repos=NULL)   
+   use install.packages("Lion_1.0.0.tar.gz", repos=NULL)   
    but you also have to install dependent packages first. 
 3. From CRAN, you can use 
-   install.packages("Eagle", dependencies=TRUE)  and this will install all dependent packages 
-   as well as Eagle. 
+   install.packages("Lion", dependencies=TRUE)  and this will install all dependent packages 
+   as well as Lion. 
 
 process on VM - ubuntu
 went into R session
@@ -32,7 +32,7 @@ install.packages("RcppEigen")
 install.packages("shiny")
 
 then typed
-install.packages("Eagle_1.0.0.0.tar.gz", repos=NULL)
+install.packages("Lion_1.0.0.0.tar.gz", repos=NULL)
 
 
 
@@ -40,7 +40,7 @@ install.packages("Eagle_1.0.0.0.tar.gz", repos=NULL)
 
 Notes - Ubuntu 
 29/03/17
-R CMD INSTALL Eagle_1.0.0.tar.gz on virgin R system failed due to dependencies 
+R CMD INSTALL Lion_1.0.0.tar.gz on virgin R system failed due to dependencies 
    Rcpp, RcppEigen, shiny, matrixcal, shinythemes
 
 Now failing due to mkl.h not being found

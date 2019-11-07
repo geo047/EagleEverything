@@ -34,15 +34,15 @@ cd $DIR
 
 
 
-## removing EagleGPU and EagleGPU.Rcheck
-echo " Removing EagleGPU and EagleGPU.Rcheck"
-rm -rf $DIR/EagleGPU  $DIR/EagleGPU.Rcheck
+## removing Lion and Lion.Rcheck
+echo " Removing Lion and Lion.Rcheck"
+rm -rf $DIR/Lion  $DIR/Lion.Rcheck
 
 ## create and run Rcpp.package.skeleton
 echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
-echo  " Rcpp.package.skeleton(\"EagleGPU\", cpp_files=c(
+echo  " Rcpp.package.skeleton(\"Lion\", cpp_files=c(
             \"magma_qr.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"getRowColumn.cpp\"  ,
@@ -64,6 +64,7 @@ echo  " Rcpp.package.skeleton(\"EagleGPU\", cpp_files=c(
             \"createM_ASCII_rcpp.cpp\"  ,
             \"createM_BIN_rcpp.cpp\"  ,
             \"extract_geno_rcpp.cpp\"  ,
+            \"extract_geno_Mt_rcpp.cpp\"  ,
             \"calculateMMt_rcpp.cpp\"  ,
             \"getNumColumns.cpp\"  ,
             \"getNumRows.cpp\"  
@@ -88,6 +89,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"build_design_matrix.R\", 
             \"calcMMt.R\", 
             \"calc_extBIC.R\", 
+            \"calc_extBIC_MLE.R\", 
             \"calcVC.R\", 
             \"print_header.R\", 
             \"print_final.R\", 
@@ -121,11 +123,12 @@ echo  "    example_code=FALSE, code_files=c(
             \"create_ascii.R\", 
             \"create_bin.R\", 
             \"extract_geno.R\", 
+            \"extract_geno_Mt.R\", 
             \"constructX.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
 echo  " library(roxygen2) " >> ./tmp.R
-echo  " setwd(\"./EagleGPU\")  " >> ./tmp.R
+echo  " setwd(\"./Lion\")  " >> ./tmp.R
 echo  "  roxygenise() " >> ./tmp.R
 echo "  " >> tmp.R
 
@@ -135,12 +138,12 @@ R CMD BATCH ./tmp.R
 
 
 
-# copy Makevars to EagleGPU
-echo " Copy my own Makevars and Makevars.win to EagleGPU directory "
-# AWG 2019 cp $DIR/Makevars $DIR/EagleGPU/src
-cp $DIR/Makevars.win $DIR/EagleGPU/src
-# ------ >  cp $DIR/Makevars.gpu  $DIR/EagleGPU/src/Makevars
-cp $DIR/Makevars.Magma $DIR/EagleGPU/src/Makevars
+# copy Makevars to Lion
+echo " Copy my own Makevars and Makevars.win to Lion directory "
+# AWG 2019 cp $DIR/Makevars $DIR/Lion/src
+cp $DIR/Makevars.win $DIR/Lion/src
+# ------ >  cp $DIR/Makevars.gpu  $DIR/Lion/src/Makevars
+cp $DIR/Makevars.Magma $DIR/Lion/src/Makevars
 
 
  
@@ -149,29 +152,29 @@ cp $DIR/Makevars.Magma $DIR/EagleGPU/src/Makevars
 
 ## Replace generated NAMESPACE and DESCRIPTION with correct versions
 echo " Replace NAMESPACE and DESCRIPTION with my own version "
-cp ./NAMESPACE.OLD ./EagleGPU/NAMESPACE
-cp ./DESCRIPTION.OLD ./EagleGPU/DESCRIPTION
+cp ./NAMESPACE.OLD ./Lion/NAMESPACE
+cp ./DESCRIPTION.OLD ./Lion/DESCRIPTION
+cp  ./NEWS  ./Lion/.
 
 
-
- cd $DIR/EagleGPU/src
+ cd $DIR/Lion/src
 
 
 ## this abreviated form also works on bragg
-awk '{if (NR==4) print "#include <RcppEigen.h>"; else print $0 }' $DIR/EagleGPU/src/RcppExports.cpp  >  $DIR/EagleGPU/src/tmpnew
-awk '{if (NR==5) print "#include <Rcpp.h>"; else print $0 }' $DIR/EagleGPU/src/tmpnew >  $DIR/EagleGPU/src/tmp
-awk '{if (NR==6) print "using namespace Rcpp ; "; else print $0 }' $DIR/EagleGPU/src/tmp  >  $DIR/EagleGPU/src/tmpnew
-mv $DIR/EagleGPU/src/tmpnew  $DIR/EagleGPU/src/RcppExports.cpp
+awk '{if (NR==4) print "#include <RcppEigen.h>"; else print $0 }' $DIR/Lion/src/RcppExports.cpp  >  $DIR/Lion/src/tmpnew
+awk '{if (NR==5) print "#include <Rcpp.h>"; else print $0 }' $DIR/Lion/src/tmpnew >  $DIR/Lion/src/tmp
+awk '{if (NR==6) print "using namespace Rcpp ; "; else print $0 }' $DIR/Lion/src/tmp  >  $DIR/Lion/src/tmpnew
+mv $DIR/Lion/src/tmpnew  $DIR/Lion/src/RcppExports.cpp
 
-rm  $DIR/EagleGPU/src/tmp
+rm  $DIR/Lion/src/tmp
 
-echo " mkdir EagleGPU/inst and EagleGPU/inst/include "
-mkdir $DIR/EagleGPU/inst
-#mkdir $DIR/EagleGPU/inst/include
+echo " mkdir Lion/inst and Lion/inst/include "
+mkdir $DIR/Lion/inst
+#mkdir $DIR/Lion/inst/include
 
-# cp EagleGPU.h to EagleGPU direcotry 
+# cp Lion.h to Lion direcotry 
 ## added by AWG 14/04/17 to be consistent with windows pipeline
-echo " Forming EagleGPU.h to take care of include -- may not need this -- need to test ... "
+echo " Forming Lion.h to take care of include -- may not need this -- need to test ... "
 #echo "#include <RcppEigen.h> " > ./tmp1
 echo " #include <omp.h> "  >  ./tmp1
 echo " #include <iostream> " >> ./tmp1
@@ -182,18 +185,18 @@ echo " #include <bitset> " >> ./tmp1
 echo " #include <string> " >> ./tmp1
 echo " using namespace std;"  >> ./tmp1
 echo "    " >> tmp1
-mv tmp1 EagleGPU.h
+mv tmp1 Lion.h
 
-###  mv  ./EagleGPU.h  $DIR/EagleGPU/inst/include/EagleGPU.h
+###  mv  ./Lion.h  $DIR/Lion/inst/include/Lion.h
 
 
 cd $DIR
 
 
 # copy headers to src
-cp $DIR/readblock.h $DIR/EagleGPU/src/.
-cp $DIR/createM_ASCII_rcpp.h   $DIR/EagleGPU/src/.
-cp $DIR/createM_BIN_rcpp.h   $DIR/EagleGPU/src/.
+cp $DIR/readblock.h $DIR/Lion/src/.
+cp $DIR/createM_ASCII_rcpp.h   $DIR/Lion/src/.
+cp $DIR/createM_BIN_rcpp.h   $DIR/Lion/src/.
 
 
 
@@ -204,15 +207,15 @@ cp $DIR/createM_BIN_rcpp.h   $DIR/EagleGPU/src/.
 echo  " Adding raw data to package ... "
 cd $DIR
 
-mkdir $DIR/EagleGPU/inst/extdata
+mkdir $DIR/Lion/inst/extdata
 cd $DIR
 
 
-cp ./pheno.txt $DIR/EagleGPU/inst/extdata/.
-cp ./geno.txt $DIR/EagleGPU/inst/extdata/.
-cp ./geno.ped $DIR/EagleGPU/inst/extdata/.
-cp ./map.txt $DIR/EagleGPU/inst/extdata/.
-cp ./Z.txt $DIR/EagleGPU/inst/extdata/.
+cp ./pheno.txt $DIR/Lion/inst/extdata/.
+cp ./geno.txt $DIR/Lion/inst/extdata/.
+cp ./geno.ped $DIR/Lion/inst/extdata/.
+cp ./map.txt $DIR/Lion/inst/extdata/.
+cp ./Z.txt $DIR/Lion/inst/extdata/.
 
 cd $DIR
 
@@ -221,62 +224,62 @@ cd $DIR
 ## building shiny structure
 ##---------------------------
 echo " Building shiny structure from files in ~/ShinyApp/. "
-mkdir $DIR/EagleGPU/inst/shiny_app
-mkdir $DIR/EagleGPU/inst/shiny_app/www
-mkdir $DIR/EagleGPU/inst/shiny_app/www/images
+mkdir $DIR/Lion/inst/shiny_app
+mkdir $DIR/Lion/inst/shiny_app/www
+mkdir $DIR/Lion/inst/shiny_app/www/images
 
 
 
-cp ./ShinyApp/shinyApp.R $DIR/EagleGPU/inst/shiny_app/app.R
-cp ./ShinyApp/help.html  $DIR/EagleGPU/inst/shiny_app/.
-cp ./ShinyApp/css.css $DIR/EagleGPU/inst/shiny_app/.
-cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/EagleGPU/inst/shiny_app/www/images/.
-cp ./ShinyApp/www/images/*banner* $DIR/EagleGPU/inst/shiny_app/www/images/.
-cp ./ShinyApp/www/images/logo.jpg $DIR/EagleGPU/inst/shiny_app/www/images/.
-cp ./ShinyApp/faq.rmd $DIR/EagleGPU/inst/shiny_app/.
+cp ./ShinyApp/shinyApp.R $DIR/Lion/inst/shiny_app/app.R
+cp ./ShinyApp/help.html  $DIR/Lion/inst/shiny_app/.
+cp ./ShinyApp/css.css $DIR/Lion/inst/shiny_app/.
+cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Lion/inst/shiny_app/www/images/.
+cp ./ShinyApp/www/images/*banner* $DIR/Lion/inst/shiny_app/www/images/.
+cp ./ShinyApp/www/images/logo.jpg $DIR/Lion/inst/shiny_app/www/images/.
+cp ./ShinyApp/faq.rmd $DIR/Lion/inst/shiny_app/.
 
 
-# create bin directory in ./EagleGPU/inst and copy magma executables
-mkdir  $DIR/EagleGPU/inst/Magma
-# cp /home/geo047/EagleEverything/MyPackage/MagmaSolve/magma_solve.exe   $DIR/EagleGPU/inst/Magma/.
-cp /home/geo047/EagleEverything/MyPackage/MagmaEigen/magma_eigen.exe   $DIR/EagleGPU/inst/Magma/.
-cp /home/geo047/EagleEverything/MyPackage/MagmaEigenNonsym/magma_eigennonsym.exe   $DIR/EagleGPU/inst/Magma/.
+# create bin directory in ./Lion/inst and copy magma executables
+mkdir  $DIR/Lion/inst/Magma
+# cp /home/geo047/EagleEverything/MyPackage/MagmaSolve/magma_solve.exe   $DIR/Lion/inst/Magma/.
+cp /home/geo047/EagleEverything/MyPackage/MagmaEigen/magma_eigen.exe   $DIR/Lion/inst/Magma/.
+cp /home/geo047/EagleEverything/MyPackage/MagmaEigenNonsym/magma_eigennonsym.exe   $DIR/Lion/inst/Magma/.
 
 
-cp  ./ShinyApp/www/loading.gif $DIR/EagleGPU/inst/shiny_app/www/.
+cp  ./ShinyApp/www/loading.gif $DIR/Lion/inst/shiny_app/www/.
 
 
 
 ## remove object files
-rm -f ./EagleGPU/src/*.o ./EagleGPU/src/tmp1 ./EagleGPU/src/block?.tmp ./EagleGPU/src/*.so
-rm -f ./EagleGPU/.RData
+rm -f ./Lion/src/*.o ./Lion/src/tmp1 ./Lion/src/block?.tmp ./Lion/src/*.so
+rm -f ./Lion/.RData
 
 
- cd $DIR/EagleGPU/R
+ cd $DIR/Lion/R
  sed s/\`/\'/g RcppExports.R  > tmp
  mv tmp RcppExports.R
 
 cd $DIR
-cp ./EagleGPU-package.Rd  ./EagleGPU/man/. 
+cp ./Lion-package.Rd  ./Lion/man/. 
 
-R CMD build EagleGPU 
-
-
-
-#  R CMD check --as-cran EagleGPU_1.5.1.tar.gz 
+R CMD build Lion 
 
 
-R CMD INSTALL EagleGPU -l ~/RLibs
+
+#  R CMD check --as-cran Lion_1.5.1.tar.gz 
+
+
+R CMD INSTALL Lion -l ~/RLibs
 
 
 # rm tmp.R  tmp.Rout 
 
-# copy to git area ready to upload to github/EagleGPU and eventual install via devtools pipeline
-cp EagleGPU_1.5.1.tar.gz ~/EagleGPU/EagleGPU/.
-cd ~/EagleGPU/EagleGPU/
-tar xfz EagleGPU_1.5.1.tar.gz
-cp -rf ./EagleGPU/* .
-rm -rf ./EagleGPU
+# copy to git area ready to upload to github/Lion and eventual install via devtools pipeline
+cp Lion_2.0.0.tar.gz ~/Lion/Lion/.
+cd ~/Lion/Lion/
+tar xfz Lion_2.0.0.tar.gz
+cp -rf ./Lion/* .
+rm -rf ./Lion
 cd /home/geo047/EagleEverything/MyPackage
 
 

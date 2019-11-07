@@ -14,7 +14,7 @@
 #' This need only be specified if the file type is 'text'.
 #'This can be left unspecified 
 #'               if there are no heterozygous genotypes (i.e. the individuals are inbred). Only a single 
-#'  heterozygous genotype is allowed ('EagleGPU' does not distinguish between 'AB' and 'BA').  
+#'  heterozygous genotype is allowed ('Lion' does not distinguish between 'AB' and 'BA').  
 #' If specified and a character, it must be in quotes. 
 #' @param BB        the character or number corresponding to the 'BB' snp genotype in the marker genotype file. 
 #' This need only be  specified if the file type is 'text'.  If a character, then it must be in quotes.
@@ -151,7 +151,7 @@
 #'   # Read in the genotype data contained in the text file geno.txt
 #'   #
 #'   # The function system.file() gives the full file name (name + full path).
-#'   complete.name <- system.file('extdata', 'geno.txt', package='EagleGPU')
+#'   complete.name <- system.file('extdata', 'geno.txt', package='Lion')
 #'   # 
 #'   # The full path and name of the file is
 #'   print(complete.name)
@@ -174,7 +174,7 @@
 #'   # Read in the allelic data contained in the PLINK ped file geno.ped
 #'   #
 #'   # The function system.file() gives the full file name (name + full path).
-#'   complete.name <- system.file('extdata', 'geno.ped', package='EagleGPU')
+#'   complete.name <- system.file('extdata', 'geno.ped', package='Lion')
 #'
 #'   # 
 #'   # The full path and name of the file is
