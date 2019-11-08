@@ -65,8 +65,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // calculate_a_and_vara_batch_rcpp
-Rcpp::List calculate_a_and_vara_batch_rcpp(long numreps, Rcpp::CharacterVector f_name_ascii, Rcpp::NumericVector selected_loci, Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt, Eigen::Map<Eigen::MatrixXd> dim_reduced_vara, double max_memory_in_Gbytes, std::vector <long> dims, Eigen::Map<Eigen::MatrixXd> a, bool quiet, Rcpp::Function message);
-RcppExport SEXP _Lion_calculate_a_and_vara_batch_rcpp(SEXP numrepsSEXP, SEXP f_name_asciiSEXP, SEXP selected_lociSEXP, SEXP inv_MMt_sqrtSEXP, SEXP dim_reduced_varaSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP aSEXP, SEXP quietSEXP, SEXP messageSEXP) {
+Rcpp::List calculate_a_and_vara_batch_rcpp(long numreps, Rcpp::CharacterVector f_name_ascii, Rcpp::NumericVector selected_loci, Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt, Eigen::Map<Eigen::MatrixXd> dim_reduced_vara, double max_memory_in_Gbytes, std::vector <long> dims, Eigen::Map<Eigen::MatrixXd> a, bool quiet, Rcpp::Function message, Rcpp::NumericVector indxNA_geno);
+RcppExport SEXP _Lion_calculate_a_and_vara_batch_rcpp(SEXP numrepsSEXP, SEXP f_name_asciiSEXP, SEXP selected_lociSEXP, SEXP inv_MMt_sqrtSEXP, SEXP dim_reduced_varaSEXP, SEXP max_memory_in_GbytesSEXP, SEXP dimsSEXP, SEXP aSEXP, SEXP quietSEXP, SEXP messageSEXP, SEXP indxNA_genoSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -80,7 +80,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Eigen::Map<Eigen::MatrixXd> >::type a(aSEXP);
     Rcpp::traits::input_parameter< bool >::type quiet(quietSEXP);
     Rcpp::traits::input_parameter< Rcpp::Function >::type message(messageSEXP);
-    rcpp_result_gen = Rcpp::wrap(calculate_a_and_vara_batch_rcpp(numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message));
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type indxNA_geno(indxNA_genoSEXP);
+    rcpp_result_gen = Rcpp::wrap(calculate_a_and_vara_batch_rcpp(numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message, indxNA_geno));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -266,7 +267,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Lion_ReadBlockBin", (DL_FUNC) &_Lion_ReadBlockBin, 4},
     {"_Lion_ReshapeM_rcpp", (DL_FUNC) &_Lion_ReshapeM_rcpp, 4},
     {"_Lion_calculateMMt_rcpp", (DL_FUNC) &_Lion_calculateMMt_rcpp, 7},
-    {"_Lion_calculate_a_and_vara_batch_rcpp", (DL_FUNC) &_Lion_calculate_a_and_vara_batch_rcpp, 10},
+    {"_Lion_calculate_a_and_vara_batch_rcpp", (DL_FUNC) &_Lion_calculate_a_and_vara_batch_rcpp, 11},
     {"_Lion_calculate_a_and_vara_rcpp", (DL_FUNC) &_Lion_calculate_a_and_vara_rcpp, 10},
     {"_Lion_calculate_reduced_a_rcpp", (DL_FUNC) &_Lion_calculate_reduced_a_rcpp, 9},
     {"_Lion_createM_ASCII_rcpp", (DL_FUNC) &_Lion_createM_ASCII_rcpp, 11},

@@ -17,8 +17,8 @@ calculateMMt_rcpp <- function(f_name_ascii, max_memory_in_Gbytes, num_cores, sel
     .Call('_Lion_calculateMMt_rcpp', f_name_ascii, max_memory_in_Gbytes, num_cores, selected_loci, dims, quiet, message)
 }
 
-calculate_a_and_vara_batch_rcpp <- function(numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message) {
-    .Call('_Lion_calculate_a_and_vara_batch_rcpp', numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message)
+calculate_a_and_vara_batch_rcpp <- function(numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message, indxNA_geno) {
+    .Call('_Lion_calculate_a_and_vara_batch_rcpp', numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message, indxNA_geno)
 }
 
 calculate_a_and_vara_rcpp <- function(f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message, indxNA_geno) {

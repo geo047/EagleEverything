@@ -30,7 +30,8 @@ Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps,
                                     std::vector <long> dims,
                                     Eigen::Map<Eigen::MatrixXd> a,
                                     bool  quiet,
-                                    Rcpp::Function message)
+                                    Rcpp::Function message,
+                                    Rcpp::NumericVector indxNA_geno)
 
 
 {
@@ -42,6 +43,9 @@ Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps,
 //          be converted into a double precision matrix which has a large memory cost.  
 // Note:
 //      1. dims is the row, column dimension of the Mt matrix
+//    dims[0] -----> number of SNP
+//    dims[1] -----> number of genotypes
+
 
 //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>  (a), 
 
@@ -95,21 +99,28 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    }
 
 
+   if( !R_IsNA(indxNA_geno(0))    ){
+   // setting cols to 0
+   for(long ii=0; ii < indxNA_geno.size() ; ii++){
+           Mt.col(indxNA_geno(ii)).setZero();
+    }
+   }
 
 
-
-    Eigen::MatrixXd  ans_part1 = inv_MMt_sqrt * a;
+     Eigen::MatrixXd  ans_part1;
+    ans_part1.noalias() = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
 
 
   // calculate untransformed variances of BLUP values
-    Eigen::MatrixXd var_ans_tmp_part1 =   dim_reduced_vara * inv_MMt_sqrt;
+    Eigen::MatrixXd var_ans_tmp_part1;
+    var_ans_tmp_part1.noalias() =   dim_reduced_vara * inv_MMt_sqrt;
     var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
 
 
 
 //  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
-    var_ans_tmp  =  Mt  *  var_ans_tmp_part1;
+    var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
     var_ans_tmp_part1.resize(0,0);  // erase matrix 
   long i;
 
@@ -119,7 +130,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
   for(i=0; i< dims[0]; i++){
            var_ans(i,0) =   var_ans_tmp.row(i)   * (Mt.row(i)).transpose() ;
   }
-
 
 
 
@@ -197,6 +207,19 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
                    }
                 }
             }
+
+           if( !R_IsNA(indxNA_geno(0))    ){
+
+               // setting cols to 0
+               for(long ii=0; ii < indxNA_geno.size() ; ii++){
+                       Mt.col(indxNA_geno(ii)).setZero();
+                }
+               }
+
+
+
+
+
            //  ans_tmp  =  Mtd *  inv_MMt_sqrt  * a ;
              ans_tmp.noalias()  =   inv_MMt_sqrt  * a ;
              ans_tmp = Mt * ans_tmp;
@@ -219,7 +242,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 #if defined(_OPENMP)
            #pragma omp parallel for
 #endif
-
             for(long j=0; j < num_rows_in_block1; j++){
                       var_ans_tmp(j,0)  =   vt.row(j)  * ((Mt.row(j)).transpose()) ;
             }
@@ -241,9 +263,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 
-
-
-
              if (!quiet  )  message( "block done ... " );
 
 
@@ -252,7 +271,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 }  //  end if block update
-
 
   return Rcpp::List::create(Rcpp::Named("a")=ans,
                             Rcpp::Named("vara") = var_ans);

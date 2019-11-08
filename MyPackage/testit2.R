@@ -62,8 +62,8 @@ geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, ngpu=1)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma, ngpu=1)
 
 #  Gamma    |  False Pos Rate  
 # ---------------------------- 
