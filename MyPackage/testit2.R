@@ -1,3 +1,5 @@
+# LD_PRELOAD=$CUDA_ROOT/lib64/libnvblas.so R
+
 library(Lion)
 
 # Scenario 1

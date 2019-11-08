@@ -24,7 +24,7 @@ calculateMMt <- function(geno=NULL, availmemGb, ncpu, selected_loci=NA, dim_of_a
   if(!any(is.na(selected_loci))) selected_loci <- selected_loci-1
   MMt <- calculateMMt_rcpp( f_name_ascii=geno, selected_loci = selected_loci,
                                max_memory_in_Gbytes=availmemGb, num_cores=ncpu,
-                               dims= dim_of_ascii_M, quiet = quiet, message=message) 
+                               dims= dim_of_ascii_M, quiet = quiet) 
   return(MMt)
    
 }  ## end function

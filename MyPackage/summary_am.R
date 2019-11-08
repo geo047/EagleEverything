@@ -174,7 +174,7 @@ SummaryAM <- function(AMobj=NULL)
  pval <- vector("numeric", length(colnames(fullX)) )
 
 
- H <- calculateH(MMt=MMt, varE=eR$ve, varG=eR$vg, Zmat=AMobj$Zmat, message=message )
+ H <- calculateH(MMt=MMt, varE=eR$ve, varG=eR$vg, Zmat=AMobj$Zmat )
 
 # H <-  eR$vg * MMt + eR$ve * diag(1, nrow(MMt))
  Hinv <- try(chol2inv(chol(H)))

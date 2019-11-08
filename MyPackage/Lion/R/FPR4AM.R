@@ -59,7 +59,7 @@
 #'   # File is a plain space separated text file with the first row 
 #'   # the column headings
 #'   complete.name <- system.file('extdata', 'map.txt', 
-#'                                    package='Eagle')
+#'                                    package='Lion')
 #'   map_obj <- ReadMap(filename=complete.name) 
 #'
 #'   # read marker data
@@ -67,7 +67,7 @@
 #'   # Reading in a PLINK ped file 
 #'   # and setting the available memory on the machine for the reading of the data to 8  gigabytes
 #'   complete.name <- system.file('extdata', 'geno.ped', 
-#'                                      package='Eagle')
+#'                                      package='Lion')
 #'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
 #'  
 #'   # read phenotype data
@@ -75,7 +75,7 @@
 #'
 #'   # Read in a plain text file with data on a single trait and two covariates
 #'   # The first row of the text file contains the column names y, cov1, and cov2. 
-#'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
+#'   complete.name <- system.file('extdata', 'pheno.txt', package='Lion')
 #'   
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
@@ -125,7 +125,7 @@ FPR4AM <- function(
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL, falseposrate=falseposrate )
 
  if(error.code){
-   message("\n The Eagle function FPR4AM has terminated with errors.\n")
+   message("\n The Lion function FPR4AM has terminated with errors.\n")
    return(NULL)
  }
 
@@ -461,30 +461,30 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
  if (!quiet ) error_checking <- TRUE
 
  MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                                                              ngpu=ngpu , message=message)
+                                                              ngpu=ngpu )
 
       if (  any(is.na(indxNA_pheno)) ){
-         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
-         P <- calculateP(H=H, X=currentX_null , message=message)
+         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat )
+         P <- calculateP(H=H, X=currentX_null )
       hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=bigpheno , quiet = quiet , message=message)
+                       y=bigpheno , quiet = quiet )
       var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                             quiet = quiet, message=message )
+                                             quiet = quiet )
       } else {
 
-         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat[-indxNA_pheno, ], message=message )
-         P <- calculateP(H=H, X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) , message=message)
+         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat[-indxNA_pheno, ] )
+         P <- calculateP(H=H, X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) )
       hat_a <- calculate_reduced_a_batch(Zmat=Zmat[-indxNA_pheno, ] , varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=bigpheno[-indxNA_pheno,  ]  , quiet = quiet , message=message)
+                       y=bigpheno[-indxNA_pheno,  ]  , quiet = quiet )
 
       var_hat_a    <- calculate_reduced_vara(Zmat=Zmat[-indxNA_pheno, ], X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) , 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                             quiet = quiet, message=message )
+                                             quiet = quiet )
 
       }
  
@@ -496,7 +496,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
                                           invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                           transformed_a=hat_a ,
                                           transformed_vara=var_hat_a,
-                                          quiet=quiet, message=message,  indxNA_geno = indxNA_geno)
+                                          quiet=quiet,  indxNA_geno = indxNA_geno)
 
 
 

@@ -28,13 +28,13 @@ if (type=="text"){
     }
     it_worked <- createM_BIN_rcpp(f_name = file_genotype, type=type ,  f_name_bin = binMfile, AA = AA, AB = AB, BB = BB,
                max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M ,
-               quiet = quiet, message=message , missing=missing)
+               quiet = quiet,  missing=missing)
     if(!it_worked) #  creation of ASCII file has failed 
        return(FALSE)
 
     message(" \n Taking transpose of marker data and writing untransposed and transposed data to disc ... \n") 
     createMt_BIN_rcpp(f_name_in = binMfile, f_name_out = binMtfile,   type=type,
-                  max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet, message=message  )
+                  max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet  )
     message("\n  Writing of marker data to disc is complete ... \n")
 } else {
     ## PLINK ped file
@@ -43,7 +43,7 @@ if (type=="text"){
     dim_of_ascii_M[2] <- 2*dim_of_ascii_M[2] + 6  ## number of cols in a PLINK file
     it_worked <- createM_BIN_rcpp(f_name = file_genotype, type=type,  f_name_bin = binMfile, AA ="-9", AB = "-9", BB = "-9",
                max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M , quiet = quiet,
-               message=message , missing="NA")
+                missing="NA")
      if(!it_worked) #  creation of ASCII file has failed 
        return(FALSE)
 
@@ -51,7 +51,7 @@ if (type=="text"){
     dim_of_ascii_M[2] <- ncol ## setting back to number of cols in no-space ASCII file
     message(" \n Taking transpose of marker data and writing untransposed and transposed data to disc ... \n") 
     createMt_BIN_rcpp(f_name_in = binMfile, f_name_out = binMtfile,    type=type,
-                  max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet, message=message  )
+                  max_memory_in_Gbytes=availmemGb,  dims = dim_of_ascii_M, quiet = quiet   )
     message(" \n Writing of marker data to disc is complete ... \n")
 
 }  ## end if else type

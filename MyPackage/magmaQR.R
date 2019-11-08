@@ -19,7 +19,7 @@ magmaQR <- function(Xmat , ngpu=1, printInfo=FALSE){
  binQfile <- paste(tempdir() , "/", "Q.bin", sep="")
 
 
- success <- magma_qr(X=Xmat ,  numgpus=ngpu, printInfo=printInfo, fname=binQfile, message=message  )
+ success <- magma_qr(X=Xmat ,  numgpus=ngpu, printInfo=printInfo, fname=binQfile  )
  if(success < 0)
   {
    message("\n magmaQR function has failed. A zero value has been returned.  \n")

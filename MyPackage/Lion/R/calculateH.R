@@ -1,4 +1,4 @@
-calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, Zmat=NULL)
+calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, Zmat=NULL )
 {
   ## internal function to AM
   ## R function for calculating the H variance matrix 
@@ -10,7 +10,6 @@ calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, Zmat=NULL)
   ##     varG  -  numeric value for the polygenic variance (\sigma^2_g)
   ##
   ## H matrix is returned. 
-
   if(!is.numeric(varE)){
     message(" The varE (residual variance) must be numeric.")
     return(NULL)

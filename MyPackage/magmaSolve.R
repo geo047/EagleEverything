@@ -16,7 +16,7 @@ magmaSolve <- function(Xmat , ngpu=1, printInfo=FALSE){
  binInvfile <- paste(tempdir() , "/", "Inv.bin", sep="")
 
 
- success <- magma_solve(X=Xmat ,  numgpus=ngpu, printInfo=printInfo, fname=binInvfile, message=message )
+ success <- magma_solve(X=Xmat ,  numgpus=ngpu, printInfo=printInfo, fname=binInvfile )
  if(success !=  0)
   {
    message("\n Error: magmaSolve function has failed. A zero value has been returned.  \n")
