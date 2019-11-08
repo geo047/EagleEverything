@@ -44,13 +44,17 @@ emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0 )
         eig$values <- Re(eig$values)
         eig$vectors <- Re(eig$vectors)
     }
-    #qr.X <- qr.Q(qr(X))
+
+   if(nrow(X) != ncol(X)){
+    qr.X <- qr.Q(qr(X))
+    values = eig$values[1:(t - q)]
+    vectors = qr.Q(qr(cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)), complete = TRUE)[, c(1:(t - q), (t + 1):n)]
+   } else {
     qr.X <- magmaQR(Xmat= X, ngpu=ngpu, printInfo=FALSE)
     values = eig$values[1:(t - q)]
-    #vectors = qr.Q(qr(cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)), complete = TRUE)[,
-    #    c(1:(t - q), (t + 1):n)]))
     vectors = magmaQR(Xmat= (cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)), ngpu=ngpu, printInfo=FALSE)[, c(1:(t - q), (t + 1):n)]
-    return(list(values=values, vectors=vectors))
+   }
+   return(list(values=values, vectors=vectors))
 
 }
 

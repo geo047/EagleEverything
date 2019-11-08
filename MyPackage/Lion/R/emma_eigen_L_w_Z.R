@@ -24,7 +24,6 @@
     message(" Error: the number of gpu needs to be set to a sensible number. \n")
     return(NULL)
  }
-
    if (doMagmaEigen){
     eig <- magmaEigenNonsym(Xmat=res, ngpu=ngpu)
    } else {
@@ -32,8 +31,12 @@
    }
 
     values  <- eig$values
+
+   if( nrow( (Z %*% eig$vectors) ) != ncol ( (Z %*% eig$vectors) )){
+    vectors <- qr.Q(qr(Z %*% eig$vectors) )
+   } else {
     vectors <- magmaQR(Xmat= (Z %*% eig$vectors), ngpu=ngpu, printInfo=FALSE)
-#    vectors <- qr.Q(qr(Z %*% eig$vectors)
+   }
     return(list(values = values , vectors = vectors))
 }
 

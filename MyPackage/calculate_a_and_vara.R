@@ -48,7 +48,7 @@ calculate_a_and_vara <- function(geno=NULL,
                     dim_reduced_vara = transformed_vara,
                     max_memory_in_Gbytes=geno[["availmemGb"]],
                     dims=dimsMt,
-                    a = transformed_a,
+                    a = transformed_a, message=message,
                     quiet = quiet, indxNA_geno=indxNA_geno)
    return(a)
 

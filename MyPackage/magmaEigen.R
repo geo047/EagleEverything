@@ -7,7 +7,7 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
 # The executable is in  the Magma directory.  
 
  if (nrow(Xmat) != ncol(Xmat)){
-   message("\n magmaQR function needs a square matrix. \n")
+   message("\n magmaEigen function needs a square matrix. \n")
    return(0)
  }
 

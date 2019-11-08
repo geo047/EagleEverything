@@ -9,7 +9,7 @@ magmaEigenNonsym <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
  MaxIntVal <- .Machine$integer.max - 8  # just for a little bit of safety
   
  if (nrow(Xmat) != ncol(Xmat)){
-   message("\n magmaQR function needs a square matrix. \n")
+   message("\n magmaEigenNonsym function needs a square matrix. \n")
    return(0)
  }
 
