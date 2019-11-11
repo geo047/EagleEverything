@@ -10,7 +10,7 @@
 
 
 
-// recode PLINK as ASCII with no spaces
+// recode PLINK as recoded nospace binary file
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool  CreateBIN_PLINK(std::string fname, std::string binfname, std::vector<long> dims,
                          bool quiet, Rcpp::Function message)

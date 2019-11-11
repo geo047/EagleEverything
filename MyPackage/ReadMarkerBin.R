@@ -232,7 +232,7 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
        ## Rcpp function to get dimensions of PLINK ped  file
        dim_of_ascii_M <- getRowColumn(fname=fullpath(filename))
        dim_of_ascii_M[2] <- (dim_of_ascii_M[2] - 6)/2  ## adjusting for PLINK structure
-       ## Rcpp function to create binary packed M and Mt file 
+       ## Rcpp function to create binary packed Mt and M file (if needed)
        it_worked <- create.bin(file_genotype=fullpath(filename), type=type, availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M,  quiet=quiet  )
        if(!it_worked)
            return(NULL) 

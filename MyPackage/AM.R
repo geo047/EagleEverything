@@ -478,6 +478,12 @@ if(!is.null(Zmat)){
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
 
+       if (is.null(Zmat)){
+         eig.L <- emma.eigen.L.wo.Z(MMt, ngpu)
+       } else {
+         eig.L <- emma.eigen.L.w.Z(Zmat, MMt, ngpu)
+       } 
+
 
 
 
