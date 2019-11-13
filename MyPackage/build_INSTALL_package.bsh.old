@@ -1,14 +1,16 @@
-#!/bin/bash
-
-
-
+#!/bin/bash 
 
 module purge
+module load intel-mkl/2017.2.174
+module load cuda/9.0.176  cuda-driver 
+module load intel-cc  intel-fc
+export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
+export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
 module load R/3.6.1
-module load pandoc
-module load intel-cc/15.0.6.233 
-module load intel-fc/15.0.6.233
 module load texlive/2015
+
+
+
 
 export RSTUDIO_PANDOC=$PANDOC_HOME
 
@@ -17,6 +19,9 @@ DIR=/home/geo047/EagleEverything/MyPackage/
 cd $DIR
 
 echo pwd
+
+
+
 
 
 ## removing Eagle and Eagle.Rcheck
@@ -31,9 +36,13 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"ReshapeM_rcpp.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
+            \"CreateBIN_PLINK.cpp\"  ,
             \"CreateASCIInospace.cpp\"  ,
+            \"CreateBIN.cpp\"  ,
             \"ReadBlock.cpp\"  ,
+            \"ReadBlockBin.cpp\"  ,
             \"createMt_ASCII_rcpp.cpp\"  ,
+            \"createMt_BIN_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"calculate_reduced_a_rcpp.cpp\"  ,
             \"removeRow.cpp\"  ,
@@ -42,7 +51,9 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"calculate_a_and_vara_rcpp.cpp\"  ,
             \"calculate_a_and_vara_batch_rcpp.cpp\"  ,
             \"createM_ASCII_rcpp.cpp\"  ,
+            \"createM_BIN_rcpp.cpp\"  ,
             \"extract_geno_rcpp.cpp\"  ,
+            \"extract_geno_Mt_rcpp.cpp\"  ,
             \"calculateMMt_rcpp.cpp\"  ,
             \"getNumColumns.cpp\"  ,
             \"getNumRows.cpp\"  
@@ -50,7 +61,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
 echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
             \"FPR4AM.R\",
-            \"ReadMarker.R\",
+            \"ReadMarkerBin.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
             \"ReadPheno.R\",
@@ -64,13 +75,13 @@ echo  "    example_code=FALSE, code_files=c(
             \"build_design_matrix.R\", 
             \"calcMMt.R\", 
             \"calc_extBIC.R\", 
+            \"calc_extBIC_MLE.R\", 
             \"calcVC.R\", 
             \"print_header.R\", 
             \"print_final.R\", 
             \"print_results.R\", 
             \"find_qtl.R\", 
             \"fullpath.R\", 
-            \"emma_misc.R\",
             \"emma_delta_ML_dLL_w_Z.R\", 
             \"emma_eigen_L_w_Z.R\", 
             \"emma_eigen_R_w_Z.R\", 
@@ -81,6 +92,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"emma_delta_ML_LL_wo_Z.R\", 
             \"emma_eigen_L_wo_Z.R\", 
             \"emma_eigen_R_wo_Z.R\", 
+            \"emma_misc.R\", 
             \"emma_delta_ML_LL_w_Z.R\", 
             \"check_for_NA_in_trait.R\", 
             \"check_inputs_mlam.R\", 
@@ -95,7 +107,9 @@ echo  "    example_code=FALSE, code_files=c(
             \"calculate_reduced_vara.R\", 
             \"check_inputs.R\", 
             \"create_ascii.R\", 
+            \"create_bin.R\", 
             \"extract_geno.R\", 
+            \"extract_geno_Mt.R\", 
             \"constructX.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
@@ -114,7 +128,9 @@ R CMD BATCH ./tmp.R
 echo " Copy my own Makevars and Makevars.win to Eagle directory "
 cp $DIR/Makevars $DIR/Eagle/src
 cp $DIR/Makevars.win $DIR/Eagle/src
-#cp $DIR/Makevars.gpu $DIR/Eagle/src/Makevars
+
+
+ 
 
 
 
@@ -122,7 +138,8 @@ cp $DIR/Makevars.win $DIR/Eagle/src
 echo " Replace NAMESPACE and DESCRIPTION with my own version "
 cp ./NAMESPACE.OLD ./Eagle/NAMESPACE
 cp ./DESCRIPTION.OLD ./Eagle/DESCRIPTION
-## Modify ./Eagle/src/RcppExports.cpp
+cp ./NEWS  ./Eagle/.
+
 
 
 
@@ -165,6 +182,7 @@ cd $DIR
 # copy headers to src
 cp $DIR/readblock.h $DIR/Eagle/src/.
 cp $DIR/createM_ASCII_rcpp.h   $DIR/Eagle/src/.
+cp $DIR/createM_BIN_rcpp.h   $DIR/Eagle/src/.
 
 
 
@@ -204,59 +222,36 @@ cp ./ShinyApp/css.css $DIR/Eagle/inst/shiny_app/.
 cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/*banner* $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/logo.jpg $DIR/Eagle/inst/shiny_app/www/images/.
-cp ./ShinyApp/faq.rmd $DIR/inst/shiny_app/.
-
-###-----------------
-### Testing only
-###----------------
-# cp ./*Demo*  $DIR/Eagle/inst/shiny_app/www/.
+cp ./ShinyApp/faq.rmd $DIR/Eagle/inst/shiny_app/.
 
 
+# create bin directory in ./Eagle/inst 
 cp  ./ShinyApp/www/loading.gif $DIR/Eagle/inst/shiny_app/www/.
 
 
 
 ## remove object files
-rm ./Eagle/src/*.o ./Eagle/src/tmp1 ./Eagle/src/block?.tmp ./Eagle/src/*.so
-rm ./Eagle/.RData
+rm -f ./Eagle/src/*.o ./Eagle/src/tmp1 ./Eagle/src/block?.tmp ./Eagle/src/*.so
+rm -f ./Eagle/.RData
 
 
  cd $DIR/Eagle/R
  sed s/\`/\'/g RcppExports.R  > tmp
  mv tmp RcppExports.R
 
-
-##exit -1 
-
-## 20/07/2017
-## Decided to create an R-forge site for Eagle so that I can have my own web page and mailing list
-## copying files onto mac from which to subversion onto R-forge
-echo "Starting scp .... "
 cd $DIR
-####  scp -rp ./Eagle/*  geo047@140.253.179.79:~/R-forge/Eagle/eagle/pkg/.
-### scp -rp ./Eagle/*  geo047@140.253.151.16:~/R-forge/Eagle/eagle/pkg/.
-## scp -rp ./Eagle/*  geo047@140.253.151.117:~/R-forge/Eagle/eagle/pkg/.
-
-##exit -1
-
-
-
 cp ./Eagle-package.Rd  ./Eagle/man/. 
 
 R CMD build Eagle 
 
 
-
-#  R CMD check --as-cran Eagle_1.5.2.tar.gz 
+## R CMD check --as-cran Eagle_2.1.0.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs
 
 
-# rm tmp.R  tmp.Rout 
-
-
-
+ rm tmp.R  tmp.Rout 
 
 
 

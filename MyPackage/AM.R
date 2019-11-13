@@ -363,7 +363,6 @@ if(!is.null(fformula)){
 
 
  ## build design matrix currentX
- ## First, save current state of seed
  currentX <- .build_design_matrix(pheno=pheno, fformula=fformula, quiet=quiet, 
                  indxNA_pheno=indxNA_pheno)
  currentX <- as.matrix(currentX)

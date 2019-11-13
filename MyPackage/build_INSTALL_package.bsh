@@ -245,8 +245,7 @@ cp ./Eagle-package.Rd  ./Eagle/man/.
 R CMD build Eagle 
 
 
-
-# CMD check --as-cran Eagle_2.1.0.tar.gz 
+## R CMD check --as-cran Eagle_2.1.0.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

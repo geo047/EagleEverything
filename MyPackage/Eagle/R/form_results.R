@@ -42,7 +42,10 @@
                     map=map,
                     Zmat=Zmat, 
                     outlierstat=outlierstat) 
+}
+
 return(sigres)
 }
+
 
 
