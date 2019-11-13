@@ -20,7 +20,6 @@
 #' @param seed  a integer value for the starting seed for the permutations. 
 #' 
 #' @details
-
 #' The false positive rate for \code{\link{AM}} is controlled by its gamma parameter. Values close to 
 #' 1 (0) decreases (increases) the false positive rate of detecting SNP-trait associations. There is no 
 #' analytical way of setting gamma for a specified false positive rate. So we are using permutation to do this empirically. 
@@ -139,8 +138,6 @@ FPR4AM <- function(
                      Pos=1:geno[["dim_of_ascii_M"]][2])
   }
 
- indxNA_pheno <- NA
- indxNA_geno <- NA
  selected_loci <- NA
  new_selected_locus <- NA
  extBIC <- vector("numeric", 0)
@@ -190,52 +187,78 @@ if(!is.null(fformula)){
  }
 
 
- ## check for NA's in explanatory variables 
- ## If any, set individual's trait value to NA
- ## This means this individual will later be removed. 
- if(!is.null(fformula)){
-    mat <- get_all_vars(formula=fformula, data=pheno)
-    mat.of.NA  <- which(is.na(mat), arr.ind=TRUE)
-  if(!is.null(dim(mat.of.NA)[1]) ){
-     if(dim(mat.of.NA)[1]>0){
-       pheno[unique(mat.of.NA[,1]), trait] <- NA
-     }
-  }
- }
 
  ## check for NA's in trait
  indxNA_pheno <- check.for.NA.in.trait(trait=pheno[, trait])
+ ## set NA's in trait to 0. Extra factor mv will be
+ ## fitted by the build_design_matrix function
+ if(length(indxNA_pheno) > 0){
+       pheno[,trait][indxNA_pheno] <- 0
+ }
+
+ # dealing with missing covariates
+ if(!is.null(fformula)){
+    fvars <- all.vars(fformula)  # list of fixed effects
+    for (ii in fvars){
+       # dealing with missingness in the covaries - setting to mean
+           indx <- which(is.na(pheno[,ii]))
+           if (length(indx) > 0){
+              if(!is.factor(pheno[, ii])){
+                 # this is a covariate. Replace missing value with mean
+                 m <- mean(pheno[, ii], na.rm=TRUE)
+                 pheno[indx, ii] <- m
+              }
+           } ## end if length
+    } ## end for
+ } ## end if !is.null
+
+ 
+ # dealing with missing factor levels 
+ # going to impute from empirical distribution
+ if(!is.null(fformula)){
+    fvars <- all.vars(fformula)  # list of fixed effects
+    for (ii in fvars){
+       # dealing with missingness in the covaries - setting to mean
+           indx <- which(is.na(pheno[,ii]))
+           if (length(indx) > 0){
+              if(is.factor(pheno[, ii])){
+                 # this is a factor. Replace missing value with imputed value
+                 pheno[indx, ii] <-  sample(table(pheno[,ii]), length(indx), TRUE)
+              }
+           } ## end if length
+    } ## end for
+ } ## end if !is.null
 
 
 
- ## remove missing observations from pheno  
-# if(length(indxNA_pheno)>0){
-#    pheno <- pheno[-indxNA_pheno, ]
-#    message(" The following rows are being removed from phenotypic data  due to missing trait data: \n")
-#    message(cat("             ", indxNA_pheno, "\n\n"))
-# }
+ # Handling of traits with missing values
+ # 1. Set missing values to 0 (done above)
+ # 2. Create a 0,1 covariate for every missing value 
+ # 3. Add these covariates to pheno and fformula and fit in linear model
+ if (!is.null(indxNA_pheno)){
+    D <- diag(length(indxNA_pheno))
+    Zero <- matrix(data=0, nrow=nrow(pheno) - length(indxNA_pheno), ncol=ncol(D))
+    extrPheno <- rbind(D, Zero)
+    # need to put rows in correct order to match missingness patern in trait
+    indx <- 1:nrow(pheno)
+     indx <- indx[-indxNA_pheno]  # remove rows with missing data
+     indx <- c(indxNA_pheno, indx)  # added back in but indx now out of order
+     indx <- order(indx)
+     extrPheno <- as.matrix(extrPheno[indx,])  # puts in correct order
+     colnames(extrPheno) <-  paste0("mv",1:length(indxNA_pheno)) 
 
-
-
-## If Z matrix is present, then we may not need to remove genotypes (i.e. indxNA_geno)
-## check if any genotypes need to be removed. 
-if(!is.null(Zmat)){
-      # check for columns with 0 sums. 
-      if(!any(is.na(indxNA_pheno))){
-          s  <- colSums(Zmat[-indxNA_pheno,])
-          indx <- which(s==0)
-          if (length(indx)  > 0 )
-          indxNA_geno <- indx
-       }
-} else {
-  indxNA_geno <- indxNA_pheno
-}
-
-
-
-
-
-
+     nms <- c(names(pheno),  paste0("mv",1:length(indxNA_pheno)) )
+     pheno <- cbind(pheno, extrPheno ) # extra covariates added to the end of the pheno file
+     names(pheno) <- nms
+     # adjust fformula
+     if (is.null(fformula)){
+         # catching null case
+         fformula <- as.formula("~ 1")
+     }
+     fformula <- as.character(fformula)[2]
+     fformula <- paste0("~", fformula , "+", paste(colnames(extrPheno), sep="+"))
+     fformula <- as.formula(fformula)
+ }
 
 
 
@@ -253,12 +276,7 @@ if(!is.null(Zmat)){
  mod <- lm( formula=ff , data=pheno )
  res <- residuals(mod)
 
- if (any(is.na(indxNA_pheno))){
-    pheno[, "residuals"] <- res
- } else {
-    pheno[, "residuals"] <- NA
-    pheno[-indxNA_pheno, "residuals"] <- res
- }
+  pheno[, "residuals"] <- res
 
  # create big pheno: contains all permutations 
 bigpheno <- matrix(data=NA, nrow=length(res) , ncol=numreps)
@@ -270,37 +288,16 @@ for(ii in 1:numreps){
 }
 colnames(bigpheno) <- paste0("res", 1:numreps)
 
-# bigpheno will be of the wrong dimension if there is mising 
-# phenotype data (indxNA_geno)
-# Need to put back these 
-
-if (!any(is.na(indxNA_pheno))){
-  # lm removes missing data by default. 
-  # Therefore, bigpheno is missing rows. 
-  # Adding in rows of NA's here
-  id <- 1:nrow(pheno)  # size of data, including missing obs 
-  id <- id[-indxNA_pheno]
-  tmp <- matrix( data = NA,  nrow= nrow(pheno), ncol=ncol(bigpheno) )
-  tmp[id, ] <- bigpheno
-  bigpheno <- tmp
-}
 
 
  ## build design matrix currentX
- currentX_null <- .build_design_matrix(pheno=bigpheno,  fformula=NULL, quiet=quiet )
-
+ ## no missing data at this stage to worry about
+ currentX_null <- .build_design_matrix(pheno=bigpheno,  fformula=NULL, quiet=quiet)
  ## check currentX for solve(crossprod(X, X)) singularity
- if (any(is.na(indxNA_geno))) {
-   chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
+ chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
            error = function(err){
             return(TRUE)
            })
-  } else {
-   chck <- tryCatch({ans <- solve(crossprod(currentX_null[-indxNA_pheno,], currentX_null[-indxNA_pheno,]))},
-           error = function(err){
-            return(TRUE)
-           })
-  }
 
 
   if(is.logical(chck)){
@@ -341,61 +338,7 @@ extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
 # Found that REML step gives better results, at least for small sample size
 
-     if ( any(is.na(indxNA_pheno)) ) {
-
-         Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu)
-
-     }  else {
-       if (is.null(Zmat)){
-         # no Z 
-         Args <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=NULL, 
-                    K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-
-
-       }  else {
-         # Have to deal with Z and repeated measures
-         # Case 1:  missing pheno but no missing geno
-         # Case 2:  missing pheno and geno data
-
-         # Case 1: missing pheno but no missing geno
-         if (  !any(is.na(indxNA_pheno)) & any(is.na(indxNA_geno))  ){
-            # check for situation where nrow(Z) is same as nrow(MMt)
-            # this causes issues for EMMA later
-            if (  !any(colSums(Zmat[-indxNA_pheno, ] )> 1) ){
-                Args  <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=NULL, 
-                              K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-
-
-            } else {
-              Args <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=Zmat[-indxNA_pheno, ],
-                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-
-            }  ## end if nrow(Zmat) == nrow(MMt)
-
-          }   ## end if Case 1
-
-          # Case 2:  missing pheno and missing geno 
-          if (  !any(colSums(Zmat[-indxNA_pheno, -indxNA_geno] )> 1) ){
-             # this captures case of Z turning into an identify matrix
-             Args  <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1) , Z=NULL ,
-                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-
-
-
-          } else {
-             Args  <- list(y=pheno[-indxNA_pheno , "residuals"] , X= matrix(data=currentX_null[-indxNA_pheno,], ncol=1)  , 
-                           Z=Zmat[-indxNA_pheno, -indxNA_geno]  , K=MMt[-indxNA_geno, -indxNA_geno], 
-                           ngpu=ngpu)
-         } ## end if  Case 2
-
-
-
-
-       }  ## end  if (is.null(Zmat))
-
-
-     } # end  if ( any(is.na(indxNA_pheno)) )
-
+   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu)
 
    res_full  <- do.call(emma.REMLE, Args)
    vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
@@ -423,31 +366,8 @@ rep(NA, numreps)
 # Since there are no fixed effects and we have permuted Y, then 
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
- if (  any(is.na(indxNA_pheno)) ){
  Args <- list("trait"= bigpheno[,1], "currentX"=currentX_null, "geno"=geno, "MMt"=MMt,
                        "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
- }
-  if ( !any(is.na(indxNA_pheno))  &  any(is.na(indxNA_geno)) ){
-    if ( all(colSums( Zmat[-indxNA_pheno,]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno,]) == 1 ) ){
-          Zmatrix = NULL
-    } else {
-      Zmatrix = Zmat[-indxNA_pheno,]
-    }
-    Args <- list("trait"= bigpheno[-indxNA_pheno ,1], "currentX"=matrix(data=currentX_null[-indxNA_pheno,], ncol=1)  , "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmatrix , "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
-  }
-
- if ( !any(is.na(indxNA_pheno))  & !any(is.na(indxNA_geno))  ){
-    if ( all(colSums( Zmat[-indxNA_pheno, -indxNA_geno]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno, -indxNA_geno]) == 1 ) ){
-          Zmatrix = NULL
-    } else {
-      Zmatrix = Zmat[-indxNA_pheno, -indxNA_geno]
-    }
-    Args <- list("trait"= bigpheno[-indxNA_pheno ,1], "currentX"=matrix(data=currentX_null[-indxNA_pheno,], ncol=1)  , "geno"=geno, "MMt"=MMt[-indxNA_geno, -indxNA_geno],
-                       "Zmat"=Zmatrix, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
- }
-
-
  extBIC <-     do.call(.calc_extBIC_MLE, Args)
      gc()
 
@@ -463,41 +383,27 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
  MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                                                               ngpu=ngpu , message=message)
 
-      if (  any(is.na(indxNA_pheno)) ){
-         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
-         P <- calculateP(H=H, X=currentX_null , message=message)
-      hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
+ H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
+ P <- calculateP(H=H, X=currentX_null , message=message)
+ hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=bigpheno , quiet = quiet , message=message)
-      var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
-                                             varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
-                                             MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                             quiet = quiet, message=message )
-      } else {
 
-         H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat[-indxNA_pheno, ], message=message )
-         P <- calculateP(H=H, X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) , message=message)
-      hat_a <- calculate_reduced_a_batch(Zmat=Zmat[-indxNA_pheno, ] , varG=best_vg[ii], P=P,
-                       MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=bigpheno[-indxNA_pheno,  ]  , quiet = quiet , message=message)
-
-      var_hat_a    <- calculate_reduced_vara(Zmat=Zmat[-indxNA_pheno, ], X=matrix(data=currentX_null[-indxNA_pheno, ], ncol=1) , 
+ var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                                              quiet = quiet, message=message )
 
-      }
+
  
 
-   
-      a_and_vara  <- calculate_a_and_vara_batch(numreps = numreps, 
+ a_and_vara  <- calculate_a_and_vara_batch(numreps = numreps, 
                                           geno = geno,
                                           selectedloci = selected_loci,
                                           invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                           transformed_a=hat_a ,
                                           transformed_vara=var_hat_a,
-                                          quiet=quiet, message=message,  indxNA_geno = indxNA_geno)
-
+                                          quiet=quiet, message=message)
 
 
 
@@ -539,53 +445,20 @@ for(ii in 1:numreps){
    
        # Fit alternate model
        currentX <- currentX_null # initialising to base model  
-#       if (  any(is.na(indxNA_pheno)) ){
        currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, 
                               loci_indx=new_selected_locus,
                               dim_of_Mt=geno[["dim_of_ascii_Mt"]],
                               map=map )
-#       } else {
-#       currentX <- constructX(Zmat=Zmat , fnameMt=geno[["asciifileMt"]], currentX=currentX , 
-#                              loci_indx=new_selected_locus,
-#                              dim_of_Mt=geno[["dim_of_ascii_Mt"]],
-#                              map=map )
-#
-#      }
 
 
-     if (  any(is.na(indxNA_pheno)) ){
-            Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
+  Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
                        "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
-     }
-     if ( !any(is.na(indxNA_pheno))  &  any(is.na(indxNA_geno)) ){
-    if ( all(colSums( Zmat[-indxNA_pheno,]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno,]) == 1 ) ){
-          Zmatrix = NULL
-    } else {
-      Zmatrix = Zmat[-indxNA_pheno,]
-    }
-
-             Args <- list("trait"= bigpheno[-indxNA_pheno ,ii], "currentX"=currentX[-indxNA_pheno,]  , "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmatrix, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
-      }
-
-     if ( !any(is.na(indxNA_pheno))  & !any(is.na(indxNA_geno))  ){
-    if ( all(colSums( Zmat[-indxNA_pheno,-indxNA_geno]) == 1 ) & all(rowSums( Zmat[-indxNA_pheno,-indxNA_geno]) == 1 ) ){
-          Zmatrix = NULL
-    } else {
-      Zmatrix = Zmat[-indxNA_pheno,-indxNA_geno]
-    }
-
-             Args <- list("trait"= bigpheno[-indxNA_pheno ,ii], "currentX"=currentX[-indxNA_pheno,]  , "geno"=geno, "MMt"=MMt[-indxNA_geno, -indxNA_geno],
-                       "Zmat"=Zmatrix, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
-      }
-
-
 
 
 
  extBIC_alternate[ii, ] <-     do.call(.calc_extBIC_MLE, Args)
 
-}
+}  ## end for reps
 
 
 

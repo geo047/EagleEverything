@@ -1,7 +1,7 @@
 calculate_a_and_vara <- function(geno=NULL, 
                          selectedloci = NA,
                          invMMtsqrt=NULL, transformed_a=NULL, transformed_vara=NULL,
-                         quiet = TRUE, message=message, indxNA_geno=NA)
+                         quiet = TRUE, message=message)
 {
  ## internal function to AM
  ## an Rcpp function to take dimension reduced a (BLUP) values 
@@ -17,23 +17,6 @@ calculate_a_and_vara <- function(geno=NULL,
 
 
 
- ## indxNA_geno complicates things. Going to restore transformed_a and 
- ## transformed_vara back to n_g and take care of indxNA_geno from 
- ## withing the Rcpp code. Easier than dealing with this all from within Rcpp code. 
-
-#  if (!any(is.na(indxNA_geno))){
-#    print(" inside if ")
-#    cat(" indxNA_geno = ", indxNA_geno, "\n")
-#    # adding 0's to transformed_a and 1's to transformed_vara to turn back to full genotype size
-#    smple <- seq(1, nrow(invMMtsqrt))   ## full n_g (number of genotypes)  size
-#    smple <- smple[-indxNA_geno]
-#    ids  <- c(smple, indxNA_geno)
-#    vals <- c(transformed_a, rep(0, length(indxNA_geno)))
-#    transformed_a <- vals[order(ids)]
-#    vals <- c(transformed_vara, rep(1, length(indxNA_geno)))
-#    transformed_vara <- vals[order(ids)]
-#  }
-
 
 
   fnameMt <- geno[["asciifileMt"]]
@@ -41,7 +24,6 @@ calculate_a_and_vara <- function(geno=NULL,
 
   # adjusting indx by -1 to be consistent with Cpp starting at 0
   if(!any(is.na(selectedloci))) selectedloci <- selectedloci-1
-  if(!is.null(indxNA_geno))  indxNA_geno = indxNA_geno - 1
    a <- calculate_a_and_vara_rcpp(f_name_ascii=fnameMt,
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,
@@ -49,7 +31,7 @@ calculate_a_and_vara <- function(geno=NULL,
                     max_memory_in_Gbytes=geno[["availmemGb"]],
                     dims=dimsMt,
                     a = transformed_a,
-                    quiet = quiet, message=message, indxNA_geno=indxNA_geno)
+                    quiet = quiet, message=message )
    return(a)
 
 }

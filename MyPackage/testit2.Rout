@@ -17,17 +17,20 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-Registered S3 method overwritten by 'R.oo':
-  method        from       
-  throw.default R.methodsS3
-[Previously saved workspace restored]
-
 > library(Eagle)
 Loading required package: shinyFiles
 Loading required package: ggplot2
 Loading required package: ggthemes
+Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3
 > 
-> geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2)
+> # Scenario 1
+> # Full data 
+> # 102 samples for pheno1
+> # Z matrix of 102 rows - first 3 records are repeats
+> # contains no missing trait data
+> geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
  Getting number of individuals and snp from file ... 
  Beginning creation of reformatted file ... 
  Reading marker data ... 
@@ -48,7 +51,7 @@ Loading required package: ggthemes
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   text
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmplNbltR/M.bin
+ Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpTs2f6x/M.bin
  Number of individuals:        100
  Number of loci:               4998
  File size (gigabytes):       0.0052479
@@ -59,8 +62,7 @@ Loading required package: ggthemes
 
   Writing of marker data to disc is complete ... 
 
-> 
-> pheno <- ReadPheno(filename = "./pheno.test")
+> pheno <- ReadPheno(filename = "./pheno1.test", missing="NA")
 
 
  Loading Phenotype file ... 
@@ -70,20 +72,20 @@ Loading required package: ggthemes
 
               ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   ./pheno.test
+ File name:                   ./pheno1.test
 
- Number of individuals:       110
+ Number of individuals:       102
 
  Number of columns:           6
 
 
  First 5 rows of the phenotype file are 
 
-23.1142863322389 -0.082271 -0.064875 19 9.08161236093003 4
+9.74441006414413 -0.080256 -0.056444 28 2.24719923712075 2
 8.30074276066739 -0.079114 -0.068167 40 3.51477482977412 4
+7.68871161174369 -0.081873 -0.067404 26 16.8686233621094 4
 20.0855313237688 -0.081068 -0.056846 21 10.4064453968186 4
 10.075239046444 -0.082542 -0.063059 27 10.3809801451631 4
-13.2050016517253 -0.0786 -0.064641 37 8.63669697290398 4
 
  Column classes are  
 
@@ -100,7 +102,6 @@ Loading required package: ggthemes
            eyecolour            factor
 
 The phenotype file has been loaded.
-> 
 > map <- ReadMap(filename = "./mapDemo.dat")
 
 
@@ -131,8 +132,7 @@ The map file has been loaded.
 
 
 
-> 
-> Z <- ReadZmat("./Z.test")
+> Z <- ReadZmat("./Z1.test")
 
 
  Loading Z matrix file ... 
@@ -142,9 +142,9 @@ The map file has been loaded.
 
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   ./Z.test
+ File name:                   ./Z1.test
 
- Number of rows:              110
+ Number of rows:              102
 
  Number of columns:           100
 
@@ -153,82 +153,15 @@ The map file has been loaded.
 1 0 0 0 0 0 0 0 0 0
 1 0 0 0 0 0 0 0 0 0
 1 0 0 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 0 0 0
+0 1 0 0 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 0
 
 
 
-> 
-> 
-> 
-> res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=1)
-
-
-
-
-                    Multiple-Locus Association Mapping
-                            Version 1.2 
-
- 
-   . ,-"-.   ,-"-. ,-"-.   ,-"-. ,-"-. ,-"-. ,-"-.   ,-"-. ,-"-.    
-    X | | \ / | | X | | \ / | | X | | \ / | | X | | \ / | | X | | \ /   
-   / \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X|   
-      `-!-' `-!-"   `-!-' `-!-'   `-!-' `-!-"   `-!-' `-!-'   `-!-' `-     
-
-
-
-
- Iteration 1: Searching for most significant marker-trait association
-
-
+> res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
+[1] "in here"
+NULL
+[1] " in here"
  Number of cores being used for calculation is .. 28
- Significant marker-trait association found. 
 
- New results after iteration 1 are 
-
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         686.86   
-
-
-
-[1] " hmmm ... "
-[1] 4998
-[1] 4998
-
-
- Iteration 2: Searching for most significant marker-trait association
-
-
- Significant marker-trait association found. 
-
- New results after iteration 2 are 
-
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         686.86   
-     rs34406872          21          23187396            661            692.81   
-
-
-
-
-
-
-                           Final  Results  
-
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-No significant marker-trait associations have been found. 
-
-
-> 
-> 
-> 
-> 
-> res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, falseposrate=0.05, numreps=250)
-New dimensions of reshaped marker matrix 0 499800 
-
-Error in model.frame.default(formula = ff, data = pheno, drop.unused.levels = TRUE) : 
-  attempt to apply non-function
-Calls: FPR4AM ... lm -> eval -> eval -> <Anonymous> -> model.frame.default
 Execution halted

@@ -1,0 +1,31 @@
+Nov 2019 Version 2.0.0  
+* Major update of Eagle. 
+* Significant performance improvements, with at least a 50% increase in speed. 
+* Also fixed several issues associated with the Z matrix.
+* Improved handling of missing data. 
+
+Aug 2019 Version 1.5.2 
+* Minor change 
+* Noalias feature in cpp code fixed. 
+
+May 2019 Version 1.5.1 
+* Minor change to GUI. 
+* GUI made  more robust and removed library calls. 
+* Havent been able to solve the mysterious uv_write errors that are written to the R consul when GUI is run. The errors are intermittent and random but have no effect on performance or the analysis. 
+
+May 2019 Version 1.5.0 
+* Major update to GUI. 
+* A plotting page has been add. Users can now examine the change in score statistic (used for identifying the next "best" SNP to enter the model), across a chromosome or genome. This can be done for each step of the model building process. 
+
+April 2019 Version 1.4.0 
+* Modified SummaryAM to work with Z matrix. 
+
+Feb 2019 Version 1.3.0 
+* Fixed missing data issue with FPR4AM where it would crash if the trait contained missing data.
+
+Nov 2018 Version 1.2.0 
+* Modified FPR4AM so that it will give the best gamma value for a user-defined false positive rate, trait, and analysis model. 
+
+
+
+

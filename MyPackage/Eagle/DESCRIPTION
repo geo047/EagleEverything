@@ -1,7 +1,7 @@
 Package: Eagle
 Type: Package
 Title: Multiple Locus Association Mapping  on a Genome-Wide Scale
-Version: 2.0.0
+Version: 2.1.0
 Authors@R: c(
            person("Andrew", "George", role=c("aut", "cre"), email="andrew.george@csiro.au"),
            person("Joshua", "Bowden", role="ctb"),
@@ -27,7 +27,7 @@ Author: Andrew George [aut, cre],
 Description: An implementation of multiple-locus association mapping on a genome-wide scale. 'Eagle' can handle inbred and  outbred study populations, populations of arbitrary unknown complexity, and data larger than the memory capacity of the computer. Since 'Eagle' is based on linear mixed models, it is best suited to the analysis of data on continuous traits. However, it can tolerate non-normal data. 'Eagle' reports, as its findings, the best set of snp in strongest association with a trait. For users unfamiliar with R, to perform an analysis, run 'OpenGUI()'. This  opens a web browser to the menu-driven user interface for the input of data, and for performing genome-wide analysis.
 License: GPL-3
 Depends:
-   R (>= 3.5), shinyFiles, ggplot2, ggthemes
+   R (>= 3.6), shinyFiles, ggplot2, ggthemes
 Imports: 
    R.utils,
    mmap,

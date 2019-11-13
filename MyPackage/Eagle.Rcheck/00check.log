@@ -1,0 +1,25 @@
+* using log directory ‘/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck’
+* using R version 3.6.1 (2019-07-05)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* using session charset: UTF-8
+* using option ‘--as-cran’
+* checking for file ‘Eagle/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘Eagle’ version ‘2.1.0’
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
+
+Days since last update: 6
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘Eagle’ can be installed ... ERROR
+Installation failed.
+See ‘/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/00install.out’ for details.
+* DONE
+Status: 1 ERROR, 1 NOTE
