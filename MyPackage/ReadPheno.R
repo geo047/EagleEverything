@@ -93,7 +93,7 @@ ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL, .
   error.code <- check.inputs(file_phenotype=phenofile)
   if(error.code){
      message(" ReadPheno has terminated with errors.")
-     return(NULL)
+     return(FALSE)
   }
   sep <- ""
   if(csv) sep=","
@@ -113,9 +113,11 @@ ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL, .
   if (!exist.missing & !exist.sep )
     args <- list(file=filename, header=header, sep=sep, na.strings=missing, ...)
 
-
-    phenos <- do.call(read.table, args)
-
+    phenos <- try(do.call(read.table, args))
+if(class(phenos) == "try-error") {
+        message(" ReadPheno as encountered errors in the reading in of the phenotype file")
+        return(FALSE)
+    }
 
   ## check for factors with only one level which will cause contrast code to crash
   for(ii in names(phenos)){
@@ -124,7 +126,7 @@ ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL, .
           message(" The phenotype file contains factors that only have a single value. \n")
           message(" Please remove this factor. \n") 
           message(" ReadPheno has terminated with errors.")
-          return(NULL)
+          return(FALSE)
 
        }
     }

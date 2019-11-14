@@ -47,13 +47,16 @@ ReadMap  <- function( filename = NULL, csv=FALSE, header=TRUE)
  error.code <-  check.inputs(file_genotype=filename)
  if(error.code){
     message(" ReadMap has terminated with errors.")
-   return(NULL)
+   return(FALSE)
   }
   sep=" "
   if(csv) sep=","
-  map <- fread(mapfile, header=header, sep=sep)
-  map <- as.data.frame(map)
+  map <- try(read.table(mapfile, header=header, sep=sep) )
 
+  if (class(map) == "try-error"){
+    message(" ReadMap has terminated with errors.")
+     return(FALSE)
+  }
 
 
 
@@ -66,7 +69,7 @@ ReadMap  <- function( filename = NULL, csv=FALSE, header=TRUE)
      message("   ")
      message("        ReadMap has terminated with errors.")
      message(" ")
-     return(NULL)
+     return(FALSE)
   }
 
 message("\n\n Loading map file ... \n\n")

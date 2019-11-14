@@ -127,7 +127,14 @@ message( sprintf("%-40s  %-4s", "Gamma value for extBIC: ", round(lst[["gamma"]]
 message(  sprintf("%50s", "--------------------------------------------------------" ))
 message("\n\n")
 
-
+# create data frame of summary information for use in shiny app
+infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number of samples", "Number of snp", 
+                                    "Trait name", "Fixed model", "Number samples missing obs", 
+                                    "Number significant snp-trait assocs", "Gamma value for extBIC"  )   ,
+                   "value" = c(lst[["ncpu"]], lst[["memory"]], lst[["numsamples"]], 
+                     lst[["numsnp"]], lst[["traitname"]], lst[["fformula"]], lst[["nummissingpheno"]], 
+                    lst[["numSigSNP"]], round(lst[["gamma"]],2)   )
+         )
 
 
 ## Table II
@@ -304,7 +311,7 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
   res[["size"]] <- df_size
   res[["Waldstat"]] <- W
   res[["df"]] <- df
-  res[["summarylist"]] <- lst
+  res[["summarylist"]] <- infodf
 
   
   return(invisible(res))

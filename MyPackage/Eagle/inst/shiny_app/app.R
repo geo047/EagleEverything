@@ -4,7 +4,7 @@
 
 ## Shiny GUI for Eagle
 ## Developer:  Andrew W. George
-## Version: 1.2.0
+## Version: 2.1.0
 
 
 
@@ -132,9 +132,9 @@ page =  fluidRow( column(12,
 
                         fluidRow(column(12,
                    sliderInput(inputId="analyse_numreps", label=h4(" Specify number of replicates."),
-                                       value=100, min = 30, max = 1000, step = 5),
+                                       value=200, min = 30, max = 1000, step = 5),
                                         style="padding: 1px",
-                   shinyBS::bsTooltip("analyse_numreps", title='<font size="3" > To set the number of replicates, start with 100 replicates and increase in 50 replicate increments. Stop when the gamma value stabilizes.  </font>',
+                   shinyBS::bsTooltip("analyse_numreps", title='<font size="3" > To set the number of replicates, start with 200 replicates and increase in 50 replicate increments. Stop when the gamma value stabilizes.  </font>',
                           placement="right", trigger="hover", options=list(container="body"))
 
 
@@ -164,7 +164,6 @@ row5Anal <- function()
 {
    page = fluidRow(column(12,
              wellPanel(
-                shinyjs::useShinyjs(),
                 h4("Step 5: Perform genome-wide analysis"),
                             actionButton(inputId="analyse_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
                                          icon=icon("upload", lib="glyphicon")),
@@ -527,7 +526,6 @@ placement="right", trigger="hover",
                                 column(7, 
                                         verbatimTextOutput("ReadMarker", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
                                 
                               ) ## end fluidRow
                               
@@ -684,7 +682,6 @@ placement="right", trigger="hover",
                                column(7,
                                         verbatimTextOutput("ReadPheno", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
                               ) ## end fluidRow
                               
                               
@@ -890,7 +887,6 @@ placement="right", trigger="hover",
                                column(7,
                                         verbatimTextOutput("ReadZmat", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
 
                                 
                               ) ## end fluidRow
@@ -1036,7 +1032,6 @@ placement="right", trigger="hover",
                                column(7,
                                         verbatimTextOutput("ReadMap", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
 
 
                                 
@@ -1092,7 +1087,6 @@ placement="right", trigger="hover",
                                column(6, 
                                    verbatimTextOutput("AM", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
 
 
 
@@ -1174,13 +1168,6 @@ placement="right", trigger="hover",
                           column(8, 
                               fluidPage(
 
-                               fluidRow(
-                                   column(12,
-tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Parameter Settings"), sep = ""))),
-                                       tableOutput("parameters")
-                                  ) ## end column
-                               ), ## end fluidRow
 
 
 
@@ -1210,7 +1197,7 @@ tags$div(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Proportion of Variance Explained as Markers Added to Model"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Extra Summary Information"), sep = ""))),
                                     tableOutput("R")
                                     )
                                ) ## end column
@@ -1307,6 +1294,9 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 server <- function(input, output, session){
   library("Eagle")
 
+  readM <- reactiveValues(path_to_marker_file=NA)
+  readP <- reactiveValues(path_to_pheno_file=NA)
+
   ##------------------------------------------
   ## Intros to pages
   ##-------------------------------------------
@@ -1319,15 +1309,17 @@ server <- function(input, output, session){
   ##---------------------------------------- 
   ## upload path and file name
     shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=rootdir)
-    # path_to_marker_file <- NULL    
     observeEvent(input$choose_marker_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_marker_file)
            updateTextInput(session, "choose_marker_file_text", value =  as.character(inFile$datapath))
-           path_to_marker_file  <<- as.character(inFile$datapath)
+           # path_to_marker_file  <<- as.character(inFile$datapath)
+           readM$path_to_marker_file <- as.character(inFile$datapath)
+           readM$path_to_marker_file  <- "hmmm"
     })
 
     observeEvent(input$choose_marker_file_text, {
-           path_to_marker_file  <<- as.character(input$choose_marker_file_text)
+           #path_to_marker_file  <<- as.character(input$choose_marker_file_text)
+           readM$path_to_marker_file  <- as.character(input$choose_marker_file_text)
     })
 
  
@@ -1336,18 +1328,18 @@ server <- function(input, output, session){
 
    ## Read marker information
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
-   geno <- NULL
+
    observeEvent(input$choose_marker_file, {
-   observeEvent(input$marker_go, {
+   observeEvent(input$marker_go,  {
    withProgress(message = 'Loading marker data', value = 1, {
     
      if(input$filetype == "plink"){
        withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
-                 if (file.exists(path_to_marker_file) == TRUE) {
-                   geno <<- ReadMarker(filename = path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
+                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+                   geno <<- ReadMarker(filename = readM$path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
                  } else {
-                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", path_to_marker_file))
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
               }
           }, ## end withCallingHandlers
               message = function(m) {
@@ -1371,12 +1363,14 @@ server <- function(input, output, session){
                      bb <- NULL
                  if(input$missing=="")
                      missing <- NULL
-                 if (file.exists(path_to_marker_file) == TRUE) {
-                 geno <<- ReadMarker(filename = path_to_marker_file, type = "text", AA = aa, 
+                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+                 geno <<- ReadMarker(filename = readM$path_to_marker_file, type = "text", AA = aa, 
                             AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = TRUE , missing=missing) 
+
+
                 } else {
-                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", path_to_marker_file))
-                 }
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
+                } 
 
               },  ## end withCallingHandlers
               message = function(m) {
@@ -1389,7 +1383,8 @@ server <- function(input, output, session){
 
   })  ## withProgress
 
-  }) })  ## end observeEvent
+  }
+   ) })  ## end observeEvent
 
 
 
@@ -1408,11 +1403,12 @@ server <- function(input, output, session){
         observeEvent(input$choose_pheno_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_pheno_file)
            updateTextInput(session, "choose_pheno_file_text", value =  as.character(inFile$datapath))
-           path_to_pheno_file  <- as.character(inFile$datapath)
+           readP$path_to_pheno_file  <- as.character(inFile$datapath)
+           readP$path_to_pheno_file  <- "pathplaceholder"
        })
 
         observeEvent(input$choose_pheno_file_text, {
-           path_to_pheno_file  <<- as.character(input$choose_pheno_file_text)
+           readP$path_to_pheno_file  <<- as.character(input$choose_pheno_file_text)
          })
 
 
@@ -1439,10 +1435,10 @@ server <- function(input, output, session){
 
    withCallingHandlers({
                 shinyjs::html("ReadPheno", "")
-                 if (file.exists(path_to_pheno_file) == TRUE) {
-                 pheno  <<- ReadPheno(filename = path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
+                 if (file.exists(readP$path_to_pheno_file) == TRUE) {
+                 pheno  <<- ReadPheno(filename = readP$path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
                  } else {
-                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", path_to_pheno_file))
+                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", readP$path_to_pheno_file))
                  }
               },  ## end withCallingHandlers
               message = function(m) {
@@ -2053,7 +2049,7 @@ setgamma <- 1
                   sumres <- SummaryAM(AMobj=res )
                   output$pvalue <- renderTable(sumres[["pvalue"]], digits=-1, hover=TRUE, bordered=TRUE)
                   output$size <- renderTable(sumres[["size"]], digits=-1, hover=TRUE, bordered=TRUE)
-                  output$R <- renderTable(sumres[["R"]],  hover=TRUE, bordered=TRUE)
+                  output$R <- renderTable(sumres[["summarylist"]],  hover=TRUE, bordered=TRUE)
 
 
               },  ## end withCallingHandlers
