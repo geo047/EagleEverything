@@ -1,14 +1,14 @@
   #.find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-  #                     currentX,  ncpu, quiet, trait, ngpu  )
+  #                     currentX,  ncpu, quiet, trait  )
   .find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-                       currentX,  ncpu, quiet, trait, ngpu, itnum, indxNA_geno=NA)
+                       currentX,  ncpu, quiet, trait,  itnum)
   {
     ##  internal function: use by   AM
 
     # Calculate H
 
 
-    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat  )
+    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
@@ -27,8 +27,7 @@
     error_checking <- FALSE
     if (!quiet )
        error_checking <- TRUE
-    MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                              ngpu=ngpu  )
+    MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking )
 
 
 
@@ -44,7 +43,7 @@
 
        hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=trait, quiet = quiet  )
+                       y=trait, quiet = quiet )
 
 
 
@@ -78,10 +77,6 @@
     }
 
 
-     # when there are missing samples, this bit becomes tricky. 
-     # I am purposely returning the dimensions of hat_a and var_hat_a back to 
-     # n_g and keeping invMMtsqrt at n_g. I'll deal with indxNA_geno 
-     # inside calculate_a_vara.
 
    
      a_and_vara  <- calculate_a_and_vara(geno = geno,
@@ -89,7 +84,7 @@
                        invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                        transformed_a=hat_a,
                        transformed_vara=var_hat_a,
-                       quiet=quiet,  indxNA_geno=indxNA_geno)
+                       quiet=quiet)
 
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")

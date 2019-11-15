@@ -1,6 +1,8 @@
 
-emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0 )
+emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE  )
 {
+
+
     if (complete == FALSE) {
         vids <- colSums(Z) > 0
         Z <- Z[, vids]
@@ -14,16 +16,16 @@ emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0 )
      SZ <- Z - X %*%    chol2inv(chol(crossprod(X, X)))    %*% crossprod(X, Z)
 
    doMagmaEigen <- FALSE
-   if (ngpu == 1) {
+   if (computer$ngpu == 1) {
      if ( nrow(K) > 3000 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 2) {
+   } else if (computer$ngpu == 2) {
      if (nrow(K) > 3400 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 3) {
+   } else if (computer$ngpu == 3) {
      if (nrow(K) > 4100 )
            doMagmaEigen <- TRUE
-  } else if (ngpu > 3) {
+  } else if (computer$ngpu > 3) {
      if (nrow(K) > 4100)
            doMagmaEigen <- TRUE
   } else {
@@ -32,7 +34,7 @@ emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0 )
  }
 
    if (doMagmaEigen){
-    eig <- magmaEigenNonsym(Xmat = (K %*% crossprod(Z, SZ) ) , ngpu=ngpu, printInfo=FALSE)
+    eig <- magmaEigenNonsym(Xmat = (K %*% crossprod(Z, SZ) ) ,  printInfo=FALSE)
    } else {
     eig <- eigen(K %*% crossprod(Z, SZ), symmetric = FALSE, EISPACK = TRUE)
    }
@@ -50,9 +52,9 @@ emma.eigen.R.w.Z <-  function (Z, K, X, complete = TRUE, ngpu=0 )
     values = eig$values[1:(t - q)]
     vectors = qr.Q(qr(cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)), complete = TRUE)[, c(1:(t - q), (t + 1):n)]
    } else {
-    qr.X <- magmaQR(Xmat= X, ngpu=ngpu, printInfo=FALSE)
+    qr.X <- magmaQR(Xmat= X,  printInfo=FALSE)
     values = eig$values[1:(t - q)]
-    vectors = magmaQR(Xmat= (cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)), ngpu=ngpu, printInfo=FALSE)[, c(1:(t - q), (t + 1):n)]
+    vectors = magmaQR(Xmat= (cbind(SZ %*% eig$vectors[, 1:(t - q)], qr.X)),  printInfo=FALSE)[, c(1:(t - q), (t + 1):n)]
    }
    return(list(values=values, vectors=vectors))
 

@@ -8,7 +8,7 @@
 ##--------------------------------
 packageStartupMessage(' ')
 packageStartupMessage('   +--------------------------------------------------------------------------+ ')
-packageStartupMessage('   |                  Lion Version 2.0.0 has been loaded                     | ')  
+packageStartupMessage('   |                  Lion Version 2.1.0 has been loaded                     | ')  
 packageStartupMessage('   |                                                                          | ')             
 packageStartupMessage('   |    Visit eagle.r-forge.r-project.org for Quick Start guide and FAQ       | ')               
 packageStartupMessage('   |                                                                          | ')

@@ -1,6 +1,6 @@
 
 calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
-                                           quiet = TRUE , ngpu=1)
+                                           quiet = TRUE )
 {
   ## internal function to AM
   ## R function for calculating the square root of M * M^t
@@ -23,16 +23,16 @@ calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
   } 
    res <- list()
    doMagmaEigen <- FALSE
-   if (ngpu == 1) {
+   if (computer$ngpu == 1) {
      if ( nrow(MMt) > 4000 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 2) {
+   } else if (computer$ngpu == 2) {
      if (nrow(MMt) > 4500 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 3) {
+   } else if (computer$ngpu == 3) {
      if (nrow(MMt) > 4500 )
            doMagmaEigen <- TRUE
-  } else if (ngpu > 3) {
+  } else if (computer$ngpu > 3) {
      if (nrow(MMt) > 6000)
            doMagmaEigen <- TRUE
   } else {
@@ -41,7 +41,7 @@ calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
  }
   
    if (doMagmaEigen){
-      MMt.eigen <- magmaEigen(Xmat=MMt, ngpu=ngpu)
+      MMt.eigen <- magmaEigen(Xmat=MMt)
    } else {
       MMt.eigen <- eigen(MMt, symmetric=TRUE )
    }

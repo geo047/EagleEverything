@@ -30,8 +30,7 @@ Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps,
                                     std::vector <long> dims,
                                     Eigen::Map<Eigen::MatrixXd> a,
                                     bool  quiet,
-                                    Rcpp::Function message,
-                                    Rcpp::NumericVector indxNA_geno)
+                                    Rcpp::Function message )
 
 
 {
@@ -48,9 +47,6 @@ Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps,
 
 
 //Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>  (a), 
-
-
-
 
 
 
@@ -99,17 +95,13 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    }
 
 
-   if( !R_IsNA(indxNA_geno(0))    ){
-   // setting cols to 0
-   for(long ii=0; ii < indxNA_geno.size() ; ii++){
-           Mt.col(indxNA_geno(ii)).setZero();
-    }
-   }
 
 
      Eigen::MatrixXd  ans_part1;
     ans_part1.noalias() = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
+Rcpp::Rcout << "ans answers ... " << std::endl;
+Rcpp::Rcout << ans_part1(0) << " " << ans_part1(1) << " " << ans_part1(2) << " " << ans_part1(3) << std::endl;
 
 
   // calculate untransformed variances of BLUP values
@@ -207,14 +199,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
                    }
                 }
             }
-
-           if( !R_IsNA(indxNA_geno(0))    ){
-
-               // setting cols to 0
-               for(long ii=0; ii < indxNA_geno.size() ; ii++){
-                       Mt.col(indxNA_geno(ii)).setZero();
-                }
-               }
 
 
 

@@ -26,8 +26,7 @@ Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
                                     std::vector <long> dims,
                                     Eigen::VectorXd  a,
                                     bool  quiet,
-                                    Rcpp::Function message, 
-                                    Rcpp::NumericVector indxNA_geno)
+                                    Rcpp::Function message) 
 {
 // Purpose: to calculate the untransformed BLUP (a) and var(a) values from the 
 //          dimension reduced BLUP and var value estimates. 
@@ -89,12 +88,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    }
 
 
-   if( !R_IsNA(indxNA_geno(0))    ){
-   // setting cols to 0
-   for(long ii=0; ii < indxNA_geno.size() ; ii++){
-           Mt.col(indxNA_geno(ii)).setZero();
-    }
-   }
   
 
     Eigen::MatrixXd  ans_part1;
@@ -209,13 +202,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
                 }
             }
 
-            if( !R_IsNA(indxNA_geno(0))    ){
-
-               // setting cols to 0
-               for(long ii=0; ii < indxNA_geno.size() ; ii++){
-                       Mt.col(indxNA_geno(ii)).setZero();
-                }
-               }
 
            //  ans_tmp  =  Mtd *  inv_MMt_sqrt  * a ;
              ans_tmp.noalias()  =   inv_MMt_sqrt  * a ;

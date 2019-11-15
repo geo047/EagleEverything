@@ -1,4 +1,4 @@
-magmaEigenNonsym <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
+magmaEigenNonsym <- function(Xmat ,  wantvectors=TRUE, printInfo=FALSE){
 
 ## R frontend to Magma multi-GPU code for eigendecomposition for square non-symmetric matrices. 
 # Due to the 32 bit interface problem between R and Magma, the Magma code sits outside of R. It is 
@@ -76,13 +76,13 @@ magmaEigenNonsym <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
 
   complete.name <- system.file('Magma', 'magma_eigennonsym.exe', package='Lion')
   if (printInfo)
-    paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" )
+    paste(complete.name, binXmatfile, nrow(Xmat), computer$ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" )
 
 
 
    # magma_eigen(X=binXmatfile  , numrows=nrow(Xmat),  numgpus=ngpu, printInfo=printInfo, fnameval=binvalfile, fnamevec=binvecfile, 
    #                wantvectors=wantvectors )
-  system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
+  system(paste(complete.name, binXmatfile, nrow(Xmat), computer$ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
 
 
   # read in eigenvalues

@@ -5,7 +5,7 @@
 \title{multiple-locus Association Mapping}
 \usage{
 AM(trait = NULL, fformula = NULL, geno = NULL, pheno = NULL,
-  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0,
+  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 1,
   quiet = TRUE, maxit = 20, fixit = FALSE, gamma = NULL)
 }
 \arguments{

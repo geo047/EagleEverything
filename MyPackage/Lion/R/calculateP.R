@@ -1,12 +1,11 @@
 
-calculateP  <- function(H=NULL, X=NULL, ngpu=1)
+calculateP  <- function(H=NULL, X=NULL)
 {
   ## internal function to AM
   ## R function to calculate P matrix
   ## Args:
   ##       H is the variance matrix
   ##       X is the design matrix supplied by the user
-  ##       ngpu for the number of gpu
   ## Returns:
   ##   matrix object P
 
@@ -25,7 +24,6 @@ calculateP  <- function(H=NULL, X=NULL, ngpu=1)
   }
 
   Hinv <- chol2inv(chol(H))
- #P <- Hinv - Hinv %*% X %*% magmaSolve( Xmat= (t(X) %*% Hinv %*% X ), ngpu=ngpu, printInfo=FALSE)  %*% t(X) %*% Hinv
  P <- Hinv - Hinv %*% X %*% chol2inv(chol( t(X) %*% Hinv %*% X ))     %*% t(X) %*% Hinv
 
   return(P)

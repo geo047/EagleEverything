@@ -2,6 +2,7 @@
 
 library(Lion)
 
+
 # Scenario 1
 # Full data 
 # 102 samples for pheno1
@@ -11,42 +12,66 @@ geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno1.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno,ngpu=1)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma, ngpu=1)
+res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+SummaryAM(res)
 
- Table: Empirical false positive rates, given gamma value for model selection. 
 
-#  Gamma    |  False Pos Rate  
-# ---------------------------- 
-#0  |  1 
-#0.05263158  |  1 
-#0.1052632  |  1 
-#0.1578947  |  1 
-#0.2105263  |  1 
-#0.2631579  |  1 
-#0.3157895  |  0.98 
-#0.3684211  |  0.93 
-#0.4210526  |  0.81 
-#0.4736842  |  0.705 
-#0.5263158  |  0.59 
-#0.5789474  |  0.475 
-#0.6315789  |  0.34 
-#0.6842105  |  0.245 
-#0.7368421  |  0.16 
-#0.7894737  |  0.105 
-#0.8421053  |  0.05 
-#0.8947368  |  0.03 
-#0.9473684  |  0.03 
-#1  |  0.02 
-# ----------------------------- 
-# For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
-# New results after iteration 2 are 
-#
-#            SNP        Chrm           Map Pos     Col Number            extBIC 
-#          -----      ------         ---------     -----------         --------- 
-#     Null Model                                                         633.78   
-#     rs10404933          19          19035425           3899            636.79   
 
+ Gamma    |  False Pos Rate  
+ ---------------------------- 
+0  |  1 
+0.05263158  |  1 
+0.1052632  |  1 
+0.1578947  |  1 
+0.2105263  |  1 
+0.2631579  |  1 
+0.3157895  |  0.98 
+0.3684211  |  0.93 
+0.4210526  |  0.81 
+0.4736842  |  0.705 
+0.5263158  |  0.59 
+0.5789474  |  0.475 
+0.6315789  |  0.34 
+0.6842105  |  0.245 
+0.7368421  |  0.16 
+0.7894737  |  0.105 
+0.8421053  |  0.05 
+0.8947368  |  0.03 
+0.9473684  |  0.03 
+1  |  0.02 
+ ----------------------------- 
+ For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+
+ New results after iteration 2 are 
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         633.78   
+     rs10404933          19          19035425           3899            636.79   
+                           Final  Results  
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+No significant marker-trait associations have been found. 
+
+
+ Table 1: Summary Information 
+   
+--------------------------------------------------------
+Number cpu:                               28        
+Max memory (Gb):                          16        
+Number of samples:                        102       
+Number of snp:                            4998      
+Trait name:                               trait1    
+Fixed model:                              pc1 + pc2                     
+Number samples missing obs:               0         
+Number significant snp-trait assocs:      0         
+Gamma value for extBIC:                   0.842105263157895
+--------------------------------------------------------
+
+
+
+ No significant marker-trait associations have been found by AM. 
+
+ No p-values to report 
 
 
 
@@ -55,59 +80,60 @@ res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=phe
 
 # Scenario 2
 # Full data but with a missig trait value 
-# 102 samples for pheno2 but there are 3 single records missing
+# 102 samples for pheno2 but there is one trait value missing and 2 covariate values missing.
 # Data still contains repeat measures. 
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, ngpu=1)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma, ngpu=1)
-
-#  Gamma    |  False Pos Rate  
-# ---------------------------- 
-#0  |  1 
-#0.05263158  |  1 
-#0.1052632  |  1 
-#0.1578947  |  1 
-#0.2105263  |  0.995 
-#0.2631579  |  0.99 
-#0.3157895  |  0.95 
-#0.3684211  |  0.905 
-#0.4210526  |  0.79 
-#0.4736842  |  0.665 
-#0.5263158  |  0.465 
-#0.5789474  |  0.335 
-#0.6315789  |  0.275 
-#0.6842105  |  0.195 
-#0.7368421  |  0.135 
-#0.7894737  |  0.095 
-#0.8421053  |  0.065 
-#0.8947368  |  0.05 
-#0.9473684  |  0.04 
-#1  |  0.02 
-# ----------------------------- 
-# For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8947368 
-#
-# New results after iteration 2 are 
-#
-#            SNP        Chrm           Map Pos     Col Number            extBIC 
-#          -----      ------         ---------     -----------         --------- 
-#     Null Model                                                         618.00   
-#     rs10404933          19          19035425           3899            622.35   
-#
+res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
 
 
+  Gamma    |  False Pos Rate  
+ ---------------------------- 
+0  |  1 
+0.05263158  |  1 
+0.1052632  |  1 
+0.1578947  |  1 
+0.2105263  |  1 
+0.2631579  |  1 
+0.3157895  |  0.98 
+0.3684211  |  0.93 
+0.4210526  |  0.82 
+0.4736842  |  0.69 
+0.5263158  |  0.595 
+0.5789474  |  0.455 
+0.6315789  |  0.355 
+0.6842105  |  0.24 
+0.7368421  |  0.17 
+0.7894737  |  0.105 
+0.8421053  |  0.045 
+0.8947368  |  0.035 
+0.9473684  |  0.03 
+1  |  0.02 
+ ----------------------------- 
+ For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
 
+ Significant marker-trait association found. 
+ New results after iteration 2 are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         638.26   
+     rs10404933          19          19035425           3899            640.98   
+
+                           Final  Results  
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+No significant marker-trait associations have been found. 
 
 
 
 # Scenario 3
-# Results should be equivalent to next lot of  results 
-# 102 samples for pheno3 but records 1, 5, and 7 are missing
+# 102 samples for pheno3 with records 7, 3, 2, 1 missing and record 9 missing covariate data
 # Missing data causes pheno not to contain any repeat measures
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno3.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -115,36 +141,43 @@ Z <- ReadZmat("./Z1.test")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
 res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
 
-#  Gamma    |  False Pos Rate  
-# ---------------------------- 
-#0  |  1 
-#0.05263158  |  1 
-#0.1052632  |  1 
-#0.1578947  |  0.99 
-#0.2105263  |  0.985 
-#0.2631579  |  0.975 
-#0.3157895  |  0.925 
-#0.3684211  |  0.855 
-#0.4210526  |  0.78 
-#0.4736842  |  0.645 
-#0.5263158  |  0.525 
-#0.5789474  |  0.425 
-#0.6315789  |  0.33 
-#0.6842105  |  0.255 
-#0.7368421  |  0.19 
-#0.7894737  |  0.12 
-#0.8421053  |  0.09 
-#0.8947368  |  0.05 
-#0.9473684  |  0.03 
-#1  |  0.02 
-# ----------------------------- 
-# For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8947368 
-#New results after iteration 2 are 
-#
-#            SNP        Chrm           Map Pos     Col Number            extBIC 
-#          -----      ------         ---------     -----------         --------- 
-#     Null Model                                                         607.50   
-#     rs10404933          19          19035425           3899            612.61   
+ Table: Empirical false positive rates, given gamma value for model selection. 
+
+  Gamma    |  False Pos Rate  
+ ---------------------------- 
+0  |  1 
+0.05263158  |  1 
+0.1052632  |  1 
+0.1578947  |  1 
+0.2105263  |  1 
+0.2631579  |  1 
+0.3157895  |  0.975 
+0.3684211  |  0.915 
+0.4210526  |  0.83 
+0.4736842  |  0.715 
+0.5263158  |  0.575 
+0.5789474  |  0.42 
+0.6315789  |  0.315 
+0.6842105  |  0.18 
+0.7368421  |  0.135 
+0.7894737  |  0.095 
+0.8421053  |  0.05 
+0.8947368  |  0.03 
+0.9473684  |  0.025 
+1  |  0.015 
+ ----------------------------- 
+ For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+New results after iteration 2 are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         651.45   
+     rs10404933          19          19035425           3899            655.01   
+
+                           Final  Results  
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+No significant marker-trait associations have been found. 
+
 
 
 
@@ -157,7 +190,7 @@ res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=phe
 # 97 samples for pheno4 with no missing records
 # no repeated measures. 
 # 
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno4.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno4.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -205,10 +238,9 @@ res <- AM(trait="trait1", fformula="pc1+pc2",  map=map, geno=geno, pheno=pheno, 
 
 # Scenario 5
 # 102 samples for pheno5 with  missing records
-# all missing data [2,3,7,10,11] for single observation cases
-#  repeated measures still present . 
+# trait data missing for 4 and 5. Covariate data also missing. 
 # 
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -216,46 +248,55 @@ Z <- ReadZmat("./Z1.test")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
 res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
 
- Gamma    |  False Pos Rate  
+ Table: Empirical false positive rates, given gamma value for model selection. 
+
+  Gamma    |  False Pos Rate  
  ---------------------------- 
 0  |  1 
 0.05263158  |  1 
 0.1052632  |  1 
-0.1578947  |  0.995 
-0.2105263  |  0.98 
-0.2631579  |  0.945 
-0.3157895  |  0.9 
-0.3684211  |  0.84 
-0.4210526  |  0.71 
-0.4736842  |  0.6 
-0.5263158  |  0.485 
-0.5789474  |  0.355 
-0.6315789  |  0.28 
-0.6842105  |  0.19 
-0.7368421  |  0.125 
+0.1578947  |  1 
+0.2105263  |  1 
+0.2631579  |  1 
+0.3157895  |  0.985 
+0.3684211  |  0.97 
+0.4210526  |  0.9 
+0.4736842  |  0.73 
+0.5263158  |  0.59 
+0.5789474  |  0.44 
+0.6315789  |  0.32 
+0.6842105  |  0.25 
+0.7368421  |  0.13 
 0.7894737  |  0.075 
 0.8421053  |  0.05 
-0.8947368  |  0.02 
-0.9473684  |  0.015 
-1  |  0.005 
+0.8947368  |  0.04 
+0.9473684  |  0.02 
+1  |  0.02 
  ----------------------------- 
  For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
-
  New results after iteration 2 are 
-
             SNP        Chrm           Map Pos     Col Number            extBIC 
           -----      ------         ---------     -----------         --------- 
-     Null Model                                                         602.95   
-     rs10404933          19          19035425           3899            608.03   
+     Null Model                                                         638.61   
+     rs10404933          19          19035425           3899            642.79   
+
+                           Final  Results  
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+No significant marker-trait associations have been found. 
+
+
+
+
+
 
 # Scenario 6
 ### Summary testings ... 
-       library(Lion)
-       complete.name <- system.file('extdata', 'geno.ped', package='Lion')
+       library(Eagle)
+       complete.name <- system.file('extdata', 'geno.ped', package='Eagle')
        geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
-       complete.name <- system.file('extdata', 'pheno.txt', package='Lion')
+       complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
        pheno_obj <- ReadPheno(filename=complete.name)
-       complete.name <- system.file('extdata', 'map.txt', package='Lion')
+       complete.name <- system.file('extdata', 'map.txt', package='Eagle')
        map_obj <- ReadMap(filename=complete.name)
        res <- AM(trait = 'y', fformula=c("cov1 + cov2"), map = map_obj, pheno = pheno_obj, geno = geno_obj)
        SummaryAM(AMobj=res)
@@ -310,7 +351,7 @@ res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setga
 # Full data but with a missig trait value 
 # 102 samples for pheno2 but there are 3 single records missing
 # Data still contains repeat measures. 
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -332,7 +373,7 @@ res <- AM(trait="trait1", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgam
 # Results  WILL NOT be equivalent to next lot of  results 
 # 102 samples for pheno3 but records 1, 5, and 7 are missing
 # Missing data causes pheno not to contain any repeat measures
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno3.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -354,7 +395,7 @@ res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setga
 # 97 samples for pheno4 with no missing records
 # no repeated measures. 
 # 
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno4.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno4.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -377,19 +418,25 @@ res <- AM(trait="trait1",   map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
 # all missing data [2,3,7,10,11] for single observation cases
 #  repeated measures still present . 
 # 
-library(Lion)
+library(Eagle)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno)
+res <- FPR4AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, numreps=30)
 res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
 
 
-          SNP        Chrm           Map Pos     Col Number            extBIC 
+ New results after iteration 2 are 
+            SNP        Chrm           Map Pos     Col Number            extBIC 
           -----      ------         ---------     -----------         --------- 
-     Null Model                                                         618.04   
-      rs1000728          21           3276368             90            625.91   
+     Null Model                                                         637.49   
+      rs1000728          21           3276368             90            645.16   
+
+                           Final  Results  
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+No significant marker-trait associations have been found. 
+Gamma value for model selection was set to  0.842 
 
 
 
@@ -397,18 +444,32 @@ res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setga
 
 # Scenario 6
 ### Summary testings ... 
-       library(Lion)
-       complete.name <- system.file('extdata', 'geno.ped', package='Lion')
+       library(Eagle)
+       complete.name <- system.file('extdata', 'geno.ped', package='Eagle')
        geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8)
-       complete.name <- system.file('extdata', 'pheno.txt', package='Lion')
+       complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
        pheno_obj <- ReadPheno(filename=complete.name)
-       complete.name <- system.file('extdata', 'map.txt', package='Lion')
+       complete.name <- system.file('extdata', 'map.txt', package='Eagle')
        map_obj <- ReadMap(filename=complete.name)
        res <- AM(trait = 'y',  map = map_obj, pheno = pheno_obj, geno = geno_obj)
        SummaryAM(AMobj=res)
 
 
- Table 1: Significance of Effects in Final Model 
+ Table 1: Summary Information 
+   
+--------------------------------------------------------
+Number of samples:                        150       
+Number of snp:                            100       
+Trait name:                               y         
+Fixed model:                              intercept only                
+Number samples missing obs:               0         
+Number significant snp-trait assocs:      2         
+
+--------------------------------------------------------
+
+ Number of cores being used for calculation is .. 28
+
+ Table 2: Significance of Effects in Final Model 
    
                          Df   Wald statstic      Pr(Chisq)
          (Intercept)      1         486.17       0.000E+00
@@ -418,11 +479,62 @@ res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setga
 
 
 
- Table 2: Proportion of phenotypic variance explained by the 
-          model. Marker loci, which were found by AM(), are added
-          a SNP at a time.
- 
-                   SNP          Proportion 
-        +  rs145002694               0.403
-         +  rs77659166               0.548
+
+
+
+
+# Scenario 5
+# 102 samples for pheno5 with  missing records
+# all missing data [2,3,7,10,11] for single observation cases
+#  repeated measures still present . 
+# gamma set to 0.3
+# 
+library(Eagle)
+geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
+pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
+map <- ReadMap(filename = "./mapDemo.dat")
+Z <- ReadZmat("./Z1.test")
+res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=0.36)
+SummaryAM(AMobj=res)
+
+
+
+ Table 1: Summary Information 
+   
+--------------------------------------------------------
+Number of samples:                        102       
+Number of snp:                            4998      
+Trait name:                               trait1    
+Fixed model:                              intercept only                
+Number samples missing obs:               2         
+Number significant snp-trait assocs:      20        
+Gamma value for extBIC:                   0.36      
+--------------------------------------------------------
+
+
+ Table 2: Significance of Effects in Final Model 
+   
+                         Df   Wald statstic      Pr(Chisq)
+         (Intercept)      1           6.28       1.223E-02
+           rs1000728      1         273.19       0.000E+00
+           rs1350291      1         237.46       0.000E+00
+         rs113647042      1          68.11       1.110E-16
+         rs570109966      1         129.30       0.000E+00
+          rs17800303      1         306.90       0.000E+00
+          rs10404933      1         151.62       0.000E+00
+            rs232399      1          55.37       9.981E-14
+            rs552797      1         171.39       0.000E+00
+         rs199551210      1          72.90       0.000E+00
+          rs12459845      1         103.08       0.000E+00
+            rs970567      1          20.46       6.090E-06
+           rs4813308      1          39.36       3.527E-10
+           rs6081105      1          61.57       4.219E-15
+          rs73121316      1          51.30       7.938E-13
+           rs4818170      1          37.08       1.135E-09
+         rs553114464      1          34.37       4.552E-09
+           rs6126781      1          31.99       1.548E-08
+           rs6517159      1          32.04       1.513E-08
+           rs4072633      1          26.66       2.424E-07
+         rs551566854      1          20.58       5.705E-06
+
 

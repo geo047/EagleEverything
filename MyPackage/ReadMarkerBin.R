@@ -199,18 +199,18 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
  if (nargs() == 0){
     ## checking that function has arguments
     message(" Please supply arguments to function \n")
-    return(NULL)
+    return(FALSE)
  }  else {
       ## read in either a text file or a PLINK file. The parameter type must be specified. Default it text file. 
    if(is.null(type)){
       message(" type must be set to \"text\" or \"PLINK\". \n")
       message(" ReadMarker has terminated with errors.")
-      return(NULL)
+      return(FALSE)
    }
    if(!(type=="text" || type=="PLINK") ){
       message(" type must be set to \"text\" or \"PLINK\". \n")
       message(" ReadMarker has terminated with errors")
-      return(NULL)
+      return(FALSE)
    }
 
 
@@ -221,21 +221,21 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
        if (is.null(filename)){
             message(" The name of the PLINK ped file is missing.")
             message(" ReadMarker has terminated with errors.")
-            return(NULL)
+            return(FALSE)
        }
        if (!file.exists(fullpath(filename) )){
             message(" The PLINK ped file ", filename, " could not be found. ")
             message(" ReadMarker has terminated with errors ")
-            return(NULL)
+            return(FALSE)
        }
 
        ## Rcpp function to get dimensions of PLINK ped  file
        dim_of_ascii_M <- getRowColumn(fname=fullpath(filename))
        dim_of_ascii_M[2] <- (dim_of_ascii_M[2] - 6)/2  ## adjusting for PLINK structure
-       ## Rcpp function to create binary packed M and Mt file 
+       ## Rcpp function to create binary packed Mt and M file (if needed)
        it_worked <- create.bin(file_genotype=fullpath(filename), type=type, availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M,  quiet=quiet  )
        if(!it_worked)
-           return(NULL) 
+           return(FALSE) 
 
     if(.Platform$OS.type == "unix") {
        asciifileM <- paste(tempdir(), "/", "M.bin", sep="")
@@ -255,7 +255,7 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
       error.code <- check.inputs(file_genotype=filename, availmemGb=availmemGb)
       if(error.code){
           message(" ReadMarker has terminated with errors.")
-          return(NULL)
+          return(FALSE)
        }
  ## Has AA, AB, BB been assigned character values
   if(is.null(AA) ||  is.null(BB))
@@ -263,7 +263,7 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
      message("Error: The function parameters AA and BB must be assigned a numeric or character value since a text file is being assumed. \n")
      message(" Type help(ReadMarker) for help on how to read in the marker data. \n")
      message(" ReadMarker has terminated with errors")
-     return(NULL)
+     return(FALSE)
   }
 
   ## if there are no hets. 
@@ -288,7 +288,7 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
               availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M, quiet=quiet, missing=missing  )
 
     if(!it_worked)   ## error has occurred. 
-       return(NULL)
+       return(FALSE)
 
 
 

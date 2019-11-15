@@ -2,9 +2,9 @@
 #'   @import ggthemes
 
 
-## Shiny GUI for Eagle
+## Shiny GUI for Lion
 ## Developer:  Andrew W. George
-## Version: 1.2.0
+## Version: 2.1.0
 
 
 
@@ -132,9 +132,9 @@ page =  fluidRow( column(12,
 
                         fluidRow(column(12,
                    sliderInput(inputId="analyse_numreps", label=h4(" Specify number of replicates."),
-                                       value=100, min = 30, max = 1000, step = 5),
+                                       value=200, min = 30, max = 1000, step = 5),
                                         style="padding: 1px",
-                   shinyBS::bsTooltip("analyse_numreps", title='<font size="3" > To set the number of replicates, start with 100 replicates and increase in 50 replicate increments. Stop when the gamma value stabilizes.  </font>',
+                   shinyBS::bsTooltip("analyse_numreps", title='<font size="3" > To set the number of replicates, start with 200 replicates and increase in 50 replicate increments. Stop when the gamma value stabilizes.  </font>',
                           placement="right", trigger="hover", options=list(container="body"))
 
 
@@ -164,7 +164,6 @@ row5Anal <- function()
 {
    page = fluidRow(column(12,
              wellPanel(
-                shinyjs::useShinyjs(),
                 h4("Step 5: Perform genome-wide analysis"),
                             actionButton(inputId="analyse_go",label="", width='35%', style='padding:5px 5px 5px 5px; font-size:180%',
                                          icon=icon("upload", lib="glyphicon")),
@@ -209,7 +208,7 @@ col1Plot <-   function(){
                       uiOutput("plot_choice"), 
 
                       shinyBS::bsTooltip("plot_choice",
-                     title='<font size="3" > Manhattan plot type -  score statistics are converted into  p-values and their -log values plotted on the y-axis. Score statistic plot type - the score statistics are plotted on the y-axis. The score statistics are used by Eagle to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model buidling process. </font>',
+                     title='<font size="3" > Manhattan plot type -  score statistics are converted into  p-values and their -log values plotted on the y-axis. Score statistic plot type - the score statistics are plotted on the y-axis. The score statistics are used by Lion to identify the SNP in strongest association with the trait.  A new set of score statistics are generated at each iteration of the model buidling process. </font>',
                       placement="right", trigger="hover", options=list(container="body"))
 
                  ) ## end wellPanel
@@ -289,10 +288,10 @@ row1Help <- function(){
 
 home_intro <- function(){
   txt <- "
-strong(Eagle)  is a software package for genome-wide association mapping.
+strong(Lion)  is a software package for genome-wide association mapping.
 It differs from most other association mapping packages in that it fits all marker-trait associations simultaneously, an 
 returns the 'best' set of snp loci in strongest association with a trait as its findings. 
-Eagle can handle data collected from populations of arbitrary structure. The populations can contain inbred or outbred individuals. 
+Lion can handle data collected from populations of arbitrary structure. The populations can contain inbred or outbred individuals. 
 br()
 An analysis is performed by reading in the marker data (Read Genotypes), reading in the phenotypic data (Read Phenotypes), reading in the 
 marker map if known (Read Map), reading in the Z matrix if needed, and performing the genome-wide analysis (Analyse).  
@@ -303,7 +302,7 @@ Help is available by hovering over the widgets or by clicking on the help tab at
 
 read_geno_intro <- function(){
   txt <- "
-  Eagle can handle two different types of marker data; genotype data in a plain text space separated file 
+  Lion can handle two different types of marker data; genotype data in a plain text space separated file 
   "
   return(txt)
 }
@@ -328,7 +327,7 @@ read_pheno_intro <- function(){
 #library(shinyFiles)
 #library(ggthemes)
 
-FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",  
+FullPage <- navbarPage(title="Lion: Genome-wide association mapping",  
                       theme = shinythemes::shinytheme("flatly"),
                 #       theme = shinytheme("paper"),
                 #      theme = shinytheme("united"),
@@ -527,7 +526,6 @@ placement="right", trigger="hover",
                                 column(7, 
                                         verbatimTextOutput("ReadMarker", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
                                 
                               ) ## end fluidRow
                               
@@ -684,7 +682,6 @@ placement="right", trigger="hover",
                                column(7,
                                         verbatimTextOutput("ReadPheno", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
                               ) ## end fluidRow
                               
                               
@@ -890,7 +887,6 @@ placement="right", trigger="hover",
                                column(7,
                                         verbatimTextOutput("ReadZmat", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
 
                                 
                               ) ## end fluidRow
@@ -1036,7 +1032,6 @@ placement="right", trigger="hover",
                                column(7,
                                         verbatimTextOutput("ReadMap", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
 
 
                                 
@@ -1092,7 +1087,6 @@ placement="right", trigger="hover",
                                column(6, 
                                    verbatimTextOutput("AM", placeholder=TRUE)
                                 )  ## end column(6, ) -- right half of page
-                                   ## for outputs from ReadMarker function
 
 
 
@@ -1174,13 +1168,6 @@ placement="right", trigger="hover",
                           column(8, 
                               fluidPage(
 
-                               fluidRow(
-                                   column(12,
-tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Parameter Settings"), sep = ""))),
-                                       tableOutput("parameters")
-                                  ) ## end column
-                               ), ## end fluidRow
 
 
 
@@ -1210,7 +1197,7 @@ tags$div(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Proportion of Variance Explained as Markers Added to Model"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Extra Summary Information"), sep = ""))),
                                     tableOutput("R")
                                     )
                                ) ## end column
@@ -1279,7 +1266,7 @@ FullPage[[3]][[1]]$children[[1]]$children[[1]]$children[[1]] <-
   tags$img(src = 'images/logo.jpg', width = 80, height = 60)
 ui <- FullPage
 
-get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat") {
+get_path <- function (defaultpath="/R/library/Lion/shiny_app/shinydata/genoDemo.dat") {
             path_to_file_res <- tryCatch({
                 if(.Platform$OS.type=="unix"){
                     path_to_file_res <- tk_choose.files()
@@ -1288,15 +1275,15 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
                     path_to_file_res <- file.choose()                   
                 }                
                 }, warning = function(war) {
-                    print(paste("Eagle::get_path() Warning: ",war))
+                    print(paste("Lion::get_path() Warning: ",war))
                     path_to_file_res<-defaultpath
                     return (path_to_file_res)
                 }, error = function(err) {
-                    print(paste("Eagle::get_path() Error: ",err))
+                    print(paste("Lion::get_path() Error: ",err))
                     path_to_file_res<-defaultpath
                     return (path_to_file_res)
                 }, finally = {
-                   # path_to_file_res<-"/R/library/Eagle/shiny_app/shinydata/genoDemo.dat"
+                   # path_to_file_res<-"/R/library/Lion/shiny_app/shinydata/genoDemo.dat"
                   #  return (path_to_file_res)
                 }) # END tryCatch
     
@@ -1305,7 +1292,10 @@ get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo
 
 
 server <- function(input, output, session){
-  library("Eagle")
+  library("Lion")
+
+  readM <- reactiveValues(path_to_marker_file=NA)
+  readP <- reactiveValues(path_to_pheno_file=NA)
 
   ##------------------------------------------
   ## Intros to pages
@@ -1319,15 +1309,17 @@ server <- function(input, output, session){
   ##---------------------------------------- 
   ## upload path and file name
     shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=rootdir)
-    # path_to_marker_file <- NULL    
     observeEvent(input$choose_marker_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_marker_file)
            updateTextInput(session, "choose_marker_file_text", value =  as.character(inFile$datapath))
-           path_to_marker_file  <<- as.character(inFile$datapath)
+           # path_to_marker_file  <<- as.character(inFile$datapath)
+           readM$path_to_marker_file <- as.character(inFile$datapath)
+           readM$path_to_marker_file  <- "hmmm"
     })
 
     observeEvent(input$choose_marker_file_text, {
-           path_to_marker_file  <<- as.character(input$choose_marker_file_text)
+           #path_to_marker_file  <<- as.character(input$choose_marker_file_text)
+           readM$path_to_marker_file  <- as.character(input$choose_marker_file_text)
     })
 
  
@@ -1336,18 +1328,18 @@ server <- function(input, output, session){
 
    ## Read marker information
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
-   geno <- NULL
+
    observeEvent(input$choose_marker_file, {
-   observeEvent(input$marker_go, {
+   observeEvent(input$marker_go,  {
    withProgress(message = 'Loading marker data', value = 1, {
     
      if(input$filetype == "plink"){
        withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
-                 if (file.exists(path_to_marker_file) == TRUE) {
-                   geno <<- ReadMarker(filename = path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
+                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+                   geno <<- ReadMarker(filename = readM$path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
                  } else {
-                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", path_to_marker_file))
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
               }
           }, ## end withCallingHandlers
               message = function(m) {
@@ -1371,12 +1363,14 @@ server <- function(input, output, session){
                      bb <- NULL
                  if(input$missing=="")
                      missing <- NULL
-                 if (file.exists(path_to_marker_file) == TRUE) {
-                 geno <<- ReadMarker(filename = path_to_marker_file, type = "text", AA = aa, 
+                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+                 geno <<- ReadMarker(filename = readM$path_to_marker_file, type = "text", AA = aa, 
                             AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = TRUE , missing=missing) 
+
+
                 } else {
-                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", path_to_marker_file))
-                 }
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
+                } 
 
               },  ## end withCallingHandlers
               message = function(m) {
@@ -1389,7 +1383,8 @@ server <- function(input, output, session){
 
   })  ## withProgress
 
-  }) })  ## end observeEvent
+  }
+   ) })  ## end observeEvent
 
 
 
@@ -1408,11 +1403,12 @@ server <- function(input, output, session){
         observeEvent(input$choose_pheno_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_pheno_file)
            updateTextInput(session, "choose_pheno_file_text", value =  as.character(inFile$datapath))
-           path_to_pheno_file  <- as.character(inFile$datapath)
+           readP$path_to_pheno_file  <- as.character(inFile$datapath)
+           readP$path_to_pheno_file  <- "pathplaceholder"
        })
 
         observeEvent(input$choose_pheno_file_text, {
-           path_to_pheno_file  <<- as.character(input$choose_pheno_file_text)
+           readP$path_to_pheno_file  <<- as.character(input$choose_pheno_file_text)
          })
 
 
@@ -1439,10 +1435,10 @@ server <- function(input, output, session){
 
    withCallingHandlers({
                 shinyjs::html("ReadPheno", "")
-                 if (file.exists(path_to_pheno_file) == TRUE) {
-                 pheno  <<- ReadPheno(filename = path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
+                 if (file.exists(readP$path_to_pheno_file) == TRUE) {
+                 pheno  <<- ReadPheno(filename = readP$path_to_pheno_file, header=header_flag, csv=csv_flag, missing= pheno_missing)
                  } else {
-                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", path_to_pheno_file))
+                    shinyjs::html(id = "ReadPheno", html = paste0("ReadPheno", "File does not exist:", readP$path_to_pheno_file))
                  }
               },  ## end withCallingHandlers
               message = function(m) {
@@ -1995,11 +1991,11 @@ setgamma <- 1
                         "A plot of the", txt1, 
                         "verse map position", txt2 , 
                         "at iteration", input$chosenits, 
-                        "of the model building process. The horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst,
+                        "of the model building process. The horizontal lines denote the position of SNP found by Lion to be in association with the trait, ", input$nmst,
                         ". The numbers are the order in which the SNP-trait associations were found. ")
 
           } else { 
-           txt <- paste("Figure: ", "A plot of the", txt1, "verse map position", txt2 , "at iteration", input$chosenits, "of the model building process.. The horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst, ". The numbers are the order in which the SNP-trait associations were found.  Dark blue (light blue) points denote a", txt3, "that has decreased (increased) in size from the previous iteration. This is useful for inspecting how different parts of the chromosome gain or lose importance as SNP-trait associations are found. The size of the point is proportional to the size of the increase/decrease.")
+           txt <- paste("Figure: ", "A plot of the", txt1, "verse map position", txt2 , "at iteration", input$chosenits, "of the model building process.. The horizontal lines denote the position of SNP found by Lion to be in association with the trait, ", input$nmst, ". The numbers are the order in which the SNP-trait associations were found.  Dark blue (light blue) points denote a", txt3, "that has decreased (increased) in size from the previous iteration. This is useful for inspecting how different parts of the chromosome gain or lose importance as SNP-trait associations are found. The size of the point is proportional to the size of the increase/decrease.")
 
           } 
            output$caption <- renderText(txt)
@@ -2053,7 +2049,7 @@ setgamma <- 1
                   sumres <- SummaryAM(AMobj=res )
                   output$pvalue <- renderTable(sumres[["pvalue"]], digits=-1, hover=TRUE, bordered=TRUE)
                   output$size <- renderTable(sumres[["size"]], digits=-1, hover=TRUE, bordered=TRUE)
-                  output$R <- renderTable(sumres[["R"]],  hover=TRUE, bordered=TRUE)
+                  output$R <- renderTable(sumres[["summarylist"]],  hover=TRUE, bordered=TRUE)
 
 
               },  ## end withCallingHandlers
@@ -2086,7 +2082,7 @@ setgamma <- 1
 #    })
 
 # observeEvent(input$quickstart, {
-#      RShowDoc("QuickStart", package="Eagle")
+#      RShowDoc("QuickStart", package="Lion")
 #})
 
   ##---------------------------------
@@ -2095,7 +2091,7 @@ setgamma <- 1
 
  
   shinyBS::addPopover(session, "dummy1", "Details", content = HTML("
-Eagle can handle two types of marker genotype file; a space separated plain text file and PLINK
+Lion can handle two types of marker genotype file; a space separated plain text file and PLINK
 ped file. We assume the marker loci are snps. 
 Missing marker genotypes are allowed but the 
 proportion of missing genotypes is assumed to be low. 
@@ -2106,22 +2102,22 @@ individual. The ordering of the rows, by individual, must be the same for the ma
 
 
 If the file is a plain text file, then character or numeric genotypes can be used to 
-denote the snp genotypes. However, Eagle needs 
+denote the snp genotypes. However, Lion needs 
 to map these genotypes to its internal snp genotypes. We do this by asking the user to assign their snp genotype codes to our AA, 
 AB and BB codes. If data are collected on inbred individuals, only AA and BB need be specified. 
 <br> <br>
 
-To load the marker genotype data into Eagle, follow the four steps.  Upon cliking Upload, Eagle checks the genotype file for errors, 
+To load the marker genotype data into Lion, follow the four steps.  Upon cliking Upload, Lion checks the genotype file for errors, 
 and recodes the genoytpes for later analysis. If the marker genotype is large (many Gbytes), this step can take several minutes. <br><br>
 Output from reading in the marker genotype file will appear in the right hand-side panel. 
                                                            "), trigger = 'hover')
 
   
   shinyBS::addPopover(session, "dummy2", "Details", content = HTML("  
-  Eagle assumes the phenotypic file is either a space separated or comma separated file. The rows correspond to data 
+  Lion assumes the phenotypic file is either a space separated or comma separated file. The rows correspond to data 
   collected on the individuals. The first row of the file can contain column headings or not.  
   The number of rows of data in the phenotypic file must equal the number of rows in the marker genotype file otherwise an error occurs.  
-  Also, Eagle assumes the phenotypic data is row ordered by individual in the same way as the marker genotype data. 
+  Also, Lion assumes the phenotypic data is row ordered by individual in the same way as the marker genotype data. 
  <br> <br>
 Data on multiple traits and fixed effects that may or may not be used in the analysis can be included in this file.  <br> <br>
 Missing values are allowed.  <br> <br>
@@ -2140,9 +2136,9 @@ It is used for those situations where multiple observations of the same trait ha
 
   
 shinyBS::addPopover(session, "dummy3", "Details", content = HTML("
-    Eagle does not
+    Lion does not
      require a known marker map in order to analyse the data.  
-     If a map file is read into Eagle, then the
+     If a map file is read into Lion, then the
      marker names are used when results are reported in  'Findings'. If a
      map file is not supplied, generic names M1, M2, ..., are
      given to the marker loci. 
@@ -2196,10 +2192,10 @@ There is additional computation needed to produce these extra tables. It may tak
 
 
 shinyBS::addPopover(session, "plot_overview", "Details", content = HTML(paste("
-Eagle finds SNP-trait associations by building a model iteratively. At each iteration of the model building process, the next 'best' SNP is found. This is done by identifying the SNP with the largest score statistic. A new score statitic is calculated at each iteration of the model building process.<br><br>
+Lion finds SNP-trait associations by building a model iteratively. At each iteration of the model building process, the next 'best' SNP is found. This is done by identifying the SNP with the largest score statistic. A new score statitic is calculated at each iteration of the model building process.<br><br>
 Here, the score statistics or their -log p-values can be plotted. A user can see how these score statistics change as the model is built. Red (blue) points mean the score statistic has increased (decreased) from the previous iteration.   
 <br><br>
-The vertical dotted lines mark the location of the SNP-trait findings. The number is the order in which the SNP-trait associations were found by Eagle. 
+The vertical dotted lines mark the location of the SNP-trait findings. The number is the order in which the SNP-trait associations were found by Lion. 
      ", sep="") ), trigger = "hover")
 
 

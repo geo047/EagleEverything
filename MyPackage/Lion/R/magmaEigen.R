@@ -1,4 +1,4 @@
-magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
+magmaEigen <- function(Xmat ,  wantvectors=TRUE, printInfo=FALSE){
 
 
 ## R frontend to Magma multi-GPU code for eigendecomposition for square symmetric matrix.
@@ -74,7 +74,7 @@ magmaEigen <- function(Xmat , ngpu=1, wantvectors=TRUE, printInfo=FALSE){
   if (printInfo)
     print(complete.name)
 
-  system2(complete.name, paste(binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
+  system2(complete.name, paste(binXmatfile, nrow(Xmat), computer$ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
   #system(paste(complete.name, binXmatfile, nrow(Xmat), ngpu, as.numeric(printInfo), binvalfile, binvecfile, as.numeric(wantvectors), "&> output.out" ) ) 
  end <- Sys.time()
  cat(" magmaEigen:  system call ", end-start, "\n")

@@ -1,4 +1,4 @@
-magmaQR <- function(Xmat , ngpu=1, printInfo=FALSE){
+magmaQR <- function(Xmat ,  printInfo=FALSE){
 
 
 ## The R frontend to the magma code (magma_qr) 
@@ -19,7 +19,7 @@ magmaQR <- function(Xmat , ngpu=1, printInfo=FALSE){
  binQfile <- paste(tempdir() , "/", "Q.bin", sep="")
 
 
- success <- magma_qr(X=Xmat ,  numgpus=ngpu, printInfo=printInfo, fname=binQfile  )
+ success <- magma_qr(X=Xmat ,  numgpus=computer$ngpu, printInfo=printInfo, fname=binQfile  )
  if(success < 0)
   {
    message("\n magmaQR function has failed. A zero value has been returned.  \n")

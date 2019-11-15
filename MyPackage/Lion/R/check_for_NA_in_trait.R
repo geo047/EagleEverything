@@ -7,7 +7,7 @@ check.for.NA.in.trait <- function(trait=NULL)
        ## check for NA's in trait
         indxNA <- which(is.na(trait))
         if(length(indxNA)==0){
-          indxNA <- NA
+          indxNA <- NULL
         } else {
           ## place in reverse order
           indxNA <- sort(indxNA, decreasing = TRUE)

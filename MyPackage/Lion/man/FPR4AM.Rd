@@ -6,7 +6,7 @@
 \usage{
 FPR4AM(falseposrate = 0.05, trait = trait, numreps = 200,
   fformula = NULL, numgammas = 20, geno = NULL, pheno = NULL,
-  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0, seed = 101)
+  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 1, seed = 101)
 }
 \arguments{
 \item{falseposrate}{the desired false positive rate.}

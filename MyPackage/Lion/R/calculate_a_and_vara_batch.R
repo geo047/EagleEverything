@@ -1,7 +1,7 @@
-calculate_a_and_vara_batch <- function(numreps=100, geno=NULL, 
+calculate_a_and_vara_batch <- function(numreps=200, geno=NULL, 
                          selectedloci = NA,
                          invMMtsqrt=NULL, transformed_a=NULL, transformed_vara=NULL,
-                         quiet = TRUE,  indxNA_geno=NA)
+                         quiet = TRUE)
 {
  ## internal function to AM
  ## an Rcpp function to take dimension reduced a (BLUP) values 
@@ -14,24 +14,20 @@ calculate_a_and_vara_batch <- function(numreps=100, geno=NULL,
  ##   selectedloci     an integer vector that gives the column number (0- L-1 ) of the loci that
  ##                    have been selected to act as fixed QTL effects in the model. 
 
-
-
   fnameMt <- geno[["asciifileMt"]]
   dimsMt <- c(geno[["dim_of_ascii_M"]][2], geno[["dim_of_ascii_M"]][1])
 
-  if(!any(is.na(selectedloci))) selectedloci <- selectedloci-
- if(!is.null(indxNA_geno))  indxNA_geno = indxNA_geno - 1
+  if(!any(is.na(selectedloci))) selectedloci <- selectedloci- 1
   calculate_a_and_vara_batch_rcpp(
                     numreps = numreps, 
-                    f_name_ascii=fnameMt,
+                    f_name_ascii=fnameMt, 
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,
                     dim_reduced_vara = transformed_vara,
                     max_memory_in_Gbytes=geno[["availmemGb"]],
                     dims=dimsMt,
-                    a = transformed_a, message=message,
-                    quiet = quiet, indxNA_geno=indxNA_geno)
-
+                    a = transformed_a,
+                    quiet = quiet, message=message)
 
 }
 

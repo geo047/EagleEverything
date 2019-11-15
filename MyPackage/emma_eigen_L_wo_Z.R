@@ -1,17 +1,17 @@
-emma.eigen.L.wo.Z <- function (K, ngpu=1)
+emma.eigen.L.wo.Z <- function (K)
 {
 
    doMagmaEigen <- FALSE
-   if (ngpu == 1) {
+   if (computer$ngpu == 1) {
      if ( nrow(K) > 4000 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 2) {
+   } else if (computer$ngpu == 2) {
      if (nrow(K) > 4500 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 3) {
+   } else if (computer$ngpu == 3) {
      if (nrow(K) > 4500 )
            doMagmaEigen <- TRUE
-  } else if (ngpu > 3) {
+  } else if (computer$ngpu > 3) {
      if (nrow(K) > 6000)
            doMagmaEigen <- TRUE
   } else {
@@ -20,7 +20,7 @@ emma.eigen.L.wo.Z <- function (K, ngpu=1)
  }
 
    if (doMagmaEigen){
-    eig <- magmaEigen(Xmat=K, ngpu=ngpu, printInfo=TRUE)
+    eig <- magmaEigen(Xmat=K,  printInfo=TRUE)
    } else {
     eig <- eigen(K, symmetric = TRUE)
    }

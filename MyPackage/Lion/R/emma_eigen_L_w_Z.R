@@ -1,4 +1,4 @@
- emma.eigen.L.w.Z <- function (Z, K, complete = TRUE, ngpu=1)
+ emma.eigen.L.w.Z <- function (Z, K, complete = TRUE )
 {
     if (complete == FALSE) {
         vids <- colSums(Z) > 0
@@ -8,16 +8,16 @@
     res <- K %*% crossprod(Z, Z)
 
    doMagmaEigen <- FALSE
-   if (ngpu == 1) {
+   if (computer$ngpu == 1) {
      if ( nrow(res) > 3000 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 2) {
+   } else if (computer$ngpu == 2) {
      if (nrow(res) > 3400 )
            doMagmaEigen <- TRUE
-   } else if (ngpu == 3) {
+   } else if (computer$ngpu == 3) {
      if (nrow(res) > 4100 )
            doMagmaEigen <- TRUE
-  } else if (ngpu > 3) {
+  } else if (computer$ngpu > 3) {
      if (nrow(res) > 4100)
            doMagmaEigen <- TRUE
   } else {
@@ -25,7 +25,7 @@
     return(NULL)
  }
    if (doMagmaEigen){
-    eig <- magmaEigenNonsym(Xmat=res, ngpu=ngpu)
+    eig <- magmaEigenNonsym(Xmat=res)
    } else {
     eig <- eigen(res, symmetric = FALSE, EISPACK = TRUE)
    }
@@ -35,7 +35,7 @@
    if( nrow( (Z %*% eig$vectors) ) != ncol ( (Z %*% eig$vectors) )){
     vectors <- qr.Q(qr(Z %*% eig$vectors) )
    } else {
-    vectors <- magmaQR(Xmat= (Z %*% eig$vectors), ngpu=ngpu, printInfo=FALSE)
+    vectors <- magmaQR(Xmat= (Z %*% eig$vectors),  printInfo=FALSE)
    }
     return(list(values = values , vectors = vectors))
 }

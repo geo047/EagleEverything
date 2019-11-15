@@ -275,9 +275,9 @@ R CMD INSTALL Lion -l ~/RLibs
 # rm tmp.R  tmp.Rout 
 
 # copy to git area ready to upload to github/Lion and eventual install via devtools pipeline
-cp Lion_2.0.0.tar.gz ~/Lion/Lion/.
+cp Lion_2.1.0.tar.gz ~/Lion/Lion/.
 cd ~/Lion/Lion/
-tar xfz Lion_2.0.0.tar.gz
+tar xfz Lion_2.1.0.tar.gz
 cp -rf ./Lion/* .
 rm -rf ./Lion
 cd /home/geo047/EagleEverything/MyPackage

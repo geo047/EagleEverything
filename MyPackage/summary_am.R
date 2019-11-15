@@ -4,14 +4,9 @@
 #' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. 
 #' @details
 #'
-#' \code{SummaryAM} produces two tables of results. First, a table of results is produced with 
+#' \code{SummaryAM} produces two  tables, an overall summary table and a table  of results with 
 #' the  p-value for each 
-#' fixed effect in the final model.  Second, a table of results is produced with the 
-#' proportion of phenotypes variance explained by  the different multiple-locus models. Each row 
-#' in this table is the proportion of phenotypic variance explained (Sun et al. 2010) after the marker locus has been added to the 
-#' multiple locus model. 
-#' @references  Sun G., Zhu C., Kramer  MH., Yang S-S., et al. 2010. Variation explained in mixed model association 
-#' mapping. Heredity 105, 330-340. 
+#' fixed effect in the final model.  
 #' @examples
 #'  \dontrun{
 #'   # Since the following code takes longer than 5 seconds to run, it has been tagged as dontrun. 
@@ -25,7 +20,7 @@
 #'   # File is a plain space separated text file with the first row 
 #'   # the column headings
 #'   complete.name <- system.file('extdata', 'map.txt', 
-#'                                    package='Lion')
+#'                                    package='Eagle')
 #'   map_obj <- ReadMap(filename=complete.name) 
 #'
 #'  # to look at the first few rows of the map file
@@ -37,7 +32,7 @@
 #'   # Reading in a PLINK ped file 
 #'   # and setting the available memory on the machine for the reading of the data to 8 gigabytes
 #'   complete.name <- system.file('extdata', 'geno.ped', 
-#'                                      package='Lion')
+#'                                      package='Eagle')
 #'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
 #'  
 #'   #----------------------
@@ -46,7 +41,7 @@
 #'
 #'   # Read in a plain text file with data on a single trait and two fixed effects
 #'   # The first row of the text file contains the column names y, cov1, and cov2. 
-#'   complete.name <- system.file('extdata', 'pheno.txt', package='Lion')
+#'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
 #'   
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
@@ -73,9 +68,6 @@
 SummaryAM <- function(AMobj=NULL)
 {
 
- indxNA_pheno <- AMobj$indxNA_pheno
- indxNA_geno <- AMobj$indxNA_geno
- ngpu <- AMobj$ngpu
 
 
  if(is.null(AMobj)){
@@ -87,33 +79,80 @@ SummaryAM <- function(AMobj=NULL)
     return(NULL)
    }
 
+
+
+
+## Table 1
+# create list with necessary components 
+lst <- list( "ncpu" = AMobj[["ncpu"]],
+             "memory" = AMobj[["availmemGb"]],
+             "numsnp"=nrow(AMobj[["map"]]),
+            "numsamples"=nrow(AMobj[["pheno"]]),
+            "traitname"=AMobj[["traitname"]], 
+            "fformula" = AMobj[["fformula"]],
+            "nummissingpheno" = AMobj[["indxNA_pheno"]],
+            "numSigSNP"=AMobj[["Mrk"]],
+            "gamma" = AMobj[["gamma"]] 
+         )
+
+if (is.null(lst[["fformula"]])){
+ lst[["fformula"]] <- "intercept only"
+} else {
+  lst[["fformula"]] <- as.character(AMobj[["fformula"]])[2]
+} 
+
+if (is.null(lst[["nummissingpheno"]])){
+lst[["nummissingpheno"]] <- 0
+} else {
+lst[["nummissingpheno"]] <- length(lst[["nummissingpheno"]])
+}
+if (length(lst[["numSigSNP"]]) == 1) {
+  lst[["numSigSNP"]] <- 0
+} else {
+  lst[["numSigSNP"]] <- length(lst[["numSigSNP"]]) - 1
+}
+
+message("\n\n Table 1: Summary Information \n   ")
+message(  sprintf("%50s", "--------------------------------------------------------" ))
+message( sprintf("%-40s  %-10s", "Number cpu: ", lst[["ncpu"]] ))
+message( sprintf("%-40s  %-10s", "Max memory (Gb): ", lst[["memory"]] ))
+message( sprintf("%-40s  %-10s", "Number of samples: ", lst[["numsamples"]] ))
+message( sprintf("%-40s  %-10s", "Number of snp: ", lst[["numsnp"]] ))
+message( sprintf("%-40s  %-10s", "Trait name: ", lst[["traitname"]] ))
+message( sprintf("%-40s  %-30s", "Fixed model: ", lst[["fformula"]] ))
+message( sprintf("%-40s  %-10s", "Number samples missing obs:", lst[["nummissingpheno"]] ))
+message( sprintf("%-40s  %-10s", "Number significant snp-trait assocs:", lst[["numSigSNP"]] ))
+message( sprintf("%-40s  %-4s", "Gamma value for extBIC: ", round(lst[["gamma"]],2)  ))
+message(  sprintf("%50s", "--------------------------------------------------------" ))
+message("\n\n")
+
+# create data frame of summary information for use in shiny app
+infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number of samples", "Number of snp", 
+                                    "Trait name", "Fixed model", "Number samples missing obs", 
+                                    "Number significant snp-trait assocs", "Gamma value for extBIC"  )   ,
+                   "value" = c(lst[["ncpu"]], lst[["memory"]], lst[["numsamples"]], 
+                     lst[["numsnp"]], lst[["traitname"]], lst[["fformula"]], lst[["nummissingpheno"]], 
+                    lst[["numSigSNP"]], round(lst[["gamma"]],2)   )
+         )
+
+
+## Table II
  ## check to make sure that null model is not being supplied
  if (length(AMobj$Mrk)==1){
    message(" No significant marker-trait associations have been found by AM. \n")
-   message(" Nothing to summarize. \n")
-   return()
+   message(" No p-values to report \n")
+   return(invisible(lst) )
  }
 
-
-
-
   ## build environmental effects design matrix
- if (any(is.na(indxNA_pheno))){
   baseX <- .build_design_matrix(pheno=AMobj$pheno,  
                                     fformula=AMobj$fformula,
-                                   quiet=AMobj$quiet)
- } else {
-  baseX <- .build_design_matrix(pheno=AMobj$pheno[-AMobj$indxNA_pheno,] ,  
-                                    fformula=AMobj$fformula,
-                                   quiet=AMobj$quiet)
-
-
- }  ## end if any
+                                   quiet=AMobj$quiet, indxNA_pheno=AMobj$indxNA_pheno)
 
   ## add genetic marker effects 
   fullX <- baseX
   for(loc in AMobj$Indx){
-
+           
            fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]], 
                               currentX=fullX, loci_indx=loc,
                                dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
@@ -124,42 +163,8 @@ SummaryAM <- function(AMobj=NULL)
   MMt <- .calcMMt(AMobj$geno,  AMobj$ncpu, AMobj$Indx, AMobj$quiet)
 
   ## calculate variance components of LMM
-  if ( any(is.na(indxNA_pheno)) ) {
-         Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt, ngpu=ngpu)
-     }  else {
-       if (is.null(AMobj$Zmat)){
-         # no Z 
-         Args <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,]  , Z=NULL,
-                    K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-       }  else {
-         # Have to deal with Z and repeated measures
-         # Case 1:  missing pheno but no missing geno
-         # Case 2:  missing pheno and geno data
 
-         # Case 1: missing pheno but no missing geno
-         if (  !any(is.na(indxNA_pheno)) & any(is.na(indxNA_geno))  ){
-            # check for situation where nrow(Z) is same as nrow(MMt)
-            # this causes issues for EMMA later
-            if (  !any(colSums(AMobj$Zmat[-indxNA_pheno, ] )> 1) ){
-                Args  <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,] , Z=NULL,
-                              K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-            } else {
-              Args <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,] , Z=AMobj$Zmat[-indxNA_pheno, ],
-                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-            }  ## end if nrow(AMobj$Zmat) == nrow(MMt)
-          }   ## end if Case 1
-       # Case 2:  missing pheno and missing geno 
-       if (  !any(colSums(AMobj$Zmat[-indxNA_pheno, -indxNA_geno] )> 1) ){
-             # this captures case of Z turning into an identify matrix
-             Args  <- list(y=AMobj$trait[-indxNA_pheno ] , X= fullX[-indxNA_pheno,] , Z=NULL ,
-                           K=MMt[-indxNA_geno, -indxNA_geno], ngpu=ngpu)
-          } else {
-             Args  <- list(y=AMobj$trait[-indxNA_pheno ], X= fullX[-indxNA_pheno,]  ,
-                           Z=AMobj$Zmat[-indxNA_pheno, -indxNA_geno]  , K=MMt[-indxNA_geno, -indxNA_geno],
-                           ngpu=ngpu)
-         } ## end if  Case 2
-       }  ## end  if (is.null(AMobj$Zmat))
-     } # end  if ( any(is.na(indxNA_pheno)) )
+   Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt)
 
   #eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)
   eR <-  do.call(emma.MLE, Args)
@@ -174,11 +179,26 @@ SummaryAM <- function(AMobj=NULL)
  pval <- vector("numeric", length(colnames(fullX)) )
 
 
- H <- calculateH(MMt=MMt, varE=eR$ve, varG=eR$vg, Zmat=AMobj$Zmat )
+ H <- calculateH(MMt=MMt, varE=eR$ve, varG=eR$vg, Zmat=AMobj$Zmat  )
 
 # H <-  eR$vg * MMt + eR$ve * diag(1, nrow(MMt))
  Hinv <- try(chol2inv(chol(H)))
+ if (class(Hinv) ==  "try-error"){
+    message(" Inverse for H matrix has failed. ")
+    message(" Error in SummaryAM function has occurred. ")
+    return(FALSE)
+ }
+
+
+
  beta <- try(chol2inv(chol( t(fullX) %*% Hinv %*% fullX)) %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   )
+ if (class(beta) ==  "try-error"){
+    message(" Matrix inverse for beta vector has failed. ")
+    message(" Error in SummaryAM function has occurred. ")
+    return(FALSE)
+ }
+
+
 
 # code to work out degrees of freedom and marker names for effects
 # in fformula. 
@@ -240,7 +260,7 @@ for(ii in varnames){
                                                       ## less factor level
  }
 
-message("\n\n Table 1: Significance of Effects in Final Model \n   ")
+message("\n\n Table 2: Significance of Effects in Final Model \n   ")
 
   message(sprintf("%20s %6s %15s      %8s", "",   "Df", "Wald statstic" , "Pr(Chisq)"))
   for(ii in varnames )
@@ -258,63 +278,55 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
  ##----------------------------------------------------------------------- 
  ## Variance explained - based on Sun et al. (2010). Heredity 105:333-340
  ##----------------------------------------------------------------------- 
+ # 13 Nov, 2019
+ # Put on hold - not confident in the results. 
 
- MMt <- MMt/max(MMt) + 0.05 * diag(nrow(MMt))  
- # base model
- # Note - baseX = fullX so okay to leave Args as is
- #basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
- Args[["X"]] <- baseX
- basemod  <-  do.call(emma.MLE, Args)
-
-
-
- base_logML <- basemod$ML
- # full model
-  df_R <- NULL
-  fullX <- baseX
-  message(" Table 2: Proportion of phenotypic variance explained by the ")
-  message("          model. Marker loci, which were found by AM(), are added")
-  message("          a SNP at a time.\n ")
-  message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
-  for(loc in AMobj$Indx[-1]){
-        if ( any(is.na(indxNA_pheno)) ) {
-               fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
-                                currentX=fullX, loci_indx=loc,
-                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
-                               map=AMobj$map)
-         }  else {
-               fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
-                                currentX=fullX[-indxNA_pheno,] , loci_indx=loc,
-                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
-                               map=AMobj$map)
-
-         } # end  if ( any(is.na(indxNA_pheno)) )
-
-     #   fullX <- constructX(fnameMt=AMobj$geno[["asciifileMt"]],
-     #                           currentX=fullX, loci_indx=loc,
-     #                          dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
-     #                          map=AMobj$map)
-
-        # fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
-        ## calculate variance components of LMM
-        Args[["X"]]  <-  fullX 
-        fullmod  <-  do.call(emma.MLE, Args)
-        full_logML <- fullmod$ML
-
-        Rsq <- 1 - exp(-2/nrow(MMt) * (full_logML - base_logML))
-        message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
-        df_R <- rbind.data.frame(df_R, data.frame("Marker_name"=paste("+",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])),
-                                                  "Prop_var_explained"=Rsq))
-   }  ## end for loc
-  colnames(df_R) <- c("SNP", "Prop var explained")
-
+# MMt <- MMt/max(MMt) + 0.05 * diag(nrow(MMt))  
+# # base model
+# # Note - baseX = fullX so okay to leave Args as is
+# #basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
+# Args[["X"]] <- baseX
+#
+# basemod  <-  do.call(emma.MLE, Args)
+#
+#
+#
+# base_logML <- basemod$ML
+# # full model
+#  df_R <- NULL
+#  fullX <- baseX
+#  message(" Table 2: Proportion of phenotypic variance explained by the ")
+#  message("          model. Marker loci, which were found by AM(), are added")
+#  message("          a SNP at a time.\n ")
+#  message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
+#  for(loc in AMobj$Indx[-1]){
+#               fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]],
+#                                currentX=fullX, loci_indx=loc,
+#                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
+#                               map=AMobj$map)
+#        # fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
+#        ## calculate variance components of LMM
+#        Args[["X"]]  <-  fullX 
+#        fullmod  <-  do.call(emma.MLE, Args)
+#        full_logML <- fullmod$ML
+#        print(fullX[1:5,])
+#        cat(" Base logML = ", base_logML , "\n")
+#        cat(" Full logML = ", full_logML, "\n")
+#        Rsq <- 1 - exp(-2/length(AMobj$trait) * (full_logML - base_logML))
+#        print(Rsq)
+#        message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
+#        df_R <- rbind.data.frame(df_R, data.frame("Marker_name"=paste("+",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])),
+#                                                  "Prop_var_explained"=Rsq))
+#   }  ## end for loc
+#  colnames(df_R) <- c("SNP", "Prop var explained")
+#
   res <- list()
   res[["pvalue"]] <- pval
   res[["size"]] <- df_size
   res[["Waldstat"]] <- W
   res[["df"]] <- df
-  res[["R"]] <- df_R
+  res[["summarylist"]] <- infodf
 
   
-  invisible(res)
+  return(invisible(res))
 }
