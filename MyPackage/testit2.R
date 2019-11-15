@@ -1,6 +1,5 @@
 # LD_PRELOAD=$CUDA_ROOT/lib64/libnvblas.so R
 
-library(Lion)
 
 
 # Scenario 1
@@ -8,6 +7,8 @@ library(Lion)
 # 102 samples for pheno1
 # Z matrix of 102 rows - first 3 records are repeats
 # contains no missing trait data
+#library(Eagle)
+library(Lion)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno1.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -82,7 +83,7 @@ Gamma value for extBIC:                   0.842105263157895
 # Full data but with a missig trait value 
 # 102 samples for pheno2 but there is one trait value missing and 2 covariate values missing.
 # Data still contains repeat measures. 
-library(Eagle)
+library(Lion)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -133,7 +134,8 @@ No significant marker-trait associations have been found.
 # Scenario 3
 # 102 samples for pheno3 with records 7, 3, 2, 1 missing and record 9 missing covariate data
 # Missing data causes pheno not to contain any repeat measures
-library(Eagle)
+#library(Eagle)
+library(Lion)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno3.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -190,7 +192,8 @@ No significant marker-trait associations have been found.
 # 97 samples for pheno4 with no missing records
 # no repeated measures. 
 # 
-library(Eagle)
+#library(Eagle)
+library(Lion)
 geno <- ReadMarker(filename="./geno4.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno4.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -240,7 +243,8 @@ res <- AM(trait="trait1", fformula="pc1+pc2",  map=map, geno=geno, pheno=pheno, 
 # 102 samples for pheno5 with  missing records
 # trait data missing for 4 and 5. Covariate data also missing. 
 # 
-library(Eagle)
+#library(Eagle)
+library(Lion)
 geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
@@ -291,7 +295,7 @@ No significant marker-trait associations have been found.
 
 # Scenario 6
 ### Summary testings ... 
-       library(Eagle)
+       library(Lion)
        complete.name <- system.file('extdata', 'geno.ped', package='Eagle')
        geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
        complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
@@ -314,227 +318,5 @@ No significant marker-trait associations have been found.
           rs77659166      1          49.84       1.665E-12
 
 
-
-
- Table 2: Proportion of phenotypic variance explained by the 
-          model. Marker loci, which were found by AM(), are added
-          a SNP at a time.
- 
-                   SNP          Proportion 
-        +  rs145002694               0.402
-         +  rs77659166               0.551
-
-
-### Test cases with no fixed effects 
-
-# Scenario 1
-# Full data 
-# 102 samples for pheno1
-# Z matrix of 102 rows - first 3 records are repeats
-# contains no missing trait data
-geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
-pheno <- ReadPheno(filename = "./pheno1.test", missing="NA")
-map <- ReadMap(filename = "./mapDemo.dat")
-Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
-
-           SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         632.49   
-      rs6122453          20          62826188           3230            639.35   
-
-
-
-
-# Scenario 2
-# Full data but with a missig trait value 
-# 102 samples for pheno2 but there are 3 single records missing
-# Data still contains repeat measures. 
-library(Eagle)
-geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
-pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
-map <- ReadMap(filename = "./mapDemo.dat")
-Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
-
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         627.09   
-      rs6122453          20          62826188           3230            634.29   
-
-
-
-
-
-
-# Scenario 3
-# Results  WILL NOT be equivalent to next lot of  results 
-# 102 samples for pheno3 but records 1, 5, and 7 are missing
-# Missing data causes pheno not to contain any repeat measures
-library(Eagle)
-geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
-pheno <- ReadPheno(filename = "./pheno3.test", missing="NA")
-map <- ReadMap(filename = "./mapDemo.dat")
-Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
-
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         611.52   
-      rs6122453          20          62826188           3230            618.50   
-
-
-
-
-
-
-# Scenario 4
-# 97 samples for pheno4 with no missing records
-# no repeated measures. 
-# 
-library(Eagle)
-geno <- ReadMarker(filename="./geno4.test", type="text", AA=0, AB=1, BB=2 )
-pheno <- ReadPheno(filename = "./pheno4.test", missing="NA")
-map <- ReadMap(filename = "./mapDemo.dat")
-res <- FPR4AM(trait="trait1",   map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1",   map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
-
-
-           SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         606.35   
-      rs9974282          21          42333729           1189            613.88   
-
-
-
-
-
-
-# Scenario 5
-# 102 samples for pheno5 with  missing records
-# all missing data [2,3,7,10,11] for single observation cases
-#  repeated measures still present . 
-# 
-library(Eagle)
-geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
-pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
-map <- ReadMap(filename = "./mapDemo.dat")
-Z <- ReadZmat("./Z1.test")
-res <- FPR4AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, numreps=30)
-res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
-
-
- New results after iteration 2 are 
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         637.49   
-      rs1000728          21           3276368             90            645.16   
-
-                           Final  Results  
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-No significant marker-trait associations have been found. 
-Gamma value for model selection was set to  0.842 
-
-
-
-
-
-# Scenario 6
-### Summary testings ... 
-       library(Eagle)
-       complete.name <- system.file('extdata', 'geno.ped', package='Eagle')
-       geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8)
-       complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
-       pheno_obj <- ReadPheno(filename=complete.name)
-       complete.name <- system.file('extdata', 'map.txt', package='Eagle')
-       map_obj <- ReadMap(filename=complete.name)
-       res <- AM(trait = 'y',  map = map_obj, pheno = pheno_obj, geno = geno_obj)
-       SummaryAM(AMobj=res)
-
-
- Table 1: Summary Information 
-   
---------------------------------------------------------
-Number of samples:                        150       
-Number of snp:                            100       
-Trait name:                               y         
-Fixed model:                              intercept only                
-Number samples missing obs:               0         
-Number significant snp-trait assocs:      2         
-
---------------------------------------------------------
-
- Number of cores being used for calculation is .. 28
-
- Table 2: Significance of Effects in Final Model 
-   
-                         Df   Wald statstic      Pr(Chisq)
-         (Intercept)      1         486.17       0.000E+00
-         rs145002694      1         118.29       0.000E+00
-          rs77659166      1          48.22       3.813E-12
-
-
-
-
-
-
-
-
-# Scenario 5
-# 102 samples for pheno5 with  missing records
-# all missing data [2,3,7,10,11] for single observation cases
-#  repeated measures still present . 
-# gamma set to 0.3
-# 
-library(Eagle)
-geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
-pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
-map <- ReadMap(filename = "./mapDemo.dat")
-Z <- ReadZmat("./Z1.test")
-res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=0.36)
-SummaryAM(AMobj=res)
-
-
-
- Table 1: Summary Information 
-   
---------------------------------------------------------
-Number of samples:                        102       
-Number of snp:                            4998      
-Trait name:                               trait1    
-Fixed model:                              intercept only                
-Number samples missing obs:               2         
-Number significant snp-trait assocs:      20        
-Gamma value for extBIC:                   0.36      
---------------------------------------------------------
-
-
- Table 2: Significance of Effects in Final Model 
-   
-                         Df   Wald statstic      Pr(Chisq)
-         (Intercept)      1           6.28       1.223E-02
-           rs1000728      1         273.19       0.000E+00
-           rs1350291      1         237.46       0.000E+00
-         rs113647042      1          68.11       1.110E-16
-         rs570109966      1         129.30       0.000E+00
-          rs17800303      1         306.90       0.000E+00
-          rs10404933      1         151.62       0.000E+00
-            rs232399      1          55.37       9.981E-14
-            rs552797      1         171.39       0.000E+00
-         rs199551210      1          72.90       0.000E+00
-          rs12459845      1         103.08       0.000E+00
-            rs970567      1          20.46       6.090E-06
-           rs4813308      1          39.36       3.527E-10
-           rs6081105      1          61.57       4.219E-15
-          rs73121316      1          51.30       7.938E-13
-           rs4818170      1          37.08       1.135E-09
-         rs553114464      1          34.37       4.552E-09
-           rs6126781      1          31.99       1.548E-08
-           rs6517159      1          32.04       1.513E-08
-           rs4072633      1          26.66       2.424E-07
-         rs551566854      1          20.58       5.705E-06
 
 

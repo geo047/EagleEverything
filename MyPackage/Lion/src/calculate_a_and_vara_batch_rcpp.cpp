@@ -100,8 +100,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
      Eigen::MatrixXd  ans_part1;
     ans_part1.noalias() = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
-Rcpp::Rcout << "ans answers ... " << std::endl;
-Rcpp::Rcout << ans_part1(0) << " " << ans_part1(1) << " " << ans_part1(2) << " " << ans_part1(3) << std::endl;
 
 
   // calculate untransformed variances of BLUP values
