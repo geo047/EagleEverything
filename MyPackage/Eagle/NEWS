@@ -1,3 +1,7 @@
+Nov 2019 Version 2.1.1
+* Fixed bug introduced by last change in ReadMap function.
+
+
 Nov 2019 Version 2.1.0
 * Continued improvement of handling of missing data. 
 * Better handling of errors by OpenGUI. Previously, app would crash if an read error was encountered.  

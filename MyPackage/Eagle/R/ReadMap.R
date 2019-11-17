@@ -49,8 +49,11 @@ ReadMap  <- function( filename = NULL, csv=FALSE, header=TRUE)
     message(" ReadMap has terminated with errors.")
    return(FALSE)
   }
-  sep=" "
+  sep=""
   if(csv) sep=","
+  print(" in ReadMap .. ")
+  print(csv)
+  print(header)
   map <- try(read.table(mapfile, header=header, sep=sep) )
 
   if (class(map) == "try-error"){

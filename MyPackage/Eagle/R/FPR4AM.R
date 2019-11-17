@@ -317,6 +317,8 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
  Args <- list(geno=geno,
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
+
+
  if(!quiet)
    message(" quiet=FALSE: calculating M %*% M^t. \n")
  MMt <- do.call(.calcMMt, Args)
@@ -325,6 +327,15 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
    doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
  invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
  gc()
+
+ if(is.null(Zmat)){
+            eig.L <- emma.eigen.L.wo.Z(MMt, ngpu)
+ } else  {
+            eig.L <- emma.eigen.L.w.Z(Zmat, MMt, ngpu)
+ }
+
+
+
 
 gamma <- seq(0,1,length.out=numgammas)
 
@@ -338,8 +349,8 @@ extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
 # Found that REML step gives better results, at least for small sample size
 
-   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu)
-
+   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu, eig.L=eig.L)
+   if (!quiet) message(" Estimating variance components of Null model. ")
    res_full  <- do.call(emma.REMLE, Args)
    vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
 
@@ -367,7 +378,7 @@ rep(NA, numreps)
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
  Args <- list("trait"= bigpheno[,1], "currentX"=currentX_null, "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma)
+                       "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma, eig.L=eig.L)
  extBIC <-     do.call(.calc_extBIC_MLE, Args)
      gc()
 
@@ -380,15 +391,21 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
  error_checking <- FALSE
  if (!quiet ) error_checking <- TRUE
 
+ if (!quiet)  message(" Calculating square root of MMt and its inverse")
  MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
                                                               ngpu=ngpu , message=message)
 
+ if (!quiet)  message(" Calculating H")
+ 
  H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
+ if (!quiet)  message(" Calculating P")
  P <- calculateP(H=H, X=currentX_null , message=message)
+ if (!quiet)  message(" Calculating a hat")
  hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=bigpheno , quiet = quiet , message=message)
 
+ if (!quiet)  message(" Calculating var(a hat)")
  var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
@@ -396,7 +413,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
 
 
  
-
+ if (!quiet)  message(" Calculating  a and vara for full data")
  a_and_vara  <- calculate_a_and_vara_batch(numreps = numreps, 
                                           geno = geno,
                                           selectedloci = selected_loci,
@@ -455,7 +472,7 @@ for(ii in 1:numreps){
                        "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
 
 
-
+ if (!quiet) message(" calc_extBIC_MLE ")
  extBIC_alternate[ii, ] <-     do.call(.calc_extBIC_MLE, Args)
 
 }  ## end for reps
@@ -483,7 +500,7 @@ if(length(indx) > 1){
     indx <- max(indx)   ## picking most conservative value if there are multiple values
 }
  setgamma <- gamma[indx]
-
+ 
 cat(" For a false positive rate of ", falseposrate, " set the gamma parameter in the AM function to ", setgamma, "\n")
 
 
