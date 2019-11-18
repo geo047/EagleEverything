@@ -329,9 +329,9 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
  gc()
 
  if(is.null(Zmat)){
-            eig.L <- emma.eigen.L.wo.Z(MMt, ngpu)
+            eig.L <- emma.eigen.L.wo.Z(MMt )
  } else  {
-            eig.L <- emma.eigen.L.w.Z(Zmat, MMt, ngpu)
+            eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
  }
 
 
@@ -349,7 +349,7 @@ extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
 # Found that REML step gives better results, at least for small sample size
 
-   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu, eig.L=eig.L)
+   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, eig.L=eig.L)
    if (!quiet) message(" Estimating variance components of Null model. ")
    res_full  <- do.call(emma.REMLE, Args)
    vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
@@ -357,7 +357,7 @@ extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 rep(NA, numreps)
 
  for (ii in 1:numreps){
-   #vc[[ii]] <- .calcVC(trait=bigpheno[, ii], Zmat=Zmat, currentX=currentX_null,MMt=MMt, ngpu=ngpu)
+   #vc[[ii]] <- .calcVC(trait=bigpheno[, ii], Zmat=Zmat, currentX=currentX_null,MMt=MMt )
    #gc()
    #best_ve[ii] <- vc[[ii]][["ve"]]
    #best_vg[ii] <- vc[[ii]][["vg"]]
@@ -392,8 +392,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
  if (!quiet ) error_checking <- TRUE
 
  if (!quiet)  message(" Calculating square root of MMt and its inverse")
- MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                                                              ngpu=ngpu ) 
+ MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking) 
 
  if (!quiet)  message(" Calculating H")
  
