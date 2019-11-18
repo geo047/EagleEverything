@@ -1,10 +1,14 @@
+Nov 2019 Version 2.1.1
+* Fixed bug introduced by last change in ReadMap function.
+
+
 Nov 2019 Version 2.1.0
 * Continued improvement of handling of missing data. 
 * Better handling of errors by OpenGUI. Previously, app would crash if an read error was encountered.  
 
 
 Nov 2019 Version 2.0.0  
-* Major update of Lion. 
+* Major update of Eagle. 
 * Significant performance improvements, with at least a 50% increase in speed. 
 * Also fixed several issues associated with the Z matrix.
 * Improved handling of missing data. 
