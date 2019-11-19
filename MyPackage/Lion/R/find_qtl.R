@@ -37,7 +37,7 @@
 # start <- Sys.time()
 #    MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking )
 # end <- Sys.time()
- print(c(" MMt_sqrt_and_sqrtinv  =  ", end-start))
+# print(c(" MMt_sqrt_and_sqrtinv  =  ", end-start))
 
 
 

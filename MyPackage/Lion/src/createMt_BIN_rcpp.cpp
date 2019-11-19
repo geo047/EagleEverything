@@ -49,7 +49,6 @@ double
    // store its answer in Mt (+ .5 for a buffer)
 double mem_bytes = 3.5 * dims[0] * dims[1] * (bits_in_int/8);  // assumes a 64 bit system
 
-Rcpp::Rcout << "bit_in_int/8" << (bits_in_int/8) << std::endl;
 
 
 
