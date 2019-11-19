@@ -1,6 +1,6 @@
 
 emma.MLE <- function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,
-    esp = 1e-10, eig.L = NULL, eig.R = NULL, ngpu=0)
+    esp = 1e-10, eig.L = NULL, eig.R = NULL )
 {
     n <- length(y)
     t <- nrow(K)
@@ -13,10 +13,10 @@ emma.MLE <- function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,
     }
     if (is.null(Z)) {
         if (is.null(eig.L)) {
-            eig.L <- emma.eigen.L.wo.Z(K, ngpu)
+            eig.L <- emma.eigen.L.wo.Z(K )
         }
         if (is.null(eig.R)) {
-            eig.R <- emma.eigen.R.wo.Z(K, X, ngpu)
+            eig.R <- emma.eigen.R.wo.Z(K, X )
         }
         etas <- crossprod(eig.R$vectors, y)
         logdelta <- (0:ngrids)/ngrids * (ulim - llim) + llim

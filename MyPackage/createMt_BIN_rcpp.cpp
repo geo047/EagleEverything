@@ -220,7 +220,7 @@ message(" Number of loci:               "  , dims[1]   );
 } else {
 message(" Number of loci:               "  , dims[1] );
 }
-message( " File size (gigabytes):       "  , mem_bytes/1000000000 );
+message( " File size (gigabytes):       "  , mem_bytes/(3.5*1000000000) ); // 3.5 because that is the factor I am using to give me some breathing room 
 message(" Available memory (gigabytes): " , max_memory_in_Gbytes  );
 message("\n\n" );
 

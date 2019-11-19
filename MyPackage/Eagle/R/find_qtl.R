@@ -1,18 +1,25 @@
   #.find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-  #                     currentX,  ncpu, quiet, trait, ngpu  )
-  .find_qtl <- function(Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
-                       currentX,  ncpu, quiet, trait, ngpu, itnum)
+  #                     currentX,  ncpu, quiet, trait  )
+  .find_qtl <- function( MMt_sqrt_and_sqrtinv, Zmat=NULL, geno, availmemGb,  selected_loci, MMt, invMMt, best_ve, best_vg,
+                       currentX,  ncpu, quiet, trait,  itnum)
   {
     ##  internal function: use by   AM
 
     # Calculate H
 
+ start <- Sys.time()
+    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
+ end <- Sys.time()
+#           print(c(" H =  ", end-start))
 
-    H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat, message=message )
+
     if(!quiet)
         doquiet(dat=H, num_markers=5, lab="H")
 
-    P <- calculateP(H=H, X=currentX , message=message)
+ start <- Sys.time()
+    P <- calculateP(H=H, X=currentX  )
+ end <- Sys.time()
+# print(c(" P =  ", end-start))
 
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
@@ -27,8 +34,10 @@
     error_checking <- FALSE
     if (!quiet )
        error_checking <- TRUE
-    MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                              ngpu=ngpu , message=message)
+# start <- Sys.time()
+#    MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking )
+# end <- Sys.time()
+# print(c(" MMt_sqrt_and_sqrtinv  =  ", end-start))
 
 
 
@@ -42,9 +51,12 @@
       message(" quiet =", quiet, ": beginning calculation of the BLUP estimates for dimension reduced model. \n")
     }
 
+ start <- Sys.time()
        hat_a <- calculate_reduced_a(Zmat=Zmat, varG=best_vg, P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=trait, quiet = quiet , message=message)
+                       y=trait, quiet = quiet )
+ end <- Sys.time()
+ #print(c(" hat_a  =  ", end-start))
 
 
 
@@ -59,11 +71,14 @@
       message(" quiet = ", quiet, ": beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. \n")
     }
 
+ start <- Sys.time()
     var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX, varE=best_ve, varG=best_vg, 
                        invMMt=invMMt,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       quiet = quiet, message=message )
+                       quiet = quiet )
 
+ end <- Sys.time()
+ #print(c(" var_hat_a  =  ", end-start))
 
 
 
@@ -79,13 +94,17 @@
 
 
 
-   
+ start <- Sys.time()
+  
+    print("about to begin calculate_a_and_vara") 
      a_and_vara  <- calculate_a_and_vara(geno = geno,
                        selectedloci = selected_loci,
                        invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                        transformed_a=hat_a,
                        transformed_vara=var_hat_a,
-                       quiet=quiet, message=message)
+                       quiet=quiet)
+ end <- Sys.time()
+ #print(c(" a_and_vara  =  ", end-start))
 
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
@@ -96,6 +115,10 @@
     if (!quiet )
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
     tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
+
+  # print(c("max a = ",  max( a_and_vara[["a"]] )))
+  # cat("number < max * 0.75  = ",  sum( abs(a_and_vara[["a"]]) < (max( a_and_vara[["a"]] ) * 0.75)   ), "\n")
+
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")
 

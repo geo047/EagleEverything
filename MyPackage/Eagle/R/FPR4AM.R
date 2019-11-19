@@ -328,10 +328,15 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
  invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
  gc()
 
+ if (!quiet)  message(" Calculating square root of MMt and its inverse")
+ MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet) 
+
+
  if(is.null(Zmat)){
-            eig.L <- emma.eigen.L.wo.Z(MMt, ngpu)
+            eig.L <- emma.eigen.L.wo.Z(MMt )
+
  } else  {
-            eig.L <- emma.eigen.L.w.Z(Zmat, MMt, ngpu)
+            eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
  }
 
 
@@ -349,7 +354,7 @@ extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
 # Found that REML step gives better results, at least for small sample size
 
-   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, ngpu=ngpu, eig.L=eig.L)
+   Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, eig.L=eig.L)
    if (!quiet) message(" Estimating variance components of Null model. ")
    res_full  <- do.call(emma.REMLE, Args)
    vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
@@ -357,7 +362,7 @@ extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 rep(NA, numreps)
 
  for (ii in 1:numreps){
-   #vc[[ii]] <- .calcVC(trait=bigpheno[, ii], Zmat=Zmat, currentX=currentX_null,MMt=MMt, ngpu=ngpu)
+   #vc[[ii]] <- .calcVC(trait=bigpheno[, ii], Zmat=Zmat, currentX=currentX_null,MMt=MMt )
    #gc()
    #best_ve[ii] <- vc[[ii]][["ve"]]
    #best_vg[ii] <- vc[[ii]][["vg"]]
@@ -391,25 +396,24 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
  error_checking <- FALSE
  if (!quiet ) error_checking <- TRUE
 
- if (!quiet)  message(" Calculating square root of MMt and its inverse")
- MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking,
-                                                              ngpu=ngpu , message=message)
+# if (!quiet)  message(" Calculating square root of MMt and its inverse")
+# MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking) 
 
  if (!quiet)  message(" Calculating H")
  
- H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat, message=message )
+ H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat )
  if (!quiet)  message(" Calculating P")
- P <- calculateP(H=H, X=currentX_null , message=message)
+ P <- calculateP(H=H, X=currentX_null )
  if (!quiet)  message(" Calculating a hat")
  hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                       y=bigpheno , quiet = quiet , message=message)
+                       y=bigpheno , quiet = quiet)
 
  if (!quiet)  message(" Calculating var(a hat)")
  var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
                                              varE=best_ve[ii], varG=best_vg[ii], invMMt=invMMt,
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
-                                             quiet = quiet, message=message )
+                                             quiet = quiet)
 
 
  
@@ -420,7 +424,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
                                           invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                                           transformed_a=hat_a ,
                                           transformed_vara=var_hat_a,
-                                          quiet=quiet, message=message)
+                                          quiet=quiet)
 
 
 
@@ -469,7 +473,7 @@ for(ii in 1:numreps){
 
 
   Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
+                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma, eig.L=eig.L)
 
 
  if (!quiet) message(" calc_extBIC_MLE ")

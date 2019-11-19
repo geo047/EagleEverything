@@ -24,7 +24,7 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
 }
 
 
- emma.REMLE <-  function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,  ngpu=0,
+ emma.REMLE <-  function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,  
     esp = 1e-10, eig.L = NULL, eig.R = NULL) 
 {
     n <- length(y)
@@ -38,7 +38,7 @@ emma.delta.REML.LL.w.Z <- function (logdelta, lambda, etas.1, n, t, etas.2.sq)
     }
     if (is.null(Z)) {
         if (is.null(eig.R)) {
-            eig.R <- emma.eigen.R.wo.Z(K, X, ngpu)
+            eig.R <- emma.eigen.R.wo.Z(K, X)
         }
 
         etas <- crossprod(eig.R$vectors, y)

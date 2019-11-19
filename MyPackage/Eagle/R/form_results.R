@@ -1,5 +1,5 @@
 .form_results <- function(traitname, trait, selected_loci,   fformula, indxNA_pheno, 
-                           ncpu, ngpu, availmemGb, quiet,  extBIC, gamma, geno, pheno, map, Zmat, outlierstat )
+                           ncpu,  availmemGb, quiet,  extBIC, gamma, geno, pheno, map, Zmat, outlierstat )
 {
   ## internal function - used by AM for forming the results object
   if (length(selected_loci) > 1){
@@ -12,7 +12,7 @@
                     Pos=map[[3]][selected_loci],
                     Indx=selected_loci,
                     ncpu=ncpu,
-                    ngpu=ngpu,
+                    ngpu=computer$ngpu,
                     availmemGb=availmemGb,
                     quiet=quiet,
                     extBIC=extBIC,
@@ -32,7 +32,7 @@
                     Pos=NA,
                     Indx=selected_loci,
                     ncpu=ncpu,
-                    ngpu=ngpu,
+                    ngpu=computer$ngpu,
                     availmemGb=availmemGb,
                     quiet=quiet,
                     extBIC=extBIC,

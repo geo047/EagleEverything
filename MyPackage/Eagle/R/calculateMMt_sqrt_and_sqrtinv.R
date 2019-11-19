@@ -1,6 +1,6 @@
 
 calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
-                                           quiet = TRUE , ngpu=0, message=message)
+                                           quiet = TRUE )
 {
   ## internal function to AM
   ## R function for calculating the square root of M * M^t
@@ -22,7 +22,6 @@ calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
     return(NULL)
   } 
    res <- list()
-  
       MMt.eigen <- eigen(MMt, symmetric=TRUE )
       sqrt_evals <- diag(sqrt(MMt.eigen$values))
       res[["sqrt"]] <- MMt.eigen$vectors %*% sqrt_evals %*% t(MMt.eigen$vectors)
