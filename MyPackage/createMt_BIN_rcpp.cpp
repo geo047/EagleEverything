@@ -50,6 +50,8 @@ double
 double mem_bytes = 3.5 * dims[0] * dims[1] * (bits_in_int/8);  // assumes a 64 bit system
 
 
+
+
  // open  files
 std::ifstream fileIN(fname_in.c_str(),   std::ios::in | std::ios::binary );
 std::ofstream fileOUT(fname_out.c_str(), std::ios::out | std::ios::binary );
@@ -220,7 +222,7 @@ message(" Number of loci:               "  , dims[1]   );
 } else {
 message(" Number of loci:               "  , dims[1] );
 }
-message( " File size (gigabytes):       "  , mem_bytes/1000000000 );
+message( " File size (gigabytes):       "  , mem_bytes/(3.5*1000000000) ); // 3.5 because that is the factor I am using to give me some breathing room 
 message(" Available memory (gigabytes): " , max_memory_in_Gbytes  );
 message("\n\n" );
 

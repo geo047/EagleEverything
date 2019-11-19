@@ -330,6 +330,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
  if(is.null(Zmat)){
             eig.L <- emma.eigen.L.wo.Z(MMt )
+
  } else  {
             eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
  }
@@ -468,7 +469,7 @@ for(ii in 1:numreps){
 
 
   Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma)
+                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma, eig.L=eig.L)
 
 
  if (!quiet) message(" calc_extBIC_MLE ")

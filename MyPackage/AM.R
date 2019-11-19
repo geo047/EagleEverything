@@ -404,11 +404,32 @@ if(!is.null(fformula)){
      if(itnum==1){
         if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
+           start <- Sys.time()
            MMt <- do.call(.calcMMt, Args)  
+           end <- Sys.time()
+           print(c(" MMt time ", end-start))
+ 
+           start <- Sys.time()
+           MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
+           end <- Sys.time()
+           print(c(" MMt_sqrt_and_sqrtinv  time ", end-start  ) )
 
          if(!quiet)
              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
+           start <- Sys.time()
         invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+           end <- Sys.time()
+           print(c(" inv MMt time ", end-start))
+
+         if(is.null(Zmat)){
+           start <- Sys.time()
+              eig.L <- emma.eigen.L.wo.Z(MMt )
+           end <- Sys.time()
+           print(c(" eigen MMt  ", end-start))
+
+         } else  {
+               eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
+          }
 
 
         gc()
@@ -419,14 +440,22 @@ if(!is.null(fformula)){
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-     vc <- .calcVC(trait=pheno[, trait ], Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt) 
+           start <- Sys.time()
+     vc <- .calcVC(trait=pheno[, trait ], Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt, 
+                          eig.L=eig.L) 
+           end <- Sys.time()
+           print(c(" calculate VC  ", end-start))
 
      gc()
      best_ve <- vc[["ve"]]
      best_vg <- vc[["vg"]]
- 
+
+    
+           start <- Sys.time()
      new_extBIC <- .calc_extBIC(vc$ML , pheno[, trait ], currentX, geno, 
                        numberSNPselected=(itnum-1), quiet, gamma) 
+           end <- Sys.time()
+           print(c(" .calc_extBIC  ", end-start))
 
      gc()
 
@@ -442,7 +471,7 @@ if(!is.null(fformula)){
        if (itnum <= maxit){
            ## find QTL
 
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+           ARgs <- list(MMt_sqrt_and_sqrtinv=MMt_sqrt_and_sqrtinv, Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX),
                  ncpu=ncpu, quiet=quiet, trait=pheno[, trait ], itnum=itnum)
 
@@ -464,11 +493,14 @@ if(!is.null(fformula)){
         if(which(extBIC==min(extBIC))==length(extBIC) ){  ## new way of stoppint based on extBIC only
 
            ## find QTL
-           ARgs <- list(Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
+           ARgs <- list(MMt_sqrt_and_sqrtinv=MMt_sqrt_and_sqrtinv, Zmat=Zmat, geno=geno,availmemGb=geno[["availmemGb"]], selected_loci=selected_loci,
                  MMt=MMt, invMMt=invMMt, best_ve=best_ve, best_vg=best_vg, currentX=as.matrix(currentX),
                  ncpu=ncpu, quiet=quiet, trait=pheno[, trait ], itnum=itnum)
-
+          start <- Sys.time() 
           fq <-  do.call(.find_qtl, ARgs)  ## memory blowing up here !!!!
+          end <- Sys.time() 
+           print(c(" .find_qtl =  ", end-start))
+
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]

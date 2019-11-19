@@ -266,7 +266,7 @@ R CMD build Lion
 
 
 
-#  R CMD check --as-cran Lion_1.5.1.tar.gz 
+#  R CMD check --as-cran Lion_2.1.1.tar.gz 
 
 
 R CMD INSTALL Lion -l ~/RLibs
