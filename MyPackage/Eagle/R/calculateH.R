@@ -1,4 +1,4 @@
-calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, Zmat=NULL, message=message )
+calculateH <- function(MMt=NULL, varE=NULL, varG=NULL, Zmat=NULL)
 {
   ## internal function to AM
   ## R function for calculating the H variance matrix 

@@ -1,7 +1,7 @@
 calculate_a_and_vara <- function(geno=NULL, 
                          selectedloci = NA,
                          invMMtsqrt=NULL, transformed_a=NULL, transformed_vara=NULL,
-                         quiet = TRUE, message=message)
+                         quiet = TRUE )
 {
  ## internal function to AM
  ## an Rcpp function to take dimension reduced a (BLUP) values 
@@ -25,13 +25,6 @@ calculate_a_and_vara <- function(geno=NULL,
   # adjusting indx by -1 to be consistent with Cpp starting at 0
   if(!any(is.na(selectedloci))) selectedloci <- selectedloci-1
 
-  print(" inside function ... ")
-  print(fnameMt)
-  print(selectedloci)
-  print(dim(invMMtsqrt))
-  print(geno[["availmemGb"]])
-  print(dimsMt)
-  print(length(transformed_a))
    a <- calculate_a_and_vara_rcpp(f_name_ascii=fnameMt,
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,

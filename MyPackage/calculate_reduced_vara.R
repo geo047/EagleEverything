@@ -1,5 +1,5 @@
 
-calculate_reduced_vara <- function(Zmat=NULL, X=NULL, varE=NULL, varG=NULL, invMMt=NULL, MMtsqrt=NULL, quiet=TRUE, message=message)
+calculate_reduced_vara <- function(Zmat=NULL, X=NULL, varE=NULL, varG=NULL, invMMt=NULL, MMtsqrt=NULL, quiet=TRUE)
 {
  ## internal function to AM
  ## Using var(\hat(a)) = simgaG - Cjj  where Cjj is the component from C^-1 (Henderson's 

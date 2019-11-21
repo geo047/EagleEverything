@@ -104,7 +104,7 @@
                        transformed_vara=var_hat_a,
                        quiet=quiet)
  end <- Sys.time()
- #print(c(" a_and_vara  =  ", end-start))
+ print(c(" time for a_and_vara  =  ", end-start))
 
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
@@ -116,8 +116,8 @@
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
     tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
 
-  # print(c("max a = ",  max( a_and_vara[["a"]] )))
-  # cat("number < max * 0.75  = ",  sum( abs(a_and_vara[["a"]]) < (max( a_and_vara[["a"]] ) * 0.75)   ), "\n")
+
+
 
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")

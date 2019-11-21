@@ -1,4 +1,4 @@
-calculate_reduced_a <- function(Zmat=NULL, varG=NULL, P=NULL, MMtsqrt=NULL, y=NULL, quiet=TRUE, message=message)
+calculate_reduced_a <- function(Zmat=NULL, varG=NULL, P=NULL, MMtsqrt=NULL, y=NULL, quiet=TRUE)
 {
 
   ## internal function to AM

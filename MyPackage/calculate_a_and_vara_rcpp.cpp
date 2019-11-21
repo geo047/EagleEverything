@@ -26,7 +26,7 @@ Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
                                     std::vector <long> dims,
                                     Eigen::VectorXd  a,
                                     bool  quiet,
-                                    Rcpp::Function message) 
+                                    Rcpp::Function message)
 {
 // Purpose: to calculate the untransformed BLUP (a) and var(a) values from the 
 //          dimension reduced BLUP and var value estimates. 
@@ -65,7 +65,7 @@ Eigen::MatrixXd
 
 
    // Calculate memory footprint for Mt %*% inv(sqrt(MMt)) %*% var(a) %*% inv(sqrt(MMt)%*%M)
- double mem_bytes_needed =   ( 4.0   * (double) dims[1]  *   (double) dims[0] * sizeof(double))/1000000000.0;
+ double mem_bytes_needed =   ( 2.5   * (double) dims[1]  *   (double) dims[0] * sizeof(double))/1000000000.0;
 
 if (!quiet){
 //   Rprintf("Total memory (Gbytes) needed for a calculation is: %f \n",  mem_bytes_needed);
@@ -96,6 +96,20 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
     ans.noalias() =   Mt  * ans_part1;
 
+//   Rcpp::NumericVector f(dims[0]);
+//   f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
+      
+//   long  NumOfaAboveThreshold  = Rcpp::sum(f);
+//  Rcpp::NumericVector indx(NumOfaAboveThreshold);
+//   long counter=0;   
+//   for( long ii=0; ii< dims[0]; ii++){
+//      if (f[ii]==1){
+//         indx[counter] = ii;
+//         counter++;
+//      }
+//   } 
+
+ 
 
 
 
@@ -142,7 +156,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
       // block multiplication. This involves a bit of algebra but it is comes to the following
       // Strictly, 2 should be used here but I want some extra memory to play with 
       long num_rows_in_block =  max_memory_in_Gbytes * ( 1000000000.0) /
-                             ( 4.0  * (double) dims[1] *  sizeof(double) ) ;
+                             ( 2.5  * (double) dims[1] *  sizeof(double) ) ;
 
 
       if (num_rows_in_block < 0){

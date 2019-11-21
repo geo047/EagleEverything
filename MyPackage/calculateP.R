@@ -1,5 +1,5 @@
 
-calculateP  <- function(H=NULL, X=NULL, ngpu=0, message=message)
+calculateP  <- function(H=NULL, X=NULL, ngpu=0)
 {
   ## internal function to AM
   ## R function to calculate P matrix
