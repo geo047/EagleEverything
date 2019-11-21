@@ -114,29 +114,14 @@
     ## outlier test statistic
     if (!quiet )
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
-    tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
-
+    indx <- which(a_and_vara[["vara"]]!=0)
+    tsq <- a_and_vara[["a"]][indx]**2/a_and_vara[["vara"]][indx]
+    names(tsq) <- seq(1, length(a_and_vara[["a"]]))[indx]
 
 
 
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")
-
-
-   # saving test statistic to disc so that we can plot these results
-#   if(.Platform$OS.type == "unix") {
-#       tmpfile <- paste(tempdir(), "/", paste("tsq", itnum , ".RData", sep="") , sep="")
-#       save(tsq, file=tmpfile)
-#     } else {
-#       tmpfile <- paste(tempdir()  , "\\", paste("tsq", itnum , ".RData", sep="")     , sep="")
-#       save(tsq, file=tmpfile)
-#     }
-
- ## AWG tmp
-# tmpfile <- paste("/home/geo047/"   , "/", paste("tsq", itnum , ".RData", sep="")     , sep="")
-#  save(tsq, file=tmpfile)
-
-
 
 
 
@@ -152,7 +137,7 @@
 
     orig_indx <- seq(1, geno[["dim_of_ascii_M"]][2])  ## 1:ncols
     res <- list()
-    res[["orig_indx"]] <- orig_indx[indx]
+    res[["orig_indx"]] <- orig_indx[as.numeric(names(tsq))[indx]]
     res[["outlierstat"]] <- tsq
     return(res)
     #return(orig_indx[indx])

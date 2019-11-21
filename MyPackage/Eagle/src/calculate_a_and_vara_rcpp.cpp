@@ -59,7 +59,8 @@ Eigen::MatrixXd
 
 
 Eigen::MatrixXd
-    var_ans = Eigen::MatrixXd(dims[0],1);
+    var_ans = Eigen::MatrixXd::Zero(dims[0],1);  // initialize to 0
+    // var_ans = Eigen::MatrixXd(dims[0],1);
 
 
 
@@ -96,18 +97,18 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
     ans.noalias() =   Mt  * ans_part1;
 
-//   Rcpp::NumericVector f(dims[0]);
-//   f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
+   Rcpp::NumericVector f(dims[0]);
+   f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
       
-//   long  NumOfaAboveThreshold  = Rcpp::sum(f);
-//  Rcpp::NumericVector indx(NumOfaAboveThreshold);
-//   long counter=0;   
-//   for( long ii=0; ii< dims[0]; ii++){
-//      if (f[ii]==1){
-//         indx[counter] = ii;
-//         counter++;
-//      }
-//   } 
+   long  NumOfaAboveThreshold  = Rcpp::sum(f);
+  Rcpp::NumericVector indx(NumOfaAboveThreshold);
+   long counter=0;   
+   for( long ii=0; ii< dims[0]; ii++){
+      if (f[ii]==1){
+         indx[counter] = ii;
+         counter++;
+      }
+   } 
 
  
 
@@ -122,24 +123,20 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 //  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
 
-    var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
-    var_ans_tmp_part1.resize(0,0);  // erase matrix 
+ Eigen::VectorXd ans1 ;
   long i;
 
 
-  
- Eigen::VectorXd ans1 ;
- Eigen::VectorXd ans2 ;
   #if defined(_OPENMP)
-     #pragma omp parallel for shared(var_ans, var_ans_tmp, Mt, var_ans_tmp_part1)  private(i) schedule(static)
+     #pragma omp parallel for shared( Mt, var_ans_tmp_part1)  private(i) schedule(static)
   #endif
-  for(i=0; i< dims[0]; i++){
-          var_ans(i,0) =   var_ans_tmp.row(i)   * (Mt.row(i)).transpose() ;
-    //   ans1 = (Mt.row(i)) * var_ans_tmp_part1;
-    //   ans2 =  Mt.row(i);
-    //   var_ans(i,0) =     ans1.dot(ans2) ;
-           
+ for(i=0; i< NumOfaAboveThreshold ; i++){
+       ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
+       var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
   }
+
+
+
 
 
 
@@ -174,6 +171,9 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
       // blockwise multiplication
+      Eigen::MatrixXd
+              vt1;
+
 
       // find out the number of blocks needed
       long num_blocks = dims[0]/num_rows_in_block;
@@ -183,6 +183,15 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
       message(" Block multiplication necessary. \n");
       message(" Number of blocks needing block multiplication is ... % d \n", num_blocks);
       }
+
+      // This originally sat inside the block loop but it can sit outside it instead. 
+      // variance calculation
+      // vt.noalias() =  Mtd *  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;
+      vt1.noalias() =  dim_reduced_vara * inv_MMt_sqrt;
+      vt1 =  inv_MMt_sqrt * vt1;
+
+
+
       for(long i=0; i < num_blocks; i++){
          message("Performing block iteration ... " , i );
          long start_row1 = i * num_rows_in_block;
@@ -193,11 +202,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
            Eigen::MatrixXd Mt = ReadBlockBin(fnamebin, start_row1, dims[1], num_rows_in_block1) ;
 
 
-        Eigen::MatrixXd
-              vt1,
-              ans_tmp1;
-
-        Eigen::MatrixXd   var_ans_tmp(num_rows_in_block1,1);
 
 
             if(!R_IsNA(selected_loci(0))){
@@ -222,14 +226,50 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
              ans_tmp = Mt * ans_tmp;
 
 
-
+            // Dont need this sitting inside this loop. Moved it outside the block loop
             // variance calculation
             // vt.noalias() =  Mtd *  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;
-             vt1.noalias() =  dim_reduced_vara * inv_MMt_sqrt;
-             vt1 =  inv_MMt_sqrt * vt1;
+            // vt1.noalias() =  dim_reduced_vara * inv_MMt_sqrt;
+            // vt1 =  inv_MMt_sqrt * vt1;
 
 
 
+
+   Rcpp::NumericVector f(num_rows_in_block1);
+   f = (ans_tmp.array().abs()  > (ans_tmp.array().abs().maxCoeff() * 0.75 ) ) ;
+
+   long  NumOfaAboveThreshold  = Rcpp::sum(f);
+  Rcpp::NumericVector indx(NumOfaAboveThreshold);
+   long counter=0;
+   for( long ii=0; ii< num_rows_in_block1 ; ii++){
+      if (f[ii]==1){
+         indx[counter] = ii;
+         counter++;
+      }
+   }
+
+ Eigen::MatrixXd   var_ans_tmp;
+ var_ans_tmp = Eigen::MatrixXd::Zero(num_rows_in_block1,1);
+
+ Eigen::VectorXd ans1(num_rows_in_block1);
+ long i;
+//     #pragma omp parallel for shared( Mt, vt1)  private(i) schedule(static)
+
+#if defined(_OPENMP)
+#pragma omp  for  private(i) schedule(static)
+#endif
+for(i=0; i< NumOfaAboveThreshold ; i++){
+       ans1 = (Mt.row(indx[i])) * vt1;
+       var_ans_tmp(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
+
+}
+
+
+
+
+
+
+/*
         // performing quadratic form, remembering only diag elements are needed for variances. 
            Eigen::MatrixXd vt;
               vt.noalias()  =  Mt *  vt1;
@@ -246,8 +286,11 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
             }
 
 
+*/
+
+
             // assign block vector results to final vector (ans) of results
-            long  counter = 0;
+            counter = 0;
             for(long j=start_row1; j < start_row1 + num_rows_in_block1; j++){
                  ans(j,0) = ans_tmp(counter,0);
                  var_ans(j,0) = var_ans_tmp(counter,0);
