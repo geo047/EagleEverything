@@ -10,7 +10,7 @@
  start <- Sys.time()
     H <- calculateH(MMt=MMt, varE=best_ve, varG=best_vg, Zmat=Zmat )
  end <- Sys.time()
-           print(c(" H =  ", end-start))
+#           print(c(" H =  ", end-start))
 
 
     if(!quiet)
@@ -19,7 +19,7 @@
  start <- Sys.time()
     P <- calculateP(H=H, X=currentX  )
  end <- Sys.time()
- print(c(" P =  ", end-start))
+# print(c(" P =  ", end-start))
 
     if(!quiet)
         doquiet(dat=P, num_markers=5 , lab="P")
@@ -56,7 +56,7 @@
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=trait, quiet = quiet )
  end <- Sys.time()
- print(c(" hat_a  =  ", end-start))
+ #print(c(" hat_a  =  ", end-start))
 
 
 
@@ -78,7 +78,7 @@
                        quiet = quiet )
 
  end <- Sys.time()
- print(c(" var_hat_a  =  ", end-start))
+ #print(c(" var_hat_a  =  ", end-start))
 
 
 
@@ -95,7 +95,8 @@
 
 
  start <- Sys.time()
-   
+  
+    print("about to begin calculate_a_and_vara") 
      a_and_vara  <- calculate_a_and_vara(geno = geno,
                        selectedloci = selected_loci,
                        invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
@@ -103,7 +104,7 @@
                        transformed_vara=var_hat_a,
                        quiet=quiet)
  end <- Sys.time()
- print(c(" a_and_vara  =  ", end-start))
+ print(c(" time for a_and_vara  =  ", end-start))
 
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
@@ -113,29 +114,14 @@
     ## outlier test statistic
     if (!quiet )
         message(" quiet = ", quiet, ": beginning calculation of outlier test statistics. \n")
-    tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
+    indx <- which(a_and_vara[["vara"]]!=0)
+    tsq <- a_and_vara[["a"]][indx]**2/a_and_vara[["vara"]][indx]
+    names(tsq) <- seq(1, length(a_and_vara[["a"]]))[indx]
 
-   print(c("max a = ",  max( a_and_vara[["a"]] )))
-   cat("number < max * 0.75  = ",  sum( abs(a_and_vara[["a"]]) < (max( a_and_vara[["a"]] ) * 0.75)   ), "\n")
+
 
     if(!quiet)
        doquiet(dat=tsq, num_markers=5, lab="outlier test statistic")
-
-
-   # saving test statistic to disc so that we can plot these results
-#   if(.Platform$OS.type == "unix") {
-#       tmpfile <- paste(tempdir(), "/", paste("tsq", itnum , ".RData", sep="") , sep="")
-#       save(tsq, file=tmpfile)
-#     } else {
-#       tmpfile <- paste(tempdir()  , "\\", paste("tsq", itnum , ".RData", sep="")     , sep="")
-#       save(tsq, file=tmpfile)
-#     }
-
- ## AWG tmp
-# tmpfile <- paste("/home/geo047/"   , "/", paste("tsq", itnum , ".RData", sep="")     , sep="")
-#  save(tsq, file=tmpfile)
-
-
 
 
 
@@ -151,7 +137,7 @@
 
     orig_indx <- seq(1, geno[["dim_of_ascii_M"]][2])  ## 1:ncols
     res <- list()
-    res[["orig_indx"]] <- orig_indx[indx]
+    res[["orig_indx"]] <- orig_indx[as.numeric(names(tsq))[indx]]
     res[["outlierstat"]] <- tsq
     return(res)
     #return(orig_indx[indx])
