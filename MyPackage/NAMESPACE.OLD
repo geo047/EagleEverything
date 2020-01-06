@@ -15,6 +15,7 @@ export(
    FPR4AM,
    ReadPheno,
    ReadMarker,
+   ReadVCF,
    ReadMap,
    ReadZmat,
    AM,

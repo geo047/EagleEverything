@@ -1,7 +1,7 @@
 Package: Eagle
 Type: Package
 Title: Multiple Locus Association Mapping  on a Genome-Wide Scale
-Version: 2.1.1
+Version: 2.2
 Authors@R: c(
            person("Andrew", "George", role=c("aut", "cre"), email="andrew.george@csiro.au"),
            person("Joshua", "Bowden", role="ctb"),

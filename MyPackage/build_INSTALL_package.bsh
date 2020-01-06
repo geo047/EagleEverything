@@ -33,6 +33,7 @@ echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
+            \"create_vcf_BIN_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
@@ -62,6 +63,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
             \"FPR4AM.R\",
             \"ReadMarkerBin.R\",
+            \"ReadVCF.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
             \"ReadPheno.R\",
@@ -108,6 +110,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"check_inputs.R\", 
             \"create_ascii.R\", 
             \"create_bin.R\", 
+            \"create_vcf_bin.R\", 
             \"extract_geno.R\", 
             \"extract_geno_Mt.R\", 
             \"constructX.R\", 
@@ -245,7 +248,7 @@ cp ./Eagle-package.Rd  ./Eagle/man/.
 R CMD build Eagle 
 
 
-#  R CMD check --as-cran Eagle_2.1.1.tar.gz 
+#  R CMD check --as-cran Eagle_2.2.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs
