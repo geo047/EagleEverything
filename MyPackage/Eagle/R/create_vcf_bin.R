@@ -15,11 +15,14 @@ create.vcf.bin  <- function(file_genotype=NULL,  availmemGb=8,  quiet=TRUE){
 
 
     # need to create M file  
-      dim_of_M <- create_vcf_BIN_rcpp(f_name = file_genotype,  f_name_bin_M = binMfile,   f_name_bin_Mt = binMtfile,
+      liststr <- create_vcf_BIN_rcpp(f_name = file_genotype,  f_name_bin_M = binMfile,   f_name_bin_Mt = binMtfile,
                max_memory_in_Gbytes=availmemGb,  quiet = quiet, message=message )
-    message("\n  Writing of marker data to disc is complete ... \n")
 
- return(dim_of_M)
+ message("\n ReadVCF is complete ... \n")
+
+
+
+ return(liststr)
 
 }
 

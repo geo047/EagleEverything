@@ -197,7 +197,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // create_vcf_BIN_rcpp
-Rcpp::NumericVector create_vcf_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin_M, Rcpp::CharacterVector f_name_bin_Mt, double max_memory_in_Gbytes, bool quiet, Rcpp::Function message);
+Rcpp::List create_vcf_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin_M, Rcpp::CharacterVector f_name_bin_Mt, double max_memory_in_Gbytes, bool quiet, Rcpp::Function message);
 RcppExport SEXP _Eagle_create_vcf_BIN_rcpp(SEXP f_nameSEXP, SEXP f_name_bin_MSEXP, SEXP f_name_bin_MtSEXP, SEXP max_memory_in_GbytesSEXP, SEXP quietSEXP, SEXP messageSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
