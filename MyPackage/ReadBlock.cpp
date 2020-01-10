@@ -48,7 +48,6 @@ Eigen::MatrixXd
       getline(fileIN, line);
       if(rr >= start_row){
           std::istringstream streamA(line);
-          #pragma omp parallel
           {
           #pragma omp for
           for(long ii=0; ii < numcols  ; ii++){

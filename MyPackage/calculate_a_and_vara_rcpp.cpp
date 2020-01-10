@@ -101,6 +101,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
       
    long  NumOfaAboveThreshold  = Rcpp::sum(f);
+
   Rcpp::NumericVector indx(NumOfaAboveThreshold);
    long counter=0;   
    for( long ii=0; ii< dims[0]; ii++){
@@ -111,7 +112,6 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    } 
 
  
-
 
 
   // calculate untransformed variances of BLUP values
@@ -126,17 +126,37 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
  Eigen::VectorXd ans1 ;
   long i;
 
-
-  #if defined(_OPENMP)
-     #pragma omp parallel for shared( Mt, var_ans_tmp_part1)  private(i) schedule(static)
-  #endif
+#if defined(_OPENMP)
+  #pragma omp for 
+#endif
  for(i=0; i< NumOfaAboveThreshold ; i++){
+      Rcpp::Rcout << i << std::endl;
        ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
        var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
   }
 
 
+/*
+  // calculate untransformed variances of BLUP values
+    Eigen::MatrixXd var_ans_tmp_part1;
+    var_ans_tmp_part1.noalias()  =   dim_reduced_vara * inv_MMt_sqrt;
+    var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
 
+
+
+//  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
+    var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
+    var_ans_tmp_part1.resize(0,0);  // erase matrix 
+  long i;
+
+  #if defined(_OPENMP)
+     #pragma omp parallel for shared(var_ans, var_ans_tmp, Mt)  private(i) schedule(static)
+  #endif
+  for(i=0; i< dims[0]; i++){
+           var_ans(i,0) =   var_ans_tmp.row(i)   * (Mt.row(i)).transpose() ;
+  }
+
+*/
 
 
 

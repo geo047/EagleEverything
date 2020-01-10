@@ -58,10 +58,10 @@ emma.MLE <- function (y, X, K, Z = NULL, ngrids = 100, llim = -10, ulim = 10,
     else {
 
         if (is.null(eig.L)) {
-            eig.L <- emma.eigen.L.w.Z(Z, K, ngpu)
+            eig.L <- emma.eigen.L.w.Z(Z, K )
         }
         if (is.null(eig.R)) {
-            eig.R <- emma.eigen.R.w.Z(Z, K, X, ngpu)
+            eig.R <- emma.eigen.R.w.Z(Z, K, X)
         }
         etas <- crossprod(eig.R$vectors, y)
         etas.1 <- etas[1:(t - q)]
