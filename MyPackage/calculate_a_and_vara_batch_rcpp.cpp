@@ -115,7 +115,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
   long i;
 
   #if defined(_OPENMP)
-     #pragma omp parallel for shared(var_ans, var_ans_tmp, Mt)  private(i) schedule(static)
+     #pragma omp for 
   #endif
   for(i=0; i< dims[0]; i++){
            var_ans(i,0) =   var_ans_tmp.row(i)   * (Mt.row(i)).transpose() ;
@@ -222,7 +222,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 #if defined(_OPENMP)
-           #pragma omp parallel for
+           #pragma omp for
 #endif
             for(long j=0; j < num_rows_in_block1; j++){
                       var_ans_tmp(j,0)  =   vt.row(j)  * ((Mt.row(j)).transpose()) ;

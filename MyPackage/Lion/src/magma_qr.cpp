@@ -75,7 +75,7 @@
 
  // Assign data to CPU 
   #if defined(_OPENMP)
-     #pragma omp parallel for  
+     #pragma omp for  
   #endif
   for (int j=0; j< n; j++){
     for (int i=0; i < n; i++){
@@ -213,7 +213,7 @@
 
    // Form identify matrix - used for forming Q matrix in next step
   #if defined(_OPENMP)
-     #pragma omp parallel for  
+     #pragma omp for  
   #endif
   for( magma_int_t col=0; col < n; col++){
       for( magma_int_t row=0; row< n; row++){

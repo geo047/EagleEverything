@@ -97,7 +97,7 @@ if(mem_bytes < max_mem_in_bytes){
 
    // Take transpose
   #if defined(_OPENMP)
-     #pragma omp parallel for  
+     #pragma omp for  
   #endif
  for(long ii=0; ii < dims[0]; ii++){
   for(long jj=0; jj < dims[1] ; jj++){

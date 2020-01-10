@@ -128,7 +128,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
   #if defined(_OPENMP)
-     #pragma omp parallel for shared( Mt, var_ans_tmp_part1)  private(i) schedule(static)
+     #pragma omp for 
   #endif
  for(i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
@@ -253,10 +253,9 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
  Eigen::VectorXd ans1(num_rows_in_block1);
  long i;
-//     #pragma omp parallel for shared( Mt, vt1)  private(i) schedule(static)
 
 #if defined(_OPENMP)
-#pragma omp  for  private(i) schedule(static)
+#pragma omp  for  
 #endif
 for(i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * vt1;
@@ -267,26 +266,6 @@ for(i=0; i< NumOfaAboveThreshold ; i++){
 
 
 
-
-
-/*
-        // performing quadratic form, remembering only diag elements are needed for variances. 
-           Eigen::MatrixXd vt;
-              vt.noalias()  =  Mt *  vt1;
-
-
-
-
-
-#if defined(_OPENMP)
-           #pragma omp parallel for
-#endif
-            for(long j=0; j < num_rows_in_block1; j++){
-                      var_ans_tmp(j,0)  =   vt.row(j)  * ((Mt.row(j)).transpose()) ;
-            }
-
-
-*/
 
 
             // assign block vector results to final vector (ans) of results

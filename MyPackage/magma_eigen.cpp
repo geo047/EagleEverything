@@ -99,7 +99,7 @@ h_vectors =  (double*)memblock;  //reinterpret as doubles
  magma_dmalloc_cpu(&A, n2);   // to house data that will be lost 
 
   #if defined(_OPENMP)
-     #pragma omp parallel for  
+     #pragma omp for  
   #endif
  for(int i=0; i<n2; i++){
      A[i] = h_vectors[i];
