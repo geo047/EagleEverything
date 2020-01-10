@@ -15,7 +15,7 @@
 
 
 // [[Rcpp::export]]
-bool  createM_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_ascii,
+bool  createM_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_tmp,
                   Rcpp::CharacterVector  type,
                   std::string AA,
                   std::string AB, 
@@ -46,7 +46,7 @@ std::ofstream
 std::string
      ftype = Rcpp::as<std::string>(type),
      fname = Rcpp::as<std::string>(f_name),
-     fnameascii = Rcpp::as<std::string>(f_name_ascii);
+     fnametmp = Rcpp::as<std::string>(f_name_tmp);
 
 
 
@@ -67,8 +67,8 @@ double
      //------------------------------------
      // convert PLINK ped file into ASCII file with no spaces
      //----------------------------------------------
-       bool it_worked = CreateASCIInospace_PLINK(fname, fnameascii, dims, quiet, message);
-       if (!it_worked) // an error has occurred in forming ascii file
+       bool it_worked = CreateASCIInospace_PLINK(fname, fnametmp, dims, quiet, message);
+       if (!it_worked) // an error has occurred in forming input file
                  return false;
 
    }  else {
@@ -83,12 +83,12 @@ double
           message(" A text file is being assumed as the input data file type. ");
 
        if ( 1.0 * memory_needed_in_Gb   > max_memory_in_Gbytes){
-           bool it_worked = CreateASCIInospace(fname, fnameascii, dims, AA, AB, BB, quiet, message, missing);
-           if (!it_worked) // an error has occurred in forming ascii file
+           bool it_worked = CreateASCIInospace(fname, fnametmp, dims, AA, AB, BB, quiet, message, missing);
+           if (!it_worked) // an error has occurred in forming input  file
                  return false;
        } else {
-           bool it_worked =  CreateASCIInospace(fname, fnameascii, dims, AA, AB, BB, quiet, message, missing);
-          if (!it_worked) // an error has occurred in forming ascii file
+           bool it_worked =  CreateASCIInospace(fname, fnametmp, dims, AA, AB, BB, quiet, message, missing);
+          if (!it_worked) // an error has occurred in forming input  file
                  return false;
        }
 

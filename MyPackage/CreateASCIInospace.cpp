@@ -12,9 +12,9 @@
 
 
 
-// recode ascii as ascii but with no spaces
+// recode input  as bin file  but with no spaces
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-bool  CreateASCIInospace(std::string fname, std::string asciifname, std::vector<long> dims,
+bool  CreateASCIInospace(std::string fname, std::string tmpfname, std::vector<long> dims,
                          std::string  AA,
                          std::string AB,
                          std::string BB,
@@ -39,8 +39,8 @@ if(!fileIN.good()) {
   message("ERROR: Text file could not be opened with filename  " , fname , "\n" );
   return false;
 }
-// open ascii file that is to hold  genotype data
- std::ofstream fileOUT(asciifname.c_str(), std::ios::out );
+// open input  file that is to hold  genotype data
+ std::ofstream fileOUT(tmpfname.c_str(), std::ios::out );
  if (!quiet ){
  message("");
  message(" Reading text File  ");

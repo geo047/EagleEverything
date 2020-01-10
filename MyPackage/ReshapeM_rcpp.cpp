@@ -36,7 +36,7 @@ std::vector <long>    ReshapeM_rcpp( Rcpp::CharacterVector  fnameM,
 
 
    //-------------------------------------------
-   // converting M.ascii to reshaped M.asciitmp
+   // converting M.tmp to reshaped M.tmptmp
    //-------------------------------------------
    // open file and check for its existence. 
    std::ifstream fileIN(FnameM.c_str());
@@ -50,7 +50,7 @@ std::vector <long>    ReshapeM_rcpp( Rcpp::CharacterVector  fnameM,
    FnameM.append("tmp");
 
 
-   // open ascii file that is to hold no-spaces genotype data
+   // open input  file that is to hold no-spaces genotype data
    std::ofstream fileOUT(FnameM.c_str(), std::ios::out );
 
    long rownum=0;
@@ -78,7 +78,7 @@ std::vector <long>    ReshapeM_rcpp( Rcpp::CharacterVector  fnameM,
  fileOUT.close();
 
   //-------------------------------------------
-  // converting Mt.ascii to reshaped Mt.asciitmp
+  // converting Mt.tmp to reshaped Mt.tmptmp
   //-------------------------------------------
 
   // open file and check for its existence. 
@@ -93,7 +93,7 @@ std::vector <long>    ReshapeM_rcpp( Rcpp::CharacterVector  fnameM,
   FnameMt.append("tmp");
 
 
-   // open ascii file that is to hold no-spaces genotype data
+   // open input  file that is to hold no-spaces genotype data
    std::ofstream fileOUTt(FnameMt.c_str(), std::ios::out );
 
   while(fileINt.good()){

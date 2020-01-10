@@ -13,13 +13,13 @@
 
 
 // [[Rcpp::export]]
-Eigen::VectorXi  extract_geno_rcpp(Rcpp::CharacterVector f_name_ascii,
+Eigen::VectorXi  extract_geno_rcpp(Rcpp::CharacterVector f_name,
                                    double  max_memory_in_Gbytes,
                                     long  selected_locus,
                                     std::vector<long> dims)
 {
   std::string
-     fnamebin = Rcpp::as<std::string>(f_name_ascii);
+     fnamebin = Rcpp::as<std::string>(f_name);
 
   long
      nind;

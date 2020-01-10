@@ -14,19 +14,19 @@
   if(is.null(gamma)){
      gamma <- 1
      # found this to be anti-conservative when sample size is small
-     #lambda <- log(geno$dim_of_ascii_M[2])/log(length(trait))
+     #lambda <- log(geno$dim_of_M[2])/log(length(trait))
      #gamma <- 1-(1/(2*lambda))
    } ## outer if
 
   if(length(gamma)==1){
-   extBIC <- BIC + 2 * gamma   *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)  
+   extBIC <- BIC + 2 * gamma   *lchoose(geno$dim_of_M[2], numberSNPselected)  
    if(!quiet){
       cat(" Gamma = ", gamma, "\n")
    }
    } else {
      extBIC <- rep(NA, length(gamma))
      for(ii in 1:length(gamma)){
-        extBIC[ii] <- BIC + 2 * gamma[ii]  *lchoose(geno$dim_of_ascii_M[2], numberSNPselected)
+        extBIC[ii] <- BIC + 2 * gamma[ii]  *lchoose(geno$dim_of_M[2], numberSNPselected)
      }
 
    }

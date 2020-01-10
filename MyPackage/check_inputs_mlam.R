@@ -80,10 +80,10 @@ if(!is.data.frame(pheno)){
 
 
 nms <- names(geno)
-indx <- match(nms, c("asciifileM", "asciifileMt", "dim_of_ascii_M" , "dim_of_ascii_Mt", "availmemGb"))
+indx <- match(nms, c("tmpM", "tmpMt", "dim_of_M" , "dim_of_Mt", "availmemGb"))
 if(any(is.na(indx))){
   message("Error: there is a problem with the list structure of the geno object. ")
-  message("       It should contain the elements asciifileM, asciifileMt, and dim_of_ascii_M. ")
+  message("       It should contain the elements tmpM, tmpMt, and dim_of_M. ")
   message("       The object supplied contains the elements ", names(geno) )
   return(TRUE)
 }
@@ -91,7 +91,7 @@ if(any(is.na(indx))){
 if(is.null(map)){
     message("WARNING: no map object has been specified. A generic map ")
     message("         will be assumed.                                ")
-    map <- data.frame(Mrk= paste("M", 1:geno[["dim_of_ascii_M"]][2]), Chrm=1, Pos=1:geno[["dim_of_ascii_M"]][2])
+    map <- data.frame(Mrk= paste("M", 1:geno[["dim_of_M"]][2]), Chrm=1, Pos=1:geno[["dim_of_M"]][2])
 }
 
 
@@ -128,10 +128,10 @@ if(is.null(map)){
  ## when Zmat is null
  if(is.null(Zmat)){
     ## check that geno and pheno contain the same number of individuals
-    if(nrow(pheno) !=  geno[["dim_of_ascii_M"]][1])
+    if(nrow(pheno) !=  geno[["dim_of_M"]][1])
     {
       message("Error: the number of individuals specified in the phenotype file is ", nrow(pheno))
-      message("       the number of individuals specified in the genotype file is ",  geno[["dim_of_ascii_M"]][1])
+      message("       the number of individuals specified in the genotype file is ",  geno[["dim_of_M"]][1])
       message("       The number of individuals should be the same in the two files.")
       return(TRUE)
     }
@@ -152,10 +152,10 @@ if(is.null(map)){
  ## when Zmat is not null
  if(!is.null(Zmat)){
    ## check that the number of columns in Zmat match the number of rows in geno
-   if(ncol(Zmat) != geno[["dim_of_ascii_M"]][1])
+   if(ncol(Zmat) != geno[["dim_of_M"]][1])
    {
       message("Error: the number of columns specified in the Z matrix file is ", ncol(Zmat))
-      message("       the number of rows specified in the genotype file is ",  geno[["dim_of_ascii_M"]][1])
+      message("       the number of rows specified in the genotype file is ",  geno[["dim_of_M"]][1])
       message("       The number of columns in the Z matrix should be the same as the number of rows in the genotype file.")
       return(TRUE)
    }
@@ -180,10 +180,10 @@ if(is.null(map)){
 
 
  ## check that map and geno contain the same number of snp
- if(nrow(map) != geno[["dim_of_ascii_M"]][2])
+ if(nrow(map) != geno[["dim_of_M"]][2])
  {
    message("Error: the number of marker loci in the map file is ", nrow(map))
-   message("       The number of marker loci in the genotype file is ", geno[["dim_of_ascii_M"]][2])
+   message("       The number of marker loci in the genotype file is ", geno[["dim_of_M"]][2])
    message("       The number of marker loci in the two files should be the same." )
    return(TRUE)
  }

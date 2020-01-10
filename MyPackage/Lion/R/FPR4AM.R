@@ -133,9 +133,9 @@ FPR4AM <- function(
    message(" Map file has not been supplied. An artificial map is being created but this map is not used in the analysis. \n")
    message(" It is only used for the reporting of results. \n")
    ## map has not been supplied. Create own map
-   map <- data.frame(SNP=paste("M", 1:geno[["dim_of_ascii_M"]][2], sep=""),
-                     Chr=rep(1, geno[["dim_of_ascii_M"]][2]),
-                     Pos=1:geno[["dim_of_ascii_M"]][2])
+   map <- data.frame(SNP=paste("M", 1:geno[["dim_of_M"]][2], sep=""),
+                     Chr=rep(1, geno[["dim_of_M"]][2]),
+                     Pos=1:geno[["dim_of_M"]][2])
   }
 
  selected_loci <- NA
@@ -460,15 +460,15 @@ for(ii in 1:numreps){
        }
        indx <- indx[midpoint]
 
-       new_selected_locus  <- seq(1, geno[["dim_of_ascii_M"]][2])  ## 1:ncols
+       new_selected_locus  <- seq(1, geno[["dim_of_M"]][2])  ## 1:ncols
        new_selected_locus <- new_selected_locus[indx]
 
    
        # Fit alternate model
        currentX <- currentX_null # initialising to base model  
-       currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, 
+       currentX <- constructX(Zmat=Zmat, fnameMt=geno[["tmpMt"]], currentX=currentX, 
                               loci_indx=new_selected_locus,
-                              dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+                              dim_of_Mt=geno[["dim_of_Mt"]],
                               map=map )
 
 

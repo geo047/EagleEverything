@@ -12,7 +12,7 @@
 
 // recode PLINK as ASCII with no spaces
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-bool  CreateASCIInospace_PLINK(std::string fname, std::string asciifname, std::vector<long> dims,
+bool  CreateASCIInospace_PLINK(std::string fname, std::string tmpfname, std::vector<long> dims,
                          bool quiet, Rcpp::Function message)
 {
 
@@ -43,8 +43,8 @@ if(!fileIN.good()) {
   return false;
 }
 
-// open ascii file that is to hold no-spaces genotype data
-std::ofstream fileOUT(asciifname.c_str(), std::ios::out );
+// open input file that is to hold no-spaces genotype data
+std::ofstream fileOUT(tmpfname.c_str(), std::ios::out );
 long  counter = 0;
 
 // initializing input line 
