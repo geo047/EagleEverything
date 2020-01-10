@@ -153,9 +153,9 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
   fullX <- baseX
   for(loc in AMobj$Indx){
            
-           fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]], 
+           fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["tmpMt"]], 
                               currentX=fullX, loci_indx=loc,
-                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
+                               dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
                                 map=AMobj$map)
   }  ## end for loc
 
@@ -275,51 +275,6 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
                       "Pr(Chisq)"=pval, check.names=FALSE)
 
 
- ##----------------------------------------------------------------------- 
- ## Variance explained - based on Sun et al. (2010). Heredity 105:333-340
- ##----------------------------------------------------------------------- 
- # 13 Nov, 2019
- # Put on hold - not confident in the results. 
-
-# MMt <- MMt/max(MMt) + 0.05 * diag(nrow(MMt))  
-# # base model
-# # Note - baseX = fullX so okay to leave Args as is
-# #basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
-# Args[["X"]] <- baseX
-#
-# basemod  <-  do.call(emma.MLE, Args)
-#
-#
-#
-# base_logML <- basemod$ML
-# # full model
-#  df_R <- NULL
-#  fullX <- baseX
-#  message(" Table 2: Proportion of phenotypic variance explained by the ")
-#  message("          model. Marker loci, which were found by AM(), are added")
-#  message("          a SNP at a time.\n ")
-#  message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
-#  for(loc in AMobj$Indx[-1]){
-#               fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]],
-#                                currentX=fullX, loci_indx=loc,
-#                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
-#                               map=AMobj$map)
-#        # fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
-#        ## calculate variance components of LMM
-#        Args[["X"]]  <-  fullX 
-#        fullmod  <-  do.call(emma.MLE, Args)
-#        full_logML <- fullmod$ML
-#        print(fullX[1:5,])
-#        cat(" Base logML = ", base_logML , "\n")
-#        cat(" Full logML = ", full_logML, "\n")
-#        Rsq <- 1 - exp(-2/length(AMobj$trait) * (full_logML - base_logML))
-#        print(Rsq)
-#        message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
-#        df_R <- rbind.data.frame(df_R, data.frame("Marker_name"=paste("+",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])),
-#                                                  "Prop_var_explained"=Rsq))
-#   }  ## end for loc
-#  colnames(df_R) <- c("SNP", "Prop var explained")
-#
   res <- list()
   res[["pvalue"]] <- pval
   res[["size"]] <- df_size

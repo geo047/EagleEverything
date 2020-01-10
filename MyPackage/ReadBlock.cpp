@@ -12,7 +12,7 @@
 
 
 // [[Rcpp::export]]
-Eigen::MatrixXd  ReadBlock(std::string asciifname,
+Eigen::MatrixXd  ReadBlock(std::string tmpfname,
                            long start_row,
                            long numcols,
                            long numrows_in_block)
@@ -36,10 +36,10 @@ Eigen::MatrixXd
 
 
 // Open no-space ASCII file
-   std::ifstream fileIN(asciifname.c_str(), std::ios::in );
+   std::ifstream fileIN(tmpfname.c_str(), std::ios::in );
 
     if(!fileIN.good()) {
-      os << "ERROR: Could not open  " << asciifname << std::endl;
+      os << "ERROR: Could not open  " << tmpfname << std::endl;
       Rcpp::stop(os.str() );
      }
    Rcpp::Rcout << " This should be paralleized .... -- REadblock " << std::endl;
@@ -62,7 +62,7 @@ Eigen::MatrixXd
 
 
 
-// Close the ascii file
+// Close the input  file
    fileIN.close();
 
 

@@ -12,7 +12,7 @@
 
 
 
-// recode ascii as binary file
+// recode input file to binary file
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool  CreateBIN(std::string fname, std::string binfname, std::vector<long> dims,
                          std::string  AA,

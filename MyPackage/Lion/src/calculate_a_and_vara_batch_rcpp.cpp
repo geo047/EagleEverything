@@ -22,7 +22,7 @@
 
 
 Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps, 
-                                    Rcpp::CharacterVector f_name_ascii,
+                                    Rcpp::CharacterVector f_name,
                                     Rcpp::NumericVector  selected_loci,
                                     Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt,
                                     Eigen::Map<Eigen::MatrixXd> dim_reduced_vara,
@@ -55,7 +55,7 @@ std::ostringstream
       os;
 
 std::string
-     fnamebin = Rcpp::as<std::string>(f_name_ascii);
+     fnamebin = Rcpp::as<std::string>(f_name);
 
  Eigen::MatrixXd
        ans(dims[0],numreps);

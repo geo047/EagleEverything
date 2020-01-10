@@ -2,9 +2,9 @@
   {
     ## internal function: used only in AM  and SummaryAM
     ## calculates M %*% t(M) via C++ for out of memory calculation
-    MMt <- calculateMMt(geno=geno[["asciifileM"]], availmemGb=geno[["availmemGb"]],
+    MMt <- calculateMMt(geno=geno[["tmpM"]], availmemGb=geno[["availmemGb"]],
                            ncpu=ncpu,
-                           dim_of_ascii_M = geno[["dim_of_ascii_M"]],
+                           dim_of_M = geno[["dim_of_M"]],
                            selected_loci=selected_loci, quiet = quiet )
     gc()
 

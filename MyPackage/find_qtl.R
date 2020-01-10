@@ -135,7 +135,7 @@
     } 
     indx <- indx[midpoint]
 
-    orig_indx <- seq(1, geno[["dim_of_ascii_M"]][2])  ## 1:ncols
+    orig_indx <- seq(1, geno[["dim_of_M"]][2])  ## 1:ncols
     res <- list()
     res[["orig_indx"]] <- orig_indx[as.numeric(names(tsq))[indx]]
     res[["outlierstat"]] <- tsq

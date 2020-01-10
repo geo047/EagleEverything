@@ -13,7 +13,7 @@ using Eigen::SelfAdjointEigenSolver;
 
 
 // [[Rcpp::export]]
-Eigen::MatrixXd  calculateMMt_rcpp(Rcpp::CharacterVector f_name_ascii,
+Eigen::MatrixXd  calculateMMt_rcpp(Rcpp::CharacterVector f_name,
                                    double  max_memory_in_Gbytes, int num_cores,
                                    Rcpp::NumericVector  selected_loci , std::vector<long> dims,
                                    bool  quiet, Rcpp::Function message)
@@ -44,7 +44,7 @@ std::ofstream
 //   genoval;
 
 std::string
-     fnamebin = Rcpp::as<std::string>(f_name_ascii);
+     fnamebin = Rcpp::as<std::string>(f_name);
 
 // gpu will only work with double precision matrices in Eigen. 
 // Had to change code to be double precision. 

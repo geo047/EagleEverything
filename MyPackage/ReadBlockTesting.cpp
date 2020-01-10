@@ -17,12 +17,12 @@
 using namespace std;
 using namespace Eigen;
 
-Eigen::MatrixXd  ReadBlock(std::string asciifname,
+Eigen::MatrixXd  ReadBlock(std::string tmpfname,
 		long start_row,
 		long numcols,
 		long numrows_in_block);
 
-Eigen::MatrixXd  ReadBlockFast(std::string asciifname,
+Eigen::MatrixXd  ReadBlockFast(std::string tmpfname,
 		long start_row,
 		long numcols,
 		long numrows_in_block);
@@ -73,7 +73,7 @@ int main() {
 
 // Ryan's ReadBlock code which uses mmap() system call
 // Not fully tested, use with caution
-Eigen::MatrixXd  ReadBlockFast(std::string asciifname,
+Eigen::MatrixXd  ReadBlockFast(std::string tmpfname,
 		long start_row,
 		long numcols,
 		long numrows_in_block) {
@@ -117,7 +117,7 @@ Eigen::MatrixXd  ReadBlockFast(std::string asciifname,
 	if (requiredMemory <= maxMemory) {
 
 		// Memory map file
-		char* dataFile = mapFileFromDiscBlocked(asciifname.c_str(), sizeUsed, sizeActual, requiredMemory, allignedPos);
+		char* dataFile = mapFileFromDiscBlocked(tmpfname.c_str(), sizeUsed, sizeActual, requiredMemory, allignedPos);
 
 		// Used to load through the mapped file
 		unsigned long rowInc = 0;
@@ -272,7 +272,7 @@ unsigned long getNumRows(std::string fname) {
 
 }
 
-Eigen::MatrixXd  ReadBlock(std::string asciifname,
+Eigen::MatrixXd  ReadBlock(std::string tmpfname,
 		long start_row,
 		long numcols,
 		long numrows_in_block)
@@ -301,10 +301,10 @@ Eigen::MatrixXd  ReadBlock(std::string asciifname,
 
 
 	// Open no-space ASCII file
-	std::ifstream fileIN(asciifname.c_str(), ios::in );
+	std::ifstream fileIN(tmpfname.c_str(), ios::in );
 
 	if(!fileIN.good()) {
-		os << "ERROR: Could not open  " << asciifname << std::endl;
+		os << "ERROR: Could not open  " << tmpfname << std::endl;
 		//Rcpp::stop(os.str() );
 	}
 
@@ -321,7 +321,7 @@ Eigen::MatrixXd  ReadBlock(std::string asciifname,
 		} // end if rr
 	} // end for(rr
 
-	// Close the ascii file
+	// Close the input  file
 	fileIN.close();
 
 

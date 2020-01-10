@@ -1,5 +1,5 @@
 ReshapeM  <- function(fnameM, fnameMt, indxNA, dims){
-   ## function to create a temp version of M.ascii and Mt.ascii where the rows and columns, 
+   ## function to create a temp version of M.tmp and Mt.tmp where the rows and columns, 
    ## respectively have been removed for the elements in indxNA
 
    ## its indxNA-1 so that indexes start from 0 as in c++

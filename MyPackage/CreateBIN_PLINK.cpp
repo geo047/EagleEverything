@@ -43,7 +43,7 @@ if(!fileIN.good()) {
   return false;
 }
 
-// open ascii file that is to hold no-spaces genotype data
+// open input  file that is to hold no-spaces genotype data
 std::ofstream fileOUT(binfname.c_str(), std::ios::out | std::ios::binary );
 long  counter = 0;
 

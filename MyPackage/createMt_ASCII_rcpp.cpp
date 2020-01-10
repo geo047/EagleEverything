@@ -13,13 +13,13 @@ const size_t bits_in_int = std::numeric_limits<int>::digits;
 
 // [[Rcpp::export]]
 void  createMt_ASCII_rcpp(Rcpp::CharacterVector f_name,
-                          Rcpp::CharacterVector f_name_ascii,
+                          Rcpp::CharacterVector f_name_tmp,
                           Rcpp::CharacterVector  type,
                               double  max_memory_in_Gbytes,  std::vector <long> dims,
                               bool  quiet, Rcpp::Function message )
 {
 
-// read data from M.ascii that has already been created and transpose this file
+// read data from M.tmp that has already been created and transpose this file
 
 std::string
    token,
@@ -35,7 +35,7 @@ long
 std::string
      ftype = Rcpp::as<std::string>(type),
      fname = Rcpp::as<std::string>(f_name),
-     fnameascii = Rcpp::as<std::string>(f_name_ascii);
+     fnametmp = Rcpp::as<std::string>(f_name_tmp);
 
 
 
@@ -52,7 +52,7 @@ double mem_bytes = 3.5 * dims[0] * dims[1] * (bits_in_int/8);  // assumes a 64 b
 
 
  // open  files
-std::ofstream fileOUT(fnameascii.c_str(), std::ios::out);
+std::ofstream fileOUT(fnametmp.c_str(), std::ios::out);
 std::ifstream fileIN(fname.c_str());
 
 //-----------------------------------------------------------------------

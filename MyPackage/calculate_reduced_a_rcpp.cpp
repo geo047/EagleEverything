@@ -16,7 +16,7 @@
 // Calculation of transformed blup a values
 //--------------------------------------------
 // [[Rcpp::export]]
-Eigen::MatrixXd calculate_reduced_a_rcpp ( Rcpp::CharacterVector f_name_ascii, double varG,
+Eigen::MatrixXd calculate_reduced_a_rcpp ( Rcpp::CharacterVector f_name, double varG,
                                            Eigen::Map<Eigen::MatrixXd> P,
                                            Eigen::Map<Eigen::MatrixXd>  y,
                                            double max_memory_in_Gbytes,
@@ -28,7 +28,7 @@ Eigen::MatrixXd calculate_reduced_a_rcpp ( Rcpp::CharacterVector f_name_ascii, d
   // function to calculate the BLUPs for the dimension reduced model. 
   // It is being performed in Rcpp because it makes use of Mt. 
   // Args
-  // f_name_ascii    path + file name of Mt.bin
+  // f_name    path + file name of Mt.bin
   // varG          variance of polygenic component
   // P             calculate in R
   // y             response/trait  but read in as a row matrix
@@ -36,7 +36,7 @@ Eigen::MatrixXd calculate_reduced_a_rcpp ( Rcpp::CharacterVector f_name_ascii, d
   // dims          dimension (row, column), of M.
 
 std::string
-     fnamebin = Rcpp::as<std::string>(f_name_ascii);
+     fnamebin = Rcpp::as<std::string>(f_name);
 
 Eigen::MatrixXd
       ar(dims[1],1);  // column vector
