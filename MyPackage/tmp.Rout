@@ -164,4 +164,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.744   0.129   1.616 
+  0.807   0.100   0.977 
