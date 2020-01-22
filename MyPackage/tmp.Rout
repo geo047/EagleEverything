@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > library(Rcpp)
 >     
 >  Rcpp.package.skeleton("Lion", cpp_files=c(
@@ -164,4 +166,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.707   0.132   0.932 
+  0.705   0.104   0.895 

@@ -197,6 +197,12 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
                            quiet=TRUE ){
 
 
+
+
+
+
+
+
  if (nargs() == 0){
     ## checking that function has arguments
     message(" Please supply arguments to function \n")
@@ -213,6 +219,8 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
       message(" ReadMarker has terminated with errors")
       return(NULL)
    }
+
+
 
 
     ## ------   PLINK ped file -------------------

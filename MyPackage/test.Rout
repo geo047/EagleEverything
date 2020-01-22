@@ -1,0 +1,213 @@
+
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(Lion)
+Loading required package: shinyFiles
+Loading required package: ggplot2
+Loading required package: ggthemes
+Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3
+> 
+> 
+> geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2, availmemGb=0.005 )
+ Getting number of individuals and snp from file ... 
+ Beginning creation of reformatted file ... 
+ Reading marker data ... 
+
+0% read of text file.       1% read of text file.       2% read of text file.       3% read of text file.       4% read of text file.       5% read of text file.       6% read of text file.       7% read of text file.       8% read of text file.       9% read of text file.       10% read of text file.       11% read of text file.       12% read of text file.       13% read of text file.       14% read of text file.       15% read of text file.       16% read of text file.       17% read of text file.       18% read of text file.       19% read of text file.       20% read of text file.       21% read of text file.       22% read of text file.       23% read of text file.       24% read of text file.       25% read of text file.       26% read of text file.       27% read of text file.       28% read of text file.       29% read of text file.       30% read of text file.       31% read of text file.       32% read of text file.       33% read of text file.       34% read of text file.       35% read of text file.       36% read of text file.       37% read of text file.       38% read of text file.       39% read of text file.       40% read of text file.       41% read of text file.       42% read of text file.       43% read of text file.       44% read of text file.       45% read of text file.       46% read of text file.       47% read of text file.       48% read of text file.       49% read of text file.       50% read of text file.       51% read of text file.       52% read of text file.       53% read of text file.       54% read of text file.       55% read of text file.       56% read of text file.       57% read of text file.       58% read of text file.       59% read of text file.       60% read of text file.       61% read of text file.       62% read of text file.       63% read of text file.       64% read of text file.       65% read of text file.       66% read of text file.       67% read of text file.       68% read of text file.       69% read of text file.       70% read of text file.       71% read of text file.       72% read of text file.       73% read of text file.       74% read of text file.       75% read of text file.       76% read of text file.       77% read of text file.       78% read of text file.       79% read of text file.       80% read of text file.       81% read of text file.       82% read of text file.       83% read of text file.       84% read of text file.       85% read of text file.       86% read of text file.       87% read of text file.       88% read of text file.       89% read of text file.       90% read of text file.       91% read of text file.       92% read of text file.       93% read of text file.       94% read of text file.       95% read of text file.       96% read of text file.       97% read of text file.       98% read of text file.       99% read of text file.        
+ 
+ First 5 lines and 12 columns of the marker text  file. 
+1 0 0 1 0 0 1 1 2 1 2 2 
+1 0 0 0 1 0 1 1 2 1 0 2 
+1 0 0 1 1 0 1 1 2 0 2 2 
+1 0 2 1 1 0 1 2 2 1 2 2 
+1 0 0 1 1 0 1 0 0 1 0 1 
+ 
+ Taking transpose of marker data and writing untransposed and transposed data to disc ... 
+
+ A block transpose is being performed due to lack of memory.  
+ Memory parameter availmemGb is set to 0.005 gigabytes
+ If possible, increase availmemGb parameter. 
+
+ 
+ Number of blocks being processed is 2
+
+
+ Processing block 1 of a total number of blocks of 2
+ Processing block 2 of a total number of blocks of 2
+
+
+                    Summary of Marker File  
+                   ~~~~~~~~~~~~~~~~~~~~~~~~   
+ File type:                   text
+ Reformatted ASCII file name:  /tmp/geo047.21955/RtmpgGgTnO/M.bin
+ Number of individuals:        100
+ Number of loci:               4998
+ File size (gigabytes):       0.0014994
+ Available memory (gigabytes): 0.005
+
+
+
+
+  Writing of marker data to disc is complete ... 
+
+> pheno <- ReadPheno(filename = "./pheno1.test", missing="NA")
+
+
+ Loading Phenotype file ... 
+
+
+               Summary of Phenotype File  
+
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   ./pheno1.test
+
+ Number of individuals:       102
+
+ Number of columns:           6
+
+
+ First 5 rows of the phenotype file are 
+
+9.74441006414413 -0.080256 -0.056444 28 2.24719923712075 2
+8.30074276066739 -0.079114 -0.068167 40 3.51477482977412 4
+7.68871161174369 -0.081873 -0.067404 26 16.8686233621094 4
+20.0855313237688 -0.081068 -0.056846 21 10.4064453968186 4
+10.075239046444 -0.082542 -0.063059 27 10.3809801451631 4
+
+ Column classes are  
+
+              trait1           numeric
+
+                 pc1           numeric
+
+                 pc2           numeric
+
+                 age           integer
+
+              trait2           numeric
+
+           eyecolour            factor
+
+The phenotype file has been loaded.
+> map <- ReadMap(filename = "./mapDemo.dat")
+
+
+ Loading map file ... 
+
+
+                    Summary of Map File  
+
+                   ~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   ./mapDemo.dat
+
+ Number of marker loci:       4998
+
+ Number of columns:           3
+
+ Number of chromosomes:       3
+
+
+ First 5 markers of the map file are 
+
+4598 21 14005
+2409 21 72920
+1123 21 80442
+4628 21 146642
+3918 21 190036
+The map file has been loaded.
+
+
+
+> Z <- ReadZmat("./Z1.test")
+
+
+ Loading Z matrix file ... 
+
+
+                    Summary of Z matrix File  
+
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   ./Z1.test
+
+ Number of rows:              102
+
+ Number of columns:           100
+
+ First 5 rows of the Z matrix file are 
+
+1 0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 0 0 0 0
+0 1 0 0 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 0
+
+
+
+> res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
+ Setting up null model.  
+ Number of cores being used for calculation is .. 28
+ Calculating matrices that will be used in alternate model. 
+ Increasing maxmemGb would improve performance... 
+
+ Block multiplication necessary for calculation of BLUPS and their variances. 
+ Number of blocks needing block multiplication is 3
+ Number of rows in block is 2083
+Performing block iteration ... 0
+Performing block iteration ... 1
+Performing block iteration ... 2
+ Analysing 200 permuations. 
+\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
+
+ Table: Empirical false positive rates, given gamma value for model selection. 
+
+  Gamma    |  False Pos Rate  
+ ---------------------------- 
+0  |  1 
+0.05263158  |  1 
+0.1052632  |  1 
+0.1578947  |  1 
+0.2105263  |  1 
+0.2631579  |  0.995 
+0.3157895  |  0.965 
+0.3684211  |  0.88 
+0.4210526  |  0.74 
+0.4736842  |  0.6 
+0.5263158  |  0.505 
+0.5789474  |  0.425 
+0.6315789  |  0.31 
+0.6842105  |  0.235 
+0.7368421  |  0.15 
+0.7894737  |  0.095 
+0.8421053  |  0.045 
+0.8947368  |  0.03 
+0.9473684  |  0.03 
+1  |  0.02 
+ ----------------------------- 
+ For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+> 
+> proc.time()
+   user  system elapsed 
+439.323 196.728 205.247 

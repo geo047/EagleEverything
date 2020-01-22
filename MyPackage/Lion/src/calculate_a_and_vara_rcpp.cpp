@@ -97,7 +97,17 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
     ans.noalias() =   Mt  * ans_part1;
 
-   Rcpp::NumericVector f(dims[0]);
+   Rcpp::IntegerVector f(dims[0]);
+
+  #if defined(_OPENMP)
+     #pragma omp for 
+  #endif
+ for(int i=0; i< dims[0] ; i++){
+       f[i] = 0;
+  }
+
+
+
    f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
       
    long  NumOfaAboveThreshold  = Rcpp::sum(f);
@@ -147,7 +157,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
       // calculation being processed in block form
-      message(" Increasing maxmemGb would improve performance... \n");
+      message(" Increasing maxmemGb would improve performance. ");
 
       // calculate the maximum number of rows in Mt that can be contained in the
       // block multiplication. This involves a bit of algebra but it is comes to the following

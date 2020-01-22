@@ -278,6 +278,8 @@ if(!is.null(fformula)){
 
   pheno[, "residuals"] <- res
 
+ message(cat(" Setting up null model.  "))
+
  # create big pheno: contains all permutations 
 bigpheno <- matrix(data=NA, nrow=length(res) , ncol=numreps)
 for(ii in 1:numreps){
@@ -288,7 +290,7 @@ for(ii in 1:numreps){
 }
 colnames(bigpheno) <- paste0("res", 1:numreps)
 
-
+cat(".")
 
  ## build design matrix currentX
  ## no missing data at this stage to worry about
@@ -298,7 +300,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
            error = function(err){
             return(TRUE)
            })
-
+cat(".")
 
   if(is.logical(chck)){
       if(chck){
@@ -321,12 +323,18 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
 
  if(!quiet)
    message(" quiet=FALSE: calculating M %*% M^t. \n")
+
+
  MMt <- do.call(.calcMMt, Args)
+ cat(".")
+
+
 
  if(!quiet)
    doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
  invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
  gc()
+ cat(".")
 
  if (!quiet)  message(" Calculating square root of MMt and its inverse")
  MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet) 
@@ -338,6 +346,7 @@ colnames(bigpheno) <- paste0("res", 1:numreps)
  } else  {
             eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
  }
+ cat(".")
 
 
 
@@ -353,9 +362,9 @@ MaxLike <- rep(NA, numreps)
 extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
 
 # Found that REML step gives better results, at least for small sample size
+message("\n Calculating variance components  for null model")
 
    Args <- list(y=pheno[, "residuals"] , X= currentX_null , Z=Zmat, K=MMt, eig.L=eig.L)
-   if (!quiet) message(" Estimating variance components of Null model. ")
    res_full  <- do.call(emma.REMLE, Args)
    vc <- list("vg"=res_full$vg, "ve"=res_full$ve   )
 
@@ -384,10 +393,13 @@ rep(NA, numreps)
 # will have the same null extBIC value. 
  Args <- list("trait"= bigpheno[,1], "currentX"=currentX_null, "geno"=geno, "MMt"=MMt,
                        "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma, eig.L=eig.L)
+message(" Calculating extBIC for null model")
  extBIC <-     do.call(.calc_extBIC_MLE, Args)
      gc()
+ cat(".")
 
 extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix of null extBIC values
+ cat(".")
 
 
  extBIC_alternate <- matrix(data=NA, nrow=numreps, ncol=length(gamma))
@@ -400,14 +412,18 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
 # MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=error_checking) 
 
  if (!quiet)  message(" Calculating H")
+ message("\n Calculating matrices that will be used in alternate model. ")
  
  H <- calculateH(MMt=MMt, varE=best_ve[ii], varG=best_vg[ii], Zmat=Zmat )
+ cat(".")
  if (!quiet)  message(" Calculating P")
  P <- calculateP(H=H, X=currentX_null )
+ cat(".")
  if (!quiet)  message(" Calculating a hat")
  hat_a <- calculate_reduced_a_batch(Zmat=Zmat, varG=best_vg[ii], P=P,
                        MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                        y=bigpheno , quiet = quiet)
+ cat(".")
 
  if (!quiet)  message(" Calculating var(a hat)")
  var_hat_a    <- calculate_reduced_vara(Zmat=Zmat, X=currentX_null, 
@@ -415,6 +431,7 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
                                              MMtsqrt=MMt_sqrt_and_sqrtinv[["sqrt_MMt"]],
                                              quiet = quiet)
 
+ cat(".")
 
  
  if (!quiet)  message(" Calculating  a and vara for full data")
@@ -425,9 +442,10 @@ extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix 
                                           transformed_a=hat_a ,
                                           transformed_vara=var_hat_a,
                                           quiet=quiet)
+ cat(".")
+ 
 
-
-
+message("\n Analysing ", numreps, " permuations. ")
 for(ii in 1:numreps){
        if(ii %% 4 == 0 )
           message("-", appendLF=FALSE)
@@ -445,23 +463,37 @@ for(ii in 1:numreps){
      
 
       ## outlier test statistic
-###   tsq <- a_and_vara[["a"]]**2/a_and_vara[["vara"]]
-      tsq <- a_and_vara[["a"]][, ii]**2/a_and_vara[["vara"]]
+      ## tsq <- a_and_vara[["a"]][, ii]**2/a_and_vara[["vara"]]
+     
+      # indx contains the snp numbers of snps with non-zero variances
+      indx <- which(abs(a_and_vara[["vara"]]) > 0.00000001)
+      # cat("Length of indx = ", length(indx), "\n")
 
-      indx <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. 
+      tsq <- a_and_vara[["a"]][indx, ii]**2/a_and_vara[["vara"]][indx]
+
+
+
+
+
+
+      # indx_tsq contains the index position of the maximum tsq. This will 
+      # not be the same as the snp index with the maximum test statistic.
+      indx_tsq <- which(tsq == max(tsq, na.rm=TRUE))   ## index of largest test statistic. 
                                                    ## However, need to account for other loci 
                                                    ## already having been removed from M which 
                                                    ## affects the indexing
 
        ## taking first found qtl
        midpoint <- 1
-       if (length(indx)>2){
-          midpoint <- trunc(length(indx)/2)+1
+       if (length(indx_tsq)>2){
+          midpoint <- trunc(length(indx_tsq)/2)+1
        }
-       indx <- indx[midpoint]
+
+       # indx_of_locus now contains the snp index of the snp with the largest test statistic value. 
+       indx_of_locus <- indx[indx_tsq[midpoint]]
 
        new_selected_locus  <- seq(1, geno[["dim_of_M"]][2])  ## 1:ncols
-       new_selected_locus <- new_selected_locus[indx]
+       new_selected_locus <- new_selected_locus[indx_of_locus]
 
    
        # Fit alternate model

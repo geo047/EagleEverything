@@ -18,9 +18,6 @@
 // ------------------------------------------------------
 
 // [[Rcpp::export]]
-
-
-
 Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps, 
                                     Rcpp::CharacterVector f_name,
                                     Rcpp::NumericVector  selected_loci,
@@ -30,7 +27,7 @@ Rcpp::List   calculate_a_and_vara_batch_rcpp(  long numreps,
                                     std::vector <long> dims,
                                     Eigen::Map<Eigen::MatrixXd> a,
                                     bool  quiet,
-                                    Rcpp::Function message )
+                                    Rcpp::Function message)
 
 
 {
@@ -61,19 +58,23 @@ std::string
        ans(dims[0],numreps);
 
 Eigen::MatrixXd
-             ans_tmp,
-             var_ans_tmp(dims[0] , dims[1]);
+             ans_tmp;
 
 
 
 Eigen::MatrixXd
     var_ans = Eigen::MatrixXd(dims[0],1);
+    var_ans.setZero();
+
 
 
 
 
    // Calculate memory footprint for Mt %*% inv(sqrt(MMt)) %*% var(a) %*% inv(sqrt(MMt)%*%M)
- double mem_bytes_needed =   ( 4.0   * (double) dims[1]  *   (double) dims[0] * sizeof(double))/1000000000.0;
+ double mem_bytes_needed =   ( 3.0   * (double) dims[1]  *   (double) dims[0] * sizeof(double))/1000000000.0;
+
+
+
 
 if (!quiet){
 //   Rprintf("Total memory (Gbytes) needed for a calculation is: %f \n",  mem_bytes_needed);
@@ -83,6 +84,8 @@ if (!quiet){
 
 
 if(mem_bytes_needed < max_memory_in_Gbytes){
+
+
  // calculation will fit into memory
      Eigen::MatrixXd Mt = ReadBlockBin(fnamebin, 0, dims[1], dims[0]);
 
@@ -96,30 +99,78 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
 
-
+   // ans contains the BLUPs across the entire genome 
+   // for all the reps (numreps). It is a dims[0] x numreps matrix.
      Eigen::MatrixXd  ans_part1;
     ans_part1.noalias() = inv_MMt_sqrt * a;
     ans.noalias() =   Mt  * ans_part1;
 
+   // 0,1 matrix for if the a value is above the threshold. 
+   // Using f to limit the number of var calculations needed. 
+   Rcpp::IntegerMatrix f(dims[0], numreps);
+
+
+  // Initialisation of f to 0
+  #if defined(_OPENMP)
+     #pragma omp for 
+  #endif
+ for(int j=0; j < numreps; j++){
+    for(int i=0; i< dims[0] ; i++){
+          f[i,j] = 0;
+     }
+  }
+
+  #if defined(_OPENMP)
+     #pragma omp for 
+  #endif
+  for(int j=0; j < numreps; j++){
+    double maxval = (ans.col(j).array().abs()).maxCoeff();
+    for(int i=0; i < dims[0]; i++)
+       f(i,j) = ( std::abs(ans(i,j))  > maxval * 0.75 )  ;
+  }
+
+
+  Rcpp::Function w("which");
+   Rcpp::IntegerVector inds =  w(f==1) ;  
+  inds = inds - 1; // - 1 since R returns indexes starting from 1 instead of O like in Cpp
+  for(int i=0; i<inds.size(); i++)
+     inds(i) =  inds(i) % dims[0];
+
+  Rcpp::Function uniq("unique");
+  Rcpp::IntegerVector indx = uniq(inds);
+
+
+
+
+
+ 
+
+
+   long  NumOfaAboveThreshold  = indx.size();
 
   // calculate untransformed variances of BLUP values
     Eigen::MatrixXd var_ans_tmp_part1;
     var_ans_tmp_part1.noalias() =   dim_reduced_vara * inv_MMt_sqrt;
     var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
 
-
-
-//  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
-    var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
-    var_ans_tmp_part1.resize(0,0);  // erase matrix 
+ Eigen::VectorXd ans1 ;
   long i;
+
 
   #if defined(_OPENMP)
      #pragma omp for 
   #endif
-  for(i=0; i< dims[0]; i++){
-           var_ans(i,0) =   var_ans_tmp.row(i)   * (Mt.row(i)).transpose() ;
+ for(i=0; i< NumOfaAboveThreshold ; i++){
+       ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
+       var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
   }
+
+
+
+  return Rcpp::List::create(Rcpp::Named("a")=ans,
+                            Rcpp::Named("vara") = var_ans);
+
+
 
 
 
@@ -130,13 +181,15 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
 
       // calculation being processed in block form
-      message(" Increasing maxmemGb would improve performance... \n");
+      message("\n Increasing maxmemGb would improve performance. \n");
 
       // calculate the maximum number of rows in Mt that can be contained in the
       // block multiplication. This involves a bit of algebra but it is comes to the following
       // Strictly, 2 should be used here but I want some extra memory to play with 
       long num_rows_in_block =  max_memory_in_Gbytes * ( 1000000000.0) /
-                             ( 4.0  * (double) dims[1] *  sizeof(double) ) ;
+                             ( 3.0  * (double) dims[1] *  sizeof(double) ) ;
+      
+
 
 
       if (num_rows_in_block < 0){
@@ -159,103 +212,134 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
       long num_blocks = dims[0]/num_rows_in_block;
       if (dims[0] % num_rows_in_block)
                  num_blocks++;
-      if (!quiet  ){
-      message(" Block multiplication necessary. \n");
-      message(" Number of blocks needing block multiplication is ... % d \n", num_blocks);
-      }
+      message(" Block multiplication necessary for calculation of BLUPS and their variances. ");
+      message(" Number of blocks needing block multiplication is ", num_blocks);
+      message(" Number of rows in block is ", num_rows_in_block);
+
+      // calculate untransformed variances of BLUP values
+      Eigen::MatrixXd var_ans_tmp_part1;
+      var_ans_tmp_part1.noalias() =   dim_reduced_vara * inv_MMt_sqrt;
+      var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
+
+     // holds all the unique snp indexes
+     Rcpp::IntegerVector indxAcrossBlocks;
+
+
       for(long i=0; i < num_blocks; i++){
-         message("Performing block iteration ... " , i );
-         long start_row1 = i * num_rows_in_block;
-         long num_rows_in_block1 = num_rows_in_block;
-         if ((start_row1 + num_rows_in_block1) > dims[0])
-            num_rows_in_block1 = dims[0] - start_row1;
+           message("Performing block iteration ... " , i );
+           long start_row1 = i * num_rows_in_block;
+           long num_rows_in_block1 = num_rows_in_block;
+           if ((start_row1 + num_rows_in_block1) > dims[0])
+                num_rows_in_block1 = dims[0] - start_row1;
 
 
            Eigen::MatrixXd Mt = ReadBlockBin(fnamebin, start_row1, dims[1], num_rows_in_block1) ;
 
 
 
-        Eigen::MatrixXd
+           Eigen::MatrixXd
               vt1,
               ans_tmp1;
 
-        Eigen::MatrixXd   var_ans_tmp(num_rows_in_block1,1);
+           Eigen::MatrixXd   var_ans_tmp(num_rows_in_block1,1);
+           var_ans_tmp.setZero();
 
-
-            if(!R_IsNA(selected_loci(0))){
-            // setting columns (or row when Mt) to 0
-               for(long ii=0; ii < selected_loci.size() ; ii++)
-               {
+           if(!R_IsNA(selected_loci(0))){
+           // setting columns (or row when Mt) to 0
+              for(long ii=0; ii < selected_loci.size() ; ii++)
+              {
                // since we are now dealing with Mt, and blocking on columns, 
                // because columns are rows in Mt, then we have to be careful
                // that we do not select loci outside the block bounds. Also 
                // the values have to be adjusted based on the block number
-                   if(selected_loci(ii) >= start_row1 && selected_loci(ii) < start_row1 + num_rows_in_block1 )
+                  if(selected_loci(ii) >= start_row1 && selected_loci(ii) < start_row1 + num_rows_in_block1 )
                    {   // selected loci index is in block 
                    long block_selected_loci = selected_loci(ii) - start_row1;
                    Mt.row(block_selected_loci).setZero();
                    }
                 }
-            }
+           }
+
+
+           // block multiplication to form untransposed a
+           ans_tmp.noalias()  =   inv_MMt_sqrt  * a ;
+           ans_tmp = Mt * ans_tmp;
+
+
+           // 0,1 matrix for if the a value is above the threshold. 
+           // Using f to limit the number of var calculations needed. 
+           Rcpp::IntegerMatrix f(num_rows_in_block1 , numreps);
+
+
+           // Initialisation of f to 0
+           #if defined(_OPENMP)
+               #pragma omp for 
+           #endif
+           for(int j=0; j < numreps; j++){
+              for(int i=0; i< num_rows_in_block1  ; i++){
+                    f[i,j] = 0;
+               }   
+           }
+
+           #if defined(_OPENMP)
+               #pragma omp for 
+           #endif
+           for(int j=0; j < numreps; j++){
+              double maxval = (ans_tmp.col(j).array().abs()).maxCoeff();
+              for(int i=0; i < num_rows_in_block1 ; i++)
+                 f(i,j) = ( std::abs(ans_tmp(i,j))  > maxval * 0.75  )  ;
+           }
 
 
 
 
-
-           //  ans_tmp  =  Mtd *  inv_MMt_sqrt  * a ;
-             ans_tmp.noalias()  =   inv_MMt_sqrt  * a ;
-             ans_tmp = Mt * ans_tmp;
-
-            // variance calculation
-            // vt.noalias() =  Mtd *  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;
-             vt1.noalias() =  dim_reduced_vara * inv_MMt_sqrt;
-             vt1           =  inv_MMt_sqrt * vt1;
+           Rcpp::Function w("which");
+           Rcpp::IntegerVector inds =  w(f==1);
+           inds = inds - 1; // - 1 since R returns indexes starting from 1 instead of O like in Cpp
+           for(int i=0; i<inds.size(); i++)
+               inds(i) =  inds(i) % num_rows_in_block1 ;
 
 
 
-        // performing quadratic form, remembering only diag elements are needed for variances. 
-           Eigen::MatrixXd vt;
-              vt.noalias()  =  Mt *  vt1;
+           Rcpp::Function uniq("unique");
+           Rcpp::IntegerVector indx = uniq(inds);
+
+           long  NumOfaAboveThreshold  = indx.size();
+
+
+           Eigen::VectorXd ans1 ;
+           long i;
 
 
 
+           #if defined(_OPENMP)
+               #pragma omp for 
+           #endif
+          for(i=0; i< NumOfaAboveThreshold ; i++){
+            ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
+            var_ans_tmp(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
+           }
+
+          // assign block vector results to final vector (ans) of results
+          long counter;
+          counter = 0;
+          for(long j=start_row1; j < start_row1 + num_rows_in_block1; j++){
+              ans.row(j)  = ans_tmp.row(counter);
+              var_ans(j,0) = var_ans_tmp(counter,0);
+              counter++;
+           }
+
+           if (!quiet  )  message( "block done ... " );
 
 
-#if defined(_OPENMP)
-           #pragma omp for
-#endif
-            for(long j=0; j < num_rows_in_block1; j++){
-                      var_ans_tmp(j,0)  =   vt.row(j)  * ((Mt.row(j)).transpose()) ;
-            }
+  } // end for long
 
-
-            // assign block vector results to final vector (ans) of results
-//           long  counter = 0;
-//            for(long j=start_row1; j < start_row1 + num_rows_in_block1; j++){
-//                 ans(j,0) = ans_tmp(counter,0);
-//                 var_ans(j,0) = var_ans_tmp(counter,0);
-//                 counter++;
-//            }
-            long  counter = 0;
-            for(long j=start_row1; j < start_row1 + num_rows_in_block1; j++){
-                 ans.row(j)  = ans_tmp.row(counter);
-                 var_ans(j,0) = var_ans_tmp(counter,0);
-                 counter++;
-            }
-
-
-
-             if (!quiet  )  message( "block done ... " );
-
-
-      } // end for long
+  return Rcpp::List::create(Rcpp::Named("a")=ans,
+                            Rcpp::Named("vara") = var_ans) ;
 
 
 
 }  //  end if block update
-
-  return Rcpp::List::create(Rcpp::Named("a")=ans,
-                            Rcpp::Named("vara") = var_ans);
 
 
 }

@@ -11,6 +11,10 @@ const size_t bits_in_int = std::numeric_limits<int>::digits;
 
 
 
+
+
+
+
 // [[Rcpp::export]]
 void  createMt_ASCII_rcpp(Rcpp::CharacterVector f_name,
                           Rcpp::CharacterVector f_name_tmp,
@@ -48,7 +52,9 @@ double
 // memory. 
    // how much memory will be needed to  store M, takes it transpose M.transpose, and 
    // store its answer in Mt (+ .5 for a buffer)
-double mem_bytes = 3.5 * dims[0] * dims[1] * (bits_in_int/8);  // assumes a 64 bit system
+double mem_bytes = 3.5 * dims[0] * dims[1] * 4;  // assumes a 4 bytes for an int type
+Rcpp::Rcout << "inside createMt_ASCII_rcpp.cpp Mem neneded to do transpose is " << mem_bytes << std::endl;
+
 
 
  // open  files
@@ -78,6 +84,7 @@ if(mem_bytes < max_mem_in_bytes){
     // create matrix structure to hold genotype data
     Eigen::MatrixXi
           M(dims[0], dims[1]) ;
+
 
 
     // reset position in data file
@@ -131,7 +138,7 @@ if(mem_bytes < max_mem_in_bytes){
    //  }
 
     // Calculate number of columns that can be read into available memory
-    n_of_cols_to_be_read = max_mem_in_bytes * 1.0 / (3.5 * dims[0] * (bits_in_int/8.0)); //64 bit system
+    n_of_cols_to_be_read = max_mem_in_bytes * 1.0 / (3.5 * dims[0] * 4 ); //assumes 4 bytes per int type
     // Calculate number of blocks needed
     long n_blocks = dims[1]/n_of_cols_to_be_read;
     if (dims[1] % n_of_cols_to_be_read != 0)
