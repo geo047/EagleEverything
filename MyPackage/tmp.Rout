@@ -17,6 +17,9 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3
 [Previously saved workspace restored]
 
 > library(Rcpp)
@@ -166,4 +169,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.763   0.086   2.380 
+  1.325   0.130   1.572 

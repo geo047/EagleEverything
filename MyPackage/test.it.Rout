@@ -1,0 +1,247 @@
+
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3
+[Previously saved workspace restored]
+
+>   library(Lion)
+Loading required package: shinyFiles
+Loading required package: ggplot2
+Loading required package: ggthemes
+>        complete.name <- system.file('extdata', 'geno.ped', package='Eagle')
+>        geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8)
+ First 5 lines and 24 columns of the PLINK ped file. 
+1 1 0 0 1 23.114 A B A A A A A B A A A A A B A B B B 
+2 2 0 0 1 8.301 A B A A A A A A A B A A A B A B B B 
+3 3 0 0 1 20.086 A B A A A A A B A B A A A B A B B B 
+4 4 0 0 1 10.075 A B A A B B A B A B A A A B B B B B 
+5 5 0 0 1 13.205 A B A A A A A B A B A A A B A A A A 
+ 
+ Taking transpose of marker data and writing untransposed and transposed data to disc ... 
+
+
+
+                    Summary of Marker File  
+                   ~~~~~~~~~~~~~~~~~~~~~~~~   
+ File type:                   PLINK
+ Reformatted ASCII file name:  /tmp/geo047.27848/RtmpziZxp5/M.bin
+ Number of individuals:        150
+ Number of loci:               100
+ File size (gigabytes):       4.5e-05
+ Available memory (gigabytes): 8
+
+
+
+ 
+ Writing of marker data to disc is complete ... 
+
+>        complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
+>        pheno_obj <- ReadPheno(filename=complete.name)
+
+
+ Loading Phenotype file ... 
+
+
+               Summary of Phenotype File  
+
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   /home/geo047/RLibs/Eagle/extdata/pheno.txt
+
+ Number of individuals:       150
+
+ Number of columns:           3
+
+
+ First 5 rows of the phenotype file are 
+
+3.33633465754039 -0.082271 -0.064875
+1.70681303971674 -0.079114 -0.068167
+1.78019865850912 -0.081068 -0.056846
+0.907132997761361 -0.082542 -0.063059
+1.42890655251006 -0.0786 -0.064641
+
+ Column classes are  
+
+                   y           numeric
+
+                cov1           numeric
+
+                cov2           numeric
+
+The phenotype file has been loaded.
+>        complete.name <- system.file('extdata', 'map.txt', package='Eagle')
+>        map_obj <- ReadMap(filename=complete.name)
+
+
+ Loading map file ... 
+
+
+                    Summary of Map File  
+
+                   ~~~~~~~~~~~~~~~~~~~~~~ 
+
+ File name:                   /home/geo047/RLibs/Eagle/extdata/map.txt
+
+ Number of marker loci:       100
+
+ Number of columns:           3
+
+ Number of chromosomes:       1
+
+
+ First 5 markers of the map file are 
+
+88 1 0.073
+60 1 0.39
+24 1 0.39
+89 1 0.451
+76 1 0.503
+The map file has been loaded.
+
+
+
+>        res <- AM(trait = 'y', fformula=c("cov1 + cov2"), map = map_obj, pheno = pheno_obj, geno = geno_obj)
+
+
+
+
+                    Multiple-Locus Association Mapping
+                            Version 1.2 
+
+ 
+   . ,-"-.   ,-"-. ,-"-.   ,-"-. ,-"-. ,-"-. ,-"-.   ,-"-. ,-"-.    
+    X | | \ / | | X | | \ / | | X | | \ / | | X | | \ / | | X | | \ /   
+   / \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X|   
+      `-!-' `-!-"   `-!-' `-!-'   `-!-' `-!-"   `-!-' `-!-'   `-!-' `-     
+
+
+
+
+ Iteration 1: Searching for most significant marker-trait association
+
+
+ Number of cores being used for calculation is .. 28
+[1] " MMt time "        "0.123064756393433"
+[1] " MMt_sqrt_and_sqrtinv  time " "0.108593702316284"           
+[1] " inv MMt time "      "0.00368595123291016"
+[1] " eigen MMt  "       "0.0102379322052002"
+[1] " calculate VC  "    "0.0817391872406006"
+[1] " .calc_extBIC  "      "0.000239372253417969"
+ Significant marker-trait association found. 
+
+ New results after iteration 1 are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         375.56   
+
+
+
+[1] "about to begin calculate_a_and_vara"
+[1] " time for a_and_vara  =  " "0.000901460647583008"     
+[1] " .find_qtl =  "    "0.231231689453125"
+
+
+ Iteration 2: Searching for most significant marker-trait association
+
+
+[1] " calculate VC  "    "0.0762941837310791"
+[1] " .calc_extBIC  "      "8.34465026855469e-05"
+ Significant marker-trait association found. 
+
+ New results after iteration 2 are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         375.56   
+    rs145002694           1             7.855             51            312.62   
+
+
+
+[1] "about to begin calculate_a_and_vara"
+[1] " time for a_and_vara  =  " "0.00180792808532715"      
+[1] " .find_qtl =  "    "0.170256853103638"
+
+
+ Iteration 3: Searching for most significant marker-trait association
+
+
+[1] " calculate VC  "    "0.0889544486999512"
+[1] " .calc_extBIC  "      "0.000139713287353516"
+ Significant marker-trait association found. 
+
+ New results after iteration 3 are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         375.56   
+    rs145002694           1             7.855             51            312.62   
+     rs77659166           1             1.789             15            282.40   
+
+
+
+[1] "about to begin calculate_a_and_vara"
+[1] " time for a_and_vara  =  " "0.00647974014282227"      
+[1] " .find_qtl =  "    "0.227101802825928"
+
+
+ Iteration 4: Searching for most significant marker-trait association
+
+
+[1] " calculate VC  "   "0.071042537689209"
+[1] " .calc_extBIC  "      "7.39097595214844e-05"
+ Significant marker-trait association found. 
+
+ New results after iteration 4 are 
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         375.56   
+    rs145002694           1             7.855             51            312.62   
+     rs77659166           1             1.789             15            282.40   
+      rs2274796           1            12.245             86            291.14   
+
+
+
+
+
+
+                           Final  Results  
+
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            SNP        Chrm           Map Pos     Col Number            extBIC 
+          -----      ------         ---------     -----------         --------- 
+     Null Model                                                         375.56   
+    rs145002694           1             7.855             51            312.62   
+     rs77659166           1             1.789             15            282.40   
+
+
+
+Gamma value for model selection was set to  1 
+
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+ 49.634   2.428   3.100 

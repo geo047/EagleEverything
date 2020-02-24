@@ -255,7 +255,7 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL 
+               gamma=1 
                ){
 
  ## Core function for performing whole genome association mapping with EMMA

@@ -1,6 +1,7 @@
 .form_results <- function(traitname, trait, selected_loci,   fformula, indxNA_pheno, 
                            ncpu,  availmemGb, quiet,  extBIC, gamma, geno, pheno, map, Zmat, outlierstat )
 {
+
   ## internal function - used by AM for forming the results object
   if (length(selected_loci) > 1){
    sigres <- list(traitname=traitname, 
