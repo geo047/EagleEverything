@@ -358,8 +358,9 @@ res <- AM(trait="trait1", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgam
 
             SNP        Chrm           Map Pos     Col Number            extBIC 
           -----      ------         ---------     -----------         --------- 
-     Null Model                                                         627.09   
-      rs6122453          20          62826188           3230            634.29   
+    Null Model                                                         636.85   
+      rs6122453          20          62826188           3230            643.94   
+
 
 
 
@@ -380,8 +381,8 @@ res <- AM(trait="trait1",  Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setga
 
             SNP        Chrm           Map Pos     Col Number            extBIC 
           -----      ------         ---------     -----------         --------- 
-     Null Model                                                         611.52   
-      rs6122453          20          62826188           3230            618.50   
+     Null Model                                                         650.61   
+      rs6122453          20          62826188           3230            656.24   
 
 
 
@@ -403,7 +404,8 @@ res <- AM(trait="trait1",   map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
            SNP        Chrm           Map Pos     Col Number            extBIC 
           -----      ------         ---------     -----------         --------- 
      Null Model                                                         606.35   
-      rs9974282          21          42333729           1189            613.88   
+      rs9974282          21          42333729           1189            612.99   
+Gamma value for model selection was set to  0.842 
 
 
 

@@ -153,7 +153,7 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
   fullX <- baseX
   for(loc in AMobj$Indx){
            
-           fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]], 
+           fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["tmpMt"]], 
                               currentX=fullX, loci_indx=loc,
                                dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
                                 map=AMobj$map)
@@ -285,7 +285,7 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
 #  message("          a SNP at a time.\n ")
 #  message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
 #  for(loc in AMobj$Indx[-1]){
-#               fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]],
+#               fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["tmpMt"]],
 #                                currentX=fullX, loci_indx=loc,
 #                               dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
 #                               map=AMobj$map)

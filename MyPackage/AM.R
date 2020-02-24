@@ -391,7 +391,7 @@ if(!is.null(fformula)){
  outlierstat <- list()
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
-     currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, loci_indx=new_selected_locus,
+     currentX <- constructX(Zmat=Zmat, fnameMt=geno[["tmpMt"]], currentX=currentX, loci_indx=new_selected_locus,
                           dim_of_Mt=geno[["dim_of_Mt"]],
                           map=map )  
      currentX <- as.matrix(currentX)

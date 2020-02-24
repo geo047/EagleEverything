@@ -94,17 +94,13 @@
 
 
 
- start <- Sys.time()
   
-    print("about to begin calculate_a_and_vara") 
      a_and_vara  <- calculate_a_and_vara(geno = geno,
                        selectedloci = selected_loci,
                        invMMtsqrt=MMt_sqrt_and_sqrtinv[["inverse_sqrt_MMt"]],
                        transformed_a=hat_a,
                        transformed_vara=var_hat_a,
                        quiet=quiet)
- end <- Sys.time()
- print(c(" time for a_and_vara  =  ", end-start))
 
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")

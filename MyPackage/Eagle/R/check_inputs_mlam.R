@@ -80,10 +80,10 @@ if(!is.data.frame(pheno)){
 
 
 nms <- names(geno)
-indx <- match(nms, c("asciifileM", "asciifileMt", "dim_of_M" , "dim_of_Mt", "availmemGb"))
+indx <- match(nms, c("tmpM", "tmpMt", "dim_of_M" , "dim_of_Mt", "availmemGb"))
 if(any(is.na(indx))){
   message("Error: there is a problem with the list structure of the geno object. ")
-  message("       It should contain the elements asciifileM, asciifileMt, and dim_of_M. ")
+  message("       It should contain the elements tmpM, tmpMt, and dim_of_M. ")
   message("       The object supplied contains the elements ", names(geno) )
   return(TRUE)
 }

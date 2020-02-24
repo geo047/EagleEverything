@@ -5,9 +5,6 @@ extract_geno_Mt <- function(fnameMt=NULL, colnum=NULL, dim_of_Mt=NULL)
 
     selected_locus <- colnum - 1  ## to be consistent with C++'s indexing starting from 0
 
-print(fnameMt)
-print(selected_locus)
-print(dim_of_Mt)
     genodata <- extract_geno_Mt_rcpp(f_name=fnameMt,
                               selected_locus=selected_locus, dims=dim_of_Mt)
 

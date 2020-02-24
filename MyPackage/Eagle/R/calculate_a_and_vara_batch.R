@@ -14,7 +14,7 @@ calculate_a_and_vara_batch <- function(numreps=100, geno=NULL,
  ##   selectedloci     an integer vector that gives the column number (0- L-1 ) of the loci that
  ##                    have been selected to act as fixed QTL effects in the model. 
 
-  fnameMt <- geno[["asciifileMt"]]
+  fnameMt <- geno[["tmpMt"]]
   dimsMt <- c(geno[["dim_of_M"]][2], geno[["dim_of_M"]][1])
 
   if(!any(is.na(selectedloci))) selectedloci <- selectedloci- 1

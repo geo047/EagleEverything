@@ -19,7 +19,7 @@ calculate_a_and_vara <- function(geno=NULL,
 
 
 
-  fnameMt <- geno[["asciifileMt"]]
+  fnameMt <- geno[["tmpMt"]]
   dimsMt <- c(geno[["dim_of_M"]][2], geno[["dim_of_M"]][1])
 
   # adjusting indx by -1 to be consistent with Cpp starting at 0

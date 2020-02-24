@@ -18,7 +18,7 @@ This should be set to be as large as possible for best performance.}
 \value{
 To allow Eagle to handle data larger than the memory capacity of a machine, \code{ReadVCF} doesn't load 
 the marker data into memory. Instead, it creates a reformatted file of the marker data and its transpose. The object returned by
-\code{ReadVCF} is a list object with the elements \code{asciifileM} , \code{asciifileMt}, and \code{dim_of_M}  
+\code{ReadVCF} is a list object with the elements \code{tmpM} , \code{tmpMt}, and \code{dim_of_M}  
 which is the full file name (name and path)  of the reformatted file for the marker  data,  the full file name of the reformatted file 
 for the transpose of the marker  data,  and a 2 element vector with the first element the number of individuals and the second 
 element the number of marker loci.
