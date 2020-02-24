@@ -137,7 +137,7 @@
 #'
 #' @return  To allow \code{\link{AM}} to handle data larger than the memory capacity of a machine, \code{ReadMarker} doesn't load 
 #' the marker data into memory. Instead, it creates a reformatted file of the marker data and its transpose. The object returned by
-#' \code{ReadMarker} is a list object with the elements \code{asciifileM} , \code{asciifileMt}, and \code{dim_of_ascii_M}  
+#' \code{ReadMarker} is a list object with the elements \code{asciifileM} , \code{asciifileMt}, and \code{dim_of_M}  
 #' which is the full file name (name and path)  of the reformatted file for the marker  data,  the full file name of the reformatted file 
 #' for the transpose of the marker  data,  and a 2 element vector with the first element the number of individuals and the second 
 #' element the number of marker loci. 
@@ -231,10 +231,10 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
        }
 
        ## Rcpp function to get dimensions of PLINK ped  file
-       dim_of_ascii_M <- getRowColumn(fname=fullpath(filename))
-       dim_of_ascii_M[2] <- (dim_of_ascii_M[2] - 6)/2  ## adjusting for PLINK structure
+       dim_of_M <- getRowColumn(fname=fullpath(filename))
+       dim_of_M[2] <- (dim_of_M[2] - 6)/2  ## adjusting for PLINK structure
        ## Rcpp function to create binary packed M and Mt file 
-       it_worked <- create.ascii(file_genotype=fullpath(filename), type=type, availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M,  quiet=quiet  )
+       it_worked <- create.ascii(file_genotype=fullpath(filename), type=type, availmemGb=availmemGb, dim_of_M=dim_of_M,  quiet=quiet  )
        if(!it_worked)
            return(NULL) 
 
@@ -280,13 +280,13 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
 
   ## Rcpp function to get dimensions of ASCII genotype file
   message(" Getting number of individuals and snp from file ... ")
-  dim_of_ascii_M <- getRowColumn(fname=genofile)
+  dim_of_M <- getRowColumn(fname=genofile)
 
   ## Rcpp function to create ascii  M and Mt file from 
   message(" Beginning creation of reformatted file ... ")
   message(" Reading marker data ... \n")
   it_worked <- create.ascii(file_genotype=genofile, type=type, AA=as.character(AA), AB=as.character(AB), BB=as.character(BB), 
-              availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M, quiet=quiet, missing=missing  )
+              availmemGb=availmemGb, dim_of_M=dim_of_M, quiet=quiet, missing=missing  )
 
     if(!it_worked)   ## error has occurred. 
        return(NULL)
@@ -306,7 +306,7 @@ ReadMarker <- function( filename=NULL, type='text', missing=NULL,
   }  ## end if else nargs()==1  (PLINK case)
 
   geno <- list("asciifileM"=asciifileM, "asciifileMt"=asciifileMt,
-               "dim_of_ascii_M" = dim_of_ascii_M)
+               "dim_of_M" = dim_of_M)
 
   if(.Platform$OS.type == "unix") {
        RDatafile <- paste(tempdir() , "/", "M.RData", sep="")

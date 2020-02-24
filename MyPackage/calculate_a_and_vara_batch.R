@@ -15,12 +15,12 @@ calculate_a_and_vara_batch <- function(numreps=100, geno=NULL,
  ##                    have been selected to act as fixed QTL effects in the model. 
 
   fnameMt <- geno[["asciifileMt"]]
-  dimsMt <- c(geno[["dim_of_ascii_M"]][2], geno[["dim_of_ascii_M"]][1])
+  dimsMt <- c(geno[["dim_of_M"]][2], geno[["dim_of_M"]][1])
 
   if(!any(is.na(selectedloci))) selectedloci <- selectedloci- 1
   calculate_a_and_vara_batch_rcpp(
                     numreps = numreps, 
-                    f_name_ascii=fnameMt, 
+                    f_name=fnameMt, 
                     selected_loci = selectedloci,
                     inv_MMt_sqrt=invMMtsqrt,
                     dim_reduced_vara = transformed_vara,

@@ -13,16 +13,16 @@ ReshapeM_rcpp <- function(fnameM, fnameMt, indxNA, dims) {
     .Call('_Eagle_ReshapeM_rcpp', fnameM, fnameMt, indxNA, dims)
 }
 
-calculateMMt_rcpp <- function(f_name_ascii, max_memory_in_Gbytes, num_cores, selected_loci, dims, quiet, message) {
-    .Call('_Eagle_calculateMMt_rcpp', f_name_ascii, max_memory_in_Gbytes, num_cores, selected_loci, dims, quiet, message)
+calculateMMt_rcpp <- function(f_name, max_memory_in_Gbytes, num_cores, selected_loci, dims, quiet, message) {
+    .Call('_Eagle_calculateMMt_rcpp', f_name, max_memory_in_Gbytes, num_cores, selected_loci, dims, quiet, message)
 }
 
-calculate_a_and_vara_batch_rcpp <- function(numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message) {
-    .Call('_Eagle_calculate_a_and_vara_batch_rcpp', numreps, f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message)
+calculate_a_and_vara_batch_rcpp <- function(numreps, f_name, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message) {
+    .Call('_Eagle_calculate_a_and_vara_batch_rcpp', numreps, f_name, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message)
 }
 
-calculate_a_and_vara_rcpp <- function(f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message) {
-    .Call('_Eagle_calculate_a_and_vara_rcpp', f_name_ascii, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message)
+calculate_a_and_vara_rcpp <- function(f_name, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message) {
+    .Call('_Eagle_calculate_a_and_vara_rcpp', f_name, selected_loci, inv_MMt_sqrt, dim_reduced_vara, max_memory_in_Gbytes, dims, a, quiet, message)
 }
 
 calculate_reduced_a_rcpp <- function(f_name_ascii, varG, P, y, max_memory_in_Gbytes, dims, selected_loci, quiet, message) {

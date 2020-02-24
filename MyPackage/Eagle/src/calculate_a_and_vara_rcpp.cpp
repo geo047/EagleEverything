@@ -18,7 +18,7 @@
 // ------------------------------------------------------
 
 // [[Rcpp::export]]
-Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name_ascii,
+Rcpp::List   calculate_a_and_vara_rcpp(  Rcpp::CharacterVector f_name,
                                     Rcpp::NumericVector  selected_loci,
                                     Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt,
                                     Eigen::Map<Eigen::MatrixXd> dim_reduced_vara,
@@ -47,7 +47,7 @@ std::ostringstream
       os;
 
 std::string
-     fnamebin = Rcpp::as<std::string>(f_name_ascii);
+     fnamebin = Rcpp::as<std::string>(f_name);
 
  Eigen::MatrixXd
         ans(dims[0],1);
@@ -97,11 +97,20 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
     ans.noalias() =   Mt  * ans_part1;
 
-   Rcpp::NumericVector f(dims[0]);
+   Rcpp::IntegerVector f(dims[0]);
+
+  #if defined(_OPENMP)
+     #pragma omp for 
+  #endif
+ for(int i=0; i< dims[0] ; i++){
+       f[i] = 0;
+  }
+
+
+
    f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
       
    long  NumOfaAboveThreshold  = Rcpp::sum(f);
-
   Rcpp::NumericVector indx(NumOfaAboveThreshold);
    long counter=0;   
    for( long ii=0; ii< dims[0]; ii++){
@@ -112,6 +121,7 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
    } 
 
  
+
 
 
   // calculate untransformed variances of BLUP values
@@ -126,37 +136,17 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
  Eigen::VectorXd ans1 ;
   long i;
 
-#if defined(_OPENMP)
-  #pragma omp for 
-#endif
+
+  #if defined(_OPENMP)
+     #pragma omp for 
+  #endif
  for(i=0; i< NumOfaAboveThreshold ; i++){
-      Rcpp::Rcout << i << std::endl;
        ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
        var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
   }
 
 
-/*
-  // calculate untransformed variances of BLUP values
-    Eigen::MatrixXd var_ans_tmp_part1;
-    var_ans_tmp_part1.noalias()  =   dim_reduced_vara * inv_MMt_sqrt;
-    var_ans_tmp_part1 = inv_MMt_sqrt * var_ans_tmp_part1;
 
-
-
-//  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
-    var_ans_tmp.noalias()  =  Mt  *  var_ans_tmp_part1;
-    var_ans_tmp_part1.resize(0,0);  // erase matrix 
-  long i;
-
-  #if defined(_OPENMP)
-     #pragma omp parallel for shared(var_ans, var_ans_tmp, Mt)  private(i) schedule(static)
-  #endif
-  for(i=0; i< dims[0]; i++){
-           var_ans(i,0) =   var_ans_tmp.row(i)   * (Mt.row(i)).transpose() ;
-  }
-
-*/
 
 
 
@@ -273,10 +263,9 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 
  Eigen::VectorXd ans1(num_rows_in_block1);
  long i;
-//     #pragma omp parallel for shared( Mt, vt1)  private(i) schedule(static)
 
 #if defined(_OPENMP)
-#pragma omp  for  private(i) schedule(static)
+#pragma omp  for  
 #endif
 for(i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * vt1;
@@ -287,26 +276,6 @@ for(i=0; i< NumOfaAboveThreshold ; i++){
 
 
 
-
-
-/*
-        // performing quadratic form, remembering only diag elements are needed for variances. 
-           Eigen::MatrixXd vt;
-              vt.noalias()  =  Mt *  vt1;
-
-
-
-
-
-#if defined(_OPENMP)
-           #pragma omp parallel for
-#endif
-            for(long j=0; j < num_rows_in_block1; j++){
-                      var_ans_tmp(j,0)  =   vt.row(j)  * ((Mt.row(j)).transpose()) ;
-            }
-
-
-*/
 
 
             // assign block vector results to final vector (ans) of results

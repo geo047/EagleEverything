@@ -13,7 +13,7 @@ constructX <- function(Zmat=NULL, fnameMt=NULL, currentX=NULL, loci_indx=NULL,
      return(currentX)
    } else {
 #       genodat <- extract_geno(fnameM=fnameM, colnum=loci_indx,
-#                           availmemGb=availmemGb, dim_of_ascii_M=dim_of_ascii_M)
+#                           availmemGb=availmemGb, dim_of_M=dim_of_M)
 
        genodat <- extract_geno_Mt(fnameMt=fnameMt, colnum=loci_indx,
                            dim_of_Mt=dim_of_Mt)

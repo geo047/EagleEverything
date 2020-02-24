@@ -68,7 +68,6 @@
 SummaryAM <- function(AMobj=NULL)
 {
 
- ngpu <- AMobj$ngpu
 
 
  if(is.null(AMobj)){
@@ -156,7 +155,7 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
            
            fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]], 
                               currentX=fullX, loci_indx=loc,
-                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
+                               dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
                                 map=AMobj$map)
   }  ## end for loc
 
@@ -165,7 +164,7 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
 
   ## calculate variance components of LMM
 
-   Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt, ngpu=ngpu)
+   Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt )
 
   #eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)
   eR <-  do.call(emma.MLE, Args)
@@ -288,7 +287,7 @@ df_size <- data.frame("Effects"=varnames,  "Df"=as.character(df),
 #  for(loc in AMobj$Indx[-1]){
 #               fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["asciifileMt"]],
 #                                currentX=fullX, loci_indx=loc,
-#                               dim_of_Mt=AMobj$geno[["dim_of_ascii_Mt"]],
+#                               dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
 #                               map=AMobj$map)
 #        # fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
 #        ## calculate variance components of LMM

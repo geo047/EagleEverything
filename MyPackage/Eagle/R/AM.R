@@ -255,7 +255,7 @@ AM <- function(trait=NULL,
                quiet=TRUE,
                maxit=20,
                fixit=FALSE,
-               gamma=NULL 
+               gamma=1 
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -290,9 +290,9 @@ AM <- function(trait=NULL,
      message(" It is only used for the reporting of results. \n")
    }
    ## map has not been supplied. Create own map
-   map <- data.frame(SNP=paste("M", 1:geno[["dim_of_ascii_M"]][2], sep=""), 
-                     Chr=rep(1, geno[["dim_of_ascii_M"]][2]), 
-                     Pos=1:geno[["dim_of_ascii_M"]][2])
+   map <- data.frame(SNP=paste("M", 1:geno[["dim_of_M"]][2], sep=""), 
+                     Chr=rep(1, geno[["dim_of_M"]][2]), 
+                     Pos=1:geno[["dim_of_M"]][2])
   }
 
  selected_loci <- NA
@@ -392,7 +392,7 @@ if(!is.null(fformula)){
  while(continue){
      message("\n\n Iteration " , itnum, ": Searching for most significant marker-trait association\n\n")
      currentX <- constructX(Zmat=Zmat, fnameMt=geno[["asciifileMt"]], currentX=currentX, loci_indx=new_selected_locus,
-                          dim_of_Mt=geno[["dim_of_ascii_Mt"]],
+                          dim_of_Mt=geno[["dim_of_Mt"]],
                           map=map )  
      currentX <- as.matrix(currentX)
 

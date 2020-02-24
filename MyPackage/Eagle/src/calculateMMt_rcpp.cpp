@@ -13,7 +13,7 @@ using Eigen::SelfAdjointEigenSolver;
 
 
 // [[Rcpp::export]]
-Eigen::MatrixXd  calculateMMt_rcpp(Rcpp::CharacterVector f_name_ascii,
+Eigen::MatrixXd  calculateMMt_rcpp(Rcpp::CharacterVector f_name,
                                    double  max_memory_in_Gbytes, int num_cores,
                                    Rcpp::NumericVector  selected_loci , std::vector<long> dims,
                                    bool  quiet, Rcpp::Function message)
@@ -44,7 +44,7 @@ std::ofstream
 //   genoval;
 
 std::string
-     fnamebin = Rcpp::as<std::string>(f_name_ascii);
+     fnamebin = Rcpp::as<std::string>(f_name);
 
 // gpu will only work with double precision matrices in Eigen. 
 // Had to change code to be double precision. 
@@ -69,7 +69,7 @@ Eigen::MatrixXd
 // genoMat transpose num_rows_in_block * dims[1] * sizeof(double) 
 
 double
-  memory_needed_in_Gb =  ( (double) dims[0]* (double) dims[0]* sizeof(double)  + 2.0 *( (double) dims[0] *   (double) dims[1] *   sizeof(double) ))/( (double) 1000000000.0) ;
+  memory_needed_in_Gb =   3  *(  dims[0] *    dims[1] *   sizeof(double) )/( (double) 1000000000.0) ;   
 
 
 
@@ -98,13 +98,14 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
 } else {
     // based on user defined memory. Doing MMt via blockwise multiplication
-    // long num_rows_in_block = (max_memory_in_Gbytes  * (double) 1000000000 )/(sizeof(double)  * dims[1]);
- //   long num_rows_in_block = (max_memory_in_Gbytes  * 1000000000 - dims[0] * dims[0] * sizeof(double) )/( 2* sizeof(double)  * dims[1]);
-    double part1 = -2 *  dims[1];
-    double part2 = 4.0 * (double) dims[1] *  (double) dims[1] +  4.0 * (double) max_memory_in_Gbytes  * 1000000000.0/sizeof(double);
-    part2 = sqrt(part2);
-    long num_rows_in_block = (part1 + part2)/2.2;
-    message( "number of rows in block is " , num_rows_in_block);
+
+     // max_memory_in_Gbytes = 2.5 *(  num_rows_in_block  *    dims[1] *   sizeof(double) )/( (double) 1000000000.0) ;
+        long num_rows_in_block = max_memory_in_Gbytes * 1000000000.0 / ( 3  * dims[1] *  sizeof(double) );
+
+    // double part1 = -2 *  dims[1];
+    // double part2 = 4.0 * (double) dims[1] *  (double) dims[1] +  4.0 * (double) max_memory_in_Gbytes  * 1000000000.0/sizeof(double);
+    // part2 = sqrt(part2);
+    // long num_rows_in_block = (part1 + part2)/2.2;
 
            // blockwise multiplication
 
@@ -115,6 +116,10 @@ if(max_memory_in_Gbytes > memory_needed_in_Gb ){
 
           if (dims[0] % num_rows_in_block)
                  num_blocks++;
+   if(!quiet){
+    message( "   Number of rows in block for MMt calculation is " , num_rows_in_block);
+    message( "   Number of blocks in MMt calculation is " , num_blocks);
+  }
 
           for(long i=0; i < num_blocks; i++){
               long start_row1 = i * num_rows_in_block;
