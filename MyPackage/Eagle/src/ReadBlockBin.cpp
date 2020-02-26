@@ -54,7 +54,7 @@ buffer = new char[numelem];
    fileIN.read( buffer, numelem );
  
   // check 
- #pragma omp parallel for
+ #pragma omp for
  for(long ii=0; ii < numrows_in_block; ii++){
   for(long jj=0; jj < numcols ; jj++){
 

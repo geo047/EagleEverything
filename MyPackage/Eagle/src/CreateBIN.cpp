@@ -58,13 +58,11 @@ long
  // initializing input line 
 
 std::vector<char> rowinfile( dims[1] );
-
-#pragma omp parallel 
-{
- #pragma omp for
- for(long i=0; i < dims[1]; i++)
+#if defined(_OPENMP)
+     #pragma omp for 
+#endif
+for(long i=0; i < dims[1]; i++)
     rowinfile[i] = '0';
-}
 
 
 while(getline(fileIN, line ))

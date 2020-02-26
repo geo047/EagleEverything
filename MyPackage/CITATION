@@ -1,0 +1,13 @@
+citHeader("To cite Eagle in publications, please use:")
+
+citEntry(entry = "article",
+  author = "Andrew W. George, Arunas Verbyla, Joshua Bowden",
+  title = "Eagle: multi-locus association mapping on a genome-wide scale made routine",
+ journal="Bioinformatics",
+  year="2019",
+  url="http://eagle.r-forge.r-project.org",
+  textVersion = "George et al.  Eagle: multi-locus association mapping on a genome-wide scale made routine. Bioinformatics 2019."
+)
+
+
+

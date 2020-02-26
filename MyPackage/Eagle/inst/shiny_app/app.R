@@ -22,7 +22,8 @@ if(.Platform$OS.type == "windows") {
 bannerAnal <- function()
 {
    page =  fluidPage(
-              fluidRow( column(12, { tags$div(img(src = "images/analyse_banner.jpg", style="width: 100% ; height: 100%")) }
+ fluidRow( column(12, { tags$div(img(src = "images/analyse_banner.jpg", style="width: 100% ; height: 100%")) }
+
                       ) ## end column(12, )
               ), ## end fluidRow
               br(),
@@ -341,7 +342,7 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                             fluidPage(
                               fluidRow(
                                 column(12,
-                                tags$div(img(src = "images/HomeScreen.jpg", 
+                                tags$div(img(src = "images/homescreen.jpg", 
                                              style="width: 100% ; height: 100%"))
                                 )
                               ) ## end fluidRow
@@ -400,10 +401,11 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                                                   wellPanel(
                                                   radioButtons(inputId="filetype", label=h4("Step 1: Choose file type"), 
                                                     choiceNames=list(
+
+        tags$span(style = "font-size:18px", "vcf"), 
         tags$span(style = "font-size:18px", "PLINK"), 
         tags$span(style = "font-size:18px", "Text/ASCII")), 
-                                                    choiceValues=c("plink","text")),
-                                                      ##         choices=c("PLINK"="plink","Text/ASCII"="text" )),
+                                                    choiceValues=c("vcf", "plink","text")),
                                                   style="padding: 1px",
                                                   shinyBS::bsTooltip("filetype",
 title='<font size="3" > click on file type </font>',
@@ -1184,7 +1186,7 @@ tags$div(
                                 column(12, 
                                     conditionalPanel(condition="input.pvalue_go > 0", 
 tags$div(
-         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Significance of Effects"), sep = ""))),
+         HTML(paste( tags$span(style="color: #ad1d28; font-size: 22px", "Size and Significance of Effects"), sep = ""))),
                                     tableOutput("size")
 
                                     ) ## end conditionalPanel
@@ -1332,7 +1334,24 @@ server <- function(input, output, session){
    observeEvent(input$choose_marker_file, {
    observeEvent(input$marker_go,  {
    withProgress(message = 'Loading marker data', value = 1, {
-    
+   
+     if(input$filetype == "vcf"){
+       withCallingHandlers({
+                 shinyjs::html("ReadMarker", "")
+                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+                   geno <<- ReadVCF(filename = readM$path_to_marker_file,  availmemGb = input$memsize, quiet = TRUE)
+                 } else {
+                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
+              }
+          }, ## end withCallingHandlers
+              message = function(m) {
+                 shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
+             })
+
+     }
+
+
+ 
      if(input$filetype == "plink"){
        withCallingHandlers({
                  shinyjs::html("ReadMarker", "")

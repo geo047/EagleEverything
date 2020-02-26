@@ -9,10 +9,23 @@
 #'         This should be set to be as large as possible for best performance.   
 #' @param  quiet      a logical value. If set to \code{TRUE}, additional runtime output is printed. 
 #' @details
+#'  VCF is a tab separated text file containing  meta-information lines, a header line, and then data 
+#' lines. The data lines  contain information about a position in the genome.
+#'
+#' It is assumed that genotype information has been recorded on samples for each position. 
+#'
+#' Loci with more than two alleles will be removed automatically. 
 #' 
+#' Eagle will only accept a single (uncompressed) vcf file. If chromosomal information has been recorded in separate 
+#' vcf files, these files need to be merged into a single vcf file.  This can be done by using the 
+#'  BCFtools utility set with command line "bcftools concat".
+#'
 #'
 #' @return  To allow Eagle to handle data larger than the memory capacity of a machine, \code{ReadVCF} doesn't load 
-#' the marker data into memory. Instead, it creates a reformatted file of the marker data and its transpose. The object returned by
+#' the marker data into memory. Instead, it 
+#' writes a reformatted version of the marker data, and its transpose, to the harddrive. These two files
+#' are only temporary, being removed at the end of the R session. 
+#' The object returned by
 #' \code{ReadVCF} is a list object with the elements \code{tmpM} , \code{tmpMt}, and \code{dim_of_M}  
 #' which is the full file name (name and path)  of the reformatted file for the marker  data,  the full file name of the reformatted file 
 #' for the transpose of the marker  data,  and a 2 element vector with the first element the number of individuals and the second 
@@ -21,44 +34,18 @@
 #'
 #' @examples
 #'   #
-#'   # Read in the genotype data contained in the text file geno.txt
+#'   # Read in the genotype data contained in the vcf file geno.vcf
 #'   #
 #'   # The function system.file() gives the full file name (name + full path).
-#'   complete.name <- system.file('extdata', 'geno.txt', package='Eagle')
+#'   complete.name <- system.file('extdata', 'geno.vcf', package='Eagle')
 #'   # 
 #'   # The full path and name of the file is
 #'   print(complete.name)
 #'   
-#'   # Here, 0 values are being treated as genotype AA,
-#'   # 1 values are being treated as genotype AB, 
-#'   # and 2 values are being treated as genotype BB. 
-#'   # 4 gigabytes of memory has been specified. 
-#'   # The file is space separated with the rows the individuals
-#'   # and the columns the snp loci.
-#'   geno_obj <- ReadVCF(filename=complete.name, type='text', AA=0, AB=1, BB=2, availmemGb=4) 
-#'    
-#'   # view list contents of geno_obj
-#'   print(geno_obj)
-#'
-#'   #--------------------------------
-#'   #  Example 2
-#'   #-------------------------------
-#'   #
-#'   # Read in the allelic data contained in the PLINK ped file geno.ped
-#'   #
-#'   # The function system.file() gives the full file name (name + full path).
-#'   complete.name <- system.file('extdata', 'geno.ped', package='Eagle')
-#'
-#'   # 
-#'   # The full path and name of the file is
-#'   print(complete.name)
-#'   
-#'   # Here,  the first 6 columns are being ignored and the allelic 
-#'   # information in columns 7 -  10002 is being converted into a reformatted file. 
-#'   # 4 gigabytes of memory has been specified. 
-#'   # The file is space separated with the rows the individuals
-#'   # and the columns the snp loci.
-#'   geno_obj <- ReadVCF(filename=complete.name, type='PLINK', availmemGb=4) 
+#'   # The file contains 5 marker loci recorded on 3 individuals
+#'   # Two of the loci contain multiple alleles and are removed. 
+#'   # A summary of the file is printed once the file has been read.
+#'   geno_obj <- ReadVCF(filename=complete.name, availmemGb=4) 
 #'    
 #'   # view list contents of geno_obj
 #'   print(geno_obj)
@@ -101,7 +88,7 @@ ReadVCF <- function( filename=NULL, availmemGb=16, quiet=TRUE ){
 
 
  geno <- list("tmpM"=binfileM, "tmpMt"=binfileMt,
-               "dim_of__M" = liststr[["dim_of_M"]],
+               "dim_of_M" = liststr[["dim_of_M"]],
                "dim_of_Mt" = c( liststr[["dim_of_M"]][2], liststr[["dim_of_M"]][1]),
                "availmemGb" = availmemGb, 
                "map" = liststr[["map"]] )

@@ -203,6 +203,7 @@ cd $DIR
 cp ./pheno.txt $DIR/Eagle/inst/extdata/.
 cp ./geno.txt $DIR/Eagle/inst/extdata/.
 cp ./geno.ped $DIR/Eagle/inst/extdata/.
+cp ./geno.vcf $DIR/Eagle/inst/extdata/.
 cp ./map.txt $DIR/Eagle/inst/extdata/.
 cp ./Z.txt $DIR/Eagle/inst/extdata/.
 
@@ -219,10 +220,15 @@ mkdir $DIR/Eagle/inst/shiny_app/www/images
 
 
 
+# copy CITATION file to ./inst
+cp CITATION $DIR/Eagle/inst/.
+
+
 cp ./ShinyApp/shinyApp.R $DIR/Eagle/inst/shiny_app/app.R
 cp ./ShinyApp/help.html  $DIR/Eagle/inst/shiny_app/.
 cp ./ShinyApp/css.css $DIR/Eagle/inst/shiny_app/.
-cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
+#cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
+cp ./ShinyApp/www/images/homescreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/*banner* $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/logo.jpg $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/faq.rmd $DIR/Eagle/inst/shiny_app/.
@@ -248,7 +254,7 @@ cp ./Eagle-package.Rd  ./Eagle/man/.
 R CMD build Eagle 
 
 
-#  R CMD check --as-cran Eagle_2.2.tar.gz 
+ R CMD check --as-cran Eagle_2.2.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

@@ -1,4 +1,4 @@
- emma.eigen.L.w.Z <- function (Z, K, complete = TRUE )
+emma.eigen.L.w.Z <- function (Z, K, complete = TRUE )
 {
     if (complete == FALSE) {
         vids <- colSums(Z) > 0
@@ -6,17 +6,9 @@
         K <- K[vids, vids]
     }
     res <- K %*% crossprod(Z, Z)
-
+    ## cannot use eigen_mgpu here because matrix is not symmetric
     eig <- eigen(res, symmetric = FALSE, EISPACK = TRUE)
-
-    values  <- eig$values
-
-   if( nrow( (Z %*% eig$vectors) ) != ncol ( (Z %*% eig$vectors) )){
-    vectors <- qr.Q(qr(Z %*% eig$vectors) )
-   } else {
-    vectors <- magmaQR(Xmat= (Z %*% eig$vectors),  printInfo=FALSE)
-   }
-    return(list(values = values , vectors = vectors))
+    return(list(values = eig$values, vectors = qr.Q(qr(Z %*%
+        eig$vectors), complete = TRUE)))
 }
-
 

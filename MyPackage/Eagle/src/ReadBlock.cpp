@@ -54,7 +54,7 @@ Eigen::MatrixXd
             int tmp  = line[ii] - '0'; // trick to removes ASCII character offset for numbers
             M(rowi, ii) = (double) tmp - 1;   // converting data to -1, 0, 1 
           }
-          } // end pragma omp parallel
+          } // end pragma omp 
           rowi++;
       } // end if rr
    } // end for(rr
