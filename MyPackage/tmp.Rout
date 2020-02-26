@@ -57,6 +57,7 @@ Registered S3 method overwritten by 'R.oo':
 +             "magmaEigenNonsym.R",
 +             "magmaQR.R",
 +             "FPR4AM.R",
++             "ReadVCF.R",
 +             "ReadMarkerBin.R",
 +             "ReadMap.R",
 +             "ReadZmat.R",
@@ -163,10 +164,11 @@ Writing OpenGUI.Rd
 Writing ReadMap.Rd
 Writing ReadMarker.Rd
 Writing ReadPheno.Rd
+Writing ReadVCF.Rd
 Writing ReadZmat.Rd
 Writing SummaryAM.Rd
 >   
 > 
 > proc.time()
    user  system elapsed 
-  1.325   0.130   1.572 
+  1.393   0.166   1.921 

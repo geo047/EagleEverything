@@ -75,6 +75,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"magmaEigenNonsym.R\",
             \"magmaQR.R\",
             \"FPR4AM.R\",
+            \"ReadVCF.R\",
             \"ReadMarkerBin.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
@@ -214,6 +215,7 @@ cd $DIR
 cp ./pheno.txt $DIR/Lion/inst/extdata/.
 cp ./geno.txt $DIR/Lion/inst/extdata/.
 cp ./geno.ped $DIR/Lion/inst/extdata/.
+cp ./geno.vcf  $DIR/Lion/inst/extdata/.
 cp ./map.txt $DIR/Lion/inst/extdata/.
 cp ./Z.txt $DIR/Lion/inst/extdata/.
 
@@ -229,11 +231,16 @@ mkdir $DIR/Lion/inst/shiny_app/www
 mkdir $DIR/Lion/inst/shiny_app/www/images
 
 
+# copy CITATION file to ./inst
+cp CITATION $DIR/Lion/inst/.
+
+
 
 cp ./ShinyApp/shinyApp.R $DIR/Lion/inst/shiny_app/app.R
 cp ./ShinyApp/help.html  $DIR/Lion/inst/shiny_app/.
 cp ./ShinyApp/css.css $DIR/Lion/inst/shiny_app/.
-cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Lion/inst/shiny_app/www/images/.
+#cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Lion/inst/shiny_app/www/images/.
+cp ./ShinyApp/www/images/homescreen.jpg  $DIR/Lion/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/*banner* $DIR/Lion/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/logo.jpg $DIR/Lion/inst/shiny_app/www/images/.
 cp ./ShinyApp/faq.rmd $DIR/Lion/inst/shiny_app/.
@@ -266,7 +273,7 @@ R CMD build Lion
 
 
 
-#  R CMD check --as-cran Lion_2.1.1.tar.gz 
+#  R CMD check --as-cran Lion_2.2.0.tar.gz 
 
 
 R CMD INSTALL Lion -l ~/RLibs
@@ -275,9 +282,9 @@ R CMD INSTALL Lion -l ~/RLibs
 # rm tmp.R  tmp.Rout 
 
 # copy to git area ready to upload to github/Lion and eventual install via devtools pipeline
-cp Lion_2.1.1.tar.gz ~/Lion/Lion/.
+cp Lion_2.2.0.tar.gz ~/Lion/Lion/.
 cd ~/Lion/Lion/
-tar xfz Lion_2.1.1.tar.gz
+tar xfz Lion_2.2.0.tar.gz
 cp -rf ./Lion/* .
 rm -rf ./Lion
 cd /home/geo047/EagleEverything/MyPackage

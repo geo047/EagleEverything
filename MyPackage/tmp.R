@@ -33,6 +33,7 @@ library(Rcpp)
             "magmaEigenNonsym.R",
             "magmaQR.R",
             "FPR4AM.R",
+            "ReadVCF.R",
             "ReadMarkerBin.R",
             "ReadMap.R",
             "ReadZmat.R",

@@ -16,6 +16,7 @@ export(
    magmaEigen,                                                
    magmaQR,      
    FPR4AM,
+   ReadVCF,
    ReadPheno,
    ReadMarker,
    ReadMap,
