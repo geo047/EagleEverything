@@ -18,6 +18,7 @@ library(Rcpp)
             "removeColumn.cpp"  ,
  "fasttimer.cpp"  ,
             "calculate_a_and_vara_rcpp.cpp"  ,
+             "create_vcf_BIN_rcpp.cpp",
             "calculate_a_and_vara_batch_rcpp.cpp"  ,
             "createM_ASCII_rcpp.cpp"  ,
             "createM_BIN_rcpp.cpp"  ,

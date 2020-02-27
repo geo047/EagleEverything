@@ -37,6 +37,7 @@ Type 'q()' to quit R.
 +             "removeColumn.cpp"  ,
 +  "fasttimer.cpp"  ,
 +             "calculate_a_and_vara_rcpp.cpp"  ,
++              "create_vcf_BIN_rcpp.cpp",
 +             "calculate_a_and_vara_batch_rcpp.cpp"  ,
 +             "createM_ASCII_rcpp.cpp"  ,
 +             "createM_BIN_rcpp.cpp"  ,
@@ -135,6 +136,7 @@ Adding Rcpp settings
  >> copied removeColumn.cpp to src directory
  >> copied fasttimer.cpp to src directory
  >> copied calculate_a_and_vara_rcpp.cpp to src directory
+ >> copied create_vcf_BIN_rcpp.cpp to src directory
  >> copied calculate_a_and_vara_batch_rcpp.cpp to src directory
  >> copied createM_ASCII_rcpp.cpp to src directory
  >> copied createM_BIN_rcpp.cpp to src directory
@@ -166,4 +168,4 @@ Writing SummaryAM.Rd
 > 
 > proc.time()
    user  system elapsed 
-  0.721   0.111   0.938 
+  1.025   0.128   1.660 
