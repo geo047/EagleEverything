@@ -95,6 +95,8 @@ lst <- list( "ncpu" = AMobj[["ncpu"]],
             "gamma" = AMobj[["gamma"]] 
          )
 
+
+
 if (is.null(lst[["fformula"]])){
  lst[["fformula"]] <- "intercept only"
 } else {
@@ -144,13 +146,16 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
    return(invisible(lst) )
  }
 
+
+
   ## build environmental effects design matrix
   baseX <- .build_design_matrix(pheno=AMobj$pheno,  
                                     fformula=AMobj$fformula,
                                    quiet=AMobj$quiet, indxNA_pheno=AMobj$indxNA_pheno)
-
   ## add genetic marker effects 
   fullX <- baseX
+
+
   for(loc in AMobj$Indx){
            
            fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["tmpMt"]], 
@@ -158,6 +163,8 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
                                dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
                                 map=AMobj$map)
   }  ## end for loc
+
+
 
   ## calculate MMt
   MMt <- .calcMMt(AMobj$geno,  AMobj$ncpu, AMobj$Indx, AMobj$quiet)
@@ -188,6 +195,8 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
     message(" Error in SummaryAM function has occurred. ")
     return(FALSE)
  }
+
+
 
 
 
@@ -240,6 +249,11 @@ if(is.null(AMobj$fformula)){
 varnames <- c(varnames,  as.character(AMobj$Mrk[!is.na(AMobj$Mrk) ]))
 df <- c(df, rep(1, length( AMobj$Mrk[ !is.na(AMobj$Mrk) ] )))
 
+# check of missing values in trait. If so, this adds extra covariates to the model
+if( length(AMobj$indxNA_pheno) > 0){
+ varnames <- c(varnames[1], paste0("mv", 1:length(AMobj$indxNA_pheno)), varnames[2:length(varnames)])
+ df <- c(df[1], rep(1, length(AMobj$indxNA_pheno)), df[2:length(df)])
+}
 
  
 pval <- rep(NA, length(varnames))
@@ -261,17 +275,23 @@ for(ii in varnames){
  }
 
 
+# create newvarnames that does not have mv? covariates (if any)
+newvarnames <- varnames
+if (length(AMobj$indxNA_pheno)> 0){
+  nms <- paste0("mv", 1:length(AMobj$indxNA_pheno))
+  indx <- match(nms, varnames)
+   newvarnames <- varnames[-indx] 
+
+}
+
 message("\n\n Table 2: Size and Significance of Effects in Final Model \n   ")
 
-  #message(sprintf("%20s %6s %15s      %8s", "",   "Df", "Wald statstic" , "Pr(Chisq)"))
   message(sprintf("%22s %11s %6s   %10s   %13s", "", "Effect Size",   "Df", "Wald statstic" , "Pr(Chisq)"))
-  for(ii in varnames )
+  for(ii in newvarnames )
   {
       indx <- which(varnames == ii)
-      #message(sprintf("%20s %6i     %10.2f       %.3E",
       message(sprintf("%20s    %10.2f %6i   %13.2f       %.3E",
          ii,   beta[indx], df[indx], W[indx], pval[indx ]))
-         # ii,    df[indx], W[indx], pval[indx ]))
   }  ## end for ii
  message("\n\n\n")
 df_size <- data.frame("Effects"=varnames, "Size"=as.character(round(beta,2)),  "Df"=as.character(df),   
