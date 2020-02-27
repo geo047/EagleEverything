@@ -95,6 +95,8 @@ lst <- list( "ncpu" = AMobj[["ncpu"]],
             "gamma" = AMobj[["gamma"]] 
          )
 
+
+
 if (is.null(lst[["fformula"]])){
  lst[["fformula"]] <- "intercept only"
 } else {
@@ -144,13 +146,16 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
    return(invisible(lst) )
  }
 
+
+
   ## build environmental effects design matrix
   baseX <- .build_design_matrix(pheno=AMobj$pheno,  
                                     fformula=AMobj$fformula,
                                    quiet=AMobj$quiet, indxNA_pheno=AMobj$indxNA_pheno)
-
   ## add genetic marker effects 
   fullX <- baseX
+
+
   for(loc in AMobj$Indx){
            
            fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["tmpMt"]], 
@@ -159,12 +164,14 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
                                 map=AMobj$map)
   }  ## end for loc
 
+
+
   ## calculate MMt
   MMt <- .calcMMt(AMobj$geno,  AMobj$ncpu, AMobj$Indx, AMobj$quiet)
 
   ## calculate variance components of LMM
 
-   Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt )
+   Args <- list(y= AMobj$trait  , X= fullX , Z=AMobj$Zmat, K=MMt)
 
   #eR <- emma.REMLE(y=AMobj$trait, X= fullX , K=MMt, llim=-100,ulim=100)
   eR <-  do.call(emma.MLE, Args)
@@ -182,8 +189,25 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
  H <- calculateH(MMt=MMt, varE=eR$ve, varG=eR$vg, Zmat=AMobj$Zmat)
 
 # H <-  eR$vg * MMt + eR$ve * diag(1, nrow(MMt))
- Hinv <- try(solve(H))
- beta <- try(solve( t(fullX) %*% Hinv %*% fullX) %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   )
+ Hinv <- try(chol2inv(chol(H)))
+ if (class(Hinv) ==  "try-error"){
+    message(" Inverse for H matrix has failed. ")
+    message(" Error in SummaryAM function has occurred. ")
+    return(FALSE)
+ }
+
+
+
+
+
+ beta <- try(chol2inv(chol( t(fullX) %*% Hinv %*% fullX)) %*% t(fullX) %*% Hinv %*% matrix(data=AMobj$trait ,ncol=1)   )
+ if (class(beta) ==  "try-error"){
+    message(" Matrix inverse for beta vector has failed. ")
+    message(" Error in SummaryAM function has occurred. ")
+    return(FALSE)
+ }
+
+
 
 # code to work out degrees of freedom and marker names for effects
 # in fformula. 
@@ -225,6 +249,11 @@ if(is.null(AMobj$fformula)){
 varnames <- c(varnames,  as.character(AMobj$Mrk[!is.na(AMobj$Mrk) ]))
 df <- c(df, rep(1, length( AMobj$Mrk[ !is.na(AMobj$Mrk) ] )))
 
+# check of missing values in trait. If so, this adds extra covariates to the model
+if( length(AMobj$indxNA_pheno) > 0){
+ varnames <- c(varnames[1], paste0("mv", 1:length(AMobj$indxNA_pheno)), varnames[2:length(varnames)])
+ df <- c(df[1], rep(1, length(AMobj$indxNA_pheno)), df[2:length(df)])
+}
 
  
 pval <- rep(NA, length(varnames))
@@ -239,23 +268,30 @@ for(ii in varnames){
 
 
   W[which(ii==varnames)]  <- t(L %*% beta) %*%
-            solve( L %*% solve(t(fullX) %*% Hinv %*% fullX) %*% t(L) ) %*%
+            chol2inv(chol( L %*% chol2inv(chol(t(fullX) %*% Hinv %*% fullX)) %*% t(L) )) %*%
             (L %*% beta)
  pval[which(ii==varnames)] <- 1 - pchisq(W[which(ii==varnames)], length(indx))  ## its not -1 here because fullX already has 1
                                                       ## less factor level
  }
 
+
+# create newvarnames that does not have mv? covariates (if any)
+newvarnames <- varnames
+if (length(AMobj$indxNA_pheno)> 0){
+  nms <- paste0("mv", 1:length(AMobj$indxNA_pheno))
+  indx <- match(nms, varnames)
+   newvarnames <- varnames[-indx] 
+
+}
+
 message("\n\n Table 2: Size and Significance of Effects in Final Model \n   ")
 
-  #message(sprintf("%20s %6s %15s      %8s", "",   "Df", "Wald statstic" , "Pr(Chisq)"))
   message(sprintf("%22s %11s %6s   %10s   %13s", "", "Effect Size",   "Df", "Wald statstic" , "Pr(Chisq)"))
-  for(ii in varnames )
+  for(ii in newvarnames )
   {
       indx <- which(varnames == ii)
-      #message(sprintf("%20s %6i     %10.2f       %.3E",
       message(sprintf("%20s    %10.2f %6i   %13.2f       %.3E",
          ii,   beta[indx], df[indx], W[indx], pval[indx ]))
-         # ii,    df[indx], W[indx], pval[indx ]))
   }  ## end for ii
  message("\n\n\n")
 df_size <- data.frame("Effects"=varnames, "Size"=as.character(round(beta,2)),  "Df"=as.character(df),   
@@ -263,51 +299,6 @@ df_size <- data.frame("Effects"=varnames, "Size"=as.character(round(beta,2)),  "
                       "Pr(Chisq)"=pval, check.names=FALSE)
 
 
- ##----------------------------------------------------------------------- 
- ## Variance explained - based on Sun et al. (2010). Heredity 105:333-340
- ##----------------------------------------------------------------------- 
- # 13 Nov, 2019
- # Put on hold - not confident in the results. 
-
-# MMt <- MMt/max(MMt) + 0.05 * diag(nrow(MMt))  
-# # base model
-# # Note - baseX = fullX so okay to leave Args as is
-# #basemod <- emma.MLE(y=AMobj$trait, X=baseX, K=MMt, llim=-100,ulim=100)
-# Args[["X"]] <- baseX
-#
-# basemod  <-  do.call(emma.MLE, Args)
-#
-#
-#
-# base_logML <- basemod$ML
-# # full model
-#  df_R <- NULL
-#  fullX <- baseX
-#  message(" Table 2: Proportion of phenotypic variance explained by the ")
-#  message("          model. Marker loci, which were found by AM(), are added")
-#  message("          a SNP at a time.\n ")
-#  message(sprintf("    %18s          %10s ", "SNP", "Proportion"))
-#  for(loc in AMobj$Indx[-1]){
-#               fullX <- constructX(Zmat=AMobj$Zmat, fnameMt=AMobj$geno[["tmpMt"]],
-#                                currentX=fullX, loci_indx=loc,
-#                               dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
-#                               map=AMobj$map)
-#        # fullmod <- emma.MLE(y=AMobj$trait, X=fullX, K=MMt, llim=-100,ulim=100)
-#        ## calculate variance components of LMM
-#        Args[["X"]]  <-  fullX 
-#        fullmod  <-  do.call(emma.MLE, Args)
-#        full_logML <- fullmod$ML
-#        print(fullX[1:5,])
-#        cat(" Base logML = ", base_logML , "\n")
-#        cat(" Full logML = ", full_logML, "\n")
-#        Rsq <- 1 - exp(-2/length(AMobj$trait) * (full_logML - base_logML))
-#        print(Rsq)
-#        message(sprintf("  %+20s               %.3f",  paste("+ ",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])), Rsq))
-#        df_R <- rbind.data.frame(df_R, data.frame("Marker_name"=paste("+",as.character(AMobj$Mrk[which(loc==AMobj$Indx)])),
-#                                                  "Prop_var_explained"=Rsq))
-#   }  ## end for loc
-#  colnames(df_R) <- c("SNP", "Prop var explained")
-#
   res <- list()
   res[["pvalue"]] <- pval
   res[["size"]] <- df_size

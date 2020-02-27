@@ -253,7 +253,7 @@ AM <- function(trait=NULL,
                ncpu=detectCores(),
                ngpu=0,
                quiet=TRUE,
-               maxit=20,
+               maxit=40,
                fixit=FALSE,
                gamma=1 
                ){
@@ -269,7 +269,12 @@ AM <- function(trait=NULL,
  ## maxit           maximum number of qtl to include in the model
  ## ngpu            number of gpu available for computation
 
- assign("ngpu", 0  , envir=computer)
+ assign("ngpu", 0 , envir=computer)
+
+
+ if(is.null(gamma))
+    gamma <- 1
+
 
  ## print tile
  .print_title()
@@ -518,29 +523,29 @@ if(!is.null(fformula)){
    ## alternate stopping rule - if maxit has been exceeded.
     if(itnum > maxit){
          continue <- FALSE 
-         .print_header()
+         ## ==> .print_header()
          ## need to remove the last selected locus since we don't go on and calculate its H and extBIC 
          ## under this new model. 
-         .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
-         sigres <- .form_results(traitname=trait, 
-                                 trait=pheno[, trait ], 
-                                 selected_loci=selected_loci[-length(selected_loci)], 
-                                 fformula=fformula,
-                                 indxNA_pheno=indxNA_pheno,
-                                 ncpu=ncpu,  availmemGb=geno[["availmemGb"]],
-                                  quiet=quiet, extBIC=extBIC, gamma=gamma, 
-                                 geno=geno, pheno=pheno, map=map, Zmat=Zmat, outlierstat=outlierstat) 
+         ##===> .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
+         ##===>sigres <- .form_results(traitname=trait, 
+         ##                        trait=pheno[, trait ], 
+         ##                        selected_loci=selected_loci[-length(selected_loci)], 
+         ##                        fformula=fformula,
+         ##                        indxNA_pheno=indxNA_pheno,
+         ##                        ncpu=ncpu,  availmemGb=geno[["availmemGb"]],
+         ##                         quiet=quiet, extBIC=extBIC, gamma=gamma, 
+         ##                        geno=geno, pheno=pheno, map=map, Zmat=Zmat, outlierstat=outlierstat) 
     }
  
   }  ## end while continue
 
 if( itnum > maxit){
-#    .print_header()
-#    .print_final(selected_loci, map,  extBIC, gamma)
+   .print_header()
+   .print_final(selected_loci[-length(selected_loci)], map,  extBIC, gamma)
 message("The maximum number of iterations ", maxit, " has been reached. ")
 message("To increase the maximum number of iterations, adjust ")
 message(" the maxit parameter in the AM function call. \n ")
-    sigres <- .form_results(traitname=trait, trait=pheno[, trait ], selected_loci,   fformula, 
+    sigres <- .form_results(traitname=trait, trait=pheno[, trait ], selected_loci[-length(selected_loci)],   fformula, 
                      indxNA_pheno,  ncpu, geno[["availmemGb"]], quiet,  extBIC, gamma,
                      geno, pheno, map, Zmat, outlierstat )   
 
@@ -564,7 +569,7 @@ message(" the maxit parameter in the AM function call. \n ")
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)
 
- 
+
 return( sigres )
 
 } ## end AM
