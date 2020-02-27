@@ -112,7 +112,7 @@ while(getline(fileIN, line ))
      // also do some checks for more than 2 alleles, and 0 and - for missing data
 
      long problemlocus = -1;
-     long problemind;
+     long problemind = 0;
      #pragma omp for
      for(long i=0; i <  n_of_cols_in_geno; i++){
         // Checking for missing allelic information in PLINK file
