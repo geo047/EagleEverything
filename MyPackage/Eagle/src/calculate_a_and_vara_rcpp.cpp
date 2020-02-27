@@ -134,13 +134,12 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 //  Eigen::MatrixXd var_ans_tmp_part1 =  inv_MMt_sqrt * dim_reduced_vara * inv_MMt_sqrt;a
 
  Eigen::VectorXd ans1 ;
-  long i;
 
 
   #if defined(_OPENMP)
      #pragma omp for 
   #endif
- for(i=0; i< NumOfaAboveThreshold ; i++){
+ for(long i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
        var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
   }
@@ -262,12 +261,11 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
  var_ans_tmp = Eigen::MatrixXd::Zero(num_rows_in_block1,1);
 
  Eigen::VectorXd ans1(num_rows_in_block1);
- long i;
 
 #if defined(_OPENMP)
 #pragma omp  for  
 #endif
-for(i=0; i< NumOfaAboveThreshold ; i++){
+for(long i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * vt1;
        var_ans_tmp(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
 
