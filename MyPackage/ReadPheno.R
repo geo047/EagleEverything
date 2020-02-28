@@ -84,7 +84,7 @@
 #'  ## print a couple of lines of the data file
 #'  head(pheno_obj)
 #'
-ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = NULL, ... ){
+ReadPheno <- function(filename = NULL, header=TRUE, csv=FALSE, missing = "NA" , ... ){
 
   phenofile <- fullpath(filename)
 

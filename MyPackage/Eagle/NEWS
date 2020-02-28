@@ -1,9 +1,9 @@
 March 2020 Version 2.2
 * Ability to read vcf files (new ReadVCF function)
-* Revised SummaryAM to also print out allelic effect sizes
-* Significant improvement in speed to FPR4AM
-* Changed home screen in OpenGUI app. 
-* Added citation for Eagle package
+* Revised SummaryAM to also calculate and report  allelic effect sizes
+* Significant (order of magnitude) improvement in speed to FPR4AM
+* Changed home screen in OpenGUI app because Eagel workflow has changed. 
+* Added Bioinformatics citation for Eagle package
 
 
 

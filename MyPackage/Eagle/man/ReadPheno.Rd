@@ -4,7 +4,7 @@
 \alias{ReadPheno}
 \title{Read phenotype file}
 \usage{
-ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = NULL,
+ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = "NA",
   ...)
 }
 \arguments{

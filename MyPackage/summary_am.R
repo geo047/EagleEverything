@@ -163,7 +163,7 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
                                dim_of_Mt=AMobj$geno[["dim_of_Mt"]],
                                 map=AMobj$map)
   }  ## end for loc
-
+  cnames <- colnames(fullX)  ## names of all the variables in the model
 
 
   ## calculate MMt
@@ -209,78 +209,34 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
 
 
 
-# code to work out degrees of freedom and marker names for effects
-# in fformula. 
-if(is.null(AMobj$fformula)){
-  # no fixed effects beside default intercept in model
-  df <- 1
-  varnames <- "(Intercept)"
-} else {
-   df_intercept  <- 1  ## intercept only model
-   ## get variable names but doesn't include intercept
-   nms <-  names(get_all_vars(formula=as.formula(AMobj$fformula), data=AMobj$pheno))
+df <- rep(1, length(cnames))
+pval <- rep(NA, length(cnames))
+W <- rep(NA, length(cnames))
 
-   ## dealing with variables in fformula
-   if(length(nms) > 0){
-      df_effects <- c(rep(NA, length(nms)))  # intercept + other effects
-      # calculate degrees of freedom for variables
-      for(ii in 1:length(nms))
-      {
-  
-          if(is.null(levels(AMobj$pheno[, nms[ii]]))){
-              df_effects[ii] <- 1   ## its a covariate
-          } else {
-            df_effects[ii] <- length(levels(AMobj$pheno[, nms[ii]])) - 1  ## for a factor 
-          }
-      } 
-    } ## end if
-
-   df <- df_intercept
-   if(length(nms) > 0)
-     df <- c(df_intercept, df_effects)
-
-   varnames <- "(Intercept)"
-   if(length(nms) > 0)
-        varnames <- c(varnames, nms)
-} ## end if else
-
-## add markers  to varnames and degrees of freedom
-
-varnames <- c(varnames,  as.character(AMobj$Mrk[!is.na(AMobj$Mrk) ]))
-df <- c(df, rep(1, length( AMobj$Mrk[ !is.na(AMobj$Mrk) ] )))
-
-# check of missing values in trait. If so, this adds extra covariates to the model
-if( length(AMobj$indxNA_pheno) > 0){
- varnames <- c(varnames[1], paste0("mv", 1:length(AMobj$indxNA_pheno)), varnames[2:length(varnames)])
- df <- c(df[1], rep(1, length(AMobj$indxNA_pheno)), df[2:length(df)])
-}
-
- 
-pval <- rep(NA, length(varnames))
-W <- rep(NA, length(varnames))
-
-for(ii in varnames){
-   indx <- grep(ii, colnames(fullX))
+for(ii in cnames){
+   indx <- which(cnames==ii)
    L <- matrix(data=rep(0, length(indx)*ncol(fullX)), byrow=TRUE, nrow=length(indx) )  # r x p matrix
    LL <- diag(length(indx))
    L[,indx] <- LL
 
 
 
-  W[which(ii==varnames)]  <- t(L %*% beta) %*%
+  W[which(ii==cnames)]  <- t(L %*% beta) %*%
             chol2inv(chol( L %*% chol2inv(chol(t(fullX) %*% Hinv %*% fullX)) %*% t(L) )) %*%
             (L %*% beta)
- pval[which(ii==varnames)] <- 1 - pchisq(W[which(ii==varnames)], length(indx))  ## its not -1 here because fullX already has 1
+ pval[which(ii==cnames)] <- 1 - pchisq(W[which(ii==cnames)], length(indx))  ## its not -1 here because fullX already has 1
                                                       ## less factor level
  }
 
 
+
+
 # create newvarnames that does not have mv? covariates (if any)
-newvarnames <- varnames
+newvarnames <- cnames
 if (length(AMobj$indxNA_pheno)> 0){
   nms <- paste0("mv", 1:length(AMobj$indxNA_pheno))
-  indx <- match(nms, varnames)
-   newvarnames <- varnames[-indx] 
+  indx <- match(nms, cnames)
+   newvarnames <- cnames[-indx] 
 
 }
 
@@ -289,12 +245,15 @@ message("\n\n Table 2: Size and Significance of Effects in Final Model \n   ")
   message(sprintf("%22s %11s %6s   %10s   %13s", "", "Effect Size",   "Df", "Wald statstic" , "Pr(Chisq)"))
   for(ii in newvarnames )
   {
-      indx <- which(varnames == ii)
+      indx <- which(cnames == ii)
       message(sprintf("%20s    %10.2f %6i   %13.2f       %.3E",
          ii,   beta[indx], df[indx], W[indx], pval[indx ]))
   }  ## end for ii
  message("\n\n\n")
-df_size <- data.frame("Effects"=varnames, "Size"=as.character(round(beta,2)),  "Df"=as.character(df),   
+
+
+
+df_size <- data.frame("Effects"=cnames, "Size"=as.character(round(beta,2)),  "Df"=as.character(df),   
                       "Wald statistic"=as.character(round(W,2)),        
                       "Pr(Chisq)"=pval, check.names=FALSE)
 
