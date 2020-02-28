@@ -1339,7 +1339,7 @@ server <- function(input, output, session){
        withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
                  if (file.exists(readM$path_to_marker_file) == TRUE) {
-                   geno <<- ReadVCF(filename = readM$path_to_marker_file,  availmemGb = input$memsize, quiet = TRUE)
+                   geno <<- ReadMarker(filename = readM$path_to_marker_file,  type="vcf", availmemGb = input$memsize, quiet = TRUE)
                  } else {
                     shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
               }
@@ -1447,8 +1447,7 @@ server <- function(input, output, session){
 
    pheno_missing <- input$pheno_missing
    if(input$pheno_missing=="")
-      pheno_missing <- NULL
-
+      pheno_missing <- "NA"
 
 
 
@@ -2110,11 +2109,17 @@ setgamma <- 1
 
  
   shinyBS::addPopover(session, "dummy1", "Details", content = HTML("
-Lion can handle two types of marker genotype file; a space separated plain text file and PLINK
+Lion can handle three types of marker genotype file; a vcf file, a space separated plain text file and PLINK
 ped file. We assume the marker loci are snps. 
 Missing marker genotypes are allowed but the 
 proportion of missing genotypes is assumed to be low. 
 <br><br>
+For the vcf file, version 4.0 is assumed where data have been collected on snp genotypes. 
+Since vcf files also contain map information, there is no need to load a separate map file as the 
+map is extracted from the vcf file.  
+<br><br>
+
+
 The marker genotype file should not contain column names. 
 We also assume that each row of data in the file corresponds to data on a different 
 individual. The ordering of the rows, by individual, must be the same for the marker genotype file and phenotypic file.<br><br> 

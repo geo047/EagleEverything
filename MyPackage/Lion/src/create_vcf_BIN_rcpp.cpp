@@ -353,7 +353,6 @@ double
 
 
 // Reading in the genotype calls and writing to Mt.bin line by line 
-long ind_count = 0;  // column count
 
  // initializing input line 
 std::vector<char> rowinfile(  dim_of_M[0] );
@@ -594,7 +593,7 @@ Rcpp::IntegerVector  shouldsnpbremoved(  dim_of_M[1]  ) ;
 
   }
 
-   for(int i=starting_i ; i < line.size(); i++)
+   for(int i=starting_i ; (unsigned)i < line.size(); i++)
    {
 
      if (previous == '\t' && line[i] == '0') {

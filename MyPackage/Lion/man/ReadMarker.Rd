@@ -11,9 +11,10 @@ ReadMarker(filename = NULL, type = "text", missing = NULL, AA = NULL,
 \item{filename}{contains the name of the marker  file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
 to the file is required.}
 
-\item{type}{specify the type of file. Choices are 'text' (the default) and PLINK.}
+\item{type}{specify the type of file. Choices are 'text' (the default) , PLINK, and vcf.}
 
-\item{missing}{the number or character for a missing genotype in the text file. There is no need to specify this for a PLINK ped file. Missing 
+\item{missing}{the number or character for a missing genotype in the text file. There is no need to specify this for a vcf or PLINK ped file. Missing 
+allele values in a vcf file are coded as "." and missing 
 allele values in a PLINK file must be coded as '0' or '-'.}
 
 \item{AA}{the character or number corresponding to the 'AA' snp genotype in the marker genotype file. 
@@ -35,19 +36,22 @@ This should be set to be as large as possible for best performance.}
 \item{quiet}{a logical value. If set to \code{TRUE}, additional runtime output is printed.}
 }
 \value{
-To allow \code{\link{AM}} to handle data larger than the memory capacity of a machine, \code{ReadMarker} doesn't load 
-the marker data into memory. Instead, it creates a reformatted file of the marker data and its transpose. The object returned by
+To allow Lion to handle data larger than the memory capacity of a machine, \code{ReadMarker} doesn't load 
+the marker data into memory. Instead, it 
+writes a reformatted version of the marker data, and its transpose, to the harddrive. These two files
+are only temporary, being removed at the end of the R session. 
+The object returned by
 \code{ReadMarker} is a list object with the elements \code{tmpM} , \code{tmpMt}, and \code{dim_of_M}  
 which is the full file name (name and path)  of the reformatted file for the marker  data,  the full file name of the reformatted file 
 for the transpose of the marker  data,  and a 2 element vector with the first element the number of individuals and the second 
 element the number of marker loci.
 }
 \description{
-A function for reading in marker data. Two types of data can be read.
+A function for reading in different types of snp marker data.
 }
 \details{
-\code{ReadMarker} can handle two different types of marker data; namely,
-genotype data in a plain text file, and PLINK ped files. 
+\code{ReadMarker} can handle three different types of marker data; namely,
+genotype data in a plain text file, PLINK ped files, and vcf files.  
  
 \subsection{\strong{Reading in a plain text file containing the marker genotypes}}{
 To load a text file that contains snp genotypes, run \code{ReadMarker} with \code{filename} set to the name of the file, 
@@ -110,6 +114,7 @@ for details.
 Full details of PLINK ped files can be found \url{https://www.cog-genomics.org/plink/1.9/formats#ped}. Briefly, 
 the PED file is a space delimited file (tabs are not allowed): the first six columns are mandatory:
 
+
 \tabular{l}{
     Family ID  \cr
     Individual ID \cr
@@ -142,18 +147,17 @@ where \code{geno_obj} is used by \code{\link{AM}}, and the file PLINK.ped is loc
 is being run). 
 }
 
+\subsection{\strong{Reading in a vcf file}}{
+ VCF is a tab separated text file containing  meta-information lines, a header line, and data 
+lines. The data lines  contain information about a position in the genome.
 
-\subsection{Reading in other formats}{
-Having first installed the stand-alone PLINK software, it is possible to convert other file formats into PLINK ped files. See \url{https://www.cog-genomics.org/plink/1.9/formats} for details. 
+It is assumed that genotype information has been recorded on samples for each position. 
 
-For example, to convert  vcf file into a PLINK ped file, at the unix prompt, use the PLINK command
+Loci with more than two alleles will be removed automatically. 
 
-\preformatted{PLINK --vcf filename.vcf --recode --out newfilename}
-
-and to convert a binary ped file (bed) into a ped file, use the PLINK command
-
-\preformatted{PLINK --bfile filename --recode --tab --out newfilename}
- 
+Lion will only accept a single (uncompressed) vcf file. If chromosomal information has been recorded in separate 
+vcf files, these files need to be merged into a single vcf file.  This can be done by using the 
+ BCFtools utility set with command line "bcftools concat".
 }
 }
 \examples{
@@ -203,5 +207,27 @@ and to convert a binary ped file (bed) into a ped file, use the PLINK command
   # view list contents of geno_obj
   print(geno_obj)
 
+
+
+  #--------------------------------
+  #  Example 3
+  #-------------------------------
+  #
+  #
+  # Read in the genotype data contained in the vcf file geno.vcf
+  #
+  # The function system.file() gives the full file name (name + full path).
+  complete.name <- system.file('extdata', 'geno.vcf', package='Lion')
+  # 
+  # The full path and name of the file is
+  print(complete.name)
+  
+  # The file contains 5 marker loci recorded on 3 individuals
+  # Two of the loci contain multiple alleles and are removed. 
+  # A summary of the file is printed once the file has been read.
+  geno_obj <- ReadMarker(filename=complete.name, type="vcf", availmemGb=4) 
+   
+  # view list contents of geno_obj
+  print(geno_obj)
 
 }
