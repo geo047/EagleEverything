@@ -1447,8 +1447,7 @@ server <- function(input, output, session){
 
    pheno_missing <- input$pheno_missing
    if(input$pheno_missing=="")
-      pheno_missing <- NULL
-
+      pheno_missing <- "NA"
 
 
 
