@@ -1339,7 +1339,7 @@ server <- function(input, output, session){
        withCallingHandlers({
                  shinyjs::html("ReadMarker", "")
                  if (file.exists(readM$path_to_marker_file) == TRUE) {
-                   geno <<- ReadVCF(filename = readM$path_to_marker_file,  availmemGb = input$memsize, quiet = TRUE)
+                   geno <<- ReadMarker(filename = readM$path_to_marker_file,  type="vcf", availmemGb = input$memsize, quiet = TRUE)
                  } else {
                     shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
               }

@@ -61,7 +61,6 @@ ReadVCF <- function( filename=NULL, availmemGb=16, quiet=TRUE ){
  }
 
        
- ## checking if a VCF file has been specified. 
  if (is.null(filename)){
             message(" The name of the vcf file is missing.")
             message(" ReadVCF has terminated with errors.")
