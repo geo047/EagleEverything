@@ -181,7 +181,7 @@ Performing block iteration ... 2
  Analysing 200 permuations. 
 \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
 
- Table: Empirical false positive rates, given gamma value for model selection. 
+ Table: Empirical false positive rates, given lambda value for model selection. 
 
   Gamma    |  False Pos Rate  
  ---------------------------- 
@@ -206,7 +206,7 @@ Performing block iteration ... 2
 0.9473684  |  0.03 
 1  |  0.02 
  ----------------------------- 
- For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+ For a false positive rate of  0.05  set the lambda parameter in the AM function to  0.8421053 
 > 
 > proc.time()
    user  system elapsed 

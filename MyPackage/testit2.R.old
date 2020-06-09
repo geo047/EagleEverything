@@ -14,7 +14,7 @@ pheno <- ReadPheno(filename = "./pheno1.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, lambda=res$setlambda)
 SummaryAM(res)
 
 
@@ -42,7 +42,7 @@ SummaryAM(res)
 0.9473684  |  0.03 
 1  |  0.02 
  ----------------------------- 
- For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+ For a false positive rate of  0.05  set the lambda parameter in the AM function to  0.8421053 
 
  New results after iteration 2 are 
             SNP        Chrm           Map Pos     Col Number            extBIC 
@@ -89,7 +89,7 @@ pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, lambda=res$setlambda)
 
 
   Gamma    |  False Pos Rate  
@@ -115,7 +115,7 @@ res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=phe
 0.9473684  |  0.03 
 1  |  0.02 
  ----------------------------- 
- For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+ For a false positive rate of  0.05  set the lambda parameter in the AM function to  0.8421053 
 
  Significant marker-trait association found. 
  New results after iteration 2 are 
@@ -141,9 +141,9 @@ pheno <- ReadPheno(filename = "./pheno3.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, lambda=res$setlambda)
 
- Table: Empirical false positive rates, given gamma value for model selection. 
+ Table: Empirical false positive rates, given lambda value for model selection. 
 
   Gamma    |  False Pos Rate  
  ---------------------------- 
@@ -168,7 +168,7 @@ res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=phe
 0.9473684  |  0.025 
 1  |  0.015 
  ----------------------------- 
- For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8421053 
+ For a false positive rate of  0.05  set the lambda parameter in the AM function to  0.8421053 
 New results after iteration 2 are 
 
             SNP        Chrm           Map Pos     Col Number            extBIC 
@@ -198,7 +198,7 @@ geno <- ReadMarker(filename="./geno4.test", type="text", AA=0, AB=1, BB=2 )
 pheno <- ReadPheno(filename = "./pheno4.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2",  map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", fformula="pc1+pc2",  map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- AM(trait="trait1", fformula="pc1+pc2",  map=map, geno=geno, pheno=pheno, lambda=res$setlambda)
 
 #  Gamma    |  False Pos Rate  
 # ---------------------------- 
@@ -223,7 +223,7 @@ res <- AM(trait="trait1", fformula="pc1+pc2",  map=map, geno=geno, pheno=pheno, 
 #0.9473684  |  0.035 
 #1  |  0.025 
 # ----------------------------- 
-# For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.8947368 
+# For a false positive rate of  0.05  set the lambda parameter in the AM function to  0.8947368 
 #
 #           SNP        Chrm           Map Pos     Col Number            extBIC 
 #          -----      ------         ---------     -----------         --------- 
@@ -250,9 +250,9 @@ pheno <- ReadPheno(filename = "./pheno5.test", missing="NA")
 map <- ReadMap(filename = "./mapDemo.dat")
 Z <- ReadZmat("./Z1.test")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno)
-res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, lambda=res$setlambda)
 
- Table: Empirical false positive rates, given gamma value for model selection. 
+ Table: Empirical false positive rates, given lambda value for model selection. 
 
   Gamma    |  False Pos Rate  
  ---------------------------- 
@@ -277,7 +277,7 @@ res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=phe
 0.9473684  |  0.02 
 1  |  0.02 
 ----------------------------- 
- For a false positive rate of  0.05  set the gamma parameter in the AM function to  0.7894737
+ For a false positive rate of  0.05  set the lambda parameter in the AM function to  0.7894737
  New results after iteration 2 are 
             SNP        Chrm           Map Pos     Col Number            extBIC 
           -----      ------         ---------     -----------         --------- 

@@ -92,13 +92,13 @@ row4Anal <- function()
 
 page =  fluidRow( column(12, 
          wellPanel(
-          radioButtons(inputId="analyse_gamma", label=h4("Step 4: Specify gamma value (controls the false positive rate)"), 
+          radioButtons(inputId="analyse_lambda", label=h4("Step 4: Specify lambda value (controls the false positive rate)"), 
         choiceNames = list(
         tags$span(style = "font-size:18px", "Set manually"),
         tags$span(style = "font-size:18px", "Set automatically (via permutation)")),
                                                     choiceValues=c("manual","auto")),
                         style="padding: 1px",
- bsTooltip("analyse_gamma", title='<font size="3" > Select the manual option if you want a quick analysis. If you leave the gamma value at 1, its default value, this will be a conservative analysis. Select auto if you want to perform an analysis with a specified false positive rate. This analysis will take about 5 times as long as a permutation step is performed to fine-tune the gamma value for the desired false positive rate.  </font>',
+ bsTooltip("analyse_lambda", title='<font size="3" > Select the manual option if you want a quick analysis. If you leave the lambda value at 1, its default value, this will be a conservative analysis. Select auto if you want to perform an analysis with a specified false positive rate. This analysis will take about 5 times as long as a permutation step is performed to fine-tune the lambda value for the desired false positive rate.  </font>',
                                placement="right", trigger="hover", options=list(container="body"))
 
                      )  ## column 12
@@ -106,13 +106,13 @@ page =  fluidRow( column(12,
                                           
 
                 conditionalPanel(
-                   condition = "input.analyse_gamma == 'manual'",
+                   condition = "input.analyse_lambda == 'manual'",
                         wellPanel(
                         fluidRow(column(12,
-                           sliderInput(inputId="analyse_setgamma", label=h4("Specify gamma value. "),
+                           sliderInput(inputId="analyse_setlambda", label=h4("Specify lambda value. "),
                                value=1, min = 0, max = 1, step = 0.01),
                            style="padding: 1px",
-                           bsTooltip("analyse_setgamma", title='<font size="3" >The gamma parameter controls the conservativeness of the model building process. Values closer to 1 (0) decrease (increase) the false positive rate. The default value is 1 - its most conservative setting. </font>',
+                           bsTooltip("analyse_setlambda", title='<font size="3" >The lambda parameter controls the conservativeness of the model building process. Values closer to 1 (0) decrease (increase) the false positive rate. The default value is 1 - its most conservative setting. </font>',
                                placement="right", trigger="hover", options=list(container="body"))
                                ) ## colunn12,
                            ) ## fluidRow
@@ -120,7 +120,7 @@ page =  fluidRow( column(12,
                 ), ## conditionalPanel
 
                 conditionalPanel(
-                   condition = "input.analyse_gamma == 'auto'",
+                   condition = "input.analyse_lambda == 'auto'",
                         wellPanel(
                        fluidRow(column(12, 
                            sliderInput(inputId="analyse_fpr", label=h4("Specify desired false positive rate."),
@@ -174,7 +174,7 @@ row5Anal <- function()
                                          icon=icon("upload", lib="glyphicon")),
                                           style='padding: 1px',
                                         bsTooltip("analyse_go",
-                     title='<font size="3" >  Click here to find the set of snp in strongest association with the trait. This may take some time if the gamma value is being found automatically.   </font>',
+                     title='<font size="3" >  Click here to find the set of snp in strongest association with the trait. This may take some time if the lambda value is being found automatically.   </font>',
                           placement="right", trigger="hover",
                           options=list(container="body"))
               ) ## wellPanel
@@ -1527,19 +1527,19 @@ server <- function(input, output, session){
 
  ##  AM analysis for calculation of FPR
 # res <- NULL
-setgamma <- 1
+setlambda <- 1
    observeEvent(input$analyse_go, {
    withProgress(message = 'Analysing data', value = 1, {
        fform <<- paste(input$nmsf, collapse="+")
 
-     if(input$analyse_gamma=="manual"){
+     if(input$analyse_lambda=="manual"){
 
         withCallingHandlers({
                   shinyjs::html("AM", "")
                   res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
-                             gamma=input$analyse_setgamma,
+                             lambda=input$analyse_setlambda,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
-                  setgamma <<- input$analyse_setgamma 
+                  setlambda <<- input$analyse_setlambda 
                },  ## end withCallingHandlers
                message = function(m) {
                   shinyjs::html(id = "AM", html = m$message, add = TRUE)
@@ -1550,7 +1550,7 @@ setgamma <- 1
      }
 
 
-     if(input$analyse_gamma=="auto"){
+     if(input$analyse_lambda=="auto"){
        
            withCallingHandlers({
                  shinyjs::html("AM", "")
@@ -1559,10 +1559,10 @@ setgamma <- 1
                             trait=input$nmst , fformula=fform , availmemGb = input$memsize , 
                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat = Zmat) 
           
-                 setgamma <<- res$setgamma
+                 setlambda <<- res$setlambda
                  
                  res <<- AM(trait=input$nmst , fformula=fform , availmemGb = input$memsize ,
-                             gamma=res$setgamma,
+                             lambda=res$setlambda,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
 
 
@@ -1590,10 +1590,10 @@ setgamma <- 1
  dfparams <- NULL
 
  if(!is.null(fform))
-    dfparams <- data.frame(Parameters=c("Trait", "Fixed effects", "Working memory", "Number CPU", "Gamma"), Settings=c(input$nmst, as.character(fform), input$memsize, input$analyse_cpu, round(setgamma,3)))
+    dfparams <- data.frame(Parameters=c("Trait", "Fixed effects", "Working memory", "Number CPU", "Gamma"), Settings=c(input$nmst, as.character(fform), input$memsize, input$analyse_cpu, round(setlambda,3)))
 
  if(is.null(fform))
-   dfparams <- data.frame(Parameters=c("Trait", "Fixed effects", "Working memory", "Number CPU", "Gamma"), Settings=c(input$nmst, "overall mean" , input$memsize, input$analyse_cpu, round(setgamma,3)))   
+   dfparams <- data.frame(Parameters=c("Trait", "Fixed effects", "Working memory", "Number CPU", "Gamma"), Settings=c(input$nmst, "overall mean" , input$memsize, input$analyse_cpu, round(setlambda,3)))   
 
  output$parameters <- renderTable(dfparams) 
 
@@ -1738,7 +1738,7 @@ This page goes through the steps that are needed to analyse the data.
 In the first step, the column in the phenotype file containing the trait data is specified. 
 In the second step, any fixed effects are specified. If no fixed effects are selected, the fixed effects part of the model only contains an overall mean. 
 In the thrid step, the number of available CPU is set. The default is 1 but if more are available, increasing this number will improve performance significantly. 
-The fourth step is to set the gamma parameter. The gamma parameter controls the conservativeness (or false positive rate) of the model building process. For a quick preliminary analysis of the 
+The fourth step is to set the lambda parameter. The lambda parameter controls the conservativeness (or false positive rate) of the model building process. For a quick preliminary analysis of the 
 data, choose the manual option and leave the parameter at its default setting. For a more detailed analysis of the data where the false positive rate is prespecified, 
 choose the auto option. 
 <br><br>

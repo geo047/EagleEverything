@@ -1,5 +1,5 @@
 .form_results <- function(traitname, trait, selected_loci,   fformula, indxNA_pheno, 
-                           ncpu,  availmemGb, quiet,  extBIC, gamma, geno, pheno, map, Zmat, outlierstat )
+                           ncpu,  availmemGb, quiet,  extBIC, lambda, geno, pheno, map, Zmat, outlierstat )
 {
 
   ## internal function - used by AM for forming the results object
@@ -17,7 +17,7 @@
                     availmemGb=availmemGb,
                     quiet=quiet,
                     extBIC=extBIC,
-                    gamma=gamma,
+                    lambda=lambda,
                     geno=geno,
                     pheno=pheno,
                     map=map,
@@ -37,7 +37,7 @@
                     availmemGb=availmemGb,
                     quiet=quiet,
                     extBIC=extBIC,
-                    gamma=gamma,
+                    lambda=lambda,
                     geno=geno,
                     pheno=pheno,
                     map=map,

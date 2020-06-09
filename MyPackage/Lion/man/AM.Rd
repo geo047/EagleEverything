@@ -6,7 +6,7 @@
 \usage{
 AM(trait = NULL, fformula = NULL, geno = NULL, pheno = NULL,
   map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 1,
-  quiet = TRUE, maxit = 40, fixit = FALSE, gamma = 1)
+  quiet = TRUE, maxit = 40, fixit = FALSE, lambda = 1)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}
@@ -37,8 +37,8 @@ This is useful for error checking and monitoring the progress of a large analysi
 \item{fixit}{a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 then the model building process is stopped when extBIC increases in value.}
 
-\item{gamma}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a
-more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value.}
+\item{lambda}{a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a
+more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  lambda value.}
 }
 \value{
 A list with the following components:
@@ -57,7 +57,7 @@ significant, then this component is \code{NA}.}
 \item{availmemGb:}{amount of RAM in gigabytes that has been set by the user.}
 \item{quiet:}{ boolean value of the parameter.}
 \item{extBIC:}{numeric vector with the extended BIC values for the loci  found to be in  significant association with the trait.}
-\item{gamma}{the numeric value of the parameter.}
+\item{lambda}{the numeric value of the parameter.}
 }
 }
 \description{
@@ -69,11 +69,11 @@ marker loci in strongest association with a trait while simultaneously accountin
 This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
 (see below for examples).  \code{AM} builds the linear mixed model iteratively, via forward selection. It is through this model building process that we 
 identify the SNP-trait associations.  We use the extended BIC (extBIC) to decide on the 'best' model and when to stop looking for a better model. 
-The conservativeness of extBIC can be adjusted.  If the \code{gamma} parameter is left at is default setting, then \code{AM} is run in its most 
+The conservativeness of extBIC can be adjusted.  If the \code{lambda} parameter is left at is default setting, then \code{AM} is run in its most 
 conservative state (i.e. false positives are minimized but this also decreases the chance of true positives). 
 
 When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{FPR4AM}}. This function uses permutation to 
-find the gamma value for a desired false positive rate for \code{AM}. 
+find the lambda value for a desired false positive rate for \code{AM}. 
 
 Below are some examples of how to use \code{AM} for genome-wide association mapping of data. 
 
@@ -99,7 +99,7 @@ functions as long as AM is run last):
   
   pheno_obj <- ReadPheno(filename='pheno.txt')
 
- # since gamma is not specified, this will run AM conservatively (where the false positive rate is lowest).
+ # since lambda is not specified, this will run AM conservatively (where the false positive rate is lowest).
   res <- AM(trait='y', geno=geno_obj, pheno=pheno_obj)
 }
 A table of results is printed to the screen and saved in the R object \code{res}. 
@@ -134,13 +134,13 @@ the fixed effects part of the model is cov1 + cov2 + pc1 + pc2, }
 
   map_obj   <- ReadMap(filename='/my/dir/map.txt')
 
-  # FPR4AM calculates the gamma value corresponding to a desired false positive rate of 5\%
+  # FPR4AM calculates the lambda value corresponding to a desired false positive rate of 5\%
   ans <- FPR4AM(falseposrate=0.05, numreps=200, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
             geno=geno_obj, pheno=pheno_obj, map=map_obj)
 
   # performs association mapping with a 5\% false positive rate
   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-            geno=geno_obj, pheno=pheno_obj, map=map_obj,  gamma=ans$setgamma)
+            geno=geno_obj, pheno=pheno_obj, map=map_obj,  lambda=ans$setlambda)
 }
 A table of results is printed to the screen and saved in the R object \code{res}. 
 }

@@ -274,7 +274,7 @@ R CMD build Lion
 
 
 
-#  R CMD check --as-cran Lion_2.2.0.tar.gz 
+#  R CMD check --as-cran Lion_2.2.1.tar.gz 
 
 
 R CMD INSTALL Lion -l ~/RLibs
@@ -283,9 +283,9 @@ R CMD INSTALL Lion -l ~/RLibs
 # rm tmp.R  tmp.Rout 
 
 # copy to git area ready to upload to github/Lion and eventual install via devtools pipeline
-cp Lion_2.2.0.tar.gz ~/Lion/Lion/.
+cp Lion_2.2.1.tar.gz ~/Lion/Lion/.
 cd ~/Lion/Lion/
-tar xfz Lion_2.2.0.tar.gz
+tar xfz Lion_2.2.1.tar.gz
 cp -rf ./Lion/* .
 rm -rf ./Lion
 cd /home/geo047/EagleEverything/MyPackage

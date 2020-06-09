@@ -34,7 +34,7 @@ An implementation of multiple-locus association mapping on a genome-wide scale. 
  \item \code{\link{ReadMarker}} for reading in the snp data.
  \item \code{\link{ReadPheno}} for reading in the phenotypic data (traits and features/covariates)
  \item \code{\link{ReadMap}} for reading in the marker map.
- \item \code{\link{FPR4AM}} for calculating the value of the \code{gamma} parameter to be used by \code{\link{AM}} that will give a desired false positive rate for detecting SNP-trait associations. 
+ \item \code{\link{FPR4AM}} for calculating the value of the \code{lambda} parameter to be used by \code{\link{AM}} that will give a desired false positive rate for detecting SNP-trait associations. 
  \item \code{\link{AM}} for performing association mapping on the data.
  \item \code{\link{OpenGUI}} which opens the GUI. 
 }

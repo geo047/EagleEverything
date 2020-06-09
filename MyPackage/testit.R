@@ -10,7 +10,7 @@ map <- ReadMap(filename = "./mapDemo.dat")
 res <- FPR4AM(trait="trait1", fformula="pc1+pc2", map=map, geno=geno, pheno=pheno, falseposrate=0.05, numreps=250)
 
 
-res <- AM(trait="trait1", fformula="pc1+pc2", map=map, geno=geno, pheno=pheno, gamma=res$setgamma)
+res <- AM(trait="trait1", fformula="pc1+pc2", map=map, geno=geno, pheno=pheno, lambda=res$setlambda)
 
 
 
