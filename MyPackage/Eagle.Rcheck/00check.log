@@ -5,7 +5,7 @@
 * using option ‘--as-cran’
 * checking for file ‘Eagle/DESCRIPTION’ ... OK
 * checking extension type ... Package
-* this is package ‘Eagle’ version ‘2.2’
+* this is package ‘Eagle’ version ‘2.2.1’
 * checking CRAN incoming feasibility ... Note_to_CRAN_maintainers
 Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
 * checking package namespace information ... OK

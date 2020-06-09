@@ -92,7 +92,7 @@ lst <- list( "ncpu" = AMobj[["ncpu"]],
             "fformula" = AMobj[["fformula"]],
             "nummissingpheno" = AMobj[["indxNA_pheno"]],
             "numSigSNP"=AMobj[["Mrk"]],
-            "gamma" = AMobj[["gamma"]] 
+            "lambda" = AMobj[["lambda"]] 
          )
 
 
@@ -124,7 +124,7 @@ message( sprintf("%-40s  %-10s", "Trait name: ", lst[["traitname"]] ))
 message( sprintf("%-40s  %-30s", "Fixed model: ", lst[["fformula"]] ))
 message( sprintf("%-40s  %-10s", "Number samples missing obs:", lst[["nummissingpheno"]] ))
 message( sprintf("%-40s  %-10s", "Number significant snp-trait assocs:", lst[["numSigSNP"]] ))
-message( sprintf("%-40s  %-4s", "Gamma value for extBIC: ", round(lst[["gamma"]],2)  ))
+message( sprintf("%-40s  %-4s", "Gamma value for extBIC: ", round(lst[["lambda"]],2)  ))
 message(  sprintf("%50s", "--------------------------------------------------------" ))
 message("\n\n")
 
@@ -134,7 +134,7 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
                                     "Number significant snp-trait assocs", "Gamma value for extBIC"  )   ,
                    "value" = c(lst[["ncpu"]], lst[["memory"]], lst[["numsamples"]], 
                      lst[["numsnp"]], lst[["traitname"]], lst[["fformula"]], lst[["nummissingpheno"]], 
-                    lst[["numSigSNP"]], round(lst[["gamma"]],2)   )
+                    lst[["numSigSNP"]], round(lst[["lambda"]],2)   )
          )
 
 

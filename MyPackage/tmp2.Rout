@@ -1,361 +1,0 @@
-
-R version 3.6.1 (2019-07-05) -- "Action of the Toes"
-Copyright (C) 2019 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-Registered S3 method overwritten by 'R.oo':
-  method        from       
-  throw.default R.methodsS3
-[Previously saved workspace restored]
-
-> library(Eagle)
-Loading required package: shinyFiles
-Loading required package: ggplot2
-Loading required package: ggthemes
-> geno <- ReadMarker(filename="./geno.test", type="text", AA=0, AB=1, BB=2 )
- Getting number of individuals and snp from file ... 
- Beginning creation of reformatted file ... 
- Reading marker data ... 
-
-0% read of text file.       1% read of text file.       2% read of text file.       3% read of text file.       4% read of text file.       5% read of text file.       6% read of text file.       7% read of text file.       8% read of text file.       9% read of text file.       10% read of text file.       11% read of text file.       12% read of text file.       13% read of text file.       14% read of text file.       15% read of text file.       16% read of text file.       17% read of text file.       18% read of text file.       19% read of text file.       20% read of text file.       21% read of text file.       22% read of text file.       23% read of text file.       24% read of text file.       25% read of text file.       26% read of text file.       27% read of text file.       28% read of text file.       29% read of text file.       30% read of text file.       31% read of text file.       32% read of text file.       33% read of text file.       34% read of text file.       35% read of text file.       36% read of text file.       37% read of text file.       38% read of text file.       39% read of text file.       40% read of text file.       41% read of text file.       42% read of text file.       43% read of text file.       44% read of text file.       45% read of text file.       46% read of text file.       47% read of text file.       48% read of text file.       49% read of text file.       50% read of text file.       51% read of text file.       52% read of text file.       53% read of text file.       54% read of text file.       55% read of text file.       56% read of text file.       57% read of text file.       58% read of text file.       59% read of text file.       60% read of text file.       61% read of text file.       62% read of text file.       63% read of text file.       64% read of text file.       65% read of text file.       66% read of text file.       67% read of text file.       68% read of text file.       69% read of text file.       70% read of text file.       71% read of text file.       72% read of text file.       73% read of text file.       74% read of text file.       75% read of text file.       76% read of text file.       77% read of text file.       78% read of text file.       79% read of text file.       80% read of text file.       81% read of text file.       82% read of text file.       83% read of text file.       84% read of text file.       85% read of text file.       86% read of text file.       87% read of text file.       88% read of text file.       89% read of text file.       90% read of text file.       91% read of text file.       92% read of text file.       93% read of text file.       94% read of text file.       95% read of text file.       96% read of text file.       97% read of text file.       98% read of text file.       99% read of text file.        
- 
- First 5 lines and 12 columns of the marker text  file. 
-1 0 0 1 0 0 1 1 2 1 2 2 
-1 0 0 0 1 0 1 1 2 1 0 2 
-1 0 0 1 1 0 1 1 2 0 2 2 
-1 0 2 1 1 0 1 2 2 1 2 2 
-1 0 0 1 1 0 1 0 0 1 0 1 
- 
- Taking transpose of marker data and writing untransposed and transposed data to disc ... 
-
-
-
-                    Summary of Marker File  
-                   ~~~~~~~~~~~~~~~~~~~~~~~~   
- File type:                   text
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpVXQyqi/M.bin
- Number of individuals:        100
- Number of loci:               4998
- File size (gigabytes):       0.0052479
- Available memory (gigabytes): 16
-
-
-
-
-  Writing of marker data to disc is complete ... 
-
-> pheno <- ReadPheno(filename = "./pheno2.test", missing="NA")
-
-
- Loading Phenotype file ... 
-
-
-               Summary of Phenotype File  
-
-              ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-
- File name:                   ./pheno2.test
-
- Number of individuals:       102
-
- Number of columns:           6
-
-
- First 5 rows of the phenotype file are 
-
-9.74441006414413 -0.080256 -0.056444 28 2.24719923712075 2
-8.30074276066739 -0.079114 -0.068167 40 3.51477482977412 4
-7.68871161174369 -0.081873 -0.067404 26 16.8686233621094 4
-20.0855313237688 -0.081068 -0.056846 21 10.4064453968186 4
-10.075239046444 -0.082542 -0.063059 27 10.3809801451631 4
-
- Column classes are  
-
-              trait1           numeric
-
-                 pc1           numeric
-
-                 pc2           numeric
-
-                 age           integer
-
-              trait2           numeric
-
-           eyecolour            factor
-
-The phenotype file has been loaded.
-> map <- ReadMap(filename = "./mapDemo.dat")
-
-
- Loading map file ... 
-
-
-                    Summary of Map File  
-
-                   ~~~~~~~~~~~~~~~~~~~~~~ 
-
- File name:                   ./mapDemo.dat
-
- Number of marker loci:       4998
-
- Number of columns:           3
-
- Number of chromosomes:       3
-
-
- First 5 markers of the map file are 
-
-rs78200054 21 14005
-rs375645574 21 72920
-rs147075201 21 80442
-rs78779316 21 146642
-rs67161561 21 190036
-The map file has been loaded.
-
-
-
-> Z <- ReadZmat("./Z1.test")
-
-
- Loading Z matrix file ... 
-
-
-                    Summary of Z matrix File  
-
-                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-
- File name:                   ./Z1.test
-
- Number of rows:              102
-
- Number of columns:           100
-
- First 5 rows of the Z matrix file are 
-
-1 0 0 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 0 0 0
-1 0 0 0 0 0 0 0 0 0
-0 1 0 0 0 0 0 0 0 0
-0 0 1 0 0 0 0 0 0 0
-
-
-
-> res <- AM(trait="trait1", fformula="pc1+pc2", Z=Z, map=map, geno=geno, pheno=pheno, gamma=1, quiet=FALSE)
-
-
-
-
-                    Multiple-Locus Association Mapping
-                            Version 1.2 
-
- 
-   . ,-"-.   ,-"-. ,-"-.   ,-"-. ,-"-. ,-"-. ,-"-.   ,-"-. ,-"-.    
-    X | | \ / | | X | | \ / | | X | | \ / | | X | | \ / | | X | | \ /   
-   / \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X| | |/ \| | |X|   
-      `-!-' `-!-"   `-!-' `-!-'   `-!-' `-!-"   `-!-' `-!-'   `-!-' `-     
-
-
-
-
- WARNING!!!! The individuals in rows  16 11 6  either have missing trait data 
-             and/or missing explanatory variable values. These individuals have 
-             been removed from the analysis.  
-
-Dimension of design matrix, before addition of marker fixed effects is 102 rows and 3 columns.
-
-
-
- Iteration 1: Searching for most significant marker-trait association
-
-
- quiet=FALSE: calculating M %*% M^t. 
-
- Number of cores being used for calculation is .. 28
- Dimension of M%*%M^t is 100 by 100 
-
- First few rows and 5 columns of M%*%M^t are: 
-
- 1.919141  0.625432  0.634743  0.615589  0.616653 
- 0.625432  1.923929  0.628093  0.614791  0.587390 
- 0.634743  0.628093  1.931112  0.614259  0.613727 
- 0.615589  0.614791  0.614259  1.923397  0.602022 
- 0.616653  0.587390  0.613727  0.602022  1.909032 
-
-
-
-[1] 16 11  6
- V4  V9 V14 
-  4   9  14 
- Calculating variance components for multiple-locus model. 
-
-[1] "hmmm 2"
- Gamma =  1 
- Significant marker-trait association found. 
-
- New results after iteration 1 are 
-
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         618.00   
-
-
-
- Dimension of H is 99 by 99 
-
- First few rows and 5 columns of H are: 
-
- 25.000959  0.002178  0.002178  0.000710  0.000720 
- 0.002178  25.000959  0.002178  0.000710  0.000720 
- 0.002178  0.002178  25.000959  0.000710  0.000720 
- 0.000710  0.000710  0.000710  25.000964  0.000713 
- 0.000720  0.000720  0.000720  0.000713  25.000972 
-
-
-
- Dimension of P is 99 by 99 
-
- First few rows and 5 columns of P are: 
-
- 0.038892  -0.001624  -0.000438  -0.000760  -0.000140 
- -0.001624  0.037478  -0.000489  -0.001026  0.000027 
- -0.000438  -0.000489  0.039519  -0.000437  -0.000461 
- -0.000760  -0.001026  -0.000437  0.039412  -0.000286 
- -0.000140  0.000027  -0.000461  -0.000286  0.039433 
-
-
-
- Dimension of sqrt(M %*% M^t) is 100 by 100 
-
- First few rows and 5 columns of sqrt(M %*% M^t) are: 
-
- 1.207376  0.074579  0.076722  0.066534  0.072434 
- 0.074579  1.217291  0.077859  0.070038  0.063437 
- 0.076722  0.077859  1.217010  0.068235  0.073296 
- 0.066534  0.070038  0.068235  1.209629  0.066259 
- 0.072434  0.063437  0.073296  0.066259  1.214464 
-
-
-
- Dimension of sqrt(M %*% M^t)^-1 is 100 by 100 
-
- First few rows and 5 columns of sqrt(M %*% M^t)^-1 are: 
-
- 0.871759  -0.012805  -0.013879  -0.005958  -0.011518 
- -0.012805  0.862523  -0.015774  -0.009324  -0.005361 
- -0.013879  -0.015774  0.863287  -0.007915  -0.012695 
- -0.005958  -0.009324  -0.007915  0.869788  -0.006947 
- -0.011518  -0.005361  -0.012695  -0.006947  0.863442 
-
-
-
- quiet =FALSE: beginning calculation of the BLUP estimates for dimension reduced model. 
-
- Length of BLUPs is 100
-
- The first 5 elements of the vector are BLUPs
-
- -0.000253  0.000513  0.000002  -0.000007  -0.000147 
-
-
-
- quiet = FALSE: beginning calculation of the standard errors  of BLUP estimates for dimension reduced model. 
-
- Dimension of SE of BLUPs is 100 by 100 
-
- First few rows and 5 columns of SE of BLUPs are: 
-
- 0.000000  -0.000000  0.000000  -0.000000  -0.000000 
- -0.000000  0.000000  0.000000  0.000000  -0.000000 
- 0.000000  0.000000  0.000000  -0.000000  -0.000000 
- -0.000000  0.000000  -0.000000  0.000000  -0.000000 
- -0.000000  -0.000000  -0.000000  -0.000000  0.000000 
-
-
-
- quiet = FALSE: beginning calculation of BLUPS and their standard errors for full model. 
-
-Inside internal function calculate_a_and_vara_rcpp: Need memory (gigabytes)  0.0159936
-in calculate_a_and_vara_rcpp 
-size of a 100
-size of invMMtsqrt  100 100
-Hmmm
- Length of BLUPs for full model is 4998
-
- The first 5 elements of the vector are BLUPs for full model
-
- 0.000946  0.000892  -0.002437  -0.000649  0.001166 
-
-
-
- Length of SE of BLUPs for full model is 4998
-
- The first 5 elements of the vector are SE of BLUPs for full model
-
- 0.000001  0.000000  0.000005  0.000001  0.000001 
-
-
-
- quiet = FALSE: beginning calculation of outlier test statistics. 
-
- Length of outlier test statistic is 4998
-
- The first 5 elements of the vector are outlier test statistic
-
- 1.582458  4.092130  1.262846  0.325608  1.134246 
-
-
-
-
-
- Iteration 2: Searching for most significant marker-trait association
-
-
-[1] 16 11  6
- V4  V9 V14 
-  4   9  14 
- Calculating variance components for multiple-locus model. 
-
-[1] "hmmm 2"
- Gamma =  1 
- Significant marker-trait association found. 
-
- New results after iteration 2 are 
-
-            SNP        Chrm           Map Pos     Col Number            extBIC 
-          -----      ------         ---------     -----------         --------- 
-     Null Model                                                         618.00   
-     rs10404933          19          19035425           3899            624.14   
-
-
-
-
-
-
-                           Final  Results  
-
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-No significant marker-trait associations have been found. 
-
-
-> 
-> 
-> 
-> 
-> proc.time()
-   user  system elapsed 
- 32.663   2.022   2.288 

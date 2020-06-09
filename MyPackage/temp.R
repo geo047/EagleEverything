@@ -37,6 +37,6 @@ library(Eagle)
                      map = map_obj,
                      pheno = pheno_obj,
                      geno = geno_obj,
-                     gamma = ans$setgamma)
+                     lambda = ans$setlambda)
  
 

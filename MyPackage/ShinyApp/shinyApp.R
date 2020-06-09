@@ -1633,14 +1633,15 @@ server <- function(input, output, session){
      })
 
 
-
-  sz <- 0
+sz <- 0
   output$analyse_names <- renderUI({
-   if (length(nms) < 5){
-       sz <- length(nms)
+   if (length(nms()) < 5){
+       sz <- length(nms())
    } else {
        sz <- 5
    }
+
+
 
   selectInput(inputId="nmst", label=h4("Step 1: Choose trait"), choices=nms(), size = sz   , selectize=FALSE )     
   })  ## end renderUI
