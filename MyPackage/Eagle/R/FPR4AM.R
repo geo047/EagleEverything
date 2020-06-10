@@ -1,6 +1,6 @@
 #' @title Set the false positive rate for \code{AM}
-#' @description The gamma parameter in \code{AM} controls the false positive rate of the model 
-#' building process. This function uses permutation to  find the gamma value for a desired false positive rate. 
+#' @description The lambda parameter in \code{AM} controls the false positive rate of the model 
+#' building process. This function uses permutation to  find the lambda value for a desired false positive rate. 
 #' @param  falseposrate the desired false positive rate.
 #' @param  numreps  the number of replicates upon which to base the calculation of the false 
 #'                   positive rate. We have found 200 replicates to be sufficient but more is better.   
@@ -11,7 +11,7 @@
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
 #'              be assumed. 
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
-#' @param numgammas the number of equidistant gamma values from 0 to 1 for which to calculate the false positive rate of the model building process. This should not need 
+#' @param numlambdas the number of equidistant lambda values from 0 to 1 for which to calculate the false positive rate of the model building process. This should not need 
 #' adjusting.  
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
@@ -20,15 +20,15 @@
 #' @param seed  a integer value for the starting seed for the permutations. 
 #' 
 #' @details
-#' The false positive rate for \code{\link{AM}} is controlled by its gamma parameter. Values close to 
+#' The false positive rate for \code{\link{AM}} is controlled by its lambda parameter. Values close to 
 #' 1 (0) decreases (increases) the false positive rate of detecting SNP-trait associations. There is no 
-#' analytical way of setting gamma for a specified false positive rate. So we are using permutation to do this empirically. 
+#' analytical way of setting lambda for a specified false positive rate. So we are using permutation to do this empirically. 
 #' 
-#' By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding gamma value for \code{\link{AM}}. 
+#' By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding lambda value for \code{\link{AM}}. 
 #' 
-#' A table of other gamma values for a range of false positive rates is also given. 
+#' A table of other lambda values for a range of false positive rates is also given. 
 #'
-#' To increase the precision of the gamma estimates, increase \code{numreps}. 
+#' To increase the precision of the lambda estimates, increase \code{numreps}. 
 #'
 #'
 #'
@@ -37,9 +37,9 @@
 #' A list with the following components:
 #' \describe{
 #'\item{numreps:}{the number of permutations performed.}
-#'\item{gamma:}{the vector of gamma values.}
-#'\item{falsepos:}{the false positive rates for the gamma values.}
-#'\item{setgamma:}{the gamma value that gives a false positive rate of \code{falseposrate} }
+#'\item{lambda:}{the vector of lambda values.}
+#'\item{falsepos:}{the false positive rates for the lambda values.}
+#'\item{setlambda:}{the lambda value that gives a false positive rate of \code{falseposrate} }
 #' }
 #'
 #' @examples
@@ -95,7 +95,7 @@
 #'                 map = map_obj,
 #'                 pheno = pheno_obj,
 #'                 geno = geno_obj,
-#'                 gamma = ans$setgamma)
+#'                 lambda = ans$setlambda)
 #'
 #'
 #' }
@@ -106,7 +106,7 @@ FPR4AM <- function(
                trait=trait,
                numreps = 200,
                fformula  = NULL,
-               numgammas = 20,
+               numlambdas = 20,
                geno=NULL,
                pheno=NULL,
                map = NULL,
@@ -121,7 +121,7 @@ FPR4AM <- function(
   set.seed(seed)
   # need some checks in here ... 
   error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait,
-                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=NULL, falseposrate=falseposrate )
+                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, lambda=NULL, falseposrate=falseposrate )
 
  if(error.code){
    message("\n The Lion function FPR4AM has terminated with errors.\n")
@@ -351,7 +351,7 @@ cat(".")
 
 
 
-gamma <- seq(0,1,length.out=numgammas)
+lambda <- seq(0,1,length.out=numlambdas)
 
 
 # Fit null model and calculate extBIC
@@ -359,7 +359,7 @@ vc <- list()
 best_ve <- rep(NA, numreps)
 best_vg <- rep(NA, numreps)
 MaxLike <- rep(NA, numreps)
-extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(gamma))
+extBIC <-   matrix(data=NA, nrow=numreps, ncol=length(lambda))
 
 # Found that REML step gives better results, at least for small sample size
 message("\n Calculating variance components  for null model")
@@ -392,17 +392,17 @@ rep(NA, numreps)
 # we only need to do this once, for a single rep and all the rest
 # will have the same null extBIC value. 
  Args <- list("trait"= bigpheno[,1], "currentX"=currentX_null, "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "gamma"=gamma, eig.L=eig.L)
+                       "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "lambda"=lambda, eig.L=eig.L)
 message(" Calculating extBIC for null model")
  extBIC <-     do.call(.calc_extBIC_MLE, Args)
      gc()
  cat(".")
 
-extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(gamma)) # formed matrix of null extBIC values
+extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(lambda)) # formed matrix of null extBIC values
  cat(".")
 
 
- extBIC_alternate <- matrix(data=NA, nrow=numreps, ncol=length(gamma))
+ extBIC_alternate <- matrix(data=NA, nrow=numreps, ncol=length(lambda))
  ## => only need to do once. 
  ## Looks at the stability of the MMt calculation especially if there are near identical rows of data in M
  error_checking <- FALSE
@@ -505,7 +505,7 @@ for(ii in 1:numreps){
 
 
   Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
-                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "gamma"=gamma, eig.L=eig.L)
+                       "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "lambda"=lambda, eig.L=eig.L)
 
 
  if (!quiet) message(" calc_extBIC_MLE ")
@@ -515,32 +515,32 @@ for(ii in 1:numreps){
 
 
 
-# calculate FDR for gamma value
+# calculate FDR for lambda value
 mat <- (extBIC_alternate < extBIC)
 falsepos <- colSums(mat)/numreps
 
 cat("\n\n")
-cat(" Table: Empirical false positive rates, given gamma value for model selection. \n\n")
+cat(" Table: Empirical false positive rates, given lambda value for model selection. \n\n")
 cat("  Gamma    |  False Pos Rate  \n")
 cat(" ---------------------------- \n")
-for(ii in 1:length(gamma)){
-cat( gamma[ii], " | ", round(falsepos[ii], 3), "\n")
+for(ii in 1:length(lambda)){
+cat( lambda[ii], " | ", round(falsepos[ii], 3), "\n")
 } 
 cat(" ----------------------------- \n")
 
-# find best gamma value 
+# find best lambda value 
 
 d <- abs(falsepos - falseposrate)
 indx <- which(min(d) == d)
 if(length(indx) > 1){
     indx <- max(indx)   ## picking most conservative value if there are multiple values
 }
- setgamma <- gamma[indx]
+ setlambda <- lambda[indx]
  
-cat(" For a false positive rate of ", falseposrate, " set the gamma parameter in the AM function to ", setgamma, "\n")
+cat(" For a false positive rate of ", falseposrate, " set the lambda parameter in the AM function to ", setlambda, "\n")
 
 
- return(list(numreps=numreps, gamma=gamma, falsepos=falsepos, setgamma = setgamma    ))
+ return(list(numreps=numreps, lambda=lambda, falsepos=falsepos, setlambda = setlambda    ))
 
 
 

@@ -5,7 +5,7 @@
 \title{Set the false positive rate for \code{AM}}
 \usage{
 FPR4AM(falseposrate = 0.05, trait = trait, numreps = 200,
-  fformula = NULL, numgammas = 20, geno = NULL, pheno = NULL,
+  fformula = NULL, numlambdas = 20, geno = NULL, pheno = NULL,
   map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0, seed = 101)
 }
 \arguments{
@@ -18,7 +18,7 @@ positive rate. We have found 200 replicates to be sufficient but more is better.
 
 \item{fformula}{the right hand side formula for the fixed effects part of the model.}
 
-\item{numgammas}{the number of equidistant gamma values from 0 to 1 for which to calculate the false positive rate of the model building process. This should not need 
+\item{numlambdas}{the number of equidistant lambda values from 0 to 1 for which to calculate the false positive rate of the model building process. This should not need 
 adjusting.}
 
 \item{geno}{the R  object obtained from running \code{\link{ReadMarker}}. This must be specified.}
@@ -42,25 +42,25 @@ This option has not yet been implemented.}
 A list with the following components:
 \describe{
 \item{numreps:}{the number of permutations performed.}
-\item{gamma:}{the vector of gamma values.}
-\item{falsepos:}{the false positive rates for the gamma values.}
-\item{setgamma:}{the gamma value that gives a false positive rate of \code{falseposrate} }
+\item{lambda:}{the vector of lambda values.}
+\item{falsepos:}{the false positive rates for the lambda values.}
+\item{setlambda:}{the lambda value that gives a false positive rate of \code{falseposrate} }
 }
 }
 \description{
-The gamma parameter in \code{AM} controls the false positive rate of the model 
-building process. This function uses permutation to  find the gamma value for a desired false positive rate.
+The lambda parameter in \code{AM} controls the false positive rate of the model 
+building process. This function uses permutation to  find the lambda value for a desired false positive rate.
 }
 \details{
-The false positive rate for \code{\link{AM}} is controlled by its gamma parameter. Values close to 
+The false positive rate for \code{\link{AM}} is controlled by its lambda parameter. Values close to 
 1 (0) decreases (increases) the false positive rate of detecting SNP-trait associations. There is no 
-analytical way of setting gamma for a specified false positive rate. So we are using permutation to do this empirically. 
+analytical way of setting lambda for a specified false positive rate. So we are using permutation to do this empirically. 
 
-By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding gamma value for \code{\link{AM}}. 
+By setting \code{falseposrate} to the desired false positive rate, this function will find the corresponding lambda value for \code{\link{AM}}. 
 
-A table of other gamma values for a range of false positive rates is also given. 
+A table of other lambda values for a range of false positive rates is also given. 
 
-To increase the precision of the gamma estimates, increase \code{numreps}.
+To increase the precision of the lambda estimates, increase \code{numreps}.
 }
 \examples{
   \dontrun{ 
@@ -115,7 +115,7 @@ To increase the precision of the gamma estimates, increase \code{numreps}.
                 map = map_obj,
                 pheno = pheno_obj,
                 geno = geno_obj,
-                gamma = ans$setgamma)
+                lambda = ans$setlambda)
 
 
 }

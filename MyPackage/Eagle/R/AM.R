@@ -11,6 +11,8 @@
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
 #'              be assumed. 
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
+#' @param  avoidproxcont a boolean value. If TRUE, then proximal contamination is avoided by removing all snp on the chromosome of interest. 
+#'                        By setting this parameter to TRUE, this does incur a higher computational cost.  
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
 #'               is to assume there are no gpu available.  This option has not yet been implemented.
@@ -19,19 +21,19 @@
 #' @param maxit     an integer value for the maximum number of forward steps to be performed.  This will rarely need adjusting. 
 #' @param fixit     a boolean value. If TRUE, then \code{maxit} iterations are performed, regardless of the value of the model fit value extBIC. If FALSE, 
 #' then the model building process is stopped when extBIC increases in value. 
-#' @param gamma     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
-#' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  gamma value. 
+#' @param lambda     a value between 0 and 1 for the regularization parameter for the extBIC. Values close to 0 lead to an anti-conservative test. Values close to 1 lead to a  
+#' more conservative test. If this value is left unspecified, a default value of 1 is assumed. See \code{\link{FPR4AM}} for an empirical approach for setting the  lambda value. 
 #'
 #' @details
 #'
 #' This function is used to perform genome-wide association mapping. The phenotypic and SNP data should already be read in prior to running this function 
 #' (see below for examples).  \code{AM} builds the linear mixed model iteratively, via forward selection. It is through this model building process that we 
 #' identify the SNP-trait associations.  We use the extended BIC (extBIC) to decide on the 'best' model and when to stop looking for a better model. 
-#' The conservativeness of extBIC can be adjusted.  If the \code{gamma} parameter is left at is default setting, then \code{AM} is run in its most 
+#' The conservativeness of extBIC can be adjusted.  If the \code{lambda} parameter is left at is default setting, then \code{AM} is run in its most 
 #' conservative state (i.e. false positives are minimized but this also decreases the chance of true positives). 
 #'
 #' When interested in running  \code{AM}  at a certain false positive rate, use \code{\link{FPR4AM}}. This function uses permutation to 
-#' find the gamma value for a desired false positive rate for \code{AM}. 
+#' find the lambda value for a desired false positive rate for \code{AM}. 
 #'
 #' Below are some examples of how to use \code{AM} for genome-wide association mapping of data. 
 #'
@@ -57,7 +59,7 @@
 #'   
 #'   pheno_obj <- ReadPheno(filename='pheno.txt')
 #'
-#'  # since gamma is not specified, this will run AM conservatively (where the false positive rate is lowest).
+#'  # since lambda is not specified, this will run AM conservatively (where the false positive rate is lowest).
 #'   res <- AM(trait='y', geno=geno_obj, pheno=pheno_obj)
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
@@ -92,13 +94,13 @@
 #'
 #'   map_obj   <- ReadMap(filename='/my/dir/map.txt')
 #'
-#'   # FPR4AM calculates the gamma value corresponding to a desired false positive rate of 5\%
+#'   # FPR4AM calculates the lambda value corresponding to a desired false positive rate of 5\%
 #'   ans <- FPR4AM(falseposrate=0.05, numreps=200, trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
 #'             geno=geno_obj, pheno=pheno_obj, map=map_obj)
 #'
 #'   # performs association mapping with a 5\% false positive rate
 #'   res <- AM(trait='y2', fformula=c('cov1 + cov2 + pc1 + pc2'), 
-#'             geno=geno_obj, pheno=pheno_obj, map=map_obj,  gamma=ans$setgamma)
+#'             geno=geno_obj, pheno=pheno_obj, map=map_obj,  lambda=ans$setlambda)
 #' }
 #' A table of results is printed to the screen and saved in the R object \code{res}. 
 #'}
@@ -192,7 +194,7 @@
 #' \item{availmemGb:}{amount of RAM in gigabytes that has been set by the user.}
 #' \item{quiet:}{ boolean value of the parameter.}
 #' \item{extBIC:}{numeric vector with the extended BIC values for the loci  found to be in  significant association with the trait.}
-#' \item{gamma}{the numeric value of the parameter.}
+#' \item{lambda}{the numeric value of the parameter.}
 #'}
 #'
 #' @examples
@@ -250,12 +252,13 @@ AM <- function(trait=NULL,
                pheno=NULL, 
                map = NULL,
                Zmat = NULL,
+               avoidproxcont = FALSE,
                ncpu=detectCores(),
                ngpu=0,
                quiet=TRUE,
                maxit=40,
                fixit=FALSE,
-               gamma=1 
+               lambda=1 
                ){
 
  ## Core function for performing whole genome association mapping with EMMA
@@ -272,8 +275,8 @@ AM <- function(trait=NULL,
  assign("ngpu", 0 , envir=computer)
 
 
- if(is.null(gamma))
-    gamma <- 1
+ if(is.null(lambda))
+    lambda <- 1
 
 
  ## print tile
@@ -281,7 +284,7 @@ AM <- function(trait=NULL,
 
 
  error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait, 
-                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, gamma=gamma )
+                     map=map, pheno=pheno, geno=geno, Zmat=Zmat, lambda=lambda )
  if(error.code){
    message("\n The Eagle function AM has terminated with errors.\n")
    return(NULL)
@@ -406,50 +409,73 @@ if(!is.null(fformula)){
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
-     if(itnum==1){
-        if(!quiet)
+#    if(itnum==1){
+       if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
-           start <- Sys.time()
-           MMt <- do.call(.calcMMt, Args)  
-           end <- Sys.time()
-           #print(c(" MMt time ", end-start))
- 
-           start <- Sys.time()
-           MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
-           end <- Sys.time()
-           #print(c(" MMt_sqrt_and_sqrtinv  time ", end-start  ) )
-
-         if(!quiet)
-             doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-           start <- Sys.time()
-        invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-           end <- Sys.time()
-           #print(c(" inv MMt time ", end-start))
-
-         if(is.null(Zmat)){
-           start <- Sys.time()
-              eig.L <- emma.eigen.L.wo.Z(MMt )
-           end <- Sys.time()
-           #print(c(" eigen MMt  ", end-start))
-
-         } else  {
-               eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
-          }
 
 
-        gc()
-     }  
+
+
+
+#       if ( avoidproxcont  && length(unique(map[,2]))>1 ){
+#        # removing snp on each chrm in turn 
+#        for (ii in unique(map[,2])){
+#           indx <- which(map[,2]==ii)   ## marker indexes on chrm to be removed
+#           MMt <- .calcMMt(geno=geno,ncpu=ncpu,selected_loci=indx, quiet=quiet)
+#           invMMt <- chol2inv(chol(MMt)) 
+#           MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
+#           if(is.null(Zmat)){
+#              eig.L <- emma.eigen.L.wo.Z(MMt )
+#           } else  {
+#              eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
+#           }
+#           chrmnum <- which(unique(map[,2]) == ii)
+#           if(.Platform$OS.type == "unix") {
+#              save(MMt, invMMt,  MMt_sqrt_and_sqrtinv, eig.L, file=paste0(tempdir(), "/MMt", chrmnum, ".RData"))  
+#           } else {
+#              save(MMt, invMMt,  MMt_sqrt_and_sqrtinv, eig.L, file=paste0(tempdir(), "\\MMt", chrmnum, ".RData"))  
+#           }
+#           if(!quiet)
+#              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
+#
+#        }   ## for (ii in .... 
+#      }
+       gc()
+
+       # processing entire genome of data
+       # Here, the order of calculating the MMt is important. 
+       # Want MMt = MMt entire genome to be what this if contion exits with
+       MMt <- .calcMMt( geno=geno, ncpu=ncpu, selected_loci= selected_loci, quiet=quiet)
+       invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+       MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
+       if(is.null(Zmat)){
+            eig.L <- emma.eigen.L.wo.Z(MMt )
+        } else  {
+            eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
+        }
+        if(!quiet)
+            doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
+
+#     }  ## if itnum==1  
 
 
  
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-           start <- Sys.time()
+
+ #    if ( avoidproxcont && itnum > 1){
+ #       chrmnum <- which( map[new_selected_locus[length(new_selected_locus)], 2] == unique(map[,2]) )
+ #       if(.Platform$OS.type == "unix") {
+ #              load(paste0(tempdir(), "/MMt", chrmnum, ".RData"))
+ #        } else {
+ #              load(paste0(tempdir(), "\\MMt", chrmnum, ".RData"))
+ #        }
+#
+#     }  ## end if ( avoidproxcont ... 
+
      vc <- .calcVC(trait=pheno[, trait ], Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt, 
                           eig.L=eig.L) 
-           end <- Sys.time()
-           #print(c(" calculate VC  ", end-start))
 
      gc()
      best_ve <- vc[["ve"]]
@@ -458,7 +484,7 @@ if(!is.null(fformula)){
     
            start <- Sys.time()
      new_extBIC <- .calc_extBIC(vc$ML , pheno[, trait ], currentX, geno, 
-                       numberSNPselected=(itnum-1), quiet, gamma) 
+                       numberSNPselected=(itnum-1), quiet, lambda) 
            end <- Sys.time()
            #print(c(" .calc_extBIC  ", end-start))
 
@@ -526,14 +552,14 @@ if(!is.null(fformula)){
          ## ==> .print_header()
          ## need to remove the last selected locus since we don't go on and calculate its H and extBIC 
          ## under this new model. 
-         ##===> .print_final(selected_loci[-length(selected_loci)], map, extBIC, gamma)
+         ##===> .print_final(selected_loci[-length(selected_loci)], map, extBIC, lambda)
          ##===>sigres <- .form_results(traitname=trait, 
          ##                        trait=pheno[, trait ], 
          ##                        selected_loci=selected_loci[-length(selected_loci)], 
          ##                        fformula=fformula,
          ##                        indxNA_pheno=indxNA_pheno,
          ##                        ncpu=ncpu,  availmemGb=geno[["availmemGb"]],
-         ##                         quiet=quiet, extBIC=extBIC, gamma=gamma, 
+         ##                         quiet=quiet, extBIC=extBIC, lambda=lambda, 
          ##                        geno=geno, pheno=pheno, map=map, Zmat=Zmat, outlierstat=outlierstat) 
     }
  
@@ -541,12 +567,12 @@ if(!is.null(fformula)){
 
 if( itnum > maxit){
    .print_header()
-   .print_final(selected_loci[-length(selected_loci)], map,  extBIC, gamma)
+   .print_final(selected_loci[-length(selected_loci)], map,  extBIC, lambda)
 message("The maximum number of iterations ", maxit, " has been reached. ")
 message("To increase the maximum number of iterations, adjust ")
 message(" the maxit parameter in the AM function call. \n ")
     sigres <- .form_results(traitname=trait, trait=pheno[, trait ], selected_loci[-length(selected_loci)],   fformula, 
-                     indxNA_pheno,  ncpu, geno[["availmemGb"]], quiet,  extBIC, gamma,
+                     indxNA_pheno,  ncpu, geno[["availmemGb"]], quiet,  extBIC, lambda,
                      geno, pheno, map, Zmat, outlierstat )   
 
 } else {
@@ -555,16 +581,16 @@ message(" the maxit parameter in the AM function call. \n ")
         .print_header()
         .print_final(selected_loci[-length(selected_loci)], 
                      map, 
-                     extBIC[-length(selected_loci)], gamma )
+                     extBIC[-length(selected_loci)], lambda )
         sigres <- .form_results(traitname=trait, pheno[, trait ], selected_loci[-length(selected_loci)],   fformula, 
                          indxNA_pheno,  ncpu,  geno[["availmemGb"]], quiet, 
-                         extBIC[-length(selected_loci)], gamma, 
+                         extBIC[-length(selected_loci)], lambda, 
                          geno, pheno, map, Zmat, outlierstat )   
     } else {
         .print_header()
-        .print_final(selected_loci, map, extBIC, gamma )
+        .print_final(selected_loci, map, extBIC, lambda )
         sigres <- .form_results(traitname=trait, pheno[, trait ], selected_loci,   fformula, 
-                         indxNA_pheno,  ncpu,  geno[["availmemGb"]], quiet, extBIC, gamma, 
+                         indxNA_pheno,  ncpu,  geno[["availmemGb"]], quiet, extBIC, lambda, 
                          geno, pheno, map, Zmat, outlierstat )   
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)

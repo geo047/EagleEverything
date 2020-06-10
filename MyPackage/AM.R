@@ -11,6 +11,8 @@
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
 #'              be assumed. 
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
+#' @param  avoidproxcont a boolean value. If TRUE, then proximal contamination is avoided by removing all snp on the chromosome of interest. 
+#'                        By setting this parameter to TRUE, this does incur a higher computational cost.  
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
 #'               is to assume there are no gpu available.  This option has not yet been implemented.
@@ -250,6 +252,7 @@ AM <- function(trait=NULL,
                pheno=NULL, 
                map = NULL,
                Zmat = NULL,
+               avoidproxcont = FALSE,
                ncpu=detectCores(),
                ngpu=0,
                quiet=TRUE,
@@ -406,50 +409,73 @@ if(!is.null(fformula)){
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
-     if(itnum==1){
-        if(!quiet)
+#    if(itnum==1){
+       if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
-           start <- Sys.time()
-           MMt <- do.call(.calcMMt, Args)  
-           end <- Sys.time()
-           #print(c(" MMt time ", end-start))
- 
-           start <- Sys.time()
-           MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
-           end <- Sys.time()
-           #print(c(" MMt_sqrt_and_sqrtinv  time ", end-start  ) )
-
-         if(!quiet)
-             doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-           start <- Sys.time()
-        invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
-           end <- Sys.time()
-           #print(c(" inv MMt time ", end-start))
-
-         if(is.null(Zmat)){
-           start <- Sys.time()
-              eig.L <- emma.eigen.L.wo.Z(MMt )
-           end <- Sys.time()
-           #print(c(" eigen MMt  ", end-start))
-
-         } else  {
-               eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
-          }
 
 
-        gc()
-     }  
+
+
+
+#       if ( avoidproxcont  && length(unique(map[,2]))>1 ){
+#        # removing snp on each chrm in turn 
+#        for (ii in unique(map[,2])){
+#           indx <- which(map[,2]==ii)   ## marker indexes on chrm to be removed
+#           MMt <- .calcMMt(geno=geno,ncpu=ncpu,selected_loci=indx, quiet=quiet)
+#           invMMt <- chol2inv(chol(MMt)) 
+#           MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
+#           if(is.null(Zmat)){
+#              eig.L <- emma.eigen.L.wo.Z(MMt )
+#           } else  {
+#              eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
+#           }
+#           chrmnum <- which(unique(map[,2]) == ii)
+#           if(.Platform$OS.type == "unix") {
+#              save(MMt, invMMt,  MMt_sqrt_and_sqrtinv, eig.L, file=paste0(tempdir(), "/MMt", chrmnum, ".RData"))  
+#           } else {
+#              save(MMt, invMMt,  MMt_sqrt_and_sqrtinv, eig.L, file=paste0(tempdir(), "\\MMt", chrmnum, ".RData"))  
+#           }
+#           if(!quiet)
+#              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
+#
+#        }   ## for (ii in .... 
+#      }
+       gc()
+
+       # processing entire genome of data
+       # Here, the order of calculating the MMt is important. 
+       # Want MMt = MMt entire genome to be what this if contion exits with
+       MMt <- .calcMMt( geno=geno, ncpu=ncpu, selected_loci= selected_loci, quiet=quiet)
+       invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
+       MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
+       if(is.null(Zmat)){
+            eig.L <- emma.eigen.L.wo.Z(MMt )
+        } else  {
+            eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
+        }
+        if(!quiet)
+            doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
+
+#     }  ## if itnum==1  
 
 
  
      if(!quiet){
         message(" Calculating variance components for multiple-locus model. \n")
      }
-           start <- Sys.time()
+
+ #    if ( avoidproxcont && itnum > 1){
+ #       chrmnum <- which( map[new_selected_locus[length(new_selected_locus)], 2] == unique(map[,2]) )
+ #       if(.Platform$OS.type == "unix") {
+ #              load(paste0(tempdir(), "/MMt", chrmnum, ".RData"))
+ #        } else {
+ #              load(paste0(tempdir(), "\\MMt", chrmnum, ".RData"))
+ #        }
+#
+#     }  ## end if ( avoidproxcont ... 
+
      vc <- .calcVC(trait=pheno[, trait ], Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt, 
                           eig.L=eig.L) 
-           end <- Sys.time()
-           #print(c(" calculate VC  ", end-start))
 
      gc()
      best_ve <- vc[["ve"]]
