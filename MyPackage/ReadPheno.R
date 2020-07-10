@@ -140,12 +140,14 @@ message(" Number of individuals:       ", nrow(phenos), "\n")
 message(" Number of columns:           ", ncol(phenos), "\n\n")
 message(" First 5 rows of the phenotype file are \n")
 if(nrow(phenos) > 5){
+  mat <- as.matrix(phenos[1:5,])
   for(ii in 1:5){
-  message(paste(phenos[ii,], collapse=" "))
+  message(paste(as.character(mat[ii,]), collapse="   "))
   }
 } else {
+  mat <- as.matrix(phenos)
   for(ii in 1:nrow(phenos) ){
-  message(paste(phenos[ii,], collapse=" "))
+  message(paste(as.character(mat[ii,]), collapse="   "))
   }
 }
 

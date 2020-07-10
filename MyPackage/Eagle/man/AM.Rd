@@ -5,8 +5,8 @@
 \title{multiple-locus Association Mapping}
 \usage{
 AM(trait = NULL, fformula = NULL, geno = NULL, pheno = NULL,
-  map = NULL, Zmat = NULL, avoidproxcont = FALSE, ncpu = detectCores(),
-  ngpu = 0, quiet = TRUE, maxit = 40, fixit = FALSE, lambda = 1)
+  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0,
+  quiet = TRUE, maxit = 40, fixit = FALSE, lambda = 1)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}
@@ -23,9 +23,6 @@ not specified, only an overall mean will be fitted.}
 be assumed.}
 
 \item{Zmat}{the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed.}
-
-\item{avoidproxcont}{a boolean value. If TRUE, then proximal contamination is avoided by removing all snp on the chromosome of interest. 
-By setting this parameter to TRUE, this does incur a higher computational cost.}
 
 \item{ncpu}{a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically.}
 

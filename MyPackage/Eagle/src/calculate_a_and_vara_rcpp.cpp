@@ -107,8 +107,10 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
   }
 
 
-
-   f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
+  // changed this back to calculating all values so that we would get a 
+  // test statistic across the entire genome and better for interpretation. 
+   // f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.75 ) ) ; 
+   f = (ans.array().abs()  > (ans.array().abs().maxCoeff() * 0.0 ) ) ; 
       
    long  NumOfaAboveThreshold  = Rcpp::sum(f);
   Rcpp::NumericVector indx(NumOfaAboveThreshold);

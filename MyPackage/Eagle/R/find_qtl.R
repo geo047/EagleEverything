@@ -102,6 +102,7 @@
                        transformed_vara=var_hat_a,
                        quiet=quiet)
 
+
      if(!quiet){
         doquiet(dat=a_and_vara[["a"]], num_markers=5, lab="BLUPs for full model")
         doquiet(dat=a_and_vara[["vara"]], num_markers=5, lab="SE of BLUPs for full model")

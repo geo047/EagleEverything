@@ -4,6 +4,8 @@
 #' to the file is required. 
 #' @param csv   a logical value. When \code{TRUE}, a csv file format is assumed. When \code{FALSE}, a space separated format is assumed. 
 #' @param header   a logical value. When \code{TRUE}, the first row of the file contains the column headings. 
+#' @param ...   arguments to be passed to read.table such as \code{skip}, \code{sep}. See \code{\link{read.table}} so the list 
+#'             of arguments. 
 #' @details
 #' Association mapping, unlike classical linkage mapping, 
 #' does not require a map to find marker-trait associations. 
@@ -41,7 +43,7 @@
 #' head(map_obj)
 #'
 #'
-ReadMap  <- function( filename = NULL, csv=FALSE, header=TRUE)
+ReadMap  <- function( filename = NULL, header=TRUE, ...)
 {
  mapfile <- fullpath(filename)
  error.code <-  check.inputs(file_genotype=filename)
@@ -50,11 +52,7 @@ ReadMap  <- function( filename = NULL, csv=FALSE, header=TRUE)
    return(FALSE)
   }
   sep=""
-  if(csv) sep=","
-  print(" in ReadMap .. ")
-  print(csv)
-  print(header)
-  map <- try(read.table(mapfile, header=header, sep=sep) )
+  map <- try(read.table(mapfile, header=header, ...) )
 
   if (class(map) == "try-error"){
     message(" ReadMap has terminated with errors.")
@@ -85,12 +83,14 @@ message(" Number of chromosomes:       ", length(unique(map[[2]])), "\n\n")
 message(" First 5 markers of the map file are \n")
 
 if(nrow(map) > 5){
+  mat <- as.matrix(map[1:5,])
   for(ii in 1:5){
-  message(paste(map[ii,], collapse=" "))
+  message(paste(mat[ii,], collapse="     "))
   }
 } else {
+  mat <- as.matrix(map)
   for(ii in 1:nrow(map) ){
-  message(paste(map[ii,], collapse=" "))
+  message(paste(mat[ii,], collapse="     "))
   }
 }
 

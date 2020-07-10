@@ -4,6 +4,12 @@ check.inputs.mlam <- function (ncpu,  colname.trait, map, pheno,
 {
   ## internal function for AM
 
+if(!is.data.frame(pheno)){
+   message("Error: the phenotypic data needs to be stored as a data.frame. The command as.data.frame may help.     \n")
+   return(TRUE)
+}
+
+
 if(!is.null(falseposrate)){
   if(!is.numeric(falseposrate)){
     message("Error: the falseposrate parameter must be a value between 0 and 1. \n")
@@ -15,14 +21,12 @@ if(!is.null(falseposrate)){
    }
  }
 }
-
 if(is.factor(pheno[[colname.trait]])){
    message("Error: the trait data in ", colname.trait, " is of class factor. Eagle can only handle quantitative traits.   \n")
    message("       Factors are assumed by R if the trait data contains alphanumeric values. \n")
    message("       To proceed, change the data in ", colname.trait, " in the input file so that the trait has only numeric values. \n")
    return(TRUE)
 }
-
 
 if(is.null(colname.trait)){
    message("Error: the name of the column containing the trait data must be given. \n")

@@ -4,15 +4,18 @@
 \alias{ReadMap}
 \title{Read map file}
 \usage{
-ReadMap(filename = NULL, csv = FALSE, header = TRUE)
+ReadMap(filename = NULL, header = TRUE, ...)
 }
 \arguments{
 \item{filename}{contains the name of the map file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
 to the file is required.}
 
-\item{csv}{a logical value. When \code{TRUE}, a csv file format is assumed. When \code{FALSE}, a space separated format is assumed.}
-
 \item{header}{a logical value. When \code{TRUE}, the first row of the file contains the column headings.}
+
+\item{...}{arguments to be passed to read.table such as \code{skip}, \code{sep}. See \code{\link{read.table}} so the list 
+of arguments.}
+
+\item{csv}{a logical value. When \code{TRUE}, a csv file format is assumed. When \code{FALSE}, a space separated format is assumed.}
 }
 \value{
 a data frame is returned of the map data.

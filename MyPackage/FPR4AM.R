@@ -106,7 +106,7 @@ FPR4AM <- function(
                trait=trait,
                numreps = 200,
                fformula  = NULL,
-               numlambdas = 20,
+               numlambdas = 50,
                geno=NULL,
                pheno=NULL,
                map = NULL,
@@ -275,26 +275,48 @@ if(!is.null(fformula)){
  }
  mod <- lm( formula=ff , data=pheno )
  res <- residuals(mod)
+ res <- rnorm(length(res))
 
-  pheno[, "residuals"] <- res
+
+
+
+ pheno[, "residuals"] <- res
+
 
  message(cat(" Setting up null model.  "))
 
  # create big pheno: contains all permutations 
 bigpheno <- matrix(data=NA, nrow=length(res) , ncol=numreps)
 for(ii in 1:numreps){
-  #sperm <- pheno[, "residuals"]
   sperm <- res
   sperm <- sperm[sample(1:length(sperm), length(sperm), FALSE)]
+#  sperm <- rnorm(length(sperm))
   bigpheno[, ii] <- sperm 
 }
 colnames(bigpheno) <- paste0("res", 1:numreps)
+#lng <- rep(NA, numreps)
+#
+#for(ii in 1:numreps){
+#print(ii)
+#  res <- AM(trait= paste0("res",ii), lambda=0.6 , geno=geno, map=map, pheno=as.data.frame(bigpheno), fformula=NULL)
+#  lng[ii] <- length(res$Mrk) >  1  ## number of false positives
+#}
+#print(" Type 1 error rate for 0.5 when calculated the long way .... ")
+#print(sum(lng)/numreps)
+#print(" --------------------" )
+#
+#stop()
+
+
+
+
+
 
 cat(".")
 
  ## build design matrix currentX
  ## no missing data at this stage to worry about
- currentX_null <- .build_design_matrix(pheno=bigpheno,  fformula=NULL, quiet=quiet)
+ currentX_null <- .build_design_matrix(pheno=bigpheno,  fformula=NULL  , quiet=quiet)
  ## check currentX for solve(crossprod(X, X)) singularity
  chck <- tryCatch({ans <- solve(crossprod(currentX_null, currentX_null))},
            error = function(err){
@@ -372,9 +394,12 @@ rep(NA, numreps)
 
  for (ii in 1:numreps){
    #vc[[ii]] <- .calcVC(trait=bigpheno[, ii], Zmat=Zmat, currentX=currentX_null,MMt=MMt )
-   #gc()
-   #best_ve[ii] <- vc[[ii]][["ve"]]
-   #best_vg[ii] <- vc[[ii]][["vg"]]
+
+
+
+   gc()
+#==>   best_ve[ii] <- vc[[ii]][["ve"]]
+#==>   best_vg[ii] <- vc[[ii]][["vg"]]
    #MaxLike[ii] <- vc[[ii]][["ML"]]
 
 
@@ -394,8 +419,13 @@ rep(NA, numreps)
  Args <- list("trait"= bigpheno[,1], "currentX"=currentX_null, "geno"=geno, "MMt"=MMt,
                        "Zmat"=Zmat, "numberSNPselected"=0, "quiet"=quiet, "lambda"=lambda, eig.L=eig.L)
 message(" Calculating extBIC for null model")
+
+
  extBIC <-     do.call(.calc_extBIC_MLE, Args)
      gc()
+
+
+
  cat(".")
 
 extBIC <- matrix(data=extBIC, nrow=numreps, ncol=length(lambda)) # formed matrix of null extBIC values
@@ -502,14 +532,17 @@ for(ii in 1:numreps){
                               loci_indx=new_selected_locus,
                               dim_of_Mt=geno[["dim_of_Mt"]],
                               map=map )
-
-
+  ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+ # currentX[,2] <- sample(c(0,1,2), nrow(currentX), TRUE)
+  ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
   Args <- list("trait"= bigpheno[,ii], "currentX"=currentX, "geno"=geno, "MMt"=MMt,
                        "Zmat"=Zmat, "numberSNPselected"=1, "quiet"=quiet, "lambda"=lambda, eig.L=eig.L)
 
 
  if (!quiet) message(" calc_extBIC_MLE ")
  extBIC_alternate[ii, ] <-     do.call(.calc_extBIC_MLE, Args)
+
+
 
 }  ## end for reps
 
@@ -518,6 +551,9 @@ for(ii in 1:numreps){
 # calculate FDR for lambda value
 mat <- (extBIC_alternate < extBIC)
 falsepos <- colSums(mat)/numreps
+
+
+
 
 cat("\n\n")
 cat(" Table: Empirical false positive rates, given lambda value for model selection. \n\n")

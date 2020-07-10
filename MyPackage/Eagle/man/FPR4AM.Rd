@@ -5,7 +5,7 @@
 \title{Set the false positive rate for \code{AM}}
 \usage{
 FPR4AM(falseposrate = 0.05, trait = trait, numreps = 200,
-  fformula = NULL, numlambdas = 20, geno = NULL, pheno = NULL,
+  fformula = NULL, numlambdas = 50, geno = NULL, pheno = NULL,
   map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0, seed = 101)
 }
 \arguments{

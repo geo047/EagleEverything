@@ -12,6 +12,7 @@ import(ggthemes)
 import(shinyFiles, shiny,  shinythemes,  stats, utils) 
 
 export(
+   PlotAM,
    FPR4AM,
    ReadPheno,
    ReadMarker,

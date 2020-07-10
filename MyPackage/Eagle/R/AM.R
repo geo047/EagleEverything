@@ -11,8 +11,6 @@
 #' @param map   the R object obtained from running \code{\link{ReadMap}}. If not specified, a generic map will 
 #'              be assumed. 
 #' @param Zmat     the R object obtained from running \code{\link{ReadZmat}}. If not specified, an identity matrix will be assumed. 
-#' @param  avoidproxcont a boolean value. If TRUE, then proximal contamination is avoided by removing all snp on the chromosome of interest. 
-#'                        By setting this parameter to TRUE, this does incur a higher computational cost.  
 #' @param ncpu a integer  value for the number of CPU that are available for distributed computing.  The default is to determine the number of CPU automatically. 
 #' @param ngpu   a integer value for the number of gpu available for computation.  The default
 #'               is to assume there are no gpu available.  This option has not yet been implemented.
@@ -252,7 +250,6 @@ AM <- function(trait=NULL,
                pheno=NULL, 
                map = NULL,
                Zmat = NULL,
-               avoidproxcont = FALSE,
                ncpu=detectCores(),
                ngpu=0,
                quiet=TRUE,
@@ -281,7 +278,6 @@ AM <- function(trait=NULL,
 
  ## print tile
  .print_title()
-
 
  error.code <- check.inputs.mlam(ncpu=ncpu ,  colname.trait=trait, 
                      map=map, pheno=pheno, geno=geno, Zmat=Zmat, lambda=lambda )
@@ -333,7 +329,6 @@ if(!is.null(fformula)){
   }  ## if length grep
  } ## end if(!is.null(fformula))
 
-
   ## check that terms in  formula are in pheno file
  if(!is.null(fformula)){
   res <- tryCatch(
@@ -357,7 +352,6 @@ if(!is.null(fformula)){
 
 
  
-
  ## check for NA's in trait 
  indxNA_pheno <- check.for.NA.in.trait(trait=pheno[[trait]])
 
@@ -366,7 +360,6 @@ if(!is.null(fformula)){
  if(length(indxNA_pheno) > 0){
        pheno[indxNA_pheno , trait ] <- 0 
  }
-
 
 
  ## build design matrix currentX
@@ -391,7 +384,6 @@ if(!is.null(fformula)){
       }
   }
 
-
   
  ## Initialization
  continue <- TRUE
@@ -409,42 +401,12 @@ if(!is.null(fformula)){
                     ncpu=ncpu,selected_loci=selected_loci,
                     quiet=quiet)
 
-#    if(itnum==1){
+    if(itnum==1){
        if(!quiet)
            message(" quiet=FALSE: calculating M %*% M^t. \n")
 
-
-
-
-
-#       if ( avoidproxcont  && length(unique(map[,2]))>1 ){
-#        # removing snp on each chrm in turn 
-#        for (ii in unique(map[,2])){
-#           indx <- which(map[,2]==ii)   ## marker indexes on chrm to be removed
-#           MMt <- .calcMMt(geno=geno,ncpu=ncpu,selected_loci=indx, quiet=quiet)
-#           invMMt <- chol2inv(chol(MMt)) 
-#           MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
-#           if(is.null(Zmat)){
-#              eig.L <- emma.eigen.L.wo.Z(MMt )
-#           } else  {
-#              eig.L <- emma.eigen.L.w.Z(Zmat, MMt)
-#           }
-#           chrmnum <- which(unique(map[,2]) == ii)
-#           if(.Platform$OS.type == "unix") {
-#              save(MMt, invMMt,  MMt_sqrt_and_sqrtinv, eig.L, file=paste0(tempdir(), "/MMt", chrmnum, ".RData"))  
-#           } else {
-#              save(MMt, invMMt,  MMt_sqrt_and_sqrtinv, eig.L, file=paste0(tempdir(), "\\MMt", chrmnum, ".RData"))  
-#           }
-#           if(!quiet)
-#              doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
-#
-#        }   ## for (ii in .... 
-#      }
        gc()
 
-       # processing entire genome of data
-       # Here, the order of calculating the MMt is important. 
-       # Want MMt = MMt entire genome to be what this if contion exits with
        MMt <- .calcMMt( geno=geno, ncpu=ncpu, selected_loci= selected_loci, quiet=quiet)
        invMMt <- chol2inv(chol(MMt))   ## doesn't use GPU
        MMt_sqrt_and_sqrtinv  <- calculateMMt_sqrt_and_sqrtinv(MMt=MMt, checkres=quiet )
@@ -456,7 +418,7 @@ if(!is.null(fformula)){
         if(!quiet)
             doquiet(dat=MMt, num_markers=5 , lab="M%*%M^t")
 
-#     }  ## if itnum==1  
+     }  ## if itnum==1  
 
 
  
@@ -464,15 +426,6 @@ if(!is.null(fformula)){
         message(" Calculating variance components for multiple-locus model. \n")
      }
 
- #    if ( avoidproxcont && itnum > 1){
- #       chrmnum <- which( map[new_selected_locus[length(new_selected_locus)], 2] == unique(map[,2]) )
- #       if(.Platform$OS.type == "unix") {
- #              load(paste0(tempdir(), "/MMt", chrmnum, ".RData"))
- #        } else {
- #              load(paste0(tempdir(), "\\MMt", chrmnum, ".RData"))
- #        }
-#
-#     }  ## end if ( avoidproxcont ... 
 
      vc <- .calcVC(trait=pheno[, trait ], Zmat=Zmat, currentX=as.matrix(currentX), MMt=MMt, 
                           eig.L=eig.L) 
@@ -512,6 +465,7 @@ if(!is.null(fformula)){
 
           new_selected_locus <- fq[["orig_indx"]]
           outlierstat[[itnum]] <- fq[["outlierstat"]]
+
           #print("end")
           gc()
           selected_loci <- c(selected_loci, new_selected_locus)
@@ -594,7 +548,6 @@ message(" the maxit parameter in the AM function call. \n ")
                          geno, pheno, map, Zmat, outlierstat )   
    }  ## end inner  if(length(selected_locus)>1)
 }  ## end if( itnum > maxit)
-
 
 return( sigres )
 
