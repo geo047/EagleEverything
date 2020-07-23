@@ -14,7 +14,8 @@ A summary function that provides additional information on the significant
     marker-trait associations found by \code{\link{AM}}
 }
 \details{
-\code{SummaryAM} produces two  tables, an overall summary table and a table  of results with 
+\code{SummaryAM} produces three  tables, an overall summary table, a table of the 
+ SNP names and positions, and a table  of results with 
 the  p-value for each 
 fixed effect in the final model.
 }

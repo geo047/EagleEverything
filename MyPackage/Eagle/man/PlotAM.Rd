@@ -4,19 +4,36 @@
 \alias{PlotAM}
 \title{Visualisation of multiple locus association mapping results}
 \usage{
-PlotAM(AMobj = NULL, itnum = 1, chrnum = "All", type = "Manhattan")
+PlotAM(AMobj = NULL, itnum = 1, chr = "All", type = "Manhattan")
 }
 \arguments{
 \item{AMobj}{the (list) object obtained from running \code{\link{AM}}.}
+
+\item{itnum}{the iterate number of the model building process whose results are to be viewed.}
+
+\item{chr}{either "All" for all chromosomes or the label of a specific chromosome.}
+
+\item{type}{either "Manhattan" or  "Score"  for a manhattan plot or a plot of the 
+score statistics across SNPs.}
 }
 \description{
 A plotting function that provides additional information on the significant 
     marker-trait associations found by \code{\link{AM}}
 }
 \details{
-\code{SummaryAM} produces two  tables, an overall summary table and a table  of results with 
-the  p-value for each 
-fixed effect in the final model.
+A function useful for viewing the strength of association across the whole genome and 
+ how this association changes as the model is built. 
+
+ The  score statistics (\code{type="Score"}) or p-values 
+ (\code{type="Manhattan"}) are plotted against the location of the SNPs.  The horizontal lines 
+ denote the location of the SNPs found by \code{\link{AM}}. The number gives the order 
+ in which they were found. 
+
+ A single chromosome or all (\code{chr="All"}) chromosomes can be viewed.  
+
+ By setting \code{itnum} to different values, how the score statistics or p-values 
+ increase/decrease 
+ over the model building process can be observed.
 }
 \examples{
  \dontrun{
@@ -37,39 +54,33 @@ fixed effect in the final model.
  # to look at the first few rows of the map file
  head(map_obj)
 
-  #------------------
   # read marker data
-  #------------------
-  # Reading in a PLINK ped file 
-  # and setting the available memory on the machine for the reading of the data to 8 gigabytes
   complete.name <- system.file('extdata', 'geno.ped', 
                                      package='Eagle')
   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
  
-  #----------------------
   # read phenotype data
-  #-----------------------
-
-  # Read in a plain text file with data on a single trait and two fixed effects
-  # The first row of the text file contains the column names y, cov1, and cov2. 
   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
   
   pheno_obj <- ReadPheno(filename=complete.name)
            
-  #-------------------------------------------------------
   # Perform multiple-locus genome-wide association mapping 
-  #-------------------------------------------------------                   
   res <- AM(trait = 'y',
                            fformula=c("cov1 + cov2"),
                            map = map_obj,
                            pheno = pheno_obj,
                            geno = geno_obj)
 
-  #-----------------------------------------
-  # Produce additional summary information 
-  #------------------------------------------
+ # Plotting the p-values from the first iteration of the module building process. 
+ # You can see why Eagle has identified the SNP that is has. 
+  PlotAM(AMobj=res, itnum=1)
 
-  SummaryAM(AMobj=res)
+
+ # Plotting the results from the final step of the model building process
+ # By accounting for the effect of SNP in strong association with the trait, the 
+ # strength of association changes across the genome. 
+  PlotAM(AMobj=res, itnum=3)
+
  }
 
 

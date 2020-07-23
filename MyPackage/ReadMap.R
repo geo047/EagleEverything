@@ -2,7 +2,6 @@
 #' @description Read in the marker map  data. 
 #' @param filename contains the name of the map file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 
 #' to the file is required. 
-#' @param csv   a logical value. When \code{TRUE}, a csv file format is assumed. When \code{FALSE}, a space separated format is assumed. 
 #' @param header   a logical value. When \code{TRUE}, the first row of the file contains the column headings. 
 #' @param ...   arguments to be passed to read.table such as \code{skip}, \code{sep}. See \code{\link{read.table}} so the list 
 #'             of arguments. 

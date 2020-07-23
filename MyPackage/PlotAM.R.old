@@ -12,7 +12,7 @@
 #'  how this association changes as the model is built. 
 #'
 #'  The  score statistics (\code{type="Score"}) or p-values 
-#'  (\code{type="Manhattan"}) are plotted against the location of the SNPs.  The horizontal lines 
+#'  (\code{type="Manhattan") are plotted against the location of the SNPs.  The horizontal lines 
 #'  denote the location of the SNPs found by \code{\link{AM}}. The number gives the order 
 #'  in which they were found. 
 #'

@@ -68,6 +68,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"ReadZmat.R\",
             \"ReadPheno.R\",
             \"AM.R\", 
+            \"PlotAM.R\", 
             \"OpenGUI.R\", 
             \"GenomicRel.R\", 
             \"doquiet.R\", 
@@ -114,7 +115,6 @@ echo  "    example_code=FALSE, code_files=c(
             \"extract_geno.R\", 
             \"extract_geno_Mt.R\", 
             \"constructX.R\", 
-            \"PlotAM.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
 echo  " library(roxygen2) " >> ./tmp.R
@@ -255,7 +255,7 @@ cp ./Eagle-package.Rd  ./Eagle/man/.
 R CMD build Eagle 
 
 
-#   R CMD check --as-cran Eagle_2.2.1.tar.gz 
+#    R CMD check --as-cran Eagle_2.3.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

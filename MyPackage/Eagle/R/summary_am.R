@@ -4,7 +4,8 @@
 #' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. 
 #' @details
 #'
-#' \code{SummaryAM} produces two  tables, an overall summary table and a table  of results with 
+#' \code{SummaryAM} produces three  tables, an overall summary table, a table of the 
+#'  SNP names and positions, and a table  of results with 
 #' the  p-value for each 
 #' fixed effect in the final model.  
 #' @examples
@@ -114,6 +115,13 @@ if (length(lst[["numSigSNP"]]) == 1) {
   lst[["numSigSNP"]] <- length(lst[["numSigSNP"]]) - 1
 }
 
+
+
+
+
+
+
+
 message("\n\n Table 1: Summary Information \n   ")
 message(  sprintf("%50s", "--------------------------------------------------------" ))
 message( sprintf("%-40s  %-10s", "Number cpu: ", lst[["ncpu"]] ))
@@ -138,7 +146,33 @@ infodf <- data.frame("description"= c("Number cpu", "Max memory (Gb)", "Number o
          )
 
 
-## Table II
+
+
+## Table Findings 
+message("\n\n Table 2: Findings \n   ")
+
+if ( length(AMobj$Mrk)==1){
+   message(" No findings ... ")
+   df_findings = NA
+   message("\n\n")
+} else {
+  message(sprintf("%22s   %11s   %10s   %10s",  "SNP",   "Chr", "Position" , "Col index"))
+message(  sprintf("%60s", "------------------------------------------------------------------" ))
+  for(ii in 2:length(AMobj$Mrk ) )
+  {
+      message(sprintf("%22s    %10s   %10.2f   %10.0f",
+            AMobj$Mrk[ii],  AMobj$Chr[ii], AMobj$Pos[ii], AMobj$Indx[ii]))
+  }  ## end for ii
+message(  sprintf("%60s", "------------------------------------------------------------------" ))
+ message("\n\n\n")
+  df_findings <- data.frame(SNP=AMobj$Mrk[-1], Chr=AMobj$Chr[-1], 
+                            Pos=AMobj$Pos[-1], ColIndx=AMobj$Indx[-1])
+
+}
+
+  ## create table for use by Shiny
+
+## Table III
  ## check to make sure that null model is not being supplied
  if (length(AMobj$Mrk)==1){
    message(" No significant marker-trait associations have been found by AM. \n")
@@ -240,15 +274,17 @@ if (length(AMobj$indxNA_pheno)> 0){
 
 }
 
-message("\n\n Table 2: Size and Significance of Effects in Final Model \n   ")
+message("\n\n Table 3: Size and Significance of Effects in Final Model \n   ")
 
   message(sprintf("%22s %11s %6s   %10s   %13s", "", "Effect Size",   "Df", "Wald statstic" , "Pr(Chisq)"))
+message(  sprintf("%70s", "----------------------------------------------------------------------------" ))
   for(ii in newvarnames )
   {
       indx <- which(cnames == ii)
       message(sprintf("%20s    %10.2f %6i   %13.2f       %.3E",
          ii,   beta[indx], df[indx], W[indx], pval[indx ]))
   }  ## end for ii
+message(  sprintf("%70s", "----------------------------------------------------------------------------" ))
  message("\n\n\n")
 
 
@@ -264,6 +300,7 @@ df_size <- data.frame("Effects"=cnames, "Size"=as.character(round(beta,2)),  "Df
   res[["Waldstat"]] <- W
   res[["df"]] <- df
   res[["summarylist"]] <- infodf
+  res[["findings"]] <- df_findings
 
   
   return(invisible(res))

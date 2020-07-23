@@ -1,7 +1,6 @@
-July  2020 Version 2.2.1
+July  2020 Version 2.3
 * Changed gamma parameter in AM function to lambda parameter to be consistent with extBIC parameterisation. 
-* Added proximal contamination parameter to AM function. 
-* Added plot function PlotAM
+* Added plot function PlotAM. This capability was in the GUI but not as a function. 
 * Added extra table of summary information to SummaryAM function
 * Fixed bug in plotting function in GUI
 

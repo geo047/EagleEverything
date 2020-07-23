@@ -2,11 +2,27 @@
 #' @description    A plotting function that provides additional information on the significant 
 #'     marker-trait associations found by \code{\link{AM}}
 #' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. 
-#' @details
+#' @param  itnum  the iterate number of the model building process whose results are to be viewed.
+#' @param  chr  either "All" for all chromosomes or the label of a specific chromosome.
+#' @param  type either "Manhattan" or  "Score"  for a manhattan plot or a plot of the 
+#'    score statistics across SNPs. 
 #'
-#' \code{SummaryAM} produces two  tables, an overall summary table and a table  of results with 
-#' the  p-value for each 
-#' fixed effect in the final model.  
+#' @details
+#'  A function useful for viewing the strength of association across the whole genome and 
+#'  how this association changes as the model is built. 
+#'
+#'  The  score statistics (\code{type="Score"}) or p-values 
+#'  (\code{type="Manhattan"}) are plotted against the location of the SNPs.  The horizontal lines 
+#'  denote the location of the SNPs found by \code{\link{AM}}. The number gives the order 
+#'  in which they were found. 
+#'
+#'  A single chromosome or all (\code{chr="All"}) chromosomes can be viewed.  
+#'
+#'  By setting \code{itnum} to different values, how the score statistics or p-values 
+#'  increase/decrease 
+#'  over the model building process can be observed. 
+#'
+#' 
 #' @examples
 #'  \dontrun{
 #'   # Since the following code takes longer than 5 seconds to run, it has been tagged as dontrun. 
@@ -26,48 +42,41 @@
 #'  # to look at the first few rows of the map file
 #'  head(map_obj)
 #'
-#'   #------------------
 #'   # read marker data
-#'   #------------------
-#'   # Reading in a PLINK ped file 
-#'   # and setting the available memory on the machine for the reading of the data to 8 gigabytes
 #'   complete.name <- system.file('extdata', 'geno.ped', 
 #'                                      package='Eagle')
 #'   geno_obj <- ReadMarker(filename=complete.name,  type='PLINK', availmemGb=8) 
 #'  
-#'   #----------------------
 #'   # read phenotype data
-#'   #-----------------------
-#'
-#'   # Read in a plain text file with data on a single trait and two fixed effects
-#'   # The first row of the text file contains the column names y, cov1, and cov2. 
 #'   complete.name <- system.file('extdata', 'pheno.txt', package='Eagle')
 #'   
 #'   pheno_obj <- ReadPheno(filename=complete.name)
 #'            
-#'   #-------------------------------------------------------
 #'   # Perform multiple-locus genome-wide association mapping 
-#'   #-------------------------------------------------------                   
 #'   res <- AM(trait = 'y',
 #'                            fformula=c("cov1 + cov2"),
 #'                            map = map_obj,
 #'                            pheno = pheno_obj,
 #'                            geno = geno_obj)
 #'
-#'   #-----------------------------------------
-#'   # Produce additional summary information 
-#'   #------------------------------------------
+#'  # Plotting the p-values from the first iteration of the module building process. 
+#'  # You can see why Eagle has identified the SNP that is has. 
+#'   PlotAM(AMobj=res, itnum=1)
 #'
-#'   SummaryAM(AMobj=res)
+#'
+#'  # Plotting the results from the final step of the model building process
+#'  # By accounting for the effect of SNP in strong association with the trait, the 
+#'  # strength of association changes across the genome. 
+#'   PlotAM(AMobj=res, itnum=3)
+#'
 #'  }
 #'
 #' 
 #' 
 #' @seealso \code{\link{AM}}
 #'
-PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
+PlotAM <- function(AMobj=NULL, itnum=1, chr="All", type="Manhattan" )
 {
-
 
 
  if(is.null(AMobj)){
@@ -79,6 +88,23 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
     return(NULL)
    }
 
+if (!is.integer(itnum)){
+
+ if(itnum < 1 ||  (itnum > length(AMobj$outlierstat)  )){
+    message(" The parameter itnum must have an integer value between ", 1, " and ",
+         length(AMobj$outlierstat))
+    return(NULL)
+  }
+}
+
+ if (!(chr=="All")  &&  !any(chr %in%  AMobj$Chr) ){
+    message(" The parameter chr does not match any of the chromosome labels. ")
+    message(" The allowable chromosome labels are ", c("All", unique(AMobj$map[,2])))
+    return(NULL)
+ }
+
+
+
   # we do not have a map
      xindx <- 1:length( AMobj$outlierstat[[itnum]] )
      xvals <- xindx
@@ -86,15 +112,17 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
      yvals <- AMobj$outlierstat[[itnum]]
      isit  <- IsItBigger(vals=AMobj$outlierstat, itnum=itnum )
      bigger <- isit$bigger
+
+
      percentagechange <- isit$percentagechange
      chrm <- rep(1, length(xindx))
      pos  <- xvals
 
    # map exisits
      if(!is.null(AMobj$map)){
-        if(chrnum != "All"){
+        if(chr != "All"){
           # picking a single chrm to plot
-          xindx <- which(as.character(AMobj$map[,2]) == chrnum)
+          xindx <- which(as.character(AMobj$map[,2]) == chr)
           xvals <- AMobj$map[xindx, ncol(AMobj$map)]
           chrm <-  AMobj$map[xindx, 2]
           pos <- xvals
@@ -105,7 +133,7 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
        } else {
           # plotting all the chromosomes - more difficult
           # reordering based on chrm then map position
-          oindx <- order(map[,2], map[, ncol(map)])
+          oindx <- order(AMobj$map[,2], AMobj$map[, ncol(AMobj$map)])
           yvals <- AMobj$outlierstat[[as.numeric(itnum)]][oindx]  ## reordering yvals
 
           if( as.numeric(itnum)  > 1){
@@ -127,7 +155,7 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
           }
 
 
-          mapordered <- map[oindx,]
+          mapordered <- AMobj$map[oindx,]
           # map position is within chrm, need cumulative postion. 
           chrms <- unique(mapordered[,2])
           xvals <- mapordered[, ncol(mapordered)]
@@ -150,11 +178,11 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
      }  ##  if(!is.null(map))
 
     xlabel <- "Map Position (bp)"
-    if(is.null(map))
+    if(is.null(AMobj$map ))
       xlabel <- "Column Position of SNP"
 
     ylabel <- "Score Statistic"
-    if(input$plotchoice=="Manhattan")
+    if(type=="Manhattan")
        ylabel <- "-log10(p value)"
 
 
@@ -168,7 +196,7 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
 
 
      # place on -lgo10 scale if manhattan selected
-     if(input$plotchoice=="Manhattan"){
+     if(type=="Manhattan"){
        yvals[is.nan(yvals)] <- 0
        yvals[yvals < 0] <- 0  ## rounding error - very close to 0 when negative
        ts <- sqrt(yvals)
@@ -199,15 +227,15 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
      geomX <- with(df, x[foundchr&foundpos])
      geomLabels <- with(df, foundlabel[foundchr&foundpos])
 
-
      if(is.null(bigger)){
-       p  <- ggplot(data=df, aes(x=x, y=y )) + geom_point()
+       p  <- ggplot(data=df, aes(x=df$x, y=df$y )) + geom_point()
 
      } else {
+
        df$Increase <- bigger ## used for color coding points that have increased/decreased from previous iteration 
        df$Percentagechange <- percentagechange
 
-       p  <- ggplot(data=df, aes(x=x, y=y , color=Increase, size=Percentagechange) )  + geom_point() +  scale_color_manual(values=c("#3b5998","#cae1ff" ))
+       p  <- ggplot(data=df, aes(x=df$x, y=df$y , color=df$Increase, size=df$Percentagechange) )  + geom_point() +  scale_color_manual(values=c("#3b5998","#cae1ff" ))
     }
 
   p <- p + theme_hc()
@@ -231,12 +259,15 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
            p <- p  + guides(colour = guide_legend(override.aes = list(size=8)))  ## changing point size in legend
 
            p <- p + theme(legend.position = 'bottom', legend.spacing.x = unit(0.5, 'cm'))
-           output$plot <- renderPlot(p)
 
-           if(chrnum=="All"){
+
+
+
+
+           if(chr=="All"){
               # entire genome
                txt2 <- "across all chromosomes"
-               if(input$plotchoice=="Manhattan"){
+               if(type=="Manhattan"){
                   txt1 <- " -log p value of the score statistic"
                   txt3 <- "-log p value"
                } else {
@@ -245,8 +276,8 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
                } ## inner else
             } else{
               # chrm selected
-               txt2 <- paste("on chromosome", chrnum)
-               if(input$plotchoice=="Manhattan"){
+               txt2 <- paste("on chromosome", chr)
+               if(type=="Manhattan"){
                   txt1 <- " -log p value of the score statistic"
                   txt3 <- "-log p value"
                } else {
@@ -261,7 +292,43 @@ PlotAM <- function(AMobj=NULL, itnum=1, chrnum="All", type="Manhattan" )
 
 
 
+return(p)
+
 
 
 
 }  ## end function PlotAM ... 
+
+
+   IsItBigger <- function(vals, itnum, xindx=NULL){
+   ## calculates percentage change in size (increase or decrease)
+   bigger <- NULL
+   percentagechange <- NULL
+   if(as.numeric(itnum) > 1){
+       # entire genome
+       bigger <- rep("" , length(vals[[as.numeric(itnum)]]) ) ## initialize 
+       percentagechange <- rep(0, length(vals[[as.numeric(itnum)]]) ) ## initialize
+       a <-  vals[[as.numeric(itnum)]]
+       b <- vals[[as.numeric(itnum) - 1 ]]
+       # a > b       
+       indx <- which( a  >  b )
+       bigger[indx] <- "Increased value"
+       percentagechange[indx] <- ( (a  -    b ) )[indx]
+       # a < b
+       indx <- which( a <=  b  )
+       bigger[indx] <- "Decreased value"
+       percentagechange[indx] <- ( (b  -    a ) )[indx]
+
+       if(!is.null(xindx)){
+          # reduce to chromosome
+          bigger <- bigger[xindx]
+          percentagechange <- percentagechange[xindx]
+       }
+     }
+     res <- list(bigger=bigger, percentagechange=percentagechange)
+     return(res)
+  }
+
+
+
+

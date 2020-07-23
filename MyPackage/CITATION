@@ -4,10 +4,10 @@ citEntry(entry = "article",
   author = "Andrew W. George, Arunas Verbyla, Joshua Bowden",
   title = "Eagle: multi-locus association mapping on a genome-wide scale made routine",
  journal="Bioinformatics",
-  year="2019",
-  url="http://eagle.r-forge.r-project.org",
-  textVersion = "George et al.  Eagle: multi-locus association mapping on a genome-wide scale made routine. Bioinformatics 2019."
+  year="2020",
+  volume="36",
+  pages="1509--1516",
+  doi="10.1093/bioinformatics/btz759",
+  textVersion = "George, Verbyla, and Bowden. Eagle: multi-locus association mapping on a genome-wide scale made routine. Bioinformatics 2020."
 )
-
-
 

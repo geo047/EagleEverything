@@ -33,6 +33,7 @@ echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
+            \"create_vcf_BIN_rcpp.cpp\"  ,
             \"ReshapeM_rcpp.cpp\"  ,
             \"getRowColumn.cpp\"  ,
             \"CreateASCIInospace_PLINK.cpp\"  ,
@@ -62,6 +63,7 @@ echo  "    example_code=FALSE, code_files=c(
             \"onAttach.R\", 
             \"FPR4AM.R\",
             \"ReadMarkerBin.R\",
+            \"ReadVCF.R\",
             \"ReadMap.R\",
             \"ReadZmat.R\",
             \"ReadPheno.R\",
@@ -108,9 +110,11 @@ echo  "    example_code=FALSE, code_files=c(
             \"check_inputs.R\", 
             \"create_ascii.R\", 
             \"create_bin.R\", 
+            \"create_vcf_bin.R\", 
             \"extract_geno.R\", 
             \"extract_geno_Mt.R\", 
             \"constructX.R\", 
+            \"PlotAM.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
 echo  " library(roxygen2) " >> ./tmp.R
@@ -200,6 +204,7 @@ cd $DIR
 cp ./pheno.txt $DIR/Eagle/inst/extdata/.
 cp ./geno.txt $DIR/Eagle/inst/extdata/.
 cp ./geno.ped $DIR/Eagle/inst/extdata/.
+cp ./geno.vcf $DIR/Eagle/inst/extdata/.
 cp ./map.txt $DIR/Eagle/inst/extdata/.
 cp ./Z.txt $DIR/Eagle/inst/extdata/.
 
@@ -216,10 +221,15 @@ mkdir $DIR/Eagle/inst/shiny_app/www/images
 
 
 
+# copy CITATION file to ./inst
+cp CITATION $DIR/Eagle/inst/.
+
+
 cp ./ShinyApp/shinyApp.R $DIR/Eagle/inst/shiny_app/app.R
 cp ./ShinyApp/help.html  $DIR/Eagle/inst/shiny_app/.
 cp ./ShinyApp/css.css $DIR/Eagle/inst/shiny_app/.
-cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
+#cp ./ShinyApp/www/images/HomeScreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
+cp ./ShinyApp/www/images/homescreen.jpg  $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/*banner* $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/www/images/logo.jpg $DIR/Eagle/inst/shiny_app/www/images/.
 cp ./ShinyApp/faq.rmd $DIR/Eagle/inst/shiny_app/.
@@ -245,7 +255,7 @@ cp ./Eagle-package.Rd  ./Eagle/man/.
 R CMD build Eagle 
 
 
-## R CMD check --as-cran Eagle_2.1.0.tar.gz 
+#   R CMD check --as-cran Eagle_2.3.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

@@ -14,8 +14,6 @@ to the file is required.}
 
 \item{...}{arguments to be passed to read.table such as \code{skip}, \code{sep}. See \code{\link{read.table}} so the list 
 of arguments.}
-
-\item{csv}{a logical value. When \code{TRUE}, a csv file format is assumed. When \code{FALSE}, a space separated format is assumed.}
 }
 \value{
 a data frame is returned of the map data.

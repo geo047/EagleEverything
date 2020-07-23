@@ -1567,7 +1567,11 @@ server <- function(input, output, session){
                  shinyjs::html("ReadMap", "")
          
                  if (file.exists(path_to_map_file) == TRUE) {
-                    map  <<- ReadMap(filename = path_to_map_file, csv=csv_flag, header= map_header_flag)
+                    if(csv_flag){
+                       map  <<- ReadMap(filename = path_to_map_file, sep="," , header= map_header_flag)            
+                    } else {
+                       map  <<- ReadMap(filename = path_to_map_file, header= map_header_flag)            
+                    }   ## ed if csv_flag 
                  }  else {
                     shinyjs::html(id = "ReadMap", html = paste0("ReadMap", "File does not exist:", path_to_map_file))
                  }
