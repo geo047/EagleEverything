@@ -1,3 +1,9 @@
+Aug  2020 Version 2.4
+* Fixed warning message for PlotAM
+* Reduced size of points for PlotAM  
+
+
+
 July  2020 Version 2.3
 * Changed gamma parameter in AM function to lambda parameter to be consistent with extBIC parameterisation. 
 * Added plot function PlotAM. This capability was in the GUI but not as a function. 

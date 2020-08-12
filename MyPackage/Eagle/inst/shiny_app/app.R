@@ -526,7 +526,11 @@ placement="right", trigger="hover",
                                        ), ## end column(6,  )  -- left half of page
                                           ## for input widgets
                                 column(7, 
-                                        verbatimTextOutput("ReadMarker", placeholder=TRUE)
+                                        verbatimTextOutput("ReadMarker", placeholder=TRUE) 
+
+
+
+
                                 )  ## end column(6, ) -- right half of page
                                 
                               ) ## end fluidRow
@@ -1331,8 +1335,86 @@ server <- function(input, output, session){
    ## Read marker information
    ##~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   observeEvent(input$choose_marker_file, {
-   observeEvent(input$marker_go,  {
+#
+#  observeEvent({input$choose_marker_file 
+#   observeEvent(input$marker_go,  {
+#   withProgress(message = 'Loading marker data', value = 1, {
+#   
+#     if(input$filetype == "vcf"){
+#       withCallingHandlers({
+#                 shinyjs::html("ReadMarker", "")
+#                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+#                   geno <<- ReadMarker(filename = readM$path_to_marker_file,  type="vcf", availmemGb = input$memsize, quiet = TRUE)
+#                 } else {
+#                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
+#              }
+#          }, ## end withCallingHandlers
+#              message = function(m) {
+#                 shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
+#             })
+#
+#     }
+#
+#
+# 
+#     if(input$filetype == "plink"){
+#       withCallingHandlers({
+#                 shinyjs::html("ReadMarker", "")
+#                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+#                   geno <<- ReadMarker(filename = readM$path_to_marker_file, type = "PLINK", availmemGb = input$memsize, quiet = TRUE)
+#                 } else {
+#                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
+#              }
+#          }, ## end withCallingHandlers
+#              message = function(m) {
+#                 shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
+#             })
+#
+#     }
+#
+#     if(input$filetype == "text"){
+#             withCallingHandlers({
+#                 shinyjs::html("ReadMarker", "")
+#                 aa <- input$AA
+#                 ab <- input$AB
+#                 bb <- input$BB
+#                 missing <- input$missing
+#                 if(input$AA=="")
+#                     aa <- NULL
+#                 if(input$AB=="")
+#                     ab <- NULL
+#                 if(input$BB=="")
+#                     bb <- NULL
+#                 if(input$missing=="")
+#                     missing <- NULL
+#                 if (file.exists(readM$path_to_marker_file) == TRUE) {
+#                 geno <<- ReadMarker(filename = readM$path_to_marker_file, type = "text", AA = aa, 
+#                            AB = ab  , BB = bb, availmemGb = input$memsize,  quiet = TRUE , missing=missing) 
+#                } else {
+#                    shinyjs::html(id = "ReadMarker", html = paste0("ReadMarker", "  File does not exist:", readM$path_to_marker_file))
+#                } 
+#
+#              },  ## end withCallingHandlers
+#              message = function(m) {
+#                 shinyjs::html(id = "ReadMarker", html = m$message, add = TRUE)
+#             })
+#
+#
+#     }  ## end if(input$filetype == "text")
+#
+#
+#  })  ## withProgress
+#
+#  })
+#
+#
+#  })
+#
+
+
+#observeEvent(input$choose_marker_file, {
+
+observeEvent(input$marker_go,  {
    withProgress(message = 'Loading marker data', value = 1, {
    
      if(input$filetype == "vcf"){
@@ -1403,7 +1485,8 @@ server <- function(input, output, session){
   })  ## withProgress
 
   }
-   ) })  ## end observeEvent
+   ) 
+# })  ## end observeEvent
 
 
 
@@ -1705,14 +1788,15 @@ setlambda <- 1
        
            withCallingHandlers({
                  shinyjs::html("AM", "")
+                 print(" testing FPR4AM inputs ")
+                 print(  input$analyse_cpu )
+
  
                  res <<- FPR4AM(numreps = input$analyse_numreps,  falseposrate=input$analyse_fpr,
                             trait=input$nmst , fformula=fform , 
                             ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat = Zmat) 
-         
                   if(!is.null(res)){ 
                     setlambda <<- res$setlambda
-                 
                     res <<- AM(trait=input$nmst , fformula=fform , 
                              lambda=res$setlambda,
                              ncpu = input$analyse_cpu,  pheno = pheno, geno=geno, map=map, Zmat=Zmat)
@@ -1795,7 +1879,7 @@ setlambda <- 1
    output$plot_choice <- renderUI({
        radioButtons(inputId="plotchoice", label=h4("Choose plot type"),
                        choiceNames=c("Manhattan (-log(p))","Score statistics"),
-                       choiceValues=c("manhattan", "raw") )
+                       choiceValues=c("Manhattan", "Score") )
    })
 
   #----------------------------------------------------
@@ -1833,158 +1917,180 @@ setlambda <- 1
   #---------------------------------------------------
   # ggplot plotting function
  observeEvent(input$plot_go , {
-
-     # we do not have a map
-     xindx <- 1:length( res$outlierstat[[as.numeric(input$chosenits)]] )
-     xvals <- xindx
-
-     yvals <- res$outlierstat[[as.numeric(input$chosenits)]]
-     isit  <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits )
-     bigger <- isit$bigger
-     percentagechange <- isit$percentagechange
-     chrm <- rep(1, length(xindx))
-     pos  <- xvals 
- 
-     # map exisits
-     if(!is.null(map)){
-        if(input$chosenchrm != "All"){
-          # picking a single chrm to plot
-          xindx <- which(as.character(map[,2]) == input$chosenchrm)
-          xvals <- map[xindx, ncol(map)]
-          chrm <-  map[xindx, 2]
-          pos <- xvals 
-          yvals <-  res$outlierstat[[as.numeric(input$chosenits)]][xindx]
-          isit <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits, xindx=xindx )
-          bigger <- isit$bigger
-          percentagechange <- isit$percentagechange
-       } else {
-          # plotting all the chromosomes - more difficult
-          # reordering based on chrm then map position
-          oindx <- order(map[,2], map[, ncol(map)])
-          yvals <- res$outlierstat[[as.numeric(input$chosenits)]][oindx]  ## reordering yvals
-
-          if( as.numeric(input$chosenits)  > 1){
-             bigger <- rep(""    , length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
-             percentagechange <- rep(0, length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+     output$plot <- renderPlot( PlotAM(res, itnum=as.numeric(input$chosenits), chr=input$chosenchrm, type=input$plotchoice    ,  interactive=FALSE))
 
 
-            a <-  res$outlierstat[[as.numeric(input$chosenits)]][oindx]
-            b <- res$outlierstat[[as.numeric(input$chosenits) - 1 ]][oindx]
+#     # we do not have a map
+#     xindx <- 1:length( res$outlierstat[[as.numeric(input$chosenits)]] )
+#     xvals <- xindx
+#
+#     yvals <- res$outlierstat[[as.numeric(input$chosenits)]]
+#     isit  <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits )
+#     bigger <- isit$bigger
+#     percentagechange <- isit$percentagechange
+#     chrm <- rep(1, length(xindx))
+#     pos  <- xvals 
+# 
+#     # map exisits
+#     if(!is.null(map)){
+#        if(input$chosenchrm != "All"){
+#          # picking a single chrm to plot
+#          xindx <- which(as.character(map[,2]) == input$chosenchrm)
+#          xvals <- map[xindx, ncol(map)]
+#          chrm <-  map[xindx, 2]
+#          pos <- xvals 
+#          yvals <-  res$outlierstat[[as.numeric(input$chosenits)]][xindx]
+#          isit <- IsItBigger(vals=res$outlierstat, itnum=input$chosenits, xindx=xindx )
+#          bigger <- isit$bigger
+#          percentagechange <- isit$percentagechange
+#       } else {
+#          # plotting all the chromosomes - more difficult
+#          # reordering based on chrm then map position
+#          oindx <- order(map[,2], map[, ncol(map)])
+#          yvals <- res$outlierstat[[as.numeric(input$chosenits)]][oindx]  ## reordering yvals
+#
+#          if( as.numeric(input$chosenits)  > 1){
+#             bigger <- rep(""    , length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+#             percentagechange <- rep(0, length(  res$outlierstat[[as.numeric(input$chosenits)]][oindx] ) )
+#
+#
+#            a <-  res$outlierstat[[as.numeric(input$chosenits)]][oindx]
+#            b <- res$outlierstat[[as.numeric(input$chosenits) - 1 ]][oindx]
+#
+#             indx <- which(  a >  b )
+#             bigger[indx] <- "Increased value"
+#             percentagechange[indx] <-  (( b - a)) [indx]
+#
+#             indx <- which(  a <=  b )
+#             bigger[indx] <- "Decreased value"
+#             percentagechange[indx] <-  (( a - b)) [indx]
+#
+#          }
+#
+#          mapordered <- map[oindx,]
+#          # map position is within chrm, need cumulative postion. 
+#          chrms <- unique(mapordered[,2])
+#          xvals <- mapordered[, ncol(mapordered)]
+#          if (length(chrms) > 1){
+#            xvals <- rep(0, nrow(mapordered))
+#            indx <- which(mapordered[,2] == chrms[1])
+#            xvals[indx] <- mapordered[indx,ncol(mapordered)]
+#            genometot <- max(xvals)
+#             for(ii in chrms[-1]){
+#               indx <- which(mapordered[,2] == ii)
+#               xvals[indx] <- mapordered[indx, ncol(mapordered)] + genometot
+#               genometot <- max(xvals)
+#              }  ## end for
+#          } ## end if length(chrms)
+#           chrm <- mapordered[,2]
+#           pos <- mapordered[, ncol(mapordered)]
+#       }  # if else 
+#       
+#
+#     }  ##  if(!is.null(map))
+#
+#    xlabel <- "Map Position (bp)"
+#    if(is.null(map))
+#      xlabel <- "Column Position of SNP"
+#
+#    ylabel <- "Score Statistic"
+#    if(input$plotchoice=="manhattan")
+#       ylabel <- "-log10(p value)"
+#    
+#
+#     # addition on SNP-trait positions on map
+#     if(length(res$Chr) > 1){  ## first entry of list is always NA
+#         # found associations 
+#          found.chr <- res$Chr[!is.na(res$Chr)]
+#          found.pos <- res$Pos[!is.na(res$Pos)]
+#          found.label <- 1:length(found.chr)  ## used for annotation in plot
+#      }
+#
+#
+#     # place on -lgo10 scale if manhattan selected
+#     if(input$plotchoice=="manhattan"){
+#       yvals[is.nan(yvals)] <- 0
+#       yvals[yvals < 0] <- 0  ## rounding error - very close to 0 when negative
+#       ts <- sqrt(yvals)
+#       pval <- 1 - pnorm(ts)
+#       logp <- -1*log10(pval)
+#       yvals <- logp
+#     }
+#
+#
+#     # create data frame for plotting 
+#     df <- data.frame(xvals=xvals, yvals=yvals, chrm=chrm, pos=pos, foundchr=FALSE, foundpos=FALSE, foundlabel=0 )
+#
+#     # check for SNP findings from AM
+#     if (length(res$Chr)>1){
+#          for(ii in 1:length(found.chr)){
+#             indx <- which(df$chrm == found.chr[ii])
+#             if(!is.null(indx))
+#                   df$foundchr[indx] <- TRUE
+#             indx <- which(df$pos == found.pos[ii])
+#             if(!is.null(indx))
+#                   df$foundpos[indx] <- TRUE
+#              indx <- which(df$foundchr & df$foundpos & df$foundlabel==0)
+#              if(!is.null(indx))
+#                   df$foundlabel[indx] <- ii
+#       }  ## end for ii
+#     }  ## end if length()       
+#     geomX <- with(df, xvals[foundchr&foundpos])
+#     geomLabels <- with(df, foundlabel[foundchr&foundpos])
+#     geomX <- geomX[order(geomLabels)]
+#     geomLabels <- geomLabels[order(geomLabels)]
+#
+#     
+#     if(is.null(bigger)){
+#       p  <- ggplot(data=df, aes(x=xvals, y=yvals )) + geom_point()
+#
+#     } else {
+# # scale percentagechange to be between 1 and 2. 
+#       percentagechange <- 0.25 + ( percentagechange -  min(percentagechange) )/(max(percentagechange) - min(percentagechange))
+#
+#       p  <- ggplot(data=df, aes(x=xvals, y=yvals , color=bigger ) )  + geom_point( size = percentagechange ) +  scale_color_manual(values=c("#3b5998","#cae1ff" ))
+#    }
+#
+#  p <- p + theme_hc()
+#            p <- p + ylab(ylabel) + xlab(xlabel)
+#            p <- p +  theme(legend.title=element_blank())  ## no legend title
+#            p <- p + theme(legend.position="right")
+#
+#            if(!is.null(geomX)){
+#             if (itnum >1){
+#              for(ii in geomX[1:(itnum-1) ] ){
+#               yadj <- sample(seq(0.5,0.9,0.1), 1)
+#               p <- p + geom_vline(xintercept = ii, linetype="solid", color="#FFE4B5", size=0.5)
+#               p <- p + annotate("text", size=8, label=geomLabels[which(geomX==ii)] , 
+#                       x=(ii  - ( diff(range(df$xvals))*0.02) )   , 
+#                        y = max(df$yvals)*yadj )
+#              }  ## end for ii
+#
+#              if (itnum < (length(geomX)+1) ){
+#                ii  <- geomX[itnum]
+#                p <- p + geom_vline(xintercept = ii, linetype="solid", color="red", size=0.5)
+#              }
+#
+#             } else {
+#
+#         ii  <- geomX[1]    
+#                p <- p + geom_vline(xintercept = ii, linetype="solid", color="red", size=0.5)
+#
+#
+#
+#            }   ## end if itnum > 1
+#              p <- p + scale_size(guide='none')
+#            } ## if !is.null
+#           p <- p + theme( axis.text.x = element_text(size=16), axis.text.y = element_text(size=16), 
+#                           axis.title.x=element_text(size=16), axis.title.y=element_text(size=16), 
+#                           legend.text=element_text(size=14) )
+#           p <- p  + guides(colour = guide_legend(override.aes = list(size=8)))  ## changing point size in legend
+#          
+#           p <- p + theme(legend.position = 'bottom', legend.spacing.x = unit(0.5, 'cm')) 
+#           output$plot <- renderPlot(p)
+#
+#
 
-             indx <- which(  a >  b )
-             bigger[indx] <- "Increased value"
-             percentagechange[indx] <-  (( b - a)) [indx]
-
-             indx <- which(  a <=  b )
-             bigger[indx] <- "Decreased value"
-             percentagechange[indx] <-  (( a - b)) [indx]
-
-          }
-
-          mapordered <- map[oindx,]
-          # map position is within chrm, need cumulative postion. 
-          chrms <- unique(mapordered[,2])
-          xvals <- mapordered[, ncol(mapordered)]
-          if (length(chrms) > 1){
-            xvals <- rep(0, nrow(mapordered))
-            indx <- which(mapordered[,2] == chrms[1])
-            xvals[indx] <- mapordered[indx,ncol(mapordered)]
-            genometot <- max(xvals)
-             for(ii in chrms[-1]){
-               indx <- which(mapordered[,2] == ii)
-               xvals[indx] <- mapordered[indx, ncol(mapordered)] + genometot
-               genometot <- max(xvals)
-              }  ## end for
-          } ## end if length(chrms)
-           chrm <- mapordered[,2]
-           pos <- mapordered[, ncol(mapordered)]
-       }  # if else 
-       
-
-     }  ##  if(!is.null(map))
-
-    xlabel <- "Map Position (bp)"
-    if(is.null(map))
-      xlabel <- "Column Position of SNP"
-
-    ylabel <- "Score Statistic"
-    if(input$plotchoice=="manhattan")
-       ylabel <- "-log10(p value)"
-    
-
-     # addition on SNP-trait positions on map
-     if(length(res$Chr) > 1){  ## first entry of list is always NA
-         # found associations 
-          found.chr <- res$Chr[!is.na(res$Chr)]
-          found.pos <- res$Pos[!is.na(res$Pos)]
-          found.label <- 1:length(found.chr)  ## used for annotation in plot
-      }
-
-
-     # place on -lgo10 scale if manhattan selected
-     if(input$plotchoice=="manhattan"){
-       yvals[is.nan(yvals)] <- 0
-       yvals[yvals < 0] <- 0  ## rounding error - very close to 0 when negative
-       ts <- sqrt(yvals)
-       pval <- 1 - pnorm(ts)
-       logp <- -1*log10(pval)
-       yvals <- logp
-     }
-
-
-     # create data frame for plotting 
-     df <- data.frame(x=xvals, y=yvals, chrm=chrm, pos=pos, foundchr=FALSE, foundpos=FALSE, foundlabel=0 )
-
-     # check for SNP findings from AM
-     if (length(res$Chr)>1){
-          for(ii in 1:length(found.chr)){
-             indx <- which(df$chrm == found.chr[ii])
-             if(!is.null(indx))
-                   df$foundchr[indx] <- TRUE
-             indx <- which(df$pos == found.pos[ii])
-             if(!is.null(indx))
-                   df$foundpos[indx] <- TRUE
-              indx <- which(df$foundchr & df$foundpos & df$foundlabel==0)
-              if(!is.null(indx))
-                   df$foundlabel[indx] <- ii
-       }  ## end for ii
-     }  ## end if length()       
-     geomX <- with(df, x[foundchr&foundpos])
-     geomLabels <- with(df, foundlabel[foundchr&foundpos])
-
-     
-     if(is.null(bigger)){
-       p  <- ggplot(data=df, aes(x=x, y=y )) + geom_point()
-
-     } else {
-       df$Increase <- bigger ## used for color coding points that have increased/decreased from previous iteration 
-       df$Percentagechange <- percentagechange
-
-       p  <- ggplot(data=df, aes(x=x, y=y , color=Increase, size=Percentagechange) )  + geom_point() +  scale_color_manual(values=c("#3b5998","#cae1ff" ))
-    }
-
-  p <- p + theme_hc()
-            p <- p + ylab(ylabel) + xlab(xlabel)
-            p <- p +  theme(legend.title=element_blank())  ## no legend title
-            p <- p + theme(legend.position="right")
-
-            if(!is.null(geomX)){
-              for(ii in geomX){
-               yadj <- sample(seq(0.5,0.9,0.1), 1)
-               p <- p + geom_vline(xintercept = ii, linetype="solid", color="#FFE4B5", size=1.5)
-               p <- p + annotate("text", size=8, label=geomLabels[which(geomX==ii)] , 
-                       x=(ii  - ( diff(range(df$x))*0.02) )   , 
-                        y = max(df$y)*yadj )
-              }  ## end for ii
-              p <- p + scale_size(guide='none')
-            } ## if !is.null
-           p <- p + theme( axis.text.x = element_text(size=16), axis.text.y = element_text(size=16), 
-                           axis.title.x=element_text(size=16), axis.title.y=element_text(size=16), 
-                           legend.text=element_text(size=14) )
-           p <- p  + guides(colour = guide_legend(override.aes = list(size=8)))  ## changing point size in legend
-          
-           p <- p + theme(legend.position = 'bottom', legend.spacing.x = unit(0.5, 'cm')) 
-           output$plot <- renderPlot(p)
 
            if(input$chosenchrm=="All"){
               # entire genome
@@ -2013,12 +2119,10 @@ setlambda <- 1
            txt <- paste("Figure: ", 
                         "A plot of the", txt1, 
                         "verse map position", txt2 , 
-                        "at iteration", input$chosenits, 
-                        "of the model building process. The horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst,
-                        ". The numbers are the order in which the SNP-trait associations were found. ")
+                        "at the first iteration of the model building process. If there is a red horizontal line, it denotes the position of a new SNP-trait association.") 
 
           } else { 
-           txt <- paste("Figure: ", "A plot of the", txt1, "verse map position", txt2 , "at iteration", input$chosenits, "of the model building process.. The horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst, ". The numbers are the order in which the SNP-trait associations were found.  Dark blue (light blue) points denote a", txt3, "that has decreased (increased) in size from the previous iteration. This is useful for inspecting how different parts of the chromosome gain or lose importance as SNP-trait associations are found. The size of the point is proportional to the size of the increase/decrease.")
+           txt <- paste("Figure: ", "A plot of the", txt1, "verse map position", txt2 , "at iteration", input$chosenits, "of the model building process.. The orange horizontal lines denote the position of SNP found by Eagle to be in association with the trait, ", input$nmst, ". A red horizontal line denotes the position of a new SNP-trait association. The numbers are the order in which the SNP-trait associations were found. Purple (green) points denote a", txt3, "that has decreased (increased) in size from the previous iteration. This is useful for inspecting how different parts of the chromosome gain or lose importance as SNP-trait associations are found. The size of the point is proportional to the size of the increase/decrease.")
 
           } 
            output$caption <- renderText(txt)

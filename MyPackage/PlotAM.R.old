@@ -12,7 +12,7 @@
 #'  how this association changes as the model is built. 
 #'
 #'  The  score statistics (\code{type="Score"}) or p-values 
-#'  (\code{type="Manhattan") are plotted against the location of the SNPs.  The horizontal lines 
+#'  (\code{type="Manhattan"}) are plotted against the location of the SNPs.  The horizontal lines 
 #'  denote the location of the SNPs found by \code{\link{AM}}. The number gives the order 
 #'  in which they were found. 
 #'
@@ -114,7 +114,7 @@ if (!is.integer(itnum)){
      bigger <- isit$bigger
 
 
-     percentagechange <- isit$percentagechange
+
      chrm <- rep(1, length(xindx))
      pos  <- xvals
 
@@ -207,8 +207,7 @@ if (!is.integer(itnum)){
 
 
      # create data frame for plotting 
-     df <- data.frame(x=xvals, y=yvals, chrm=chrm, pos=pos, foundchr=FALSE, foundpos=FALSE, foundlabel=0 )
-
+     df <- data.frame(xvals=xvals, yvals=yvals, chrm=chrm, pos=pos, foundchr=FALSE, foundpos=FALSE, foundlabel=0 )
      # check for SNP findings from AM
      if (length(AMobj$Chr)>1){
           for(ii in 1:length(found.chr)){
@@ -224,18 +223,25 @@ if (!is.integer(itnum)){
        }  ## end for ii
                                     
      }  ## end if length()       
-     geomX <- with(df, x[foundchr&foundpos])
+     geomX <- with(df, xvals[foundchr&foundpos])
      geomLabels <- with(df, foundlabel[foundchr&foundpos])
+     geomX <- geomX[order(geomLabels)]
+     geomLabels <- geomLabels[order(geomLabels)]
+
+    #  ======>
+ 
+
+
 
      if(is.null(bigger)){
-       p  <- ggplot(data=df, aes(x=df$x, y=df$y )) + geom_point()
+       p  <- ggplot(data=df, aes(x=xvals, y=yvals )) + geom_point()
 
      } else {
+       # scale percentagechange to be between 0.5 and 1.5. 
+       percentagechange <- 0.25 + ( percentagechange -  min(percentagechange) )/(max(percentagechange) - min(percentagechange))
 
-       df$Increase <- bigger ## used for color coding points that have increased/decreased from previous iteration 
-       df$Percentagechange <- percentagechange
-
-       p  <- ggplot(data=df, aes(x=df$x, y=df$y , color=df$Increase, size=df$Percentagechange) )  + geom_point() +  scale_color_manual(values=c("#3b5998","#cae1ff" ))
+       p  <- ggplot(data=df, aes(x=xvals, y=yvals , color=bigger  ) )  + 
+           geom_point( size = percentagechange ) +  scale_color_manual(values=c("#6600CC","#4C9900" ))
     }
 
   p <- p + theme_hc()
@@ -244,13 +250,27 @@ if (!is.integer(itnum)){
             p <- p + theme(legend.position="right")
 
             if(!is.null(geomX)){
-              for(ii in geomX){
+             if (itnum >1){
+              # draw vertical line for found snp-trait associations
+              for(ii in geomX[1:(itnum-1) ] ){
                yadj <- sample(seq(0.5,0.9,0.1), 1)
-               p <- p + geom_vline(xintercept = ii, linetype="solid", color="#FFE4B5", size=1.5)
-               p <- p + annotate("text", size=8, label=geomLabels[which(geomX==ii)] ,
-                       x=(ii  - ( diff(range(df$x))*0.02) )   ,
-                        y = max(df$y)*yadj )
+               p <- p + geom_vline(xintercept = ii, linetype="solid", color="#FFE4B5", size=0.5)
+               p <- p + annotate("text", size=6, label=geomLabels[which(geomX==ii)] ,
+                       x=(ii  - ( diff(range(df$xvals))*0.00) )   ,
+                        y = max(df$yvals)*yadj )
               }  ## end for ii
+
+              if (itnum < (length(geomX)+1) ){
+                ii  <- geomX[itnum]
+                p <- p + geom_vline(xintercept = ii, linetype="solid", color="red", size=0.5)
+              } 
+
+
+             } else { 
+                ii  <- geomX[1]  
+                p <- p + geom_vline(xintercept = ii, linetype="solid", color="red", size=0.5)
+
+             } ## end if itnum 
               p <- p + scale_size(guide='none')
             } ## if !is.null
            p <- p + theme( axis.text.x = element_text(size=16), axis.text.y = element_text(size=16),
@@ -260,7 +280,7 @@ if (!is.integer(itnum)){
 
            p <- p + theme(legend.position = 'bottom', legend.spacing.x = unit(0.5, 'cm'))
 
-
+           
 
 
 
@@ -289,10 +309,15 @@ if (!is.integer(itnum)){
 
 
 
+# adjust  Y axis scale
+p <- p + ylim(0, max(df$yvals))
+ 
+
+# launch interactive graphics
+ggplotly(p)  %>% layout(legend = list( orientation = "h", x=0, y=-0.4, yanchor="top"))
 
 
-
-return(p)
+# ===> return(p)
 
 
 

@@ -9,6 +9,9 @@ importFrom(R.utils, insert )
 importFrom(mmap, sizeof)
 import(ggplot2)
 import(ggthemes)
+importFrom(plotly, ggplotly)
+importFrom(plotly, layout)
+importFrom(plotly, "%>%" )
 import(shinyFiles, shiny,  shinythemes,  stats, utils) 
 
 export(

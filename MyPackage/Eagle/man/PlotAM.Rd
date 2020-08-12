@@ -4,7 +4,8 @@
 \alias{PlotAM}
 \title{Visualisation of multiple locus association mapping results}
 \usage{
-PlotAM(AMobj = NULL, itnum = 1, chr = "All", type = "Manhattan")
+PlotAM(AMobj = NULL, itnum = 1, chr = "All", type = "Manhattan",
+  interactive = TRUE)
 }
 \arguments{
 \item{AMobj}{the (list) object obtained from running \code{\link{AM}}.}
@@ -15,6 +16,9 @@ PlotAM(AMobj = NULL, itnum = 1, chr = "All", type = "Manhattan")
 
 \item{type}{either "Manhattan" or  "Score"  for a manhattan plot or a plot of the 
 score statistics across SNPs.}
+
+\item{interactive}{boolean parameter. When \code{TRUE}, an interactive plot is generated. When 
+\code{FALSE}, a ggplot object is returned which can be saved as an image to file}
 }
 \description{
 A plotting function that provides additional information on the significant 
@@ -24,10 +28,14 @@ A plotting function that provides additional information on the significant
 A function useful for viewing the strength of association across the whole genome and 
  how this association changes as the model is built. 
 
- The  score statistics (\code{type="Score"}) or p-values 
- (\code{type="Manhattan"}) are plotted against the location of the SNPs.  The horizontal lines 
- denote the location of the SNPs found by \code{\link{AM}}. The number gives the order 
- in which they were found. 
+ The  score statistics (\code{type="Score"}) or p-values  of the score statistics
+ (\code{type="Manhattan"}) are plotted against the location of the SNPs.  The orange
+ vertical  lines 
+ denote the location of the SNPs already found by \code{\link{AM}}. 
+ The red vertical line is the location of the SNP in strongest association with the trait 
+ at that iteration number. 
+
+ The number is the order in which the snp-trait associations have been added to the model. 
 
  A single chromosome or all (\code{chr="All"}) chromosomes can be viewed.  
 
@@ -80,6 +88,13 @@ A function useful for viewing the strength of association across the whole genom
  # By accounting for the effect of SNP in strong association with the trait, the 
  # strength of association changes across the genome. 
   PlotAM(AMobj=res, itnum=3)
+
+
+ # Suppose you want to save the above plot to a jpeg file called myplot.jpg
+ jpeg("./myplot.jpg", width=1200, height=800)
+ PlotAM(AMobj=res, itnum=3, interactive=FALSE)
+ dev.off()
+
 
  }
 
