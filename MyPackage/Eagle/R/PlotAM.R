@@ -1,8 +1,8 @@
 #' @title Visualisation of multiple locus association mapping results
-#' @description    A plotting function that provides additional information on the significant 
+#' @description    A interactive plotting function that provides additional information on the significant 
 #'     marker-trait associations found by \code{\link{AM}}
 #' @param  AMobj  the (list) object obtained from running \code{\link{AM}}. 
-#' @param  itnum  the iterate number of the model building process whose results are to be viewed.
+#' @param  itnum  the iteration number of the model building process whose results are to be viewed.
 #' @param  chr  either "All" for all chromosomes or the label of a specific chromosome.
 #' @param  type either "Manhattan" or  "Score"  for a manhattan plot or a plot of the 
 #'    score statistics across SNPs. 
@@ -21,7 +21,7 @@
 #'  The red vertical line is the location of the SNP in strongest association with the trait 
 #'  at that iteration number. 
 #'
-#'  The number is the order in which the snp-trait associations have been added to the model. 
+#'  The vertical lines are numbered according to the order in which the snp-trait associations were found by the model. 
 #'
 #'  A single chromosome or all (\code{chr="All"}) chromosomes can be viewed.  
 #'
@@ -134,16 +134,48 @@ pos  <- xvals
 if(!is.null(AMobj$map)){
   # plotting all the chromosomes - more difficult
   # reordering based on chrm then map position
-  oindx <- order(AMobj$map[,2], AMobj$map[, ncol(AMobj$map)])
+  oindx <- order(AMobj$map[,2], AMobj$map[, ncol(AMobj$map)])   # **** VERY IMPORTANT OBJECT 
   yvals <- AMobj$outlierstat[[as.numeric(itnum)]][oindx]  ## reordering yvals
+  mapordered <- AMobj$map[oindx,]
+  chrm <- mapordered[,2]
+
+  # Cumulative map position (genome-wide position)
+  pos <- rep(NA, nrow(mapordered))
+  t <- 0
+  for(ii in 1:nrow(mapordered)){
+    t <- t + mapordered[ii,ncol(mapordered)]
+    pos[ii] <- t
+  }
+
+
+
+
+
+
+  if(length(AMobj$Indx) > 1){
+    # AMobj$Indx has column positions of SNPs in geno file but if map order has changed,
+    #   then this Indx also need to change accordingly
+    Indx <- rep(NA, length(AMobj$Mrk))  # contained reordered AMobj$Indx 
+    NewMrkPos <- rep(NA, length(AMobj$Mrk)) # new map position of sig SNP based on mapordered
+    for(ii in 2:length(AMobj$Mrk)){
+      Indx[ii] <- which(mapordered[,1]==AMobj$Mrk[ii])
+      NewMrkPos[ii] <- pos[Indx[ii]]  ## map position
+    }
+    Indx <- Indx[!is.na(Indx)]
+    NewMrkPos <- NewMrkPos[!is.na(NewMrkPos)]
+  }
+
+
+
+
 
   if( as.numeric(itnum)  > 1){
-    bigger <- rep(""    , length(  AMobj$outlierstat[[as.numeric(itnum)]][oindx] ) )
-    percentagechange <- rep(0, length(  AMobj$outlierstat[[as.numeric(itnum)]][oindx] ) )
+    bigger <- rep(""    , length(yvals) )
+    percentagechange <- rep(0, length(yvals) )
 
 
     a <-  AMobj$outlierstat[[as.numeric(itnum)]][oindx]
-    b <- AMobj$outlierstat[[as.numeric(itnum) - 1 ]][oindx]
+    b <-  AMobj$outlierstat[[as.numeric(itnum) - 1 ]][oindx]
 
     indx <- which(  a >  b )
     bigger[indx] <- "Increased value"
@@ -157,23 +189,6 @@ if(!is.null(AMobj$map)){
   }  ## end if( as.numeric(itnum)  > 1)
 
 
-  mapordered <- AMobj$map[oindx,]
-  # map position is within chrm, need cumulative postion. 
-  chrms <- unique(mapordered[,2])
-  xvals <- mapordered[, ncol(mapordered)]
-  if (length(chrms) > 1){
-    xvals <- rep(0, nrow(mapordered))
-    indx <- which(mapordered[,2] == chrms[1])
-    xvals[indx] <- mapordered[indx,ncol(mapordered)]
-    genometot <- max(xvals)
-    for(ii in chrms[-1]){
-      indx <- which(mapordered[,2] == ii)
-      xvals[indx] <- mapordered[indx, ncol(mapordered)] + genometot
-      genometot <- max(xvals)
-    }  ## end for
-   } ## end if length(chrms)
-   chrm <- mapordered[,2]
-   pos <- mapordered[, ncol(mapordered)]
 
 }  ##  if(!is.null(map))
 
@@ -181,18 +196,12 @@ xlabel <- "Map Position (bp)"
 if(is.null(AMobj$map ))
    xlabel <- "Column Position of SNP"
 
-   ylabel <- "Score Statistic"
-   if(type=="Manhattan")
-       ylabel <- "-log10(p value)"
+ylabel <- "Score Statistic"
+if(type=="Manhattan")
+   ylabel <- "-log10(p value)"
 
 
-   # addition on SNP-trait positions on map
-   if(length(AMobj$Chr) > 1){  ## first entry of list is always NA
-         # found associations 
-          found.chr <- AMobj$Chr[!is.na(AMobj$Chr)]
-          found.pos <- AMobj$Pos[!is.na(AMobj$Pos)]
-          found.label <- 1:length(found.chr)  ## used for annotation in plot
-   }
+ # addition on SNP-trait positions on map
 
 
    # place on -lgo10 scale if manhattan selected
@@ -207,22 +216,8 @@ if(is.null(AMobj$map ))
 
 
    # create data frame for plotting 
-   df <- data.frame(xvals=xvals, yvals=yvals, chrm=chrm, pos=pos, foundchr=FALSE, foundpos=FALSE, foundlabel=0)
-   # check for SNP findings from AM
-   if (length(AMobj$Chr)>1){
-          for(ii in 1:length(found.chr)){
-             indx <- which(df$chrm == found.chr[ii])
-             if(!is.null(indx))
-                   df$foundchr[indx] <- TRUE
-             indx <- which(df$pos == found.pos[ii])
-             if(!is.null(indx))
-                   df$foundpos[indx] <- TRUE
-              indx <- which(df$foundchr & df$foundpos & df$foundlabel==0)
-              if(!is.null(indx))
-                   df$foundlabel[indx] <- ii
-       }  ## end for ii
-                                    
-   }  ## end if length() 
+   df <- data.frame(xvals=pos, yvals=yvals, chrm=chrm )
+
 
    # subset df on chromosome if chr!="All"
    if(chr!="All"){
@@ -235,11 +230,16 @@ if(is.null(AMobj$map ))
        # df <- subset(df, chrm==chr)
    }
 
-      
-   geomX <- with(df, xvals[foundchr&foundpos])
-   geomLabels <- with(df, foundlabel[foundchr&foundpos])
-  #   geomX <- geomX[order(geomLabels)]
-  #   geomLabels <- geomLabels[order(geomLabels)]
+
+  geomX <- NULL
+  if(length(AMobj$Indx) > 1){
+    Labels <- 1:length(Indx)
+    indx <-  which( NewMrkPos %in% df$xvals )
+    if (length(indx) > 0 ){
+     geomX <- NewMrkPos[indx] 
+     geomLabels <- Labels[indx ]
+    }
+   }
 
 
    if(itnum==1){
@@ -260,6 +260,8 @@ if(is.null(AMobj$map ))
   
 
    }
+
+
 
    p <- p + theme_hc()
    p <- p + ylab(ylabel) + xlab(xlabel)

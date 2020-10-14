@@ -557,7 +557,7 @@ falsepos <- colSums(mat)/numreps
 
 cat("\n\n")
 cat(" Table: Empirical false positive rates, given lambda value for model selection. \n\n")
-cat("  Gamma    |  False Pos Rate  \n")
+cat("  Lambda    |  False Pos Rate  \n")
 cat(" ---------------------------- \n")
 for(ii in 1:length(lambda)){
 cat( lambda[ii], " | ", round(falsepos[ii], 3), "\n")

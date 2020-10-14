@@ -20,7 +20,7 @@
   if(length(lambda)==1){
    extBIC <- BIC + 2 * lambda   *lchoose(geno$dim_of_M[2], numberSNPselected)  
    if(!quiet){
-      cat(" Gamma = ", lambda, "\n")
+      cat(" Lambda = ", lambda, "\n")
    }
    } else {
      extBIC <- rep(NA, length(lambda))

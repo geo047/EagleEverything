@@ -1,7 +1,12 @@
-Aug  2020 Version 2.4
-* Fixed warning message for PlotAM
-* Reduced size of points for PlotAM  
+Oct 2020 Version 2.4.1
+* Minor change - replaced Gamma with Lambda for consistency with extBIC parameterisation. 
+                 I did this previously but missed a couple of the changes. 
 
+
+Aug  2020 Version 2.4
+* Fixed bug in plotting function in OpenGUI
+* Improved look of PlotAM
+* Added interactive option to PlotAM to give users the option of saving the plot to file. 
 
 
 July  2020 Version 2.3

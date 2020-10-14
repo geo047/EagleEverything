@@ -5,17 +5,17 @@
   {
       message("No significant marker-trait associations have been found. \n\n")
      if (is.null(lambda)){
-        message("Gamma value for model selection was set to its default value of 1. ")
+        message("Lambda value for model selection was set to its default value of 1. ")
      } else {
-        message("Gamma value for model selection was set to  ", round(lambda,3) , " ")
+        message("Lambda value for model selection was set to  ", round(lambda,3) , " ")
      } 
 
   }  else {
      .print_results(selected_loci=selected_loci, map=map,  extBIC=extBIC)
      if (is.null(lambda)){
-        message("Gamma value for model selection was set to its default value of 1. ")
+        message("Lambda value for model selection was set to its default value of 1. ")
      } else {
-        message("Gamma value for model selection was set to  ", round(lambda,3) , " ")
+        message("Lambda value for model selection was set to  ", round(lambda,3) , " ")
      } 
   }   ## end if else
   message("")
