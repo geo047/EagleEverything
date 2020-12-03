@@ -4,8 +4,13 @@
 \alias{PlotAM}
 \title{Visualisation of multiple locus association mapping results}
 \usage{
-PlotAM(AMobj = NULL, itnum = 1, chr = "All", type = "Manhattan",
-  interactive = TRUE)
+PlotAM(
+  AMobj = NULL,
+  itnum = 1,
+  chr = "All",
+  type = "Manhattan",
+  interactive = TRUE
+)
 }
 \arguments{
 \item{AMobj}{the (list) object obtained from running \code{\link{AM}}.}

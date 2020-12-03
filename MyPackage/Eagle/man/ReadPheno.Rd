@@ -4,8 +4,7 @@
 \alias{ReadPheno}
 \title{Read phenotype file}
 \usage{
-ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = "NA",
-  ...)
+ReadPheno(filename = NULL, header = TRUE, csv = FALSE, missing = "NA", ...)
 }
 \arguments{
 \item{filename}{contains the name of the phenotype  file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 

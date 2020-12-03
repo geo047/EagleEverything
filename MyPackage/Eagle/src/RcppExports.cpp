@@ -3,7 +3,8 @@
 
 #include <RcppEigen.h>
 #include <Rcpp.h>
-using namespace Rcpp ; 
+
+using namespace Rcpp;
 
 // ReadBlock
 Eigen::MatrixXd ReadBlock(std::string asciifname, long start_row, long numcols, long numrows_in_block);

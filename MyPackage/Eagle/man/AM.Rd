@@ -4,9 +4,20 @@
 \alias{AM}
 \title{multiple-locus Association Mapping}
 \usage{
-AM(trait = NULL, fformula = NULL, geno = NULL, pheno = NULL,
-  map = NULL, Zmat = NULL, ncpu = detectCores(), ngpu = 0,
-  quiet = TRUE, maxit = 40, fixit = FALSE, lambda = 1)
+AM(
+  trait = NULL,
+  fformula = NULL,
+  geno = NULL,
+  pheno = NULL,
+  map = NULL,
+  Zmat = NULL,
+  ncpu = detectCores(),
+  ngpu = 0,
+  quiet = TRUE,
+  maxit = 40,
+  fixit = FALSE,
+  lambda = 1
+)
 }
 \arguments{
 \item{trait}{the name of the column in the phenotype data file that contains the trait data. The name is case sensitive and must match exactly the column name in the phenotype data file.}

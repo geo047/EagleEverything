@@ -4,8 +4,16 @@
 \alias{ReadMarker}
 \title{Read  marker data.}
 \usage{
-ReadMarker(filename = NULL, type = "text", missing = NULL, AA = NULL,
-  AB = NULL, BB = NULL, availmemGb = 16, quiet = TRUE)
+ReadMarker(
+  filename = NULL,
+  type = "text",
+  missing = NULL,
+  AA = NULL,
+  AB = NULL,
+  BB = NULL,
+  availmemGb = 16,
+  quiet = TRUE
+)
 }
 \arguments{
 \item{filename}{contains the name of the marker  file. The file name needs to be in quotes. If the file is not in the working directory, then the full path 

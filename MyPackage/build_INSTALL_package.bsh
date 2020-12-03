@@ -1,12 +1,14 @@
 #!/bin/bash 
 
+
 module purge
 module load intel-mkl/2017.2.174
 module load cuda/9.0.176  cuda-driver 
 module load intel-cc  intel-fc
 export NVBLAS_CONFIG_FILE=/home/geo047/EagleEverything/MyPackage/nvblas.conf
 export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
-module load R/3.6.1
+#module load R/3.6.3
+module load R/4.0.2
 module load texlive/2015
 
 
@@ -31,6 +33,7 @@ rm -rf $DIR/Eagle  $DIR/Eagle.Rcheck
 ## create and run Rcpp.package.skeleton
 echo " Creating package skeleton "
 echo   "library(Rcpp)" > ./tmp.R
+echo   "library(RcppEigen)" >>  ./tmp.R
 echo   "    " >> tmp.R  
 echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"create_vcf_BIN_rcpp.cpp\"  ,
@@ -117,14 +120,16 @@ echo  "    example_code=FALSE, code_files=c(
             \"constructX.R\", 
             \"summary_am.R\"   ) ) " >> ./tmp.R
 echo  "  ## running roxygen2  " >> ./tmp.R
-echo  " library(roxygen2) " >> ./tmp.R
-echo  " setwd(\"./Eagle\")  " >> ./tmp.R
-echo  "  roxygenise() " >> ./tmp.R
-echo "  " >> tmp.R
+#echo  " library(roxygen2) " >> ./tmp.R
+#echo  " setwd(\"./Eagle\")  " >> ./tmp.R
+#echo  "  roxygenize(roclets= c(\"namespace\", \"rd\")    ) " >> ./tmp.R
+#echo "  " >> tmp.R
 
-# run tmp.R in batch mode of R
+# run tmp.R to create an initial directory structure
 echo "Running R CMD BATCH ./tmp.R"  
 R CMD BATCH ./tmp.R
+
+
 
 
 
@@ -252,10 +257,18 @@ rm -f ./Eagle/.RData
 cd $DIR
 cp ./Eagle-package.Rd  ./Eagle/man/. 
 
+echo  " library(roxygen2) " > ./tmp.R
+echo  " setwd(\"./Eagle\")  " >> ./tmp.R
+echo  "  roxygenize(roclets= c(\"namespace\", \"rd\")    ) " >> ./tmp.R
+echo "  " >> tmp.R
+R CMD BATCH ./tmp.R 
+
+
+
 R CMD build Eagle 
 
 
- R CMD check --as-cran Eagle_2.4.1.tar.gz 
+ R CMD check --as-cran Eagle_2.4.2.tar.gz 
 
 
 R CMD INSTALL Eagle -l ~/RLibs

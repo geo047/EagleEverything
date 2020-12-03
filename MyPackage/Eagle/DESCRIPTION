@@ -1,7 +1,7 @@
 Package: Eagle
 Type: Package
 Title: Multiple Locus Association Mapping  on a Genome-Wide Scale
-Version: 2.4.1
+Version: 2.4.2
 Authors@R: c(
            person("Andrew", "George", role=c("aut", "cre"), email="andrew.george@csiro.au"),
            person("Joshua", "Bowden", role="ctb"),
@@ -49,3 +49,4 @@ ByteCompile: TRUE
 NeedsCompilation: yes
 URL: http://eagle.r-forge.r-project.org
 Contact: eaglehelp@csiro.au
+RoxygenNote: 7.1.1
