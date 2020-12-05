@@ -257,6 +257,7 @@ rm -f ./Eagle/.RData
 cd $DIR
 cp ./Eagle-package.Rd  ./Eagle/man/. 
 
+# create Rd files for package ... 
 echo  " library(roxygen2) " > ./tmp.R
 echo  " setwd(\"./Eagle\")  " >> ./tmp.R
 echo  "  roxygenize(roclets= c(\"namespace\", \"rd\")    ) " >> ./tmp.R
@@ -264,17 +265,22 @@ echo "  " >> tmp.R
 R CMD BATCH ./tmp.R 
 
 
+# create Vignettes
+mkdir ./Eagle/vignettes
+cp ./vignette/* ./Eagle/vignettes/.
+
+
+
 
 R CMD build Eagle 
 
 
- R CMD check --as-cran Eagle_2.4.2.tar.gz 
+R CMD check --as-cran Eagle_2.4.2.tar.gz 
 
 
-R CMD INSTALL Eagle -l ~/RLibs
+R CMD INSTALL Eagle_2.4.2.tar.gz  -l ~/RLibs
 
 
- rm tmp.R  tmp.Rout 
 
 
 

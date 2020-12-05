@@ -44,6 +44,10 @@ LinkingTo:
    RcppEigen, Rcpp
 Roxygen: 
    list(wrap=FALSE)
+Suggests:
+  knitr
+VignetteBuilder: 
+   knitr
 LazyData: true
 ByteCompile: TRUE
 NeedsCompilation: yes

@@ -34,6 +34,7 @@ installing to /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/00LOCK-Eagle/0
 ** help
 *** installing help indices
 ** building package indices
+** installing vignettes
 ** testing if installed package can be loaded from temporary location
 ** checking absolute paths in shared objects and dynamic libraries
 ** testing if installed package can be loaded from final location

@@ -1,3 +1,7 @@
+Dec 2020 Version 2.4.2
+* Vignette added
+
+
 Oct 2020 Version 2.4.1
 * Minor change - replaced Gamma with Lambda for consistency with extBIC parameterisation. 
                  I did this previously but missed a couple of the changes. 

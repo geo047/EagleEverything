@@ -20,6 +20,7 @@ Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
 * checking installed package size ... OK
 * checking package directory ... OK
 * checking for future file timestamps ... OK
+* checking ‘build’ directory ... OK
 * checking DESCRIPTION meta-information ... OK
 * checking top-level files ... OK
 * checking for left-over files ... OK
@@ -58,9 +59,16 @@ Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
 * checking pragmas in C/C++ headers and code ... OK
 * checking compilation flags used ... OK
 * checking compiled code ... OK
+ WARNING
+‘qpdf’ is needed for checks on size reduction of PDFs
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
 * checking examples ... OK
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in ‘inst/doc’ ... OK
+* checking re-building of vignette outputs ... OK
 * checking PDF version of manual ... OK
 * checking for non-standard things in the check directory ... OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: OK
+Status: 1 WARNING
