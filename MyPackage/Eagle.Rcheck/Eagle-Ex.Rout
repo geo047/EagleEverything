@@ -1,5 +1,5 @@
 
-R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -311,7 +311,7 @@ Loading required package: ggthemes
 
                    ~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/map.txt
+ File name:                   /home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/map.txt
 
  Number of marker loci:       100
 
@@ -372,7 +372,7 @@ The map file has been loaded.
 >   # 
 >   # The full path and name of the file is
 >   print(complete.name)
-[1] "/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.txt"
+[1] "/home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.txt"
 >   
 >   # Here, 0 values are being treated as genotype AA,
 >   # 1 values are being treated as genotype AB, 
@@ -401,7 +401,7 @@ The map file has been loaded.
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   text
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/M.bin
+ Reformatted ASCII file name:  /tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/M.bin
  Number of individuals:        150
  Number of loci:               100
  File size (gigabytes):       4.5e-05
@@ -416,10 +416,10 @@ The map file has been loaded.
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $tmpM
-[1] "/tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/M.bin"
+[1] "/tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/M.bin"
 
 $tmpMt
-[1] "/tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/Mt.bin"
+[1] "/tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/Mt.bin"
 
 $dim_of_M
 [1] 150 100
@@ -443,7 +443,7 @@ $availmemGb
 >   # 
 >   # The full path and name of the file is
 >   print(complete.name)
-[1] "/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.ped"
+[1] "/home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.ped"
 >   
 >   # Here,  the first 6 columns are being ignored and the allelic 
 >   # information in columns 7 -  10002 is being converted into a reformatted file. 
@@ -465,7 +465,7 @@ $availmemGb
                     Summary of Marker File  
                    ~~~~~~~~~~~~~~~~~~~~~~~~   
  File type:                   PLINK
- Reformatted ASCII file name:  /tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/M.bin
+ Reformatted ASCII file name:  /tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/M.bin
  Number of individuals:        150
  Number of loci:               100
  File size (gigabytes):       4.5e-05
@@ -480,10 +480,10 @@ $availmemGb
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $tmpM
-[1] "/tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/M.bin"
+[1] "/tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/M.bin"
 
 $tmpMt
-[1] "/tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/Mt.bin"
+[1] "/tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/Mt.bin"
 
 $dim_of_M
 [1] 150 100
@@ -509,7 +509,7 @@ $availmemGb
 >   # 
 >   # The full path and name of the file is
 >   print(complete.name)
-[1] "/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.vcf"
+[1] "/home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/geno.vcf"
 >   
 >   # The file contains 5 marker loci recorded on 3 individuals
 >   # Two of the loci contain multiple alleles and are removed. 
@@ -542,10 +542,10 @@ $availmemGb
 >   # view list contents of geno_obj
 >   print(geno_obj)
 $tmpM
-[1] "/tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/M.bin"
+[1] "/tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/M.bin"
 
 $tmpMt
-[1] "/tmp/geo047.vnc/RtmpFlflHM/working_dir/RtmpZubvUC/Mt.bin"
+[1] "/tmp/RtmpPUS1WD/working_dir/RtmpThtVQe/Mt.bin"
 
 $dim_of_M
 [1] 3 3
@@ -596,7 +596,7 @@ $map
 
               ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/pheno.txt
+ File name:                   /home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/pheno.txt
 
  Number of individuals:       150
 
@@ -665,7 +665,7 @@ The phenotype file has been loaded.
 
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
- File name:                   /home/geo047/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/Z.txt
+ File name:                   /home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck/Eagle/extdata/Z.txt
 
  Number of rows:              4
 
@@ -774,7 +774,7 @@ The phenotype file has been loaded.
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  1.864 0.138 2.476 0.005 0 
+Time elapsed:  1.189 0.047 1.28 0.001 0 
 > grDevices::dev.off()
 null device 
           1 

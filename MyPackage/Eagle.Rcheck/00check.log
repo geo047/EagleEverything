@@ -1,5 +1,5 @@
-* using log directory ‘/home/geo047/EagleEverything/MyPackage/Eagle.Rcheck’
-* using R version 4.0.2 (2020-06-22)
+* using log directory ‘/home/ubuntu/EagleEverything/MyPackage/Eagle.Rcheck’
+* using R version 4.0.3 (2020-10-10)
 * using platform: x86_64-pc-linux-gnu (64-bit)
 * using session charset: UTF-8
 * using option ‘--as-cran’
@@ -17,7 +17,11 @@ Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
 * checking for portable file names ... OK
 * checking for sufficient/correct file permissions ... OK
 * checking whether package ‘Eagle’ can be installed ... OK
-* checking installed package size ... OK
+* checking installed package size ... NOTE
+  installed size is 17.0Mb
+  sub-directories of 1Mb or more:
+    libs       15.0Mb
+    shiny_app   1.1Mb
 * checking package directory ... OK
 * checking for future file timestamps ... OK
 * checking ‘build’ directory ... OK
@@ -59,8 +63,7 @@ Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
 * checking pragmas in C/C++ headers and code ... OK
 * checking compilation flags used ... OK
 * checking compiled code ... OK
- WARNING
-‘qpdf’ is needed for checks on size reduction of PDFs
+* checking sizes of PDF files under ‘inst/doc’ ... OK
 * checking installed files from ‘inst/doc’ ... OK
 * checking files in ‘vignettes’ ... OK
 * checking examples ... OK
@@ -71,4 +74,4 @@ Maintainer: ‘Andrew George  <andrew.george@csiro.au>’
 * checking for non-standard things in the check directory ... OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: 1 WARNING
+Status: 1 NOTE
