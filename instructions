@@ -1,3 +1,11 @@
+to clone this directory use
+
+git clone git@github.com:geo047/EagleEverything.git  
+
+(this needs a ssh key to be available and the public key put on 
+github/settings/ssh keys/add new key etc. ... 
+
+
 git push -u origin   master
 
 username: geo047
