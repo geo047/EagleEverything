@@ -471,7 +471,7 @@ placement="right", trigger="hover",
                                       fluidRow(column(12, 
                                         wellPanel(
                                         h4("Step 3: Select marker file"),
-                                        shinyFilesButton('choose_marker_file', 'Select File', 'Please select file', FALSE),
+                                        shinyFiles::shinyFilesButton('choose_marker_file', 'Select File', 'Please select file', FALSE),
                                         textInput("choose_marker_file_text", label = h5("or enter file name (including full path)"))
                                          
                                            
@@ -640,7 +640,7 @@ placement="right", trigger="hover",
                                       fluidRow(column(12,
                                         wellPanel(
                                         h4("Step 4: Select phenotypic file"),
-                                        shinyFilesButton('choose_pheno_file', 'Select File', 'Please select file', FALSE),
+                                        shinyFiles::shinyFilesButton('choose_pheno_file', 'Select File', 'Please select file', FALSE),
                                         textInput("choose_pheno_file_text", label = h5("or enter file name (including full path)"))
                                           )  ## end wellPannel
                                          )
@@ -842,7 +842,7 @@ placement="right", trigger="hover",
                                       fluidRow(column(12,
                                         wellPanel(
                                         h4("Step 1: Select Z matrix file"),
-                                        shinyFilesButton('choose_Zmat_file', 'Select File', 'Please select file', FALSE),
+                                        shinyFiles::shinyFilesButton('choose_Zmat_file', 'Select File', 'Please select file', FALSE),
                                         textInput("choose_Zmat_file_text", label = h5("or enter file name (including full path)"))
 
 
@@ -995,7 +995,7 @@ placement="right", trigger="hover",
                                       fluidRow(column(12,
                                         wellPanel(
                                         h4("Step 3: Select map file"),
-                                        shinyFilesButton('choose_map_file', 'Select File', 'Please select file', FALSE),
+                                        shinyFiles::shinyFilesButton('choose_map_file', 'Select File', 'Please select file', FALSE),
                                         textInput("choose_map_file_text", label = h5("or enter file name (including full path)"))
                                           )  ## end wellPannel
                                          )
@@ -1314,7 +1314,7 @@ server <- function(input, output, session){
   ##  Read marker path and file name
   ##---------------------------------------- 
   ## upload path and file name
-    shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=rootdir)
+    shinyFiles::shinyFileChoose(input=input, id='choose_marker_file', session=session, roots=rootdir)
     observeEvent(input$choose_marker_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_marker_file)
            updateTextInput(session, "choose_marker_file_text", value =  as.character(inFile$datapath))
@@ -1500,7 +1500,7 @@ observeEvent(input$marker_go,  {
 
 
 
-        shinyFileChoose(input=input, id='choose_pheno_file', session=session, roots=rootdir )
+        shinyFiles::shinyFileChoose(input=input, id='choose_pheno_file', session=session, roots=rootdir )
 
         observeEvent(input$choose_pheno_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_pheno_file)
@@ -1565,7 +1565,7 @@ observeEvent(input$marker_go,  {
   ##  Read Z matrix path and file name
   ##---------------------------------------- 
   ## upload path and file name
-        shinyFileChoose(input=input, id='choose_Zmat_file', session=session, roots=rootdir )
+        shinyFiles::shinyFileChoose(input=input, id='choose_Zmat_file', session=session, roots=rootdir )
 
         observeEvent(input$choose_Zmat_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_Zmat_file)
@@ -1613,7 +1613,7 @@ observeEvent(input$marker_go,  {
   ##  Read map path and file name
   ##---------------------------------------- 
   ## upload path and file name
-        shinyFileChoose(input=input, id='choose_map_file', session=session, roots=rootdir )
+        shinyFiles::shinyFileChoose(input=input, id='choose_map_file', session=session, roots=rootdir )
 
         observeEvent(input$choose_map_file, {
            inFile <- parseFilePaths(roots=rootdir, input$choose_map_file)

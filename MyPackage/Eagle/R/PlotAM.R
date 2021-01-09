@@ -335,8 +335,7 @@ if(type=="Manhattan")
    p <- p + guides(colour = guide_legend(override.aes = list(size=5)))
  
  if(interactive){
-  # launch interactive graphics
-  ggplotly(p)  %>% layout(legend = list( orientation = "h", x=0, y=-0.4, itemsizing="constant"  ))
+     ggplotly(p)  %>%  layout(legend = list( orientation = "h", x=0, y=-0.4, itemsizing="constant"  ))
   } else {
     return(p)
   }

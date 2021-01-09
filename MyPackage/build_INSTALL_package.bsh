@@ -10,7 +10,7 @@ export LD_LIBRARY_PATH=$MAGMA_HOME/lib:$CUDA_HOME/lib64:$INTEL_MKL_HOME/lib/
 #module load R/3.6.3
 module load R/4.0.2
 module load texlive/2015
-
+module load qpdf/10.1.0
 
 
 
@@ -63,6 +63,7 @@ echo  " Rcpp.package.skeleton(\"Eagle\", cpp_files=c(
             \"getNumRows.cpp\"  
              ),    " >> ./tmp.R
 echo  "    example_code=FALSE, code_files=c(
+            \"layers2traces.R\",
             \"onAttach.R\", 
             \"FPR4AM.R\",
             \"ReadMarkerBin.R\",
@@ -272,13 +273,13 @@ cp ./vignette/* ./Eagle/vignettes/.
 
 
 
-R CMD build Eagle 
+R CMD build --compact-vignettes="gs+qpdf" Eagle
 
 
-R CMD check --as-cran Eagle_2.4.2.tar.gz 
+#  R CMD check --as-cran Eagle_2.4.3.tar.gz 
 
 
-R CMD INSTALL Eagle_2.4.2.tar.gz  -l ~/RLibs
+# R CMD INSTALL Eagle_2.4.3.tar.gz  -l ~/RLibs
 
 
 
