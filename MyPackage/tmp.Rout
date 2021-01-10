@@ -24,142 +24,11 @@ Type 'q()' to quit R.
 >   roxygenize(roclets= c("namespace", "rd")    ) 
 First time using roxygen2. Upgrading automatically...
 Updating roxygen version in /home/geo047/EagleEverything/MyPackage/Eagle/DESCRIPTION
-Loading Eagle
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/CreateASCIInospace.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/CreateASCIInospace_PLINK.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/CreateBIN.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/CreateBIN_PLINK.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/ReadBlock.cpp:
-   Eigen::MatrixXd ReadBlock(std::string asciifname, long start_row, long numcols, long numrows_in_block)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/ReadBlockBin.cpp:
-   Eigen::MatrixXd ReadBlockBin(std::string binfname, long start_row, long numcols, long numrows_in_block)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/ReshapeM_rcpp.cpp:
-   std::vector <long> ReshapeM_rcpp(Rcpp::CharacterVector fnameM, Rcpp::CharacterVector fnameMt, std::vector <long> indxNA, std::vector <long> dims)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/calculateMMt_rcpp.cpp:
-   Eigen::MatrixXd calculateMMt_rcpp(Rcpp::CharacterVector f_name, double max_memory_in_Gbytes, int num_cores, Rcpp::NumericVector selected_loci, std::vector<long> dims, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/calculate_a_and_vara_batch_rcpp.cpp:
-   Rcpp::List calculate_a_and_vara_batch_rcpp(long numreps, Rcpp::CharacterVector f_name, Rcpp::NumericVector selected_loci, Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt, Eigen::Map<Eigen::MatrixXd> dim_reduced_vara, double max_memory_in_Gbytes, std::vector <long> dims, Eigen::Map<Eigen::MatrixXd> a, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/calculate_a_and_vara_rcpp.cpp:
-   Rcpp::List calculate_a_and_vara_rcpp(Rcpp::CharacterVector f_name, Rcpp::NumericVector selected_loci, Eigen::Map<Eigen::MatrixXd> inv_MMt_sqrt, Eigen::Map<Eigen::MatrixXd> dim_reduced_vara, double max_memory_in_Gbytes, std::vector <long> dims, Eigen::VectorXd a, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/calculate_reduced_a_rcpp.cpp:
-   Eigen::MatrixXd calculate_reduced_a_rcpp(Rcpp::CharacterVector f_name_ascii, double varG, Eigen::Map<Eigen::MatrixXd> P, Eigen::Map<Eigen::MatrixXd> y, double max_memory_in_Gbytes, std::vector <long> dims, Rcpp::NumericVector selected_loci, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/createM_ASCII_rcpp.cpp:
-   bool createM_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_ascii, Rcpp::CharacterVector type, std::string AA, std::string AB, std::string BB, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message, std::string missing)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/createM_BIN_rcpp.cpp:
-   bool createM_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin, Rcpp::CharacterVector type, std::string AA, std::string AB, std::string BB, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message, std::string missing)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/createMt_ASCII_rcpp.cpp:
-   void createMt_ASCII_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_ascii, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/createMt_BIN_rcpp.cpp:
-   void createMt_BIN_rcpp(Rcpp::CharacterVector f_name_in, Rcpp::CharacterVector f_name_out, Rcpp::CharacterVector type, double max_memory_in_Gbytes, std::vector <long> dims, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/create_vcf_BIN_rcpp.cpp:
-   Rcpp::List create_vcf_BIN_rcpp(Rcpp::CharacterVector f_name, Rcpp::CharacterVector f_name_bin_M, Rcpp::CharacterVector f_name_bin_Mt, double max_memory_in_Gbytes, bool quiet, Rcpp::Function message)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/extract_geno_Mt_rcpp.cpp:
-   Eigen::VectorXi extract_geno_Mt_rcpp(Rcpp::CharacterVector f_name, long selected_locus, std::vector<long> dims)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/extract_geno_rcpp.cpp:
-   Eigen::VectorXi extract_geno_rcpp(Rcpp::CharacterVector f_name_ascii, double max_memory_in_Gbytes, long selected_locus, std::vector<long> dims)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/fasttimer.cpp:
-   double fasttimer()
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/getNumColumns.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/getNumRows.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/getRowColumn.cpp:
-   std::vector<long> getRowColumn(std::string fname)
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/removeColumn.cpp:
-
-Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/removeRow.cpp:
-
-/home/geo047/EagleEverything/MyPackage/Eagle/src/RcppExports.cpp updated.
-/home/geo047/EagleEverything/MyPackage/Eagle/R/RcppExports.R updated.
-Re-compiling Eagle
-  ─  installing *source* package ‘Eagle’ ... (346ms)
-     ** using staged installation
-     ** libs
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c CreateASCIInospace.cpp -o CreateASCIInospace.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c CreateASCIInospace_PLINK.cpp -o CreateASCIInospace_PLINK.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c CreateBIN.cpp -o CreateBIN.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c CreateBIN_PLINK.cpp -o CreateBIN_PLINK.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c RcppExports.cpp -o RcppExports.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c ReadBlock.cpp -o ReadBlock.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c ReadBlockBin.cpp -o ReadBlockBin.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c ReshapeM_rcpp.cpp -o ReshapeM_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c calculateMMt_rcpp.cpp -o calculateMMt_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c calculate_a_and_vara_batch_rcpp.cpp -o calculate_a_and_vara_batch_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c calculate_a_and_vara_rcpp.cpp -o calculate_a_and_vara_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c calculate_reduced_a_rcpp.cpp -o calculate_reduced_a_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c createM_ASCII_rcpp.cpp -o createM_ASCII_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c createM_BIN_rcpp.cpp -o createM_BIN_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c createMt_ASCII_rcpp.cpp -o createMt_ASCII_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c createMt_BIN_rcpp.cpp -o createMt_BIN_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c create_vcf_BIN_rcpp.cpp -o create_vcf_BIN_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c extract_geno_Mt_rcpp.cpp -o extract_geno_Mt_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c extract_geno_rcpp.cpp -o extract_geno_rcpp.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c fasttimer.cpp -o fasttimer.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c getNumColumns.cpp -o getNumColumns.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c getNumRows.cpp -o getNumRows.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c getRowColumn.cpp -o getRowColumn.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c removeColumn.cpp -o removeColumn.o
-     icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c removeRow.cpp -o removeRow.o
-     icpc -std=gnu++11 -Dx=CXX -shared -L/apps/R/4.0.2/lib64/R/lib -Wl,--disable-new-dtags -Wl,-rpath,/apps/intel/fc/16.0.4.258/compiler/lib/intel64 -o Eagle.so CreateASCIInospace.o CreateASCIInospace_PLINK.o CreateBIN.o CreateBIN_PLINK.o RcppExports.o ReadBlock.o ReadBlockBin.o ReshapeM_rcpp.o calculateMMt_rcpp.o calculate_a_and_vara_batch_rcpp.o calculate_a_and_vara_rcpp.o calculate_reduced_a_rcpp.o createM_ASCII_rcpp.o createM_BIN_rcpp.o createMt_ASCII_rcpp.o createMt_BIN_rcpp.o create_vcf_BIN_rcpp.o extract_geno_Mt_rcpp.o extract_geno_rcpp.o fasttimer.o getNumColumns.o getNumRows.o getRowColumn.o removeColumn.o removeRow.o -L/apps/R/4.0.2/lib64/R/lib -lRlapack -L/apps/R/4.0.2/lib64/R/lib -lRblas -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lpthread -lirc_s -ldl -fopenmp -L/apps/R/4.0.2/lib64/R/lib -lR
-     installing to /tmp/geo047.49310408/RtmpDOzJVi/devtools_install_c3592e5d2bfd/00LOCK-Eagle/00new/Eagle/libs
-     ** checking absolute paths in shared objects and dynamic libraries
-  ─  DONE (Eagle)
-Loading required package: shinyFiles
-Loading required package: shinyBS
-Loading required package: ggplot2
-Loading required package: ggthemes
-Loading required package: plotly
-
-Attaching package: ‘plotly’
-
-The following object is masked from ‘package:ggplot2’:
-
-    last_plot
-
-The following object is masked from ‘package:stats’:
-
-    filter
-
-The following object is masked from ‘package:graphics’:
-
-    layout
-
-Warning: The existing 'NAMESPACE' file was not generated by roxygen2, and will not be overwritten.
-Writing AM.Rd
-Writing FPR4AM.Rd
-Writing OpenGUI.Rd
-Writing PlotAM.Rd
-Writing ReadMap.Rd
-Writing ReadMarker.Rd
-Writing ReadPheno.Rd
-Writing ReadZmat.Rd
-Writing SummaryAM.Rd
-Warning messages:
-1: roxygen2 requires Encoding: UTF-8 
-2: Unknown Roxygen options wrap.
-Supported options: roclets, packages, load, old_usage, markdown, r6, current_package, rd_family_title 
->   
-> 
-> proc.time()
-   user  system elapsed 
- 74.395  15.863 112.894 
+Error in parse(text = desc_opts) : <text>:3:6: unexpected ','
+2: Suggests:
+3: knitr,
+        ^
+Calls: roxygenize ... load_options -> load_options_description -> eval -> parse
+In addition: Warning message:
+roxygen2 requires Encoding: UTF-8 
+Execution halted
