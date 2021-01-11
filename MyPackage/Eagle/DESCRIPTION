@@ -43,11 +43,10 @@ LinkingTo:
    RcppEigen, Rcpp
 Roxygen: 
    list(wrap=FALSE)
-  Suggests: 
-     knitr, 
-     rmarkdown
+Suggests: 
+     R.rsp
 VignetteBuilder: 
-     knitr
+     R.rsp
 LazyData: true
 ByteCompile: TRUE
 NeedsCompilation: yes
