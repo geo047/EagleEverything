@@ -277,10 +277,10 @@ cp ./vignette/* ./Eagle/vignettes/.
 R CMD build --compact-vignettes="gs+qpdf" Eagle
 
 
-  R CMD check --as-cran Eagle_2.4.3.tar.gz 
+#  R CMD check --as-cran Eagle_2.4.3.tar.gz 
 
 
- R CMD INSTALL Eagle_2.4.3.tar.gz  -l ~/RLibs
+# R CMD INSTALL Eagle_2.4.3.tar.gz  -l ~/RLibs
 
 
 

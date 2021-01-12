@@ -44,9 +44,9 @@ LinkingTo:
 Roxygen: 
    list(wrap=FALSE)
 Suggests: 
-     R.rsp
+     knitr
 VignetteBuilder: 
-     R.rsp
+     knitr
 LazyData: true
 ByteCompile: TRUE
 NeedsCompilation: yes
