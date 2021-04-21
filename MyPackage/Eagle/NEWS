@@ -1,3 +1,8 @@
+
+April 2021 Version 2.4.4
+* Some minor changes 
+
+
 Jan 2021 Version 2.4.3
 * Eagle is being moved to a docker container for easy installation. Some minor 
   changes to facilitate the move. 

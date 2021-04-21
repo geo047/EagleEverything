@@ -267,20 +267,20 @@ R CMD BATCH ./tmp.R
 
 
 # create Vignettes
-mkdir ./Eagle/vignettes
-cp ./vignette/* ./Eagle/vignettes/.
+##  ===> mkdir ./Eagle/vignettes
+##  ===> cp ./vignette/* ./Eagle/vignettes/.
 
 
 
 
-#R CMD build  Eagle
-R CMD build --compact-vignettes="gs+qpdf" Eagle
+## ===>  R CMD build --compact-vignettes="gs+qpdf" Eagle
+
+R CMD build  Eagle
+
+R CMD check --as-cran Eagle_2.4.4.tar.gz 
 
 
-#  R CMD check --as-cran Eagle_2.4.3.tar.gz 
-
-
-# R CMD INSTALL Eagle_2.4.3.tar.gz  -l ~/RLibs
+R CMD INSTALL Eagle_2.4.4.tar.gz  -l ~/RLibs
 
 
 
