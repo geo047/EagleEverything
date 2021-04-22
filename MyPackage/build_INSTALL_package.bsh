@@ -166,6 +166,10 @@ rm  $DIR/Eagle/src/tmp
 
 echo " mkdir Eagle/inst and Eagle/inst/include "
 mkdir $DIR/Eagle/inst
+#mkdir $DIR/Eagle/data
+# had to do this crazy step to pass CRAN's new LazyData checking. All the obvious ways did not work. 
+#cp /home/geo047/EagleEverything/MyPackage/dummydata.RData  $DIR/Eagle/data
+
 #mkdir $DIR/Eagle/inst/include
 
 # cp Eagle.h to Eagle direcotry 

@@ -43,7 +43,6 @@ LinkingTo:
    RcppEigen, Rcpp
 Roxygen: 
    list(wrap=FALSE)
-LazyData: true
 ByteCompile: TRUE
 NeedsCompilation: yes
 URL: http://eagle.r-forge.r-project.org

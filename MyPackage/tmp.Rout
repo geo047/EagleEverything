@@ -92,7 +92,7 @@ Exports from /home/geo047/EagleEverything/MyPackage/Eagle/src/removeRow.cpp:
 /home/geo047/EagleEverything/MyPackage/Eagle/src/RcppExports.cpp updated.
 /home/geo047/EagleEverything/MyPackage/Eagle/R/RcppExports.R updated.
 Re-compiling Eagle
-  ─  installing *source* package ‘Eagle’ ...
+  ─  installing *source* package ‘Eagle’ ... (1.2s)
      ** using staged installation
      ** libs
      icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c CreateASCIInospace.cpp -o CreateASCIInospace.o
@@ -121,7 +121,7 @@ Re-compiling Eagle
      icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c removeColumn.cpp -o removeColumn.o
      icpc -std=gnu++11 -Dx=CXX -I"/apps/R/4.0.2/lib64/R/include" -DNDEBUG  -I'/apps/R/4.0.2/lib64/R/library/RcppEigen/include' -I'/apps/R/4.0.2/lib64/R/library/Rcpp/include' -I/usr/local/include  -DEIGEN_USE_BLAS -fopenmp -fpic  -O3 -xHOST -fp-model precise -Dx=CXXFLAGS  -UNDEBUG -Wall -pedantic -g -O0 -c removeRow.cpp -o removeRow.o
      icpc -std=gnu++11 -Dx=CXX -shared -L/apps/R/4.0.2/lib64/R/lib -Wl,--disable-new-dtags -Wl,-rpath,/apps/intel/fc/16.0.4.258/compiler/lib/intel64 -o Eagle.so CreateASCIInospace.o CreateASCIInospace_PLINK.o CreateBIN.o CreateBIN_PLINK.o RcppExports.o ReadBlock.o ReadBlockBin.o ReshapeM_rcpp.o calculateMMt_rcpp.o calculate_a_and_vara_batch_rcpp.o calculate_a_and_vara_rcpp.o calculate_reduced_a_rcpp.o createM_ASCII_rcpp.o createM_BIN_rcpp.o createMt_ASCII_rcpp.o createMt_BIN_rcpp.o create_vcf_BIN_rcpp.o extract_geno_Mt_rcpp.o extract_geno_rcpp.o fasttimer.o getNumColumns.o getNumRows.o getRowColumn.o removeColumn.o removeRow.o -L/apps/R/4.0.2/lib64/R/lib -lRlapack -L/apps/R/4.0.2/lib64/R/lib -lRblas -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lpthread -lirc_s -ldl -fopenmp -L/apps/R/4.0.2/lib64/R/lib -lR
-     installing to /tmp/geo047.vnc/RtmpzEHoxu/devtools_install_30f22ed7b928/00LOCK-Eagle/00new/Eagle/libs
+     installing to /tmp/geo047.vnc/RtmpYtTb6b/devtools_install_b0423c44698b/00LOCK-Eagle/00new/Eagle/libs
      ** checking absolute paths in shared objects and dynamic libraries
   ─  DONE (Eagle)
 Loading required package: shinyFiles
@@ -162,4 +162,4 @@ Supported options: roclets, packages, load, old_usage, markdown, r6, current_pac
 > 
 > proc.time()
    user  system elapsed 
- 81.040  43.383 163.296 
+ 81.170  61.102 184.310 

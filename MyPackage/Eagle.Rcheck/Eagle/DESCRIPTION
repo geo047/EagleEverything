@@ -31,11 +31,10 @@ Imports: R.utils, mmap, matrixcalc, shiny, shinythemes, shinyjs, stats,
         utils, parallel, data.table
 LinkingTo: RcppEigen, Rcpp
 Roxygen: list(wrap=FALSE)
-LazyData: true
 ByteCompile: TRUE
 NeedsCompilation: yes
 URL: http://eagle.r-forge.r-project.org
 Contact: eaglehelp@csiro.au
 RoxygenNote: 7.1.1
-Packaged: 2021-04-15 04:30:25 UTC; geo047
-Built: R 4.0.2; x86_64-pc-linux-gnu; 2021-04-15 04:31:36 UTC; unix
+Packaged: 2021-04-22 00:05:23 UTC; geo047
+Built: R 4.0.2; x86_64-pc-linux-gnu; 2021-04-22 00:07:13 UTC; unix
