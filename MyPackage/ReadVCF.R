@@ -23,6 +23,11 @@ ReadVCF <- function( filename=NULL, availmemGb=16, quiet=TRUE ){
  #dim_of_M <- create.vcf.bin(file_genotype=fullpath(filename), availmemGb=availmemGb,  quiet=quiet  )
  liststr <- create.vcf.bin(file_genotype=fullpath(filename), availmemGb=availmemGb,  quiet=quiet  )
 
+ if(!is.list(liststr)){
+   # error has occurred
+   return(NULL)
+}
+
 
     if(.Platform$OS.type == "unix") {
        binfileM <- paste(tempdir(), "/", "M.bin", sep="")

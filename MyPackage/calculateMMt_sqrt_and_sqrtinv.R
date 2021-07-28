@@ -50,4 +50,18 @@ calculateMMt_sqrt_and_sqrtinv <- function(MMt=NULL, checkres=TRUE,
 } ## end function
 
 
+is.positive.definite <-  function (x, tol = 1e-08) 
+{
+    eigenvalues <- eigen(x, only.values = TRUE)$values
+    n <- nrow(x)
+    for (i in 1:n) {
+        if (abs(eigenvalues[i]) < tol) {
+            eigenvalues[i] <- 0
+        }
+    }
+    if (any(eigenvalues <= 0)) {
+        return(FALSE)
+    }
+    return(TRUE)
+}
 

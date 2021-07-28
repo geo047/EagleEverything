@@ -281,10 +281,10 @@ R CMD BATCH ./tmp.R
 
 R CMD build  Eagle
 
-R CMD check --as-cran Eagle_2.4.4.tar.gz 
+# ===>  R CMD check --as-cran Eagle_2.4.5.tar.gz 
 
 
-R CMD INSTALL Eagle_2.4.4.tar.gz  -l ~/RLibs
+R CMD INSTALL Eagle_2.4.5.tar.gz  -l ~/RLibs
 
 
 

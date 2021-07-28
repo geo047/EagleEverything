@@ -18,6 +18,12 @@ create.vcf.bin  <- function(file_genotype=NULL,  availmemGb=8,  quiet=TRUE){
       liststr <- create_vcf_BIN_rcpp(f_name = file_genotype,  f_name_bin_M = binMfile,   f_name_bin_Mt = binMtfile,
                max_memory_in_Gbytes=availmemGb,  quiet = quiet, message=message )
 
+   if (length(liststr$dim_of_M)==0){
+       return(FALSE)
+   }
+
+
+
  message("\n ReadVCF is complete ... \n")
 
 

@@ -1,3 +1,6 @@
+June 2021 Version 2.4.5
+* removed matrixcalc dependency due to this package being archived. 
+
 
 April 2021 Version 2.4.4
 * Some minor changes 

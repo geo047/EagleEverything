@@ -58,7 +58,7 @@ how much phenotypic variation they explain can be obtained by running \code{\lin
 \author{
 Andrew W. George (Data61, CSIRO)  with a lot of support from Joshua Bowden (IM&T, CSIRO)
 
-Maintainer: Andrew W. George  <andrew.george@csiro.au>
+Maintainer: Andrew W. George  <geo047@gmail.com>
 }
 
 

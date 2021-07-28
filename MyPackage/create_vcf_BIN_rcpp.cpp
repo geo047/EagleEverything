@@ -29,7 +29,8 @@ const size_t bits_in_int = std::numeric_limits<int>::digits;
 
   if(!fileIN.good()) {
       message("ERROR: Vcf file could not be opened with filename  " , fname , "\n" );
-      return 0;
+      //Rcpp::stop("all done");
+       return 0;
   }
 
   // check that vcf file is a vcf file
@@ -40,7 +41,8 @@ const size_t bits_in_int = std::numeric_limits<int>::digits;
 
   if (token.rfind("##fileformat=VC", 0) != 0) {
      message("ERROR: This does not appear to be a vcf file because the first row is not beginning with  ##fileformat=VCF... ");
-     return 0;
+     // Rcpp::stop("all done");
+      return 0;
   }
 
   // form map vectors
