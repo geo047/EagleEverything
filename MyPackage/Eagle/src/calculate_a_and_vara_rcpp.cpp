@@ -143,7 +143,9 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
   #endif
  for(long i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * var_ans_tmp_part1;
-       var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
+    //   var_ans(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
+    // Patch from Dirk re compatibility with Eigen 3.4.0
+ var_ans( static_cast<int>(indx[i]), 0) = ans1.dot(Mt.row( static_cast<int>(indx[i]) ));
   }
 
 
@@ -269,7 +271,9 @@ if(mem_bytes_needed < max_memory_in_Gbytes){
 #endif
 for(long i=0; i< NumOfaAboveThreshold ; i++){
        ans1 = (Mt.row(indx[i])) * vt1;
-       var_ans_tmp(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
+       // var_ans_tmp(indx[i],0) =     ans1.dot(Mt.row(indx[i]) ) ;
+       // Change made to be consistent with Eigen 3.4.0 - patch from Dirk
+       var_ans_tmp( static_cast<int>(indx[i]) ,0) =  ans1.dot(Mt.row( static_cast<int>(indx[i]) ));
 
 }
 

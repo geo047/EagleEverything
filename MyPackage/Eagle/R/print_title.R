@@ -4,7 +4,7 @@
     ## title
     message("\n\n\n")
 message("                    Multiple-Locus Association Mapping")
-message("                            Version 2.4.5 \n")
+message("                            Version 2.5  \n")
 message(" ")
 message("   . ,-\"-.   ,-\"-. ,-\"-.   ,-\"-. ,-\"-. ,-\"-. ,-\"-.   ,-\"-. ,-\"-.    ")
 message("    X | | \\ / | | X | | \\ / | | X | | \\ / | | X | | \\ / | | X | | \\ /   ")

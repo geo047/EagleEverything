@@ -1,7 +1,7 @@
 Package: Eagle
 Type: Package
 Title: Multiple Locus Association Mapping  on a Genome-Wide Scale
-Version: 2.4.6
+Version: 2.5
 Authors@R: c(
            person("Andrew", "George", role=c("aut", "cre"), email="geo047@gmail.com"),
            person("Joshua", "Bowden", role="ctb"),
@@ -34,6 +34,7 @@ Imports:
    shiny,
    shinythemes,
    shinyjs,
+   fontawesome,
    stats,
    utils,
    parallel,

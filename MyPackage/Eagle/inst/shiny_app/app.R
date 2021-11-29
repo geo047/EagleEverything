@@ -30,7 +30,7 @@ bannerAnal <- function()
               fluidRow(column(12, 
                        shinyBS::bsButton(inputId="dummy4", label="Hover here for details",
                        style="warning", size="large", type="action", block=TRUE,
-                       icon=icon("question-circle-o"))
+                       icon=icon("question-circle"))
                       ) ## end column
              ) ## end fluidRow
           ) ## end fluidPage
@@ -197,7 +197,7 @@ banner2Plot <- function(){
    page <- fluidRow(column(12, 
                        shinyBS::bsButton(inputId="plot_overview", label="Hover here for details",
                        style="warning", size="large", type="action", block=TRUE,
-                       icon=icon("question-circle-o"))
+                       icon=icon("question-circle"))
                            ) ## end column
                    ) ## end fluidRow
            return(page)             
@@ -337,7 +337,7 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                        ##----------------------------##
                        ##   Home Page                ##
                        ##----------------------------##
-                            tabPanel("Home", icon=icon("fa-home", class="fa fa-home  fa-lg"),
+                            tabPanel("Home", icon=icon("home", "fa-1x"),
                             tags$head(includeCSS("css.css")),
                             fluidPage(
                               fluidRow(
@@ -356,7 +356,7 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                        ##     Read Genotypes    ##
                        ##-----------------------##
                                  
-                      tabPanel("Read Genotypes",  icon=icon("file-o"), 
+                      tabPanel("Read Genotypes",  icon=icon("file"), 
                                tags$head(tags$style(HTML('
 
                                                          .popover {
@@ -383,7 +383,7 @@ FullPage <- navbarPage(title="Eagle: Genome-wide association mapping",
                                             
                                               shinyBS::bsButton(inputId="dummy1", label="Hover here for details", 
                                                     style="warning", size="large", type="action", block=TRUE, 
-                                                    icon=icon("question-circle-o")
+                                                    icon=icon("question-circle")
                                                     )
                                            
                                        ) ## end column
@@ -553,7 +553,7 @@ placement="right", trigger="hover",
                        ##----------------------##
                       
                                     
-                      tabPanel("Read Phenotypes",  icon=icon("file-o"), 
+                      tabPanel("Read Phenotypes",  icon=icon("file"), 
                                tags$head(tags$style(HTML('
                                                          .popover {
                                                          max-width: 80%;
@@ -576,7 +576,7 @@ placement="right", trigger="hover",
                               fluidRow(column(12, 
                                              shinyBS::bsButton(inputId="dummy2", label="Hover here for details",
                                                     style="warning", size="large", type="action", block=TRUE, 
-                                                    icon=icon("question-circle-o")
+                                                    icon=icon("question-circle")
                                                     )
                                            
                                        ) ## end column
@@ -708,7 +708,7 @@ placement="right", trigger="hover",
 
 #              #-----------------------TESTING ======================================= 
 #                                    
-#                     tabPanel("Read Phenotypes",  icon=icon("file-o"), 
+#                     tabPanel("Read Phenotypes",  icon=icon("file"), 
 #                               tags$head(tags$style(HTML('
 #                                                         .popover {
 #                                                         max-width: 80%;
@@ -731,7 +731,7 @@ placement="right", trigger="hover",
 #                              fluidRow(column(12, 
 #                                             shinyBS::bsButton(inputId="dummy2", label="Hover here for details",
 #                                                    style="warning", size="large", type="action", block=TRUE, 
-#                                                    icon=icon("question-circle-o")
+#                                                    icon=icon("question-circle")
 #                                                    )
 #                                           
 #                                       ) ## end column
@@ -798,7 +798,7 @@ placement="right", trigger="hover",
                       ## Read Z matrix (if needed)         ##
                       ##-----------------------------------##
                       
-                       tabPanel("Read Z matrix (if needed)", icon=icon("file-o"), 
+                       tabPanel("Read Z matrix (if needed)", icon=icon("file"), 
                                tags$head(tags$style(HTML('
 
                                                          .popover {
@@ -822,7 +822,7 @@ placement="right", trigger="hover",
                               fluidRow(column(12, 
                                           shinyBS::bsButton(inputId="Zmat1", label="Hover here for details",
                                           style="warning", size="large", type="action", block=TRUE,
-                                          icon=icon("question-circle-o")
+                                          icon=icon("question-circle")
                                           )
 
   
@@ -916,7 +916,7 @@ placement="right", trigger="hover",
                       ## Read Marker map         ##
                       ##-------------------------##
                       
-                       tabPanel("Read Map (optional)", icon=icon("file-o"), 
+                       tabPanel("Read Map (optional)", icon=icon("file"), 
                                tags$head(tags$style(HTML('
 
                                                          .popover {
@@ -940,7 +940,7 @@ placement="right", trigger="hover",
                               fluidRow(column(12, 
                                           shinyBS::bsButton(inputId="dummy3", label="Hover here for details",
                                           style="warning", size="large", type="action", block=TRUE,
-                                          icon=icon("question-circle-o")
+                                          icon=icon("question-circle")
                                           )
 
   
@@ -1055,7 +1055,7 @@ placement="right", trigger="hover",
                   ##-------------------------------------##
 
                       
-                  tabPanel("Analyse", icon=icon("fa-area-chart", class = "fa fa-area-chart fa-lg", lib = "font-awesome"), 
+                  tabPanel("Analyse", icon=icon("chart-area", "fa-1x"), 
                            tags$head(tags$style(HTML(' 
                                                          .popover {
                                                          max-width: 80%;
@@ -1115,7 +1115,7 @@ placement="right", trigger="hover",
 
 
  
-                       tabPanel("Findings", icon=icon("fa-puzzle-piece", class="fa fa-puzzle-piece fa-lg"), 
+                       tabPanel("Findings", icon=icon("puzzle-piece", "fa-1x"), 
                                tags$head(tags$style(HTML('
 
                                                          .popover {
@@ -1139,7 +1139,7 @@ placement="right", trigger="hover",
                               fluidRow(column(12,
                                           shinyBS::bsButton(inputId="dummy5", label="Hover here for details",
                                           style="warning", size="large", type="action", block=TRUE,
-                                          icon=icon("question-circle-o")
+                                          icon=icon("question-circle")
                                           )
 
 
@@ -1220,7 +1220,7 @@ tags$div(
 ##----------------------------##
 ## Plotting                   ##
 ##----------------------------##
-  tabPanel("Plots", icon=icon("fa-pie-chart", class="fa fa-pie-chart fa-lg"),
+  tabPanel("Plots", icon=icon("chart-pie", "fa-1x"),
      tags$head(tags$style(HTML('.popover { max-width: 80%; } '))),
    fluidPage(
       banner1Plot(),
@@ -1248,7 +1248,7 @@ tags$div(
 ## Help                         ##
 ##------------------------------##
 
-   tabPanel("Help",  icon=icon("question-circle-o", class="fa fa-question-circle-o fa-lg  "),
+   tabPanel("Help",  icon=icon("question-circle", "fa-1x"),
    fluidPage(
      row1Help()
 
@@ -1268,8 +1268,8 @@ tags$div(
 
 
 ## displays eagle log on navbar
-FullPage[[3]][[1]]$children[[1]]$children[[1]]$children[[1]] <- 
-  tags$img(src = 'images/logo.jpg', width = 80, height = 60)
+#FullPage[[3]][[1]]$children[[1]]$children[[1]]$children[[1]] <- 
+#  tags$img(src = 'images/logo.jpg', width = 80, height = 60)
 ui <- FullPage
 
 get_path <- function (defaultpath="/R/library/Eagle/shiny_app/shinydata/genoDemo.dat") {

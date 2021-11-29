@@ -8,7 +8,7 @@ importFrom(shinyBS, bsTooltip)
 importFrom(mmap, sizeof)
 import(ggplot2)
 import(ggthemes)
-import(shinyFiles, shiny,  shinythemes,  stats, utils) 
+import(shinyFiles, shiny,  shinythemes,  fontawesome, stats, utils) 
 
 export(
    FPR4AM,

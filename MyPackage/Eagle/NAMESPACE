@@ -11,7 +11,7 @@ import(ggthemes)
 importFrom(plotly, ggplotly)
 importFrom(plotly, layout)
 importFrom(plotly, "%>%" )
-import(shinyFiles, shiny,  shinythemes,  stats, utils) 
+import(shinyFiles, shiny,  shinythemes,  fontawesome, stats, utils) 
 
 export(
    PlotAM,
