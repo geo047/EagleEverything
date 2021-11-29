@@ -12,3 +12,12 @@ username: geo047
 passwd: old password
 
 
+Pushing sequence
+
+git add -A   ## adds all changes to local repository
+git commit -m "add your own comment"
+git push
+
+## this will not ask for a username or password ---
+
+
